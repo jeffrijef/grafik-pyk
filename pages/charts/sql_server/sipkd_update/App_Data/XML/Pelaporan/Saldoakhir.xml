@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Saldoakhir" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Saldoakhir" type="Usadi.Valid49.BO.SaldoakhirControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Saldoakhir">
+      <result property="Soakhir" column="SOAKHIR"/>
+      <result property="Kdpers" column="KDPERS"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSaldoakhir" parameterMap="insert-param">
+      <generate table="SALDOAKHIR"/>
+    </insert>
+    <update id="UpdateBySaldoakhir" parameterMap="update-param">
+      <generate table="SALDOAKHIR" by="UNITKEY,MTGKEY"/>
+    </update>
+    <delete id="DeleteBySaldoakhir" parameterMap="delete-param">
+      <generate table="SALDOAKHIR" by="UNITKEY,MTGKEY"/>
+    </delete>
+    <select id="BaseQuerySaldoakhir" parameterClass="Saldoakhir" resultMap="return-result">
+      select UNITKEY,SA.MTGKEY,M.KDPER,M.NMPER,SA.KDPERS,SOAKHIR
+      from SALDOAKHIR SA
+      left outer join MATANGNRC M on SA.MTGKEY=M.MTGKEY
+    </select>
+    <select id="QueryByAllSaldoakhir" extends="BaseQuerySaldoakhir" parameterClass="Saldoakhir" resultMap="return-result">
+      where SA.UNITKEY=#Unitkey#
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="LoadByPKSaldoakhir" extends="BaseQuerySaldoakhir" parameterClass="Saldoakhir" resultMap="return-result">
+      where SA.UNITKEY=#Unitkey# and SA.MTGKEY=#Mtgkey# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Saldoakhir">
+      <parameter property="Kdpers" column="KDPERS"/>
+      <parameter property="Soakhir" column="SOAKHIR"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Saldoakhir">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Saldoakhir">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

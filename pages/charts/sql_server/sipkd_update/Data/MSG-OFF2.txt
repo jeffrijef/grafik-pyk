@@ -1,0 +1,37 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>jQuery UI Dialog - Modal message</title>
+   <link rel="stylesheet" href="/data/modal/jquery-ui.css">
+  <script src="/data/modal/jquery-1.12.4.js"></script>
+  <script src="/data/modal/jquery-ui.js"></script>
+  <script>
+  $( function() {
+    $( "#dialog-message" ).dialog({
+      modal: true,
+      width: "30%",
+      maxWidth: "400px",
+      buttons: {
+		Oke: function() {
+			$( this ).dialog( "close" );
+		}
+      }
+    });
+  } );
+  </script>
+</head>
+
+<body>
+<div id="dialog-message" title="PEMBERITAHUAN">
+	<p>
+		<span class="ui-icon ui-icon-circle-arrow-e" style="float:left; margin:0 7px 60px 0;"></span>
+		<b>SPD BELANJA LANGSUNG TRIWULAN III </b><br><br>
+    </p>
+    SUDAH BISA DIAMBIL, DI BALAI KOTA POLIKO, LT.3, BID. ANGGARAN.<br><br>
+	<b>by: admin_SIPKD, 26/06/2019 15:00:00 </b></p>
+</div>
+
+</body>
+
+

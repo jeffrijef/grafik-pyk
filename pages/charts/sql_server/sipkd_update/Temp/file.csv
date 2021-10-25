@@ -1,0 +1,57 @@
+Kdset;Valset;Valdesc
+noreg     ;Y;Autonumber NoReg Persetujuan SP2D
+nopjk     ;Y;Autonumber Pajak
+bendkeg   ;T;Bendahara Per Kegiatan
+bkuperrek ;Y;BKU BUD Per Rekening Koran
+bppgu     ;T;BPP GU
+dlgrpt    ;2;Dialog Report
+editphk3  ;T;Edit Pihak Ketiga Setelah di Sah kan
+pgrmtu    ;T;Filter Program TU
+frmtbpk   ;;Format BPK
+frmtpjk   ;;Format Pajak
+frmtsp2d  ;;Format SP2D
+frmtspj   ;[NNNNN]/[SKPD]/SPJ/[JENIS]/[YYYY];Format SPJ
+frmtspm   ;;Format SPM
+frmtspp   ;;Format SPP
+frmtsts   ;;Format STS
+frmttbp   ;;Format TBP
+typerpt   ;PDF;Format/tipe dokumen default ketika cetak
+intaset   ;T;Integrasi Aset
+upnx      ;999;Jumlah penerbitan SPP UP
+validset  ;T;Kunci Settng (pastikan anda mengeset ini untuk mencegah mengubah setting valid ditengah jalan)
+strictup  ;T;Lampiran SPP UP rinci sampai kegiatan
+tglstskbl ;T;Mengabaikan tanggal valid penyetoran pengembalian belanja
+tglsp2d   ;T;Mengabaikan tanggal valid SP2D
+tglspm    ;T;Mengabaikan tanggal valid SPM
+tglspp    ;T;Mengabaikan tanggal valid SPP
+tglsts    ;T;Mengabaikan tanggal valid STS
+tgltbp    ;T;Mengabaikan tanggal valid TBP
+superuser ;Y;Mode Super USer
+bendppkd  ;Y;Multi Bendahara PPKD
+userskpd  ;T;Multi User SKPD
+validreceh;Y;Nilai Receh (kurang dari 1000)
+nokdp3    ;Y;No Rekanan Autonumber/Tidak
+nobku     ;T;Nomor BKU autonumber/tidak
+online    ;Y;Online
+phk3all   ;Y;PHK 3 ALL
+oprpt     ;T;Preview ketika cetak di grid
+prosenup  ;1/12;Prosentase nilai UP rinci sampai kegiatan
+rangetgl  ;4;Range Tanggal
+rekup     ;;Rekening UP
+sbdana    ;T;SP2D sumber dana dari RKA
+spjupbend ;Y;SPJ UP Per Bendahara
+sppnonspj ;T;SPP GU Tanpa SPJ
+treerek   ;Y;Treeview Lookup Rekening
+treerka   ;Y;Treeview Lookup RKA/DPA
+uraisp2dtu;Pengajuan SP2D TU;Uraian Default SP2D  TU
+uraisp2dgu;Pengajuan SP2D GU;Uraian Default SP2D GU
+uraisp2dup;Pengajuan SP2D UP;Uraian Default SP2D UP
+uraisppgu ;Pengajuan SPP GU;Uraian Default SPP GU
+uraispptu ;Pengajuan SPP TU;Uraian Default SPP TU
+uraisppup ;Pengajuan SPP UP;Uraian Default SPP UP
+filterbku ;1;Urut BKU
+validbtl  ;Y;Validasi BTL
+vldkontrak;1;Validasi nilai Kontrak
+vldspddpa ;2;Validasi nilai rekening penatausahaan
+validtgbku;Y;Validasi Tgl BKU Bendahara terhadap Tgl Cair
+validbpk  ;Y;Validasi Total BPK

@@ -1,0 +1,5 @@
+TITLE=LRA SP2D
+Kdtahap=string;Tahap;4;
+Awal=datetime;Tanggal;30;
+Akhir=datetime;Tanggal;30;
+

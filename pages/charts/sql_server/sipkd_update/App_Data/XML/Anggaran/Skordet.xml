@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Skordet" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Skordet" type="Usadi.Valid49.BO.SkordetControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Skordet">
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Idxsko" column="IDXSKO"/>
+    </resultMap>
+    <resultMap id="return-result-total" class="Skordet">
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Nilai" column="NILAI"/>
+    </resultMap>
+    <resultMap id="return-result-keg" class="Skordet">
+      <result property="Kdkegunit" column="MTGKEY"/>
+      <result property="Nukeg" column="KDPER"/>
+      <result property="Nmkegunit" column="NMPER"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Idxsko" column="IDXSKO"/>
+      <result property="Kdtahap" column="KDTAHAP"/>
+      <result property="Unitkey" column="UNITKEY"/>
+    </resultMap>
+    <resultMap id="return-result-prog" class="Skordet">
+      <result property="Idprgrm" column="MTGKEY"/>
+      <result property="Nuprgrm" column="KDPER"/>
+      <result property="Nmprgrm" column="NMPER"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Idxsko" column="IDXSKO"/>
+      <result property="Kdtahap" column="KDTAHAP"/>
+      <result property="Unitkey" column="UNITKEY"/>
+    </resultMap>
+    <resultMap id="return-result-tree" class="Skordet">
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Idxsko" column="IDXSKO"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Mtgkey" column="KDKEGUNIT"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Type" column="TYPE"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="MTGKEY"/>
+      <result property="Field" column="KDPER"/>
+      <result property="Value" column="NMPER"/>
+    </resultMap>
+    <resultMap id="return-result-wspi" class="Skordet">
+      <result property="Hal" column="HAL"/>
+      <result property="Nmr" column="NMR"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Idxsko" column="IDXSKO"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Mtgkey" column="KDKEGUNIT"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Nilai" column="NILAI"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSkordet" parameterMap="insert-param">
+      <generate table="SKORDET"/>
+    </insert>
+    <update id="UpdateBySkordet" parameterMap="update-param">
+      <generate table="SKORDET" by="UNITKEY,KDKEGUNIT,MTGKEY,IDXSKO"/>
+    </update>
+    <delete id="DeleteBySkordet" parameterMap="delete-param">
+      <generate table="SKORDET" by="UNITKEY,KDKEGUNIT,MTGKEY,IDXSKO"/>
+    </delete>
+    <delete id="DeleteByAllSkordet" parameterMap="delete-all-param">
+      <generate table="SKORDET" by="UNITKEY,KDKEGUNIT,IDXSKO"/>
+    </delete>
+    
+    <select id="BaseQuerySkordet" parameterClass="Skordet" resultMap="return-result">
+      select S.UNITKEY,S.KDKEGUNIT,S.IDXSKO,S.MTGKEY,S.NILAI,M.KDPER,M.NMPER
+      from SKORDET S
+      left outer join MATANGR M on S.MTGKEY=M.MTGKEY
+    </select>
+    <select id="QueryByAllSkordet" extends="BaseQuerySkordet" parameterClass="Skordet" resultMap="return-result">
+      where S.UNITKEY=#Unitkey# and S.IDXSKO=#Idxsko# and S.KDKEGUNIT=#Kdkegunit#
+      and case #Parameter.Field#
+      when '1' then KDPER
+      when '2' then NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by KDPER
+    </select>
+    <select id="QueryByUntilnowSkordet" parameterClass="Skordet" resultMap="return-result-total">
+      select S.UNITKEY,S.IDXSKO,S.MTGKEY,S.NILAI
+      from SKORDET S
+      left outer join SKO SK on SK.UNITKEY=S.UNITKEY and SK.IDXSKO=S.IDXSKO
+      where S.UNITKEY=#Unitkey# and <![CDATA[SK.TGLSKO <= #Tglsko#]]> and TGLVALID is not null
+    </select>
+    <select id="QueryByUntilnowKegSkordet" parameterClass="Skordet" resultMap="return-result-total">
+      select S.UNITKEY,S.IDXSKO,S.MTGKEY,S.NILAI
+      from SKORDET S
+      left outer join SKO SK on SK.UNITKEY=S.UNITKEY and SK.IDXSKO=S.IDXSKO
+      where S.UNITKEY=#Unitkey# and Kdkegunit=#Kdkegunit# and <![CDATA[SK.TGLSKO <= #Tglsko#]]> and TGLVALID is not null
+    </select>
+    <select id="LoadByPKSkordet" extends="BaseQuerySkordet" parameterClass="Skordet" resultMap="return-result">
+      where S.UNITKEY=#Unitkey# and S.MTGKEY=#Mtgkey# and S.IDXSKO=#Idxsko# and S.KDKEGUNIT=#Kdkegunit#
+    </select>
+    <select id="QueryByProgKegSkordet" parameterclass="Usadi.Valid49.BO.SkoControl" resultMap="return-result-keg">
+    <!--<select id="QueryByProgKegSkordet" parameterClass="Skordet" resultMap="return-result-keg">-->
+      select *,#Idxsko# as IDXSKO,#Kdtahap# as KDTAHAP from (
+      select P.UNITKEY,isnull(UR.UNITKEY,'') as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2'))) as KDPER, isnull(UR.NMUNIT,'NON URUSAN') as NMPER, 'H' as TYPE
+      from PGRMUNIT P left outer join MPGRM MP on P.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on P.UNITKEY = UN.UNITKEY
+      where P.UNITKEY =#Unitkey#
+      union
+      select P.UNITKEY,P.IDPRGRM as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM) as KDPER, MP.NMPRGRM as NMPER, 'H' as TYPE
+      from PGRMUNIT P
+      left outer join KEGUNIT K on K.IDPRGRM = P.IDPRGRM and K.UNITKEY=P.UNITKEY and
+      K.KDKEGUNIT in (select D.KDKEGUNIT from SKORDET D left outer join SKO S
+      on D.IDXSKO=S.IDXSKO and D.UNITKEY=S.UNITKEY
+      )
+      left outer join MPGRM MP on P.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on P.UNITKEY = UN.UNITKEY
+      where P.UNITKEY =#Unitkey#
+      union
+      select K.UNITKEY,K.KDKEGUNIT as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM)+rtrim(MK.NUKEG) as KDPER, MK.NMKEGUNIT as NMPER, 'D' as TYPE
+      from KEGUNIT K
+      left outer join MKEGIATAN MK on MK.KDKEGUNIT=K.KDKEGUNIT
+      left outer join MPGRM MP on MK.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on K.UNITKEY = UN.UNITKEY
+      where K.UNITKEY =#Unitkey#
+      )A
+    </select>
+    <select id="QueryByProgSkordet" parameterclass="Usadi.Valid49.BO.SkoControl" resultMap="return-result-prog">
+    <!--<select id="QueryByProgSkordet" parameterClass="Skordet" resultMap="return-result-prog">-->
+      select distinct *,#Idxsko#  as IDXSKO,#Kdtahap# as KDTAHAP from (
+      select P.UNITKEY,P.IDPRGRM as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM) as KDPER, MP.NMPRGRM as NMPER, 'D' as TYPE
+      from PGRMUNIT P
+      left outer join KEGUNIT K on K.IDPRGRM = P.IDPRGRM and K.UNITKEY=P.UNITKEY and
+      K.KDKEGUNIT in (select D.KDKEGUNIT from SKORDET D left outer join SKO S
+      on D.IDXSKO=S.IDXSKO and D.UNITKEY=S.UNITKEY and S.IDXSKO=#Idxsko#
+      )
+      left outer join SKORDET D on K.UNITKEY = D.UNITKEY and K.KDKEGUNIT = D.KDKEGUNIT
+      left outer join MPGRM MP on P.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on P.UNITKEY = UN.UNITKEY
+      where P.UNITKEY =#Unitkey# and P.KDTAHAP=#Kdtahap# and D.IDXSKO=#Idxsko#
+      )A
+    </select>
+    <select id="QueryByKegSkordet" parameterClass="Skordet" resultMap="return-result-keg">
+      select distinct *,#Idxsko# as IDXSKO,#Kdtahap# as KDTAHAP from (
+      select K.UNITKEY,K.KDKEGUNIT as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM)+rtrim(MK.NUKEG) as KDPER, MK.NMKEGUNIT as NMPER, 'D' as TYPE
+      from KEGUNIT K
+      left outer join MKEGIATAN MK on MK.KDKEGUNIT=K.KDKEGUNIT
+      left outer join MPGRM MP on MK.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on K.UNITKEY = UN.UNITKEY
+      where K.UNITKEY =#Unitkey# and K.IDPRGRM=#Idprgrm#
+      )A
+    </select>
+    <select id="QueryByFilterSkordet" parameterClass="Skordet" resultMap="return-result-tree">
+      select UNITKEY,MTGKEY as KDKEGUNIT,KDPER,NMPER,TYPE,#Idxsko# as IDXSKO from (
+      select P.UNITKEY,UN.UNITKEY as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2'))) as KDPER, isnull(UR.NMUNIT,'NON URUSAN') as NMPER,'H' as TYPE
+      from PGRMUNIT P left outer join MPGRM MP on P.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on P.UNITKEY = UN.UNITKEY
+      where P.UNITKEY =#Unitkey# and
+      P.IDPRGRM in
+      (select IDPRGRM from KEGUNIT where UNITKEY=#Unitkey# and
+      KDKEGUNIT in (select KDKEGUNIT from SKORDET where UNITKEY=#Unitkey# and IDXSKO=#Idxsko#))
+      union
+      select P.UNITKEY,P.IDPRGRM as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM) as KDPER, MP.NMPRGRM as NMPER,'H' as TYPE
+      from PGRMUNIT P left outer join MPGRM MP on P.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on P.UNITKEY = UN.UNITKEY
+      where P.UNITKEY =#Unitkey# and
+      P.IDPRGRM in
+      (select IDPRGRM from KEGUNIT where UNITKEY=#Unitkey# and
+      KDKEGUNIT in (select KDKEGUNIT from SKORDET where UNITKEY=#Unitkey# and IDXSKO=#Idxsko#))
+      union
+      select K.UNITKEY,K.KDKEGUNIT as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM)+rtrim(MK.NUKEG) as KDPER, MK.NMKEGUNIT as NMPER,'D' as TYPE
+      from KEGUNIT K
+      left outer join MKEGIATAN MK on MK.KDKEGUNIT=K.KDKEGUNIT
+      left outer join MPGRM MP on MK.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on K.UNITKEY = UN.UNITKEY
+      where K.UNITKEY =#Unitkey# and K.KDKEGUNIT in (select KDKEGUNIT from SKORDET where UNITKEY=#Unitkey# and IDXSKO=#Idxsko#)
+      )A
+      where UNITKEY =#Unitkey#
+      and case #Parameter.Field#
+      when '1' then KDPER
+      when '2' then NMPER
+      end like '%'+#Parameter.Value#+'%'
+      order by KDPER
+    </select>
+    <select id="BaseQueryTotalSkordet" parameterClass="Skordet" resultMap="return-result-total">
+      select D.MTGKEY,sum(D.NILAI) as NILAI
+      from SKORDET D
+      left outer join SKO S on D.IDXSKO=S.IDXSKO and D.UNITKEY=S.UNITKEY
+    </select>
+    <select id="QueryByLastSkordet" extends="BaseQueryTotalSkordet" parameterClass="Skordet" resultMap="return-result-total">
+      where S.UNITKEY=#Unitkey# and D.KDKEGUNIT=#Kdkegunit# and D.MTGKEY=#Mtgkey# and <![CDATA[S.TGLSKO <= #Tglsko# and S.IDXSKO <> #Idxsko#]]>
+      group by D.MTGKEY
+    </select>
+    <select id="QueryByTotalSkordet" extends="BaseQueryTotalSkordet" parameterClass="Skordet" resultMap="return-result-total">
+      where S.UNITKEY=#Unitkey# and S.IDXSKO=#Idxsko#
+      group by D.MTGKEY
+    </select>
+    <select id="BaseQueryLookupSkordet" parameterClass="Skordet" resultMap="return-lookup">
+      <![CDATA[
+      select distinct B.KDPER, B.NMPER,B.MTGKEY
+      from SKORDET A
+      left join MATANGR B on A.mtgkey = B.mtgkey
+      where A.UNITKEY=#Unitkey#
+      and A.KDKEGUNIT=#Kdkegunit#
+      and A.IDXSKO in (select IDXSKO from SKO where UNITKEY=#Unitkey# 
+      and TGLSKO <= (select TGLSKO from SKO where UNITKEY=#Unitkey# 
+      and IDXSKO = #Idxsko#) and TGLVALID is not NULL)
+      ]]>
+    </select>
+    <select id="QueryBySppdetrSkordet" extends="BaseQueryLookupSkordet" parameterclass="Usadi.Valid49.BO.SppdetrControl" resultMap="return-lookup">
+      <!--gn:090318-->
+      and A.MTGKEY not in (select MTGKEY from SPPDETR S where S.UNITKEY=#Unitkey# and S.NOSPP=#Nospp# and NOJETRA=#Nojetra# )
+      order by B.KDPER
+    </select>
+    <select id="QueryBySpmdetrSkordet" extends="BaseQueryLookupSkordet" parameterclass="Usadi.Valid49.BO.SpmdetrControl" resultMap="return-lookup">
+      <!--gn:090318-->
+      and A.MTGKEY not in (select MTGKEY from SPMDETR S where S.UNITKEY=#Unitkey# and S.NOSPM=#Nospm# and NOJETRA=#Nojetra# )
+      order by B.KDPER
+    </select>
+    <select id="QueryBySp2ddetrSkordet" extends="BaseQueryLookupSkordet" parameterclass="Usadi.Valid49.BO.Sp2ddetrControl" resultMap="return-lookup">
+      and A.MTGKEY not in (select MTGKEY from SP2DDETR S where S.UNITKEY=#Unitkey# and S.NOSP2D=#Nosp2d# and NOJETRA=#Nojetra#  )
+      order by B.KDPER
+    </select>
+    <!--<select id="QueryBySpjdetrSkordet" extends="BaseQueryLookupSkordet" parameterclass="Usadi.Valid49.BO.SpjdetrControl" resultMap="return-lookup">
+      and A.MTGKEY not in (select MTGKEY from SPJDETR S where S.UNITKEY=#Unitkey# and S.NOSP2D=#Nospj# and NOJETRA=#Nojetra#  )
+      order by B.KDPER
+    </select>-->
+    <select id="LoadByTotalRekSkordet" parameterClass="Skordet" resultMap="return-result-total">
+      <![CDATA[
+      select B.KDPER, B.NMPER,B.MTGKEY, sum(A.NILAI) AS NILAI
+      from SKORDET A
+      left join MATANGR B on A.MTGKEY = B.MTGKEY
+      where A.UNITKEY=#Unitkey# and A.MTGKEY=#Mtgkey# and A.KDKEGUNIT=#Kdkegunit#
+      and A.IDXSKO in (select IDXSKO from SKO where UNITKEY=#Unitkey# 
+      and TGLSKO <= (select TGLSKO from SKO where UNITKEY=#Unitkey# 
+      and IDXSKO = #Idxsko#) and TGLVALID is not NULL)
+      group BY B.KDPER, B.NMPER, B.MTGKEY
+      ]]>
+    </select>
+
+    <procedure id="ExecViewFilterSkordet" parameterMap="select-param" timeout="0" resultMap="return-result-wspi">
+      WSPI_KEGSKORDET
+    </procedure>
+
+    <procedure id="ExecValidateResiduSPD" timeout="0" parameterMap="transfer-param0">
+      WSP_VALIDATIONSKO
+    </procedure>
+    <!--WR 25062010-->
+    <procedure id="ExecTransferDPARSkpdSPDMan" timeout="0" parameterMap="transfer-param1">
+      WSP_SKORSKPDTRANSFER_MAN
+    </procedure>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Skordet">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Idxsko" column="IDXSKO"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Skordet">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Skordet">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Idxsko" column="IDXSKO"/>
+    </parameterMap>
+    <parameterMap id="delete-all-param" class="Skordet">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Idxsko" column="IDXSKO"/>
+    </parameterMap>    
+    <parameterMap id="select-param" class="Skordet">
+      <parameter property="AllowSuperUser" column="allowsuperuser"/>
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Idxsko" column="idxsko"/>
+      <parameter property="Kdtahap" column="kdtahap"/>
+      <parameter property="Parameter.Field" column="field"/>
+      <parameter property="Parameter.Value" column="value"/>
+      <parameter property="Hal" column="hal"/>
+    </parameterMap>
+    <parameterMap id="transfer-param0" class="Skordet">
+      <parameter property="Kdtahap" column="kdtahap"/>
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Kdkegunit" column="kdkegunit"/>
+      <parameter property="Kdper" column="kdper"/>
+    </parameterMap>
+    <!--WR 25062010-->
+    <parameterMap id="transfer-param1" class="Sko">
+      <parameter property="Kdtahap" column="kdtahap"/>
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Idxdask" column="idxdask"/>
+      <parameter property="Idxsko" column="idxsko"/>
+      <parameter property="Kd_bulan1" column="kd_bulan1"/>
+      <parameter property="Kd_bulan2" column="kd_bulan2"/>
+      <parameter property="Optdpa" column="optdpa"/>
+      <parameter property="Mtgkey" column="mtgkey"/>
+      <parameter property="Kdkegunit" column="kdkegunit"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

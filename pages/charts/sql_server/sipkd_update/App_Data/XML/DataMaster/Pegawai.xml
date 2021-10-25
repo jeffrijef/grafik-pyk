@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Pegawai" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Pegawai" type="Usadi.Valid49.BO.PegawaiControl, Usadi.Valid49" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Pegawai">
+      <result property="Nipnama" column="NIPNAMA"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Alamat" column="ALAMAT"/>
+      <result property="Jabatan" column="JABATAN"/>
+      <result property="Kdgol" column="KDGOL"/>
+      <result property="Nama" column="NAMA"/>
+      <result property="Pddk" column="PDDK"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nip" column="NIP"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="NIP"/>
+      <result property="Field" column="NIP"/>
+      <result property="Value" column="NAMA"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertPegawai" parameterMap="insert-param">
+      <generate table="PEGAWAI"/>
+    </insert>
+    <update id="UpdateByPegawai" parameterMap="update-param">
+      <generate table="PEGAWAI" by="NIP"/>
+    </update>
+    <delete id="DeleteByPegawai" parameterMap="delete-param">
+      <generate table="PEGAWAI" by="NIP"/>
+    </delete>
+    <select id="BaseQueryPegawai" parameterClass="Pegawai" resultMap="return-result">
+      select rtrim(P.PDDK) as PDDK, rtrim(P.JABATAN) as JABATAN,
+      rtrim(P.ALAMAT) as ALAMAT, rtrim(P.NAMA) as NAMA,
+      rtrim(P.KDGOL) as KDGOL, rtrim(P.UNITKEY) as UNITKEY, rtrim(P.NIP) as NIP,
+      rtrim(U.KDUNIT) as KDUNIT, rtrim(U.NMUNIT) as NMUNIT, rtrim(P.NIP) +' - '+ rtrim(P.NAMA) AS NIPNAMA
+      from PEGAWAI P
+      left outer join DAFTUNIT U on P.UNITKEY=U.UNITKEY
+    </select>
+    <select id="QueryByAllPegawai" extends="BaseQueryPegawai" parameterClass="Pegawai" resultMap="return-result">
+			where (P.UNITKEY=#Unitkey# or #Unitkey#='' or P.UNITKEY=(select unitkeyskpd from daftunituk where unitkeyuk=#Unitkey#)) and
+			case #Parameter.Field#
+			when '1' then P.NIP
+			when '2' then P.NAMA
+			when '3' then P.JABATAN
+			<!--when '4' then P.KDGOL
+			when '5' then U.KDUNIT-->
+			end like '%'+ #Parameter.Value# + '%'
+			order by P.NIP
+		</select>
+		<select id="QueryByAtasbendPegawai" extends="BaseQueryPegawai" parameterclass="Usadi.Valid49.BO.AtasbendControl" resultMap="return-lookup">
+			where P.NIP not in (select NIP from ATASBEND where UNITKEY=#Unitkey#)
+			and P.NIP in (select NIP from PEGAWAI where UNITKEY=#Unitkey#)
+			and case #Parameter.Field#
+			when '1' then P.NIP
+			when '2' then P.NAMA
+			when '3' then P.JABATAN
+			end like '%'+ #Parameter.Value# + '%'
+			order by P.NIP
+		</select>
+		<select id="QueryByPpkPegawai" extends="BaseQueryPegawai" parameterclass="Usadi.Valid49.BO.PpkControl" resultMap="return-lookup">
+			where P.NIP not in (select NIP from PPK where UNITKEY=#Unitkey#) and
+			P.NIP in (select NIP from PEGAWAI where UNITKEY=#Unitkey#)
+			and case #Parameter.Field#
+			when '1' then P.NIP
+			when '2' then P.NAMA
+			when '3' then P.JABATAN
+			end like '%'+ #Parameter.Value# + '%'
+			order by P.NIP
+		</select>
+    <select id="QueryByTtapdPegawai" extends="BaseQueryPegawai" parameterclass="Usadi.Valid49.BO.TtapdControl" resultMap="return-lookup">
+      where P.NIP not in (select NIP from TTAPD where KDTAHAP=#Kdtahap#)
+      and case #Parameter.Field#
+      when '1' then P.NIP
+      when '2' then P.NAMA
+      when '3' then P.JABATAN
+      when '4' then P.KDGOL
+      when '5' then U.KDUNIT
+      end like '%'+ #Parameter.Value# + '%'
+      order by P.NIP
+    </select>
+    <select id="LoadByPKPegawai" extends="BaseQueryPegawai" parameterClass="Pegawai" resultMap="return-result">
+      where P.NIP=#Nip#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Pegawai">
+      <parameter property="Alamat" column="ALAMAT"/>
+      <parameter property="Jabatan" column="JABATAN"/>
+      <parameter property="Kdgol" column="KDGOL"/>
+      <parameter property="Nama" column="NAMA"/>
+      <parameter property="Pddk" column="PDDK"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nip" column="NIP"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Pegawai">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Pegawai">
+      <parameter property="Nip" column="NIP"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

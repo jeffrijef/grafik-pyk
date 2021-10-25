@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Spjspp" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Spjspp" type="Usadi.Valid49.BO.SpjsppControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Spjspp">
+      <result property="Nilai" column="NILAI"/>
+      <result property="Nospp" column="NOSPP"/>
+      <result property="Idxkode" column="IDXKODE"/>
+      <result property="Keterangan" column="KETERANGAN"/>
+      <result property="Keybend" column="KEYBEND"/>
+      <result property="Tglspj" column="TGLSPJ"/>
+      <result property="Tglbuku" column="TGLBUKU"/>
+      <result property="Kdstatus" column="KDSTATUS"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nospj" column="NOSPJ"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSpjspp" parameterMap="insert-param">
+      <generate table="SPJSPP"/>
+    </insert>
+    <update id="UpdateBySpjspp" parameterMap="update-param">
+      <generate table="SPJSPP" by="UNITKEY,NOSPJ"/>
+    </update>
+    <delete id="DeleteBySpjspp" parameterMap="delete-param">
+      <generate table="SPJSPP" by="UNITKEY,NOSPJ"/>
+    </delete>
+    <select id="BaseQuerySpjspp" parameterClass="Spjspp" resultMap="return-result">
+      select A.NOSPJ,A.NOSPP,A.UNITKEY,
+      J.IDXKODE, J.KETERANGAN+' - '+K.NMUNIT KETERANGAN, J.KEYBEND, J.TGLSPJ, J.TGLBUKU, J.KDSTATUS,
+      NILAI = (CASE WHEN KDSTATUS = 20 THEN 
+      (isnull((select sum(isnull(NILAI,0)) from SPJDETR C where C.NOSPJ=A.NOSPJ),0)
+      +isnull((select sum(isnull(NILAI,0)) from SPJDETRTL C where C.NOSPJ=A.NOSPJ),0))*-1
+      ELSE
+      (isnull((select sum(isnull(NILAI,0)) from SPJDETR C where C.NOSPJ=A.NOSPJ),0)
+      +isnull((select sum(isnull(NILAI,0)) from SPJDETRTL C where C.NOSPJ=A.NOSPJ),0))
+      END)
+      from SPJSPP A left outer join
+      PSPJ J on A.NOSPJ=J.NOSPJ
+      inner join DAFTUNIT K on J.UNITKEY=K.UNITKEY
+    </select>
+    <select id="QueryByAllSpjspp" extends="BaseQuerySpjspp" parameterClass="Spjspp" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSPP=#Nospp#
+      and case #Parameter.Field#
+      when '1' then A.NOSPJ
+      when '2' then A.NOSPP
+      when '3' then A.UNITKEY
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOSPJ
+    </select>
+    <select id="LoadByPKSpjspp" extends="BaseQuerySpjspp" parameterClass="Spjspp" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSPJ=#Nospj# 
+    </select>
+    <procedure id="ExecTransferSPJkeSPP" parameterMap="transfer-param" timeout="0">
+      WSP_TRANSFER_SPJSPP
+    </procedure>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Spjspp">
+      <parameter property="Nospp" column="NOSPP"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nospj" column="NOSPJ"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Spjspp">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Spjspp">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nospj" column="NOSPJ"/>
+    </parameterMap>
+    <parameterMap id="transfer-param" class="Spjspp">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Nospj" column="nospj"/>
+      <parameter property="Nospp" column="nospp"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

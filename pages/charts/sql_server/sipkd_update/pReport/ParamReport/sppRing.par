@@ -1,0 +1,6 @@
+TITLE=S P P
+Unitkey=string;Key Unit;4;;;;-1
+Idxkode=string;Index Kode;4;
+Kdtahap=string;Tahapan;4;
+Nospp=string;Nomor Unit;50;
+Nip=string;Pimpinan Kegiatan;30;

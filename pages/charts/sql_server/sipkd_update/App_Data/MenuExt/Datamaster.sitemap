@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<siteMap xmlns="http://schemas.microsoft.com/AspNet/SiteMap-File-1.0" >
+  <siteMapNode url="~/Default.aspx?id=1" title="Data Master" roles="ALL">
+    <siteMapNode url="~/Default.aspx?id=101" title="Utama" roles="ALL">
+      <siteMapNode url="~/Logout.aspx?id=10101" title="Ke Halaman Muka" roles="ALL"/>
+      <siteMapNode url="~/pSistem/SetPassword.aspx?id=10102" title="Ubah Sandi" roles="ALL"/>
+      <siteMapNode url="~/pSistem/Database.aspx?id=10106&amp;mode=backupdm" title="Backup Data Setup" roles="MDSKPKD"/>
+      <siteMapNode url="~/pSistem/Database.aspx?id=10107&amp;mode=restoredm" title="Restore Data Setup" roles="MDSKPKD"/>
+      <siteMapNode url="~/pSistem/Database.aspx?id=10103&amp;mode=exportdm" title="Kirim Data Master" roles="MDSKPKD"/>
+      <siteMapNode url="~/pSistem/Database.aspx?id=10104&amp;mode=importdm" title="Terima Data Master" roles="MDSKPKD"/>
+      <siteMapNode url="~/pSistem/Database.aspx?id=10105&amp;mode=importppas" title="Terima Data PPAS" roles="MDSKPKD"/>
+      <siteMapNode url="~/pSistem/Download.aspx??id=911" title="Upload" roles="MDSKPKD"/>
+      <siteMapNode url="~/pSistem/Download.aspx??id=912" title="Download" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=999&amp;kode=Dm" title="Option" roles="MDSKPKD"/>
+      <siteMapNode url="~/pSistem/Log.aspx?id=990" title="Method Log" roles="DEV"/>
+    </siteMapNode>
+    <siteMapNode url="~/Default.aspx?id=102" title="Daftar">
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10201" title="Fungsi " roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10202" title="Profil" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10203" title="Golongan" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10204" title="Indikator Kerja" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10205" title="Sifat Kegiatan" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10206" title="Struktur Unit" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10207" title="Struktur Rekening" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10208" title="Normal Rekening" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10209" title="Status Transaksi" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10210" title="Dokumen" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10211" title="Dokumen Pengesahan" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10212" title="Perspektif" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10213" title="Bank" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10214" title="Rekening Kas Daerah" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10215" title="Standar Satuan Harga" roles="MASKPD"/>-->
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10216" title="Rekanan" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10217" title="Pajak" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10218" title="Lampiran Dokumen" roles="MDSKPKD"/>
+
+    </siteMapNode>
+    <siteMapNode url="~/Default.aspx?id=103" title="Jenis">
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10301" title="Jenis Bendahara" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10302" title="Jenis Dana" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10303" title="Jenis Saldo Arus Kas" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10304" title="Jenis Transaksi" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10305" title="Jenis Bukti Kas" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10306" title="Jenis Bukti Memorial" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10307" title="Jenis Dasar SPD" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10308" title="Jenis Kelola" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10309" title="Jenis Prioritas" roles="MDSKPKD"/>
+
+    </siteMapNode>
+    <siteMapNode url="~/Default.aspx?id=104" title="Pokok">
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10502" title="Urusan" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10405" title="Unit Organisasi" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10408" title="Program dan Kegiatan" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10401" title="Rekening" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10501" title="Keselarasan Fungsi" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10402" title="Rekening PPKD" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10409" title="Rekening Non Anggaran" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10403" title="Mapping SAP" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10404" title="Mapping Arus Kas" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10215" title="Standar Satuan Harga" roles="MASKPD"/>
+    </siteMapNode>
+    <siteMapNode url="~/Default.aspx?id=105" title="Pengaturan">
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10406" title="Pegawai" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10407" title="Bendahara" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10503" title="Pengguna Anggaran" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10504" title="PPK SKPD" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=105041" title="PPTK SKPD" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10508" title="TAPD" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10505" title="Dasar Hukum" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10515" title="Dasar Pembiayaan" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10522&amp;kode=99" title="Unit Kerja SKPD" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10521" title="KPA" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10520" title="Bendahara KPA" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10506" title="Mapping Transaksi Bendahara" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10507&amp;kode=1" title="Penandatangan Dokumen SKPD" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10507&amp;kode=2" title="Penandatangan Dokumen BUD" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10516" title="Set Korolari" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10509" title="Set Arus Kas" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10510" title="Set Penutup" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10513" title="Set Rekening Arus Kas" roles="MDSKPKD"/>-->
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10511" title="Set Standar Harga" roles="MASKPD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10517" title="Kelola Unit" roles="MASKPD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10525" title="Set Rekening Kegiatan" roles="MASKPD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10526" title="Set Urusan Belanja Tidak Langsung" roles="MASKPD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=10527" title="Set Prioritas Kegiatan" roles="MASKPD"/>
+    </siteMapNode>
+
+    <siteMapNode url="~/Default.aspx?id=150" title="Cetak" description="Laporan">
+      <siteMapNode url="~/Default.aspx?id=15001" title="Daftar" description="Daftar" roles="MPSKPD">
+        <siteMapNode url="~/pPage/PageRedirector.aspx?id=1500101&amp;name=daftbank" title="Bank" description="Bank" roles="MPSKPD" />
+        <siteMapNode url="~/pPage/PageRedirector.aspx?id=1500102&amp;name=rekanan" title="Rekanan" description="Rekanan" roles="MPSKPD" />
+      </siteMapNode>
+      <siteMapNode url="~/Default.aspx?id=15002" title="Pokok" description="Pokok" roles="MPSKPD">
+        <siteMapNode url="~/pPage/PageRedirector.aspx?id=1500208&amp;name=urusan" title="Urusan" description="Urusan" roles="MPSKPD" />
+        <siteMapNode url="~/pPage/PageRedirector.aspx?id=1500201&amp;name=daftunit" title="Unit Organisasi" description="Unit Organisasi" roles="MPSKPD" />
+        <siteMapNode url="~/pPage/PageRedirector.aspx?id=1500206&amp;name=susprogkeg" title="Program dan Kegiatan" description="Program dan Kegiatan" roles="MPSKPD" />
+        <siteMapNode url="~/Default.aspx?id=1500202" title="Rekening" description="Rekening" roles="MPSKPD">
+          <siteMapNode url="~/pPage/PageRedirector.aspx?id=150020201&amp;name=rekd" title="Pendapatan" description="Rekening Pendapatan" roles="MPSKPD" />
+          <siteMapNode url="~/pPage/PageRedirector.aspx?id=150020202&amp;name=rekr" title="Belanja" description="Rekening Belanja" roles="MPSKPD" />
+          <siteMapNode url="~/pPage/PageRedirector.aspx?id=150020203&amp;name=rekb" title="Pembiayaan" description="Rekening Pembiayaan" roles="MPSKPD" />
+          <siteMapNode url="~/pPage/PageRedirector.aspx?id=150020204&amp;name=reknrc" title="Neraca" description="Rekening Neraca" roles="MPSKPD" />
+          <siteMapNode url="~/pPage/PageRedirector.aspx?id=150020205&amp;name=RekNonAPBD" title="Non Anggaran" description="Rekening Non Anggaran" roles="MPSKPD" />
+          <siteMapNode url="~/pPage/PageRedirector.aspx?id=150020206&amp;name=rekk" title="Rekening Koran" description="Rekening Koran" roles="MPSKPD" />-->
+        </siteMapNode>
+        <siteMapNode url="~/pPage/PageRedirector.aspx?id=1500209&amp;name=kodefung" title="Keselarasan Fungsi" description="Keselarasan Fungsi" roles="MPSKPD" />
+        <siteMapNode url="~/pPage/PageRedirector.aspx?id=1500210&amp;name=RekPPKD" title="Rekening PPKD" description="Rekening PPKD" roles="MPSKPD" />
+        <siteMapNode url="~/pPage/PageRedirector.aspx?id=1500203&amp;name=RekLRA" title="Rekening SAP" description="Rekening SAP" roles="MPSKPD" />
+        <siteMapNode url="~/pPage/PageRedirector.aspx?id=1500204&amp;name=RekLAK" title="Rekening Arus Kas" description="Arus Kas" roles="MPSKPD" />
+      </siteMapNode>
+      <siteMapNode url="~/Default.aspx?id=15003" title="Pengaturan" description="Pengaturan" roles="MPSKPD">
+        <siteMapNode url="~/pPage/PageRedirector.aspx?id=1500205&amp;name=pegawai" title="Pegawai" description="Pegawai" roles="MPSKPD" />
+        <siteMapNode url="~/pPage/PageRedirector.aspx?id=1500207&amp;name=Bendunit" title="Bendahara" description="Bendahara" roles="MPSKPD" />
+        <siteMapNode url="~/pPage/PageRedirector.aspx?id=1500301&amp;name=kodefung" title="Urusan Fungsi" description="Urusan Fungsi" roles="MPSKPD" />-->
+        <siteMapNode url="~/pPage/PageRedirector.aspx?id=1500302&amp;name=daskum" title="Dasar Hukum" description="Dasar Hukum" roles="MPSKPD" />
+        <siteMapNode url="~/pPage/PageRedirector.aspx?id=1500303&amp;name=atasunit" title="Pengguna Anggaran" description="Pengguna Anggaran" roles="MPSKPD" />
+        <siteMapNode url="~/pPage/PageRedirector.aspx?id=1500304&amp;name=ppkunit" title="PPK SKPD" description="PPK SKPD" roles="MPSKPD" />
+        <siteMapNode url="~/pPage/PageRedirector.aspx?id=1500305&amp;name=bendunit" title="Bendahara SKPD" description="Neraca Bendahara" roles="MPSKPD" />-->
+        <siteMapNode url="~/pPage/PageRedirector.aspx?id=1500306&amp;name=jabttd" title="Penandatangan Dokumen" description="Penandatangan Dokumen" roles="MPSKPD" />
+        <siteMapNode url="~/pPage/PageRedirector.aspx?id=1500307&amp;name=tapd" title="TAPD" description="TAPD" roles="MPSKPD" />
+        <siteMapNode url="~/pPage/PageRedirector.aspx?id=1500309&amp;name=setRekLAK" title="Mapping Rekening Arus Kas" description="Set Rekening L A K" roles="MPSKPD" />-->
+      </siteMapNode>
+    </siteMapNode>
+    <siteMapNode url="~/Files/Default.aspx"  title="File Pendukung"  roles="ALL">
+      <siteMapNode url="~/pSistem/Download.aspx?id=911&amp;kode=ma" title="Dokumen" roles="ALL"/>
+      <siteMapNode url="~/Files/Installer/Acrobat.exe"  title="Adobe Acrobat Reader&lt;hr size=0.1/&gt;"  roles="ALL"/>
+      <siteMapNode url="~/Files/Default.aspx?file=2"  title="Manual Aplikasi&lt;hr size=0.1/&gt;" roles="ALL">
+        <siteMapNode url="~/Files/ManualHelp.aspx?pdfName=Db" title="Penyiapan Database dan Aplikasi&lt;hr size=0.1/&gt;" roles="ALL"/>
+        <siteMapNode url="~/Files/ManualHelp.aspx?pdfName=ModulI" title="Pengantar Aplikasi&lt;hr size=0.1/&gt;" roles="ALL"/>
+        <siteMapNode url="~/Files/ManualHelp.aspx?pdfName=ModulII" title="Manual Penyusunan APBD&lt;hr size=0.1/&gt;" roles="ALL"/>
+        <siteMapNode url="~/Files/ManualHelp.aspx?pdfName=ModulIII" title="Manual Pelaksanaan APBD&lt;hr size=0.1/&gt;" roles="ALL"/>
+        <siteMapNode url="~/Files/ManualHelp.aspx?pdfName=ModulIV" title="Manual Penyusunan APBD Perubahan&lt;hr size=0.1/&gt;" roles="ALL"/>
+        <siteMapNode url="~/Files/ManualHelp.aspx?pdfName=ModulV" title="Manual Pembukuan&lt;hr size=0.1/&gt;" roles="ALL"/>
+        <siteMapNode url="~/Files/ManualHelp.aspx?pdfName=Exim" title="Manual Kirim dan Terima Data&lt;hr size=0.1/&gt;" roles="ALL"/>
+      </siteMapNode>
+    </siteMapNode>
+  </siteMapNode>
+</siteMap>

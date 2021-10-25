@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Periode" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Periode" type="Usadi.Valid49.BO.PeriodeControl"/>
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Periode">
+      <result property="Akhir" column="AKHIR"/>
+      <result property="Awal" column="AWAL"/>
+      <result property="Nmperiode" column="NMPERIODE"/>
+      <result property="Kdperiode" column="KDPERIODE"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertPeriode" parameterMap="insert-param">
+      <generate table="PERIODE"/>
+    </insert>
+    <update id="UpdateByPeriode" parameterMap="update-param">
+      <generate table="PERIODE" by="KDPERIODE"/>
+    </update>
+    <delete id="DeleteByPeriode" parameterMap="delete-param">
+      <generate table="PERIODE" by="KDPERIODE"/>
+    </delete>
+    <select id="BaseQueryPeriode" parameterClass="Periode" resultMap="return-result">
+      SELECT P.KDPERIODE, P.NMPERIODE, P.AWAL, P.AKHIR
+      FROM PERIODE P
+    </select>
+    <select id="QueryByAllPeriode" extends="BaseQueryPeriode" parameterClass="Periode" resultMap="return-result">
+      where
+      case #Parameter.Field#
+      when '1' then convert(char(10), P.AKHIR, 103)
+      when '2' then convert(char(10), P.AWAL, 103)
+      when '3' then P.NMPERIODE
+      when '4' then convert(char(10), P.KDPERIODE)
+      end like '%'+ #Parameter.Value# + '%'
+    </select>
+    <select id="LoadByPKPeriode" extends="BaseQueryPeriode" parameterClass="Periode" resultMap="return-result">
+      where P.KDPERIODE=#Kdperiode#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Periode">
+      <parameter property="Akhir" column="AKHIR"/>
+      <parameter property="Awal" column="AWAL"/>
+      <parameter property="Nmperiode" column="NMPERIODE"/>
+      <parameter property="Kdperiode" column="KDPERIODE"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Periode">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Periode">
+      <parameter property="Kdperiode" column="KDPERIODE"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

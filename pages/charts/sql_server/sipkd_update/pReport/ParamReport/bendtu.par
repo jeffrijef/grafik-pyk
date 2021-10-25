@@ -1,0 +1,7 @@
+TITLE=LPJ TU 
+Unitkey=string;Key Unit;4;
+Kdkegunit=string;Kegiatan;4;
+Bend=string; Bendahara;30;
+Jnsbend=string;Jenis Bendahara;4;;-1;2;-1;
+Tanggal=datetime;Tanggal Cetak;30;
+Nip=string;Nip;30;

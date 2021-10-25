@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Daskdetrl" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Daskdetrl" type="Usadi.Valid49.BO.DaskdetrlControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Daskdetrl">
+      <result property="Nilai" column="NILAI"/>
+      <result property="Ekspresi" column="EKSPRESI"/>
+      <result property="Inclsubtotal" column="INCLSUBTOTAL"/>
+      <result property="Jumbyek" column="JUMBYEK"/>
+      <result property="Kdjabar" column="KDJABAR"/>
+      <result property="Idstdharga" column="IDSTDHARGA"/>
+      <result property="Satuan" column="SATUAN"/>
+      <result property="Hrgsat" column="HRGSAT"/>
+      <result property="Uraian" column="URAIAN"/>
+      <result property="Nmstd" column="NMSTD"/>
+      <result property="Subtotal" column="SUBTOTAL"/>
+      <result property="Tarif" column="TARIF"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Kddana" column="KDDANA"/>
+      <result property="Nmdana" column="NMDANA"/>
+      <result property="Kdtahun" column="KDTAHUN"/>
+      <result property="Idxdask" column="IDXDASK"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Kdnilai" column="KDNILAI"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Unitkey" column="UNITKEY"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertDaskdetrl" parameterMap="insert-param">
+      <generate table="Daskdetrl"/>
+    </insert>
+    <update id="UpdateByDaskdetrl" parameterMap="update-param">
+      <generate table="Daskdetrl" by="KDTAHUN,IDXDASK,KDKEGUNIT,KDNILAI,MTGKEY,UNITKEY"/>
+    </update>
+    <update id="UpdateByHeaderDaskdetrl" parameterClass="Daskdetrl">
+    <![CDATA[
+      update Daskdetrl
+      set JUMBYEK = 0, SUBTOTAL =  (select sum(isnull(SUBTOTAL,0)) as SUBTOTAL
+      from Daskdetrl
+      where UNITKEY = #Unitkey# and IDXDASK = #Idxdask# and KDKEGUNIT = #Kdkegunit#
+      and MTGKEY = #Mtgkey# and KDTAHUN = #Kdtahun#
+      and KDJABAR like ltrim(rtrim(#Kdjabar#))+'%' and KDJABAR <> #Kdjabar# 
+      and type='D'
+      group by UNITKEY,MTGKEY,IDXDASK)
+      where UNITKEY = #Unitkey# and IDXDASK = #Idxdask# and KDKEGUNIT = #Kdkegunit#
+      and MTGKEY = #Mtgkey# and KDTAHUN = #Kdtahun# and KDNILAI=#Kdnilai# 
+      ]]>
+      </update>
+    <delete id="DeleteByDaskdetrl" parameterMap="delete-param">
+      <generate table="Daskdetrl" by="KDTAHUN,IDXDASK,KDKEGUNIT,KDNILAI,MTGKEY,UNITKEY"/>
+    </delete>
+    <select id="BaseQueryDaskdetrl" parameterClass="Daskdetrl" resultMap="return-result">
+      select A.EKSPRESI,A.IDXDASK,A.INCLSUBTOTAL,A.JUMBYEK,A.KDJABAR,A.IDSTDHARGA,A.KDKEGUNIT,A.KDNILAI,A.MTGKEY,A.SATUAN,A.SUBTOTAL,A.TARIF,rtrim(A.TYPE)  as TYPE,A.UNITKEY,A.URAIAN
+      ,A.KDTAHUN,A.KDDANA,B.NILAI,A.URAIAN,C.NMSTD,rtrim(C.HRGSTD)+'/'+rtrim(C.SATUAN) as HRGSAT,JD.NMDANA
+      from Daskdetrl A
+      left outer join DASKRL B on A.UNITKEY=B.UNITKEY and A.MTGKEY=B.MTGKEY and A.KDKEGUNIT=B.KDKEGUNIT and A.IDXDASK=B.IDXDASK
+      left outer join STDHARGA C on A.IDSTDHARGA = C.IDSTDHARGA
+      left outer join JDANA JD on A.KDDANA = JD.KDDANA
+    </select>
+    <select id="QueryByAllDaskdetrl" extends="BaseQueryDaskdetrl" parameterClass="Daskdetrl" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.MTGKEY=#Mtgkey# and A.KDKEGUNIT=#Kdkegunit# and A.IDXDASK=#Idxdask#
+      and case #Parameter.Field#
+      when '1' then A.KDJABAR
+      when '2' then A.URAIAN
+      when '3' then A.EKSPRESI
+      when '4' then A.SATUAN
+      when '5' then convert(char(32), A.TARIF)
+      when '6' then convert(char(32), A.SUBTOTAL)
+      when '7' then rtrim(A.TYPE)
+      end like #Parameter.Value# + '%'
+      order by A.KDJABAR
+    </select>
+    <select id="QueryByPaguDaskdetrl" extends="BaseQueryDaskdetrl" parameterClass="Daskdetrl" resultMap="return-result">
+      where A.UNITKEY=#Unitkey#  and A.IDXDASK=#Idxdask# and A.KDKEGUNIT=#Kdkegunit# and rtrim(A.TYPE) ='D'
+    </select>
+    <select id="QueryByKdjabarDaskdetrl" extends="BaseQueryDaskdetrl" parameterClass="Daskdetrl" resultMap="return-result">
+      where A.IDXDASK=#Idxdask# and A.MTGKEY=#Mtgkey# and A.UNITKEY=#Unitkey# and A.KDJABAR=#Kdjabar#
+    </select>
+    <select id="LoadByPKDaskdetrl" extends="BaseQueryDaskdetrl" parameterClass="Daskdetrl" resultMap="return-result">
+      where A.IDXDASK=#Idxdask# and A.KDKEGUNIT=#Kdkegunit# and A.KDNILAI=#Kdnilai# and A.MTGKEY=#Mtgkey# and A.UNITKEY=#Unitkey# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Daskdetrl">
+      <parameter property="Ekspresi" column="EKSPRESI"/>
+      <parameter property="Inclsubtotal" column="INCLSUBTOTAL"/>
+      <parameter property="Jumbyek" column="JUMBYEK"/>
+      <parameter property="Kdjabar" column="KDJABAR"/>
+      <parameter property="Idstdharga" column="IDSTDHARGA"/>
+      <parameter property="Satuan" column="SATUAN"/>
+      <parameter property="Subtotal" column="SUBTOTAL"/>
+      <parameter property="Tarif" column="TARIF"/>
+      <parameter property="Type" column="TYPE"/>
+      <parameter property="Uraian" column="URAIAN"/>
+      <parameter property="Kddana" column="KDDANA"/>
+      <parameter property="Kdtahun" column="KDTAHUN"/>
+      <parameter property="Idxdask" column="IDXDASK"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Kdnilai" column="KDNILAI"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Daskdetrl">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Daskdetrl">
+      <parameter property="Kdtahun" column="KDTAHUN"/>
+      <parameter property="Idxdask" column="IDXDASK"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Kdnilai" column="KDNILAI"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

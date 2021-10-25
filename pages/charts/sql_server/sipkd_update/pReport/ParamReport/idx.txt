@@ -1,0 +1,6 @@
+,@idxkode int, @kdkegunit char(10)
+
+
+--SELECT * FROM ZKODE z
+SET @idxkode =3
+SET @kdkegunit =''

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Webgroup" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Webgroup" type="CoreNET.Common.BO.WebgroupControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Webgroup">
+      <result property="Nmgroup" column="NMGROUP"/>
+      <result property="Ketgroup" column="KET"/>
+      <result property="Groupid" column="GROUPID"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertWebgroup" parameterMap="insert-param">
+      <generate table="WEBGROUP"/>
+    </insert>
+    <update id="UpdateByWebgroup" parameterMap="update-param">
+      <generate table="WEBGROUP" by="GROUPID"/>
+    </update>
+    <delete id="DeleteByWebgroup" parameterMap="delete-param">
+      <generate table="WEBGROUP" by="GROUPID"/>
+    </delete>
+    <select id="BaseQueryWebgroup" parameterClass="Webgroup" resultMap="return-result">
+      select G.NMGROUP,G.GROUPID,G.KET
+      from WEBGROUP G
+    </select>
+    <select id="QueryByAllWebgroup" extends="BaseQueryWebgroup" parameterClass="Webgroup" resultMap="return-result">
+      where left(G.GROUPID,1) not in ('9')
+      and case #Parameter.Field#
+      when '1' then G.NMGROUP
+      when '2' then G.KET
+      end like '%'+ #Parameter.Value# + '%'
+      order by G.NMGROUP
+    </select>
+    <select id="LoadByPKWebgroup" extends="BaseQueryWebgroup" parameterClass="Webgroup" resultMap="return-result">
+      where G.GROUPID=#Groupid# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Webgroup">
+      <parameter property="Nmgroup" column="NMGROUP"/>
+      <parameter property="Ketgroup" column="KET"/>
+      <parameter property="Groupid" column="GROUPID"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Webgroup">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Webgroup">
+      <parameter property="Groupid" column="GROUPID"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Spjdetd" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Spjdetd" type="Usadi.Valid49.BO.SpjdetdControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Spjdetd">
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Nojetra" column="NOJETRA"/>
+      <result property="Nospj" column="NOSPJ"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Idxkode" column="IDXKODE"/>
+      <result property="Kdpers" column="KDPERS"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Type" column="TYPE"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSpjdetd" parameterMap="insert-param">
+      <generate table="SPJDETD"/>
+    </insert>
+    <update id="UpdateBySpjdetd" parameterMap="update-param">
+      <generate table="SPJDETD" by="NOJETRA,UNITKEY,NOSPJ,MTGKEY"/>
+    </update>
+    <delete id="DeleteBySpjdetd" parameterMap="delete-param">
+      <generate table="SPJDETD" by="NOJETRA,UNITKEY,NOSPJ,MTGKEY"/>
+    </delete>
+    <select id="BaseQuerySpjdetd" parameterClass="Spjdetd" resultMap="return-result">
+      select A.MTGKEY,A.NILAI,A.NOJETRA,A.NOSPJ,A.UNITKEY
+      ,B.IDXKODE
+      ,C.KDPERS
+      ,rtrim(D.KDPER) as KDPER, rtrim(D.NMPER) as NMPER,D.TYPE
+      from SPJDETD A
+      left outer join PSPJ B on A.NOSPJ = B.NOSPJ and A.UNITKEY = B.UNITKEY
+      left outer join JTRNLKAS C on A.NOJETRA = C.NOJETRA
+      left outer join MATANGD D on A.MTGKEY = D.MTGKEY
+    </select>
+    <select id="QueryByAllSpjdetd" extends="BaseQuerySpjdetd" parameterClass="Spjdetd" resultMap="return-result">
+			where B.UNITKEY=#Unitkey# and B.NOSPJ=#Nospj# <!--and A.NOJETRA=#Nojetra#-->
+			and case #Parameter.Field#
+			when '1' then D.KDPER
+			when '2' then D.NMPER
+			end like '%'+ #Parameter.Value# + '%'
+			order by D.KDPER
+		</select>
+    <select id="LoadByPKSpjdetd" extends="BaseQuerySpjdetd" parameterClass="Spjdetd" resultMap="return-result">
+			where A.UNITKEY=#Unitkey# and A.NOSPJ=#Nospj# and A.MTGKEY=#Mtgkey# <!--and A.NOJETRA=#Nojetra#-->
+		</select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Spjdetd">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nospj" column="NOSPJ"/>
+      <parameter property="Parameter.Key" column="MTGKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" class="Spjdetd">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nospj" column="NOSPJ"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Spjdetd">
+			<parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nospj" column="NOSPJ"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

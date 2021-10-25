@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Sts" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Sts" type="Usadi.Valid49.BO.StsControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Sts">
+      <result property="AllowSuperUser" column="ALLOWSUPERUSER"/>
+      <result property="Norekb" column="NOREKB"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Idxkode" column="IDXKODE"/>
+      <result property="Idxttd" column="IDXTTD"/>
+      <result property="Kdstatus" column="KDSTATUS"/>
+      <result property="Keybend1" column="KEYBEND1"/>
+      <result property="Keybend2" column="KEYBEND2"/>
+      <result property="Nobbantu" column="NOBBANTU"/>
+      <result property="Nosts" column="NOSTS"/>
+      <result property="Tglsts" column="TGLSTS"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Uraian" column="URAIAN"/>
+      <!--<result property="Nipnama1" column="NIPNAMA1"/>-->
+      <!--<result property="Nipnama2" column="NIPNAMA2"/>-->
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <!--<result property="Nmbkas" column="NMBKAS"/>-->
+      <!--<result property="Noskpttd" column="NOSKPTTD"/>-->
+      <!--<result property="Lblstatus" column="LBLSTATUS"/>-->
+      <!--<result property="Uraistatus" column="URAISTATUS"/>-->
+      <!--<result property="Uraikode" column="URAIKODE"/>-->
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSts" parameterMap="insert-param">
+      <generate table="STS"/>
+    </insert>
+    <update id="UpdateBySts" parameterMap="update-param">
+      <generate table="STS" by="UNITKEY,NOSTS"/>
+    </update>
+    <!--<update id="UpdateByTglvalidSts" parameterClass="Sts">
+      update STS set TGLVALID=#Tglvalid#
+      where UNITKEY=#Unitkey# and NOSTS=#Nosts#
+    </update>-->
+    <!--<update id="UpdateByDraftSts" parameterClass="Sts" >
+      update STS set TGLVALID=null
+      where UNITKEY=#Unitkey# and NOSTS=#Nosts#
+    </update>-->
+    <update id="UpdateBySahSts" parameterClass="Sts" >
+      update STS set TGLVALID=#Tglvalid# 
+			where UNITKEY=#Unitkey# and NOSTS=#Nosts#
+    </update>
+    <update id="UpdateByDraftSts" parameterClass="Sts" >
+      update STS set TGLVALID=null 
+			where UNITKEY=#Unitkey# and NOSTS=#Nosts#
+    </update>
+    <update id="UpdateByDraftStsr" parameterClass="Sts" >
+      update STS set TGLVALID=null
+      where UNITKEY=#Unitkey# and NOSTS=#Nosts#
+    </update>
+    <update id="UpdateByDraf0tSts" parameterClass="Sts" >
+      update STS set TGLVALID=null
+      where UNITKEY=#Unitkey# and NOSTS=#Nosts# and IDXKODE=0
+    </update>
+    <update id="UpdateBySah0Sts" parameterClass="Sts" >
+      update STS set TGLVALID=#Tglvalid# where UNITKEY=#Unitkey# and NOSTS=#Nosts# and IDXKODE=0
+    </update>
+		<update id="UpdateByValidSts" parameterClass="Sts" >
+			update STS set TGLVALID=#Tglsts# where UNITKEY=#Unitkey# and NOSTS=#Nosts#
+		</update>
+    <delete id="DeleteBySts" parameterMap="delete-param">
+      <generate table="STS" by="UNITKEY,NOSTS"/>
+    </delete>
+    <select id="BaseQuerySts" parameterClass="Sts" resultMap="return-result">
+      select DISTINCT #AllowSuperUser# as ALLOWSUPERUSER,A.IDXKODE,rtrim(A.IDXTTD) as IDXTTD,rtrim(A.KDSTATUS) as KDSTATUS,
+      rtrim(A.KEYBEND1) as KEYBEND1,A.KEYBEND2,A.NOBBANTU,A.NOSTS,A.TGLSTS,A.TGLVALID,
+      A.UNITKEY,A.URAIAN,D.NOREKB
+      ,rtrim(A.KEYBEND1) as KEYBEND1
+      ,rtrim(A.KEYBEND2) as KEYBEND2
+      ,rtrim(C.KDUNIT) as KDUNIT, rtrim(C.NMUNIT) as NMUNIT
+      ,#Kdkegunit# as KDKEGUNIT
+      from STS A
+      left outer join DAFTUNIT C on A.UNITKEY = C.UNITKEY
+      left outer join BKBKAS D on A.NOBBANTU = D.NOBBANTU
+      left outer join RKMDETR RK on A.NOSTS=RK.NOSTS AND A.UNITKEY=RK.UNITKEY
+    </select>
+    <select id="QueryBytbpSts" parameterClass="Sts" resultMap="return-result">
+      SELECT t.NOTBP, t2.TGLTBP  FROM STS s
+      INNER JOIN TBPSTS t ON t.UNITKEY = s.UNITKEY AND t.NOSTS = s.NOSTS
+      INNER JOIN TBP t2 ON t2.UNITKEY = t.UNITKEY AND t2.NOTBP = t.NOTBP
+      where A.UNITKEY=#Unitkey# and A.NOSTS=#Nosts#
+    </select>
+    <select id="QueryBySts1Sts" extends="BaseQuerySts" parameterClass="Sts" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.IDXKODE=#Idxkode# and A.KDSTATUS in ('11','15','16','26','60','61','62','63','64','65')
+      and A.KEYBEND1 = #Keybend#
+      and case #Parameter.Field#
+      when '1' then A.NOSTS
+      when '2' then convert(char(10), A.TGLSTS, 103)
+      when '3' then convert(char(10),A.TGLVALID, 103)
+      when '4' then D.NOREKB
+      when '5' then A.URAIAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOSTS
+    </select>
+    <select id="QueryByStsskpSts" extends="BaseQuerySts" parameterClass="Sts" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.IDXKODE=#Idxkode# and A.KDSTATUS in ('66')
+      and A.KEYBEND1 = #Keybend#
+      and case #Parameter.Field#
+      when '1' then A.NOSTS
+      when '2' then convert(char(10), A.TGLSTS, 103)
+      when '3' then convert(char(10),A.TGLVALID, 103)
+      when '4' then D.NOREKB
+      when '5' then A.URAIAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOSTS
+    </select>
+    <select id="QueryBySts61Sts" extends="BaseQuerySts" parameterClass="Sts" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.IDXKODE=#Idxkode# and A.KDSTATUS in ('11','15','16','26','60','61','62','63','64','65')
+      and A.KEYBEND1 = #Keybend#
+      and case #Parameter.Field#
+      when '1' then A.NOSTS
+      when '2' then convert(char(10), A.TGLSTS, 103)
+      when '3' then convert(char(10),A.TGLVALID, 103)
+      when '4' then D.NOREKB
+      when '5' then A.URAIAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOSTS
+    </select>
+    <select id="QueryBySts71Sts" extends="BaseQuerySts" parameterClass="Sts" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.IDXKODE=#Idxkode# and A.KDSTATUS in ('11','15','16','26')
+      and A.KEYBEND1 = #Keybend#
+      and case #Parameter.Field#
+      when '1' then A.NOSTS
+      when '2' then convert(char(10), A.TGLSTS, 103)
+      when '3' then convert(char(10),A.TGLVALID, 103)
+      when '4' then D.NOREKB
+      when '5' then A.URAIAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOSTS
+    </select>
+    <select id="QueryByUpSts" extends="BaseQuerySts" parameterClass="Sts" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.IDXKODE='6'
+      and A.KEYBEND1 = #Keybend#
+      and case #Parameter.Field#
+      when '1' then A.NOSTS
+      when '2' then convert(char(10), A.TGLSTS, 103)
+      when '3' then convert(char(10),A.TGLVALID, 103)
+      when '4' then D.NOREKB
+      when '5' then A.URAIAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOSTS
+    </select>
+    <select id="QueryByUplaluSts" extends="BaseQuerySts" parameterClass="Sts" resultMap="return-result">
+      where 
+      A.UNITKEY=#Unitkey# and A.IDXKODE='1'
+      and A.KEYBEND1 = #Keybend#
+      and case #Parameter.Field#
+      when '1' then A.NOSTS
+      when '2' then convert(char(10), A.TGLSTS, 103)
+      when '3' then convert(char(10),A.TGLVALID, 103)
+      when '4' then D.NOREKB
+      when '5' then A.URAIAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOSTS
+    </select>
+    <select id="QueryBySts2Sts" extends="BaseQuerySts" parameterClass="Sts" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.IDXKODE=#Idxkode# and A.KDSTATUS not in ('11','15','16','26')
+      and (isnull(RK.KDKEGUNIT,'')=isnull(#Kdkegunit#,'') or isnull(#Kdkegunit#,'')='' or (RK.KDKEGUNIT is null and #Kdkegunit# is not null))
+      and (A.KEYBEND1 = #Keybend# or A.IDXKODE=0)
+      and case #Parameter.Field#
+      when '1' then A.NOSTS
+      when '2' then convert(char(10), A.TGLSTS, 103)
+      when '3' then convert(char(10),A.TGLVALID, 103)
+      when '4' then D.NOREKB
+      when '5' then A.URAIAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOSTS
+    </select>
+    <select id="QueryByNostsSts" extends="BaseQuerySts" parameterClass="Sts" resultMap="return-result">
+      where 
+			<!--A.UNITKEY=#Unitkey# and--> 
+			A.KEYBEND1 = #Keybend#
+      order by A.NOSTS
+    </select>
+    <select id="QueryByNosts1Sts" extends="BaseQuerySts" parameterClass="Sts" resultMap="return-result">
+      where A.UNITKEY=#Unitkey#
+      order by A.NOSTS
+    </select>
+    <select id="LoadByPKSts" extends="BaseQuerySts" parameterClass="Sts" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSTS=#Nosts# 
+    </select>
+    <select id="LoadByNoSts" extends="BaseQuerySts" parameterClass="Sts" resultMap="return-result">
+      where A.NOSTS=#Nosts#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Sts">
+      <parameter property="Idxkode" column="IDXKODE"/>
+      <parameter property="Idxttd" column="IDXTTD"/>
+      <parameter property="Kdstatus" column="KDSTATUS"/>
+      <parameter property="Keybend1" column="KEYBEND1"/>
+      <parameter property="Keybend2" column="KEYBEND2"/>
+      <parameter property="Nobbantu" column="NOBBANTU"/>
+      <parameter property="Tglsts" column="TGLSTS"/>
+      <parameter property="Uraian" column="URAIAN"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nosts" column="NOSTS"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Sts">
+    </parameterMap>
+    <parameterMap id="update-param1" class="Sts">
+      <parameter property="Idxkode" column="IDXKODE"/>
+      <parameter property="Idxttd" column="IDXTTD"/>
+      <parameter property="Kdstatus" column="KDSTATUS"/>
+      <parameter property="Keybend1" column="KEYBEND1"/>
+      <parameter property="Keybend2" column="KEYBEND2"/>
+      <parameter property="Nobbantu" column="NOBBANTU"/>
+      <parameter property="Tglsts" column="TGLSTS"/>
+      <parameter property="Uraian" column="URAIAN"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nosts" column="NOSTS"/>
+      <parameter property="Tglvalid" column="TGLVALID"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Sts">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nosts" column="NOSTS"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Webgrid" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Webgrid" type="CoreNET.Common.BO.WebgridControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Webgrid">
+      <result property="Olist1" column="OLIST1"/>
+      <result property="Olist2" column="OLIST2"/>
+      <result property="Olist3" column="OLIST3"/>
+      <result property="Olist4" column="OLIST4"/>
+      <result property="Olistdetil1" column="OLISTDETIL1"/>
+      <result property="Olistdetil2" column="OLISTDETIL2"/>
+      <result property="Olistdetil3" column="OLISTDETIL3"/>
+      <result property="Olistdetil4" column="OLISTDETIL4"/>
+      <result property="Olistdetildetil1a" column="OLISTDETILDETIL1A"/>
+      <result property="Olistdetildetil1b" column="OLISTDETILDETIL1B"/>
+      <result property="Olistdetildetil1c" column="OLISTDETILDETIL1C"/>
+      <result property="Olistdetildetil1d" column="OLISTDETILDETIL1D"/>
+      <result property="Olistdetildetil2a" column="OLISTDETILDETIL2A"/>
+      <result property="Olistdetildetil2b" column="OLISTDETILDETIL2B"/>
+      <result property="Olistdetildetil2c" column="OLISTDETILDETIL2C"/>
+      <result property="Olistdetildetil2d" column="OLISTDETILDETIL2D"/>
+      <result property="Olistdetildetil3a" column="OLISTDETILDETIL3A"/>
+      <result property="Olistdetildetil3b" column="OLISTDETILDETIL3B"/>
+      <result property="Olistdetildetil3c" column="OLISTDETILDETIL3C"/>
+      <result property="Olistdetildetil3d" column="OLISTDETILDETIL3D"/>
+      <result property="Olistdetildetil4a" column="OLISTDETILDETIL4A"/>
+      <result property="Olistdetildetil4b" column="OLISTDETILDETIL4B"/>
+      <result property="Olistdetildetil4c" column="OLISTDETILDETIL4C"/>
+      <result property="Olistdetildetil4d" column="OLISTDETILDETIL4D"/>
+      <result property="Menuid" column="MENUID"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertWebgrid" parameterMap="insert-param">
+      <generate table="WEBGRIDCONTROL"/>
+    </insert>
+    <update id="UpdateByWebgrid" parameterMap="update-param">
+      <generate table="WEBGRIDCONTROL" by="MENUID"/>
+    </update>
+    <delete id="DeleteByWebgrid" parameterMap="delete-param">
+      <generate table="WEBGRIDCONTROL" by="MENUID"/>
+    </delete>
+    <select id="BaseQueryWebgrid" parameterClass="Webgrid" resultMap="return-result">
+      select A.OLIST1,A.OLIST2,A.OLIST3,A.OLIST4,A.OLISTDETIL1,A.OLISTDETIL2,A.OLISTDETIL3,A.OLISTDETIL4,A.OLISTDETILDETIL1a,A.OLISTDETILDETIL1b,A.OLISTDETILDETIL1c,A.OLISTDETILDETIL1d,A.OLISTDETILDETIL2a,A.OLISTDETILDETIL2b,A.OLISTDETILDETIL2c,A.OLISTDETILDETIL2d,A.OLISTDETILDETIL3a,A.OLISTDETILDETIL3b,A.OLISTDETILDETIL3c,A.OLISTDETILDETIL3d,A.OLISTDETILDETIL4a,A.OLISTDETILDETIL4b,A.OLISTDETILDETIL4c,A.OLISTDETILDETIL4d,A.MENUID
+      from WEBGRIDCONTROL A
+    </select>
+    <select id="QueryByAllWebgrid" extends="BaseQueryWebgrid" parameterClass="Webgrid" resultMap="return-result">
+      where
+      case #Parameter.Field#
+        when '1' then A.OLIST1
+        when '2' then A.OLIST2
+        when '3' then A.OLIST3
+        when '4' then A.OLIST4
+        when '5' then A.OLISTDETIL1
+        when '6' then A.OLISTDETIL2
+        when '7' then A.OLISTDETIL3
+        when '8' then A.OLISTDETIL4
+        when '9' then A.OLISTDETILDETIL1A
+        when '10' then A.OLISTDETILDETIL1B
+        when '11' then A.OLISTDETILDETIL1C
+        when '12' then A.OLISTDETILDETIL1D
+        when '13' then A.OLISTDETILDETIL2A
+        when '14' then A.OLISTDETILDETIL2B
+        when '15' then A.OLISTDETILDETIL2C
+        when '16' then A.OLISTDETILDETIL2D
+        when '17' then A.OLISTDETILDETIL3A
+        when '18' then A.OLISTDETILDETIL3B
+        when '19' then A.OLISTDETILDETIL3C
+        when '20' then A.OLISTDETILDETIL3D
+        when '21' then A.OLISTDETILDETIL4A
+        when '22' then A.OLISTDETILDETIL4B
+        when '23' then A.OLISTDETILDETIL4C
+        when '24' then A.OLISTDETILDETIL4D
+        when '25' then A.MENUID
+      end like '%'+ #Parameter.Value# + '%' 
+    </select>
+    <select id="LoadByPKWebgrid" extends="BaseQueryWebgrid" parameterClass="Webgrid" resultMap="return-result">
+      where A.MENUID=#Menuid# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Webgrid">
+      <parameter property="Olist1" column="OLIST1"/>
+      <parameter property="Olist2" column="OLIST2"/>
+      <parameter property="Olist3" column="OLIST3"/>
+      <parameter property="Olist4" column="OLIST4"/>
+      <parameter property="Olistdetil1" column="OLISTDETIL1"/>
+      <parameter property="Olistdetil2" column="OLISTDETIL2"/>
+      <parameter property="Olistdetil3" column="OLISTDETIL3"/>
+      <parameter property="Olistdetil4" column="OLISTDETIL4"/>
+      <parameter property="Olistdetildetil1a" column="OLISTDETILDETIL1A"/>
+      <parameter property="Olistdetildetil1b" column="OLISTDETILDETIL1B"/>
+      <parameter property="Olistdetildetil1c" column="OLISTDETILDETIL1C"/>
+      <parameter property="Olistdetildetil1d" column="OLISTDETILDETIL1D"/>
+      <parameter property="Olistdetildetil2a" column="OLISTDETILDETIL2A"/>
+      <parameter property="Olistdetildetil2b" column="OLISTDETILDETIL2B"/>
+      <parameter property="Olistdetildetil2c" column="OLISTDETILDETIL2C"/>
+      <parameter property="Olistdetildetil2d" column="OLISTDETILDETIL2D"/>
+      <parameter property="Olistdetildetil3a" column="OLISTDETILDETIL3A"/>
+      <parameter property="Olistdetildetil3b" column="OLISTDETILDETIL3B"/>
+      <parameter property="Olistdetildetil3c" column="OLISTDETILDETIL3C"/>
+      <parameter property="Olistdetildetil3d" column="OLISTDETILDETIL3D"/>
+      <parameter property="Olistdetildetil4a" column="OLISTDETILDETIL4A"/>
+      <parameter property="Olistdetildetil4b" column="OLISTDETILDETIL4B"/>
+      <parameter property="Olistdetildetil4c" column="OLISTDETILDETIL4C"/>
+      <parameter property="Olistdetildetil4d" column="OLISTDETILDETIL4D"/>
+      <parameter property="Menuid" column="MENUID"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Webgrid">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Webgrid">
+      <parameter property="Menuid" column="MENUID"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

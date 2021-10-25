@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Appuser" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Appuser" type="Usadi.Valid49.BO.WebuserControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Appuser">
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Kdtahap" column="KDTAHAP"/>
+      <result property="Uraian" column="URAIAN"/>
+      <result property="Nip" column="NIP"/>
+      <result property="Nama" column="NAMA"/>
+      <result property="Namauser" column="NAMAUSER"/>
+      <result property="Groupid" column="GROUPID"/>
+      <result property="Ket" column="KET"/>
+      <result property="Ketgroup" column="KETGROUP"/>
+      <result property="Nmgroup" column="NMGROUP"/>
+      <result property="Blokid" column="BLOKID"/>
+      <result property="Pwd" column="PWD"/>
+      <result property="Stdelete" column="STDELETE"/>
+      <result property="Stinsert" column="STINSERT"/>
+      <result property="Stupdate" column="STUPDATE"/>
+      <result property="Transecure" column="TRANSECURE"/>
+      <result property="Email" column="EMAIL"/>
+      <result property="Nohp" column="NOHP"/>
+      <result property="Userid" column="USERID"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertAppuser" parameterMap="insert-param">
+      <generate table="WEBUSER"/>
+    </insert>
+    <update id="UpdateByAppuser" parameterMap="update-param">
+      <generate table="WEBUSER" by="USERID"/>
+    </update>
+    <update id="UpdateByPwdAppuser" parameterClass="Appuser">
+      update WEBUSER
+      set PWD=#Pwd#
+      where USERID=#Userid#
+    </update>
+    <update id="UpdateByBlokAppuser" parameterClass="Appuser">
+      update WEBUSER
+      set BLOKID=#Blokid#
+      where USERID=#Userid#
+    </update>
+    <delete id="DeleteByAppuser" parameterMap="delete-param">
+      <generate table="WEBUSER" by="USERID"/>
+    </delete>
+    <select id="BaseQueryAppuser" parameterClass="Appuser" resultMap="return-result">
+      select A.BLOKID,A.GROUPID,A.KDTAHAP,ISNULL(A.KET,'') AS KET,ISNULL(A.NIP,'') AS NIP,A.NAMA as NAMAUSER,P.NAMA,A.PWD,A.STDELETE,A.STINSERT,A.STUPDATE,A.TRANSECURE,isnull(A.UNITKEY,'') as UNITKEY,A.USERID
+      ,T.URAIAN,G.NMGROUP,G.KET as KETGROUP,
+      rtrim(isnull(U.KDUNIT,'')) as KDUNIT,rtrim(isnull(U.NMUNIT,'')) as NMUNIT, isnull(EMAIL,'') as EMAIL, ISNULL(NOHP,'') AS NOHP
+      from WEBUSER A
+      left outer join TAHAP T on A.KDTAHAP=T.KDTAHAP
+      left outer join DAFTUNIT U on U.UNITKEY=A.UNITKEY
+      left outer join WEBGROUP G on A.GROUPID=G.GROUPID
+      left outer join PEGAWAI P on A.NIP=P.NIP
+    </select>
+    <select id="QueryByAllAppuser" extends="BaseQueryAppuser" parameterClass="Appuser" resultMap="return-result">
+      where
+      case #Parameter.Field#
+      when '1' then A.USERID
+      when '2' then A.NAMA
+      when '3' then G.NMGROUP
+      when '4' then A.KET
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.USERID
+    </select>
+    <select id="LoadByPKAppuser" extends="BaseQueryAppuser" parameterClass="Appuser" resultMap="return-result">
+      where A.USERID=#Userid#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Appuser">
+      <parameter property="Blokid" column="BLOKID"/>
+      <parameter property="Groupid" column="GROUPID"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Ket" column="KET"/>
+      <parameter property="Nip" column="NIP"/>
+      <parameter property="Namauser" column="NAMA"/>
+      <parameter property="Pwd" column="PWD"/>
+      <parameter property="Stdelete" column="STDELETE"/>
+      <parameter property="Stinsert" column="STINSERT"/>
+      <parameter property="Stupdate" column="STUPDATE"/>
+      <parameter property="Transecure" column="TRANSECURE"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Email" column="EMAIL"/>
+      <parameter property="Nohp" column="NOHP"/>
+      <parameter property="Userid" column="USERID"/>
+    </parameterMap>
+    <parameterMap id="update-param" class="Appuser">
+      <parameter property="Blokid" column="BLOKID"/>
+      <parameter property="Groupid" column="GROUPID"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Ket" column="KET"/>
+      <parameter property="Nip" column="NIP"/>
+      <parameter property="Namauser" column="NAMA"/>
+      <parameter property="Stdelete" column="STDELETE"/>
+      <parameter property="Stinsert" column="STINSERT"/>
+      <parameter property="Stupdate" column="STUPDATE"/>
+      <parameter property="Transecure" column="TRANSECURE"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Email" column="EMAIL"/>
+      <parameter property="Nohp" column="NOHP"/>
+      <parameter property="Userid" column="USERID"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Appuser">
+      <parameter property="Userid" column="USERID"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

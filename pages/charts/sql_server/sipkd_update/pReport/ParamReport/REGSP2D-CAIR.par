@@ -1,0 +1,4 @@
+TITLE=REGISTER SP2D CAIR
+Unitkey=string;Key Unit;4;
+Awal=datetime;Tanggal;30;
+Akhir=datetime;Tanggal;30;

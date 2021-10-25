@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Tbp" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Tbp" type="Usadi.Valid49.BO.TbpControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Tbp">
+      <result property="AllowSuperUser" column="ALLOWSUPERUSER"/>
+      <result property="Keybend1" column="KEYBEND1"/>
+			<result property="Keybend2" column="KEYBEND2"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Alamat" column="ALAMAT"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Idxkode" column="IDXKODE"/>
+      <result property="Kdstatus" column="KDSTATUS"/>
+	    <result property="Lblstatus" column="LBLSTATUS"/>
+      <result property="Uraistatus" column="URAISTATUS"/>
+      <result property="Penyetor" column="PENYETOR"/>
+      <result property="Tgltbp" column="TGLTBP"/>
+      <result property="Uraitbp" column="URAITBP"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Notbp" column="NOTBP"/>      
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+    </resultMap>
+    <resultMap id="return-result-skp" extends="return-result" class="Tbp">
+      <result property="Noskp" column="NOSKP"/>
+      <result property="Tglskp" column="TGLSKP"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="NOTBP"/>
+      <result property="Field" column="NOTBP"/>
+      <result property="Value" column="URAITBP"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertTbp" parameterMap="insert-param">
+      <generate table="TBP"/>
+    </insert>
+    <statement id="InsertSkpTbp" parameterClass="Tbp">
+      delete SKPTBP where NOTBP = #Notbp# AND UNITKEY=#Unitkey# AND NOSKP=#Noskp#
+      INSERT INTO SKPTBP (NOTBP,UNITKEY,NOSKP)
+      Values(#Notbp#,#Unitkey#,#Noskp#)
+      <!--delete from TBPDETD where NOTBP = #Notbp# AND UNITKEY=#Unitkey# and nojetra='12'-->
+      <!--INSERT INTO TBPDETD (MTGKEY,NOJETRA,UNITKEY,NOTBP)
+      select MTGKEY, NOJETRA,UNITKEY,#Notbp# from SKPDET where UNITKEY=#Unitkey# and NOSKP= #Noskp#
+      group by UNITKEY,MTGKEY,NOJETRA-->
+    </statement>
+    <update id="UpdateByTbp" parameterMap="update-param">
+      <generate table="TBP" by="UNITKEY,NOTBP"/>
+    </update>
+    <update id="UpdateBySahTbp" parameterClass="Tbp">
+      update TBP set TGLVALID=#Tglvalid# where UNITKEY=#Unitkey# and NOTBP=#Notbp#
+    </update>
+    <update id="UpdateByDraftTbp" parameterClass="Tbp" >
+      update TBP set TGLVALID=null where UNITKEY=#Unitkey# and NOTBP=#Notbp#
+    </update>
+    <update id="UpdateBySahTbpr" parameterClass="Tbp" >
+      update TBP set TGLVALID=#Tglvalid# where UNITKEY=#Unitkey# and NOTBP=#Notbp#
+    </update>
+    <update id="UpdateByDraftTbpr" parameterClass="Tbp" >
+      update TBP set TGLVALID=null where UNITKEY=#Unitkey# and NOTBP=#Notbp#
+    </update>
+		<update id="UpdateByValidTbp" parameterClass="Tbp">
+			update TBP set TGLVALID=#Tgltbp# where UNITKEY=#Unitkey# and NOTBP=#Notbp#
+		</update>
+    <delete id="DeleteByTbp" parameterMap="delete-param">
+      <generate table="TBP" by="UNITKEY,NOTBP"/>
+    </delete>
+    <delete id="DeleteByTbpr" parameterMap="delete-param">
+      <generate table="TBP" by="UNITKEY,NOTBP"/>
+    </delete>
+    <select id="BaseQueryTbp" parameterClass="Tbp" resultMap="return-result">
+      select distinct #AllowSuperUser# as ALLOWSUPERUSER,#Unitkey# UNITKEY, rtrim(A.KDSTATUS) as KDSTATUS, A.NOTBP, A.TGLTBP, A.URAITBP
+      ,rtrim(A.KEYBEND1) as KEYBEND1,A.KEYBEND2,A.PENYETOR, A.ALAMAT, A.TGLVALID, A.IDXKODE
+      ,rtrim(K1.KEYBEND) as KEYBEND1,K1.NIP + P1.NAMA as NIPNAMA1
+      ,rtrim(K2.KEYBEND) as KEYBEND2,K2.NIP + P2.NAMA as NIPNAMA2
+      ,C.KDUNIT,C.NMUNIT,E.LBLSTATUS,E.URAIAN as uraistatus
+      ,#Kdkegunit# as KDKEGUNIT
+      from TBP A
+      LEFT OUTER JOIN BEND K1 ON A.KEYBEND1 = K1.KEYBEND
+      LEFT OUTER JOIN BEND K2 ON A.KEYBEND2 = K2.KEYBEND
+      LEFT OUTER JOIN JBEND J ON K1.JNS_BEND = J.JNS_BEND
+      LEFT OUTER JOIN DAFTUNIT C ON A.UNITKEY = C.UNITKEY
+      LEFT OUTER JOIN ZKODE D ON A.IDXKODE=D.IDXKODE
+      LEFT OUTER JOIN STATTRS E ON A.KDSTATUS = E.KDSTATUS
+      LEFT OUTER JOIN PEGAWAI P1 on K1.NIP=P1.NIP
+      LEFT OUTER JOIN PEGAWAI P2 on K2.NIP=P2.NIP
+      LEFT OUTER JOIN TBPDETR TB on A.UNITKEY=TB.UNITKEY AND A.NOTBP=TB.NOTBP
+    </select>
+    <select id="QueryByAllTbp" extends="BaseQueryTbp" parameterClass="Tbp" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.IDXKODE=#Idxkode#
+      and (isnull(TB.KDKEGUNIT,'')=isnull(#Kdkegunit#,'') or isnull(#Kdkegunit#,'')='' or (TB.KDKEGUNIT is null and #Kdkegunit# is not null))
+      <!--and (A.KEYBEND1 = #Keybend# or #Keybend#='')-->
+      and A.KEYBEND1 = #Keybend#
+      and case #Parameter.Field#
+      when '1' then A.NOTBP
+      when '2' then convert(char(10),A.TGLTBP, 103)
+      when '3' then convert(char(10),A.TGLVALID, 103)
+      when '4' then A.PENYETOR
+      when '5' then A.URAITBP
+			end like '%'+ #Parameter.Value# + '%'
+			order by A.NOTBP
+		</select>
+    <select id="QueryByTbpnonskpTbp" extends="BaseQueryTbp" parameterClass="Tbp" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.IDXKODE=#Idxkode# and RIGHT(J.JNS_BEND,1) = '1'
+      and (isnull(TB.KDKEGUNIT,'')=isnull(#Kdkegunit#,'') or isnull(#Kdkegunit#,'')='' or (TB.KDKEGUNIT is null and #Kdkegunit# is not null))
+      and A.KDSTATUS in ('60','63')
+      and A.KEYBEND1 = #Keybend#
+      and case #Parameter.Field#
+      when '1' then A.NOTBP
+      when '2' then convert(char(10),A.TGLTBP, 103)
+      when '3' then convert(char(10),A.TGLVALID, 103)
+      when '4' then A.PENYETOR
+      when '5' then A.URAITBP
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOTBP
+    </select>
+    <select id="QueryByTbpskpTbp" parameterClass="Tbp" resultMap="return-result-skp">
+      select distinct #AllowSuperUser# as ALLOWSUPERUSER,A.UNITKEY, rtrim(A.KDSTATUS) as KDSTATUS, A.NOTBP, A.TGLTBP, A.URAITBP
+      ,rtrim(A.KEYBEND1) as KEYBEND1,A.KEYBEND2,A.PENYETOR, A.ALAMAT, A.TGLVALID, A.IDXKODE
+      ,rtrim(K1.KEYBEND) as KEYBEND1,K1.NIP + P1.NAMA as NIPNAMA1
+      ,rtrim(K2.KEYBEND) as KEYBEND2,K2.NIP + P2.NAMA as NIPNAMA2
+      ,C.KDUNIT,C.NMUNIT,E.LBLSTATUS,E.URAIAN as uraistatus
+      ,#Kdkegunit# as KDKEGUNIT,S2.NOSKP,Sk.TGLSKP
+      from TBP A
+      LEFT OUTER JOIN BEND K1 ON A.KEYBEND1 = K1.KEYBEND
+      LEFT OUTER JOIN BEND K2 ON A.KEYBEND2 = K2.KEYBEND
+      LEFT OUTER JOIN JBEND J ON K1.JNS_BEND = J.JNS_BEND
+      LEFT OUTER JOIN DAFTUNIT C ON A.UNITKEY = C.UNITKEY
+      LEFT OUTER JOIN ZKODE D ON A.IDXKODE=D.IDXKODE
+      LEFT OUTER JOIN STATTRS E ON A.KDSTATUS = E.KDSTATUS
+      LEFT OUTER JOIN PEGAWAI P1 on K1.NIP=P1.NIP
+      LEFT OUTER JOIN PEGAWAI P2 on K2.NIP=P2.NIP
+      LEFT OUTER JOIN TBPDETR TB on A.UNITKEY=TB.UNITKEY AND A.NOTBP=TB.NOTBP
+      LEFT OUTER JOIN SKPTBP S2 on  A.UNITKEY=S2.UNITKEY and S2.NOTBP=A.NOTBP
+      LEFT OUTER JOIN SKP Sk on  S2.UNITKEY=sk.UNITKEY and S2.NOSKP=sk.NOSKP
+      where A.UNITKEY=#Unitkey# and A.IDXKODE=#Idxkode# and RIGHT(J.JNS_BEND,1) = '1'
+      and (isnull(TB.KDKEGUNIT,'')=isnull(#Kdkegunit#,'') or isnull(#Kdkegunit#,'')='' or (TB.KDKEGUNIT is null and #Kdkegunit# is not null))
+      and A.KDSTATUS in ('61','64')
+      and A.KEYBEND1 = #Keybend#
+      and case #Parameter.Field#
+      when '1' then A.NOTBP
+      when '2' then convert(char(10),A.TGLTBP, 103)
+      when '3' then convert(char(10),A.TGLVALID, 103)
+      when '4' then A.PENYETOR
+      when '5' then A.URAITBP
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOTBP
+    </select>
+    <select id="QueryByTbpdimukaTbp" extends="BaseQueryTbp" parameterClass="Tbp" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.IDXKODE=#Idxkode# and RIGHT(J.JNS_BEND,1) = '1'
+      and (isnull(TB.KDKEGUNIT,'')=isnull(#Kdkegunit#,'') or isnull(#Kdkegunit#,'')='' or (TB.KDKEGUNIT is null and #Kdkegunit# is not null))
+      and A.KDSTATUS in ('62','65')
+      and A.KEYBEND1 = #Keybend#
+      and case #Parameter.Field#
+      when '1' then A.NOTBP
+      when '2' then convert(char(10),A.TGLTBP, 103)
+      when '3' then convert(char(10),A.TGLVALID, 103)
+      when '4' then A.PENYETOR
+      when '5' then A.URAITBP
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOTBP
+    </select>
+    <select id="QueryByTbp1Tbp" extends="BaseQueryTbp" parameterClass="Tbp" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.IDXKODE=#Idxkode# and RIGHT(J.JNS_BEND,1) = '1'
+      and (isnull(TB.KDKEGUNIT,'')=isnull(#Kdkegunit#,'') or isnull(#Kdkegunit#,'')='' or (TB.KDKEGUNIT is null and #Kdkegunit# is not null))
+      <!--and (A.KEYBEND1 = #Keybend# or #Keybend#='')-->
+      and A.KEYBEND1 = #Keybend#
+      and case #Parameter.Field#
+      when '1' then A.NOTBP
+      when '2' then convert(char(10),A.TGLTBP, 103)
+      when '3' then convert(char(10),A.TGLVALID, 103)
+      when '4' then A.PENYETOR
+      when '5' then A.URAITBP
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOTBP
+    </select>
+    <select id="QueryByTbp2aTbp" extends="BaseQueryTbp" parameterClass="Tbp" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.IDXKODE=#Idxkode# and RIGHT(J.JNS_BEND,1) = '2'
+      and (isnull(TB.KDKEGUNIT,'')=isnull(#Kdkegunit#,'') or isnull(#Kdkegunit#,'')='' or (TB.KDKEGUNIT is null and #Kdkegunit# is not null))
+      and A.KEYBEND1 = #Keybend#
+      and A.KDSTATUS in ('37','38','39')
+      and case #Parameter.Field#
+      when '1' then A.NOTBP
+      when '2' then convert(char(10),A.TGLTBP, 103)
+      when '3' then convert(char(10),A.TGLVALID, 103)
+      when '4' then A.PENYETOR
+      when '5' then A.URAITBP
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOTBP
+    </select>
+    <select id="QueryByTbp54Tbp" extends="BaseQueryTbp" parameterClass="Tbp" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.IDXKODE=#Idxkode# and RIGHT(J.JNS_BEND,1) = '2'
+      and (isnull(TB.KDKEGUNIT,'')=isnull(#Kdkegunit#,'') or isnull(#Kdkegunit#,'')='' or (TB.KDKEGUNIT is null and #Kdkegunit# is not null))
+      and A.KEYBEND1 = #Keybend#
+      and A.KDSTATUS in ('54','55','56')
+      and case #Parameter.Field#
+      when '1' then A.NOTBP
+      when '2' then convert(char(10),A.TGLTBP, 103)
+      when '3' then convert(char(10),A.TGLVALID, 103)
+      when '4' then A.PENYETOR
+      when '5' then A.URAITBP
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOTBP
+    </select>
+    <select id="QueryByTbp2bTbp" extends="BaseQueryTbp" parameterClass="Tbp" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.IDXKODE=#Idxkode# and RIGHT(J.JNS_BEND,1) = '2'
+      and (isnull(TB.KDKEGUNIT,'')=isnull(#Kdkegunit#,'') or isnull(#Kdkegunit#,'')='' or (TB.KDKEGUNIT is null and #Kdkegunit# is not null))
+      and A.KEYBEND1 = #Keybend#
+      and A.KDSTATUS in ('51','52','53')
+      and case #Parameter.Field#
+      when '1' then A.NOTBP
+      when '2' then convert(char(10),A.TGLTBP, 103)
+      when '3' then convert(char(10),A.TGLVALID, 103)
+      when '4' then A.PENYETOR
+      when '5' then A.URAITBP
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOTBP
+    </select>
+    <select id="QueryByNotbpTbp" extends="BaseQueryTbp" parameterClass="Tbp" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.KEYBEND1 = #Keybend#
+      order by A.NOTBP
+    </select>
+    <select id="QueryByNotbp1Tbp" extends="BaseQueryTbp" parameterClass="Tbp" resultMap="return-result">
+      where A.UNITKEY=#Unitkey#
+      order by A.NOTBP
+    </select>
+    <select id="QueryByTbpstsTbp" parameterClass="Tbp" resultMap="return-lookup">
+      <!--
+      select NOTBP,convert(char(10),TGLTBP, 103) as TGLTBP,URAITBP from TBP
+      where UNITKEY=#Unitkey# and IDXKODE=#Idxkode# and TGLVALID is Not Null
+      and KDSTATUS=#Kdstatus# and KEYBEND1=#Keybend#
+      and NOTBP not in (select NOTBP from TBPSTS where UNITKEY=#Unitkey# and IDXKODE=#Idxkode#)
+      and case #Parameter.Field#
+      when '1' then NOTBP
+      when '2' then URAITBP
+      end like '%'+ #Parameter.Value# + '%'
+      order by NOTBP-->
+
+
+      IF #Kdstatus# IN ('11')
+      BEGIN
+      select NOTBP,convert(char(10),TGLTBP, 103) as TGLTBP,URAITBP from TBP
+      where UNITKEY=#Unitkey# and IDXKODE=#Idxkode# and TGLVALID is Not Null
+      and KDSTATUS  IN  ('60','61','62') and KEYBEND1=#Keybend#
+      and NOTBP not in (select NOTBP from TBPSTS where UNITKEY=#Unitkey# and IDXKODE=#Idxkode#)
+      and case #Parameter.Field#
+      when '1' then NOTBP
+      when '2' then URAITBP
+      end like '%'+ #Parameter.Value# + '%'
+      order by NOTBP
+      END ELSE
+      IF  #Kdstatus# IN ('15','26')
+      BEGIN
+      select NOTBP,convert(char(10),TGLTBP, 103) as TGLTBP,URAITBP from TBP
+      where UNITKEY=#Unitkey# and IDXKODE=#Idxkode# and TGLVALID is Not Null
+      and KDSTATUS  IN  ('63','64','65') and KEYBEND1=#Keybend#
+      and NOTBP not in (select NOTBP from TBPSTS where UNITKEY=#Unitkey# and IDXKODE=#Idxkode#)
+      and case #Parameter.Field#
+      when '1' then NOTBP
+      when '2' then URAITBP
+      end like '%'+ #Parameter.Value# + '%'
+      order by NOTBP
+
+      END
+
+
+    </select>
+    <select id="QueryBySkptbpTbp" parameterClass="Tbp" resultMap="return-lookup">
+      select NOTBP,convert(char(10),TGLTBP, 103) as TGLTBP,URAITBP from TBP
+      where UNITKEY=#Unitkey# and IDXKODE=#Idxkode# and TGLVALID is Not Null
+      <!--and KDSTATUS=#Kdstatus#--> 
+      and KEYBEND1=#Keybend#
+      and NOTBP not in (select NOTBP from SKPTBP where UNITKEY=#Unitkey# and IDXKODE=#Idxkode#)
+      and case #Parameter.Field#
+      when '1' then NOTBP
+      when '2' then URAITBP
+      end like '%'+ #Parameter.Value# + '%'
+      order by NOTBP
+    </select>
+    <select id="LoadByPKTbp" extends="BaseQueryTbp" parameterClass="Tbp" resultMap="return-result">
+      where A.NOTBP=#Notbp#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Tbp">
+      <parameter property="Alamat" column="ALAMAT"/>
+      <parameter property="Idxkode" column="IDXKODE"/>
+      <parameter property="Kdstatus" column="KDSTATUS"/>
+      <parameter property="Keybend1" column="KEYBEND1"/>
+			<parameter property="Keybend2" column="KEYBEND2"/>
+      <parameter property="Penyetor" column="PENYETOR"/>
+      <parameter property="Tgltbp" column="TGLTBP"/>
+      <parameter property="Uraitbp" column="URAITBP"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Notbp" column="NOTBP"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Tbp">
+    </parameterMap>
+    <parameterMap id="update-param1" class="Tbp">
+      <parameter property="Alamat" column="ALAMAT"/>
+      <parameter property="Idxkode" column="IDXKODE"/>
+      <parameter property="Kdstatus" column="KDSTATUS"/>
+      <parameter property="Keybend1" column="KEYBEND1"/>
+      <parameter property="Keybend2" column="KEYBEND2"/>
+      <parameter property="Penyetor" column="PENYETOR"/>
+      <parameter property="Tgltbp" column="TGLTBP"/>
+      <parameter property="Uraitbp" column="URAITBP"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Notbp" column="NOTBP"/>
+      <parameter property="Tglvalid" column="TGLVALID"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Tbp">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Notbp" column="NOTBP"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

@@ -1,0 +1,8 @@
+TITLE=DPA-SKPD 2.1 Pergeseran
+Idxkode=string;Index Kode;4;;-1;;-1
+Unitkey=string;Key Unit;4;
+Idxdask=string;Id Dask;10;
+Kdtahap=string;Tahap;4;
+Tanggal=datetime;Tanggal;30;
+Hal=string;Halaman;4;
+Kdkhusus=string;Khusus;4;;-1;1

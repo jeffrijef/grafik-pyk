@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Bpkspj" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Bpkspj" type="Usadi.Valid49.BO.BpkspjControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Bpkspj">
+      <result property="Nilai" column="NILAI"/>
+      <result property="Uraibpk" column="URAIBPK"/>
+      <result property="Tglbpk" column="TGLBPK"/>
+      <result property="Nospj" column="NOSPJ"/>
+      <result property="Nobpk" column="NOBPK"/>
+      <result property="Unitkey" column="UNITKEY"/>
+    </resultMap>
+    <resultMap id="return-result2" class="Bpkspj">
+      <result property="Uraibpk" column="URAIBPK"/>
+      <result property="Tglbpk" column="TGLBPK"/>
+      <result property="Nospj" column="NOSPJ"/>
+      <result property="Nobpk" column="NOBPK"/>
+      <result property="Unitkey" column="UNITKEY"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertBpkspj" parameterMap="insert-param">
+      <generate table="BPKSPJ"/>
+    </insert>
+    <update id="UpdateByBpkspj" parameterMap="update-param">
+      <generate table="BPKSPJ" by="NOBPK,UNITKEY"/>
+    </update>
+    <delete id="DeleteByBpkspj" parameterMap="delete-param">
+      <generate table="BPKSPJ" by="NOBPK,UNITKEY"/>
+    </delete>
+    <select id="BaseQueryBpkspj" parameterClass="Bpkspj" resultMap="return-result">
+      select A.NOBPK,A.NOSPJ,A.UNITKEY,B.TGLBPK,B.URAIBPK,
+      NILAI =
+      isnull((select sum(isnull(NILAI,0)) from BPKDETR C where C.UNITKEY=A.UNITKEY and C.NOBPK=A.NOBPK),0)
+      +isnull((select sum(isnull(NILAI,0)) from BPKDETRTL C where C.UNITKEY=A.UNITKEY and C.NOBPK=A.NOBPK),0)
+      from BPKSPJ A
+      left outer join BPK B on A.UNITKEY=B.UNITKEY and A.NOBPK=B.NOBPK
+    </select>
+    <select id="QueryByAllBpkspj" extends="BaseQueryBpkspj" parameterClass="Bpkspj" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSPJ=#Nospj# and B.KDSTATUS not in ('20')
+      and case #Parameter.Field#
+      when '1' then A.NOBPK
+      when '2' then convert(char(10), B.TGLBPK, 103)
+      when '3' then B.URAIBPK
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOBPK
+    </select>
+    <select id="QueryByKoreksiBpkspj" extends="BaseQueryBpkspj" parameterClass="Bpkspj" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSPJ=#Nospj# and B.KDSTATUS='20'
+      and case #Parameter.Field#
+      when '1' then A.NOBPK
+      when '2' then convert(char(10), B.TGLBPK, 103)
+      when '3' then B.URAIBPK
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOBPK
+    </select>
+    <select id="LoadByPKBpkspj" extends="BaseQueryBpkspj" parameterClass="Bpkspj" resultMap="return-result">
+      where A.NOBPK=#Nobpk# and A.UNITKEY=#Unitkey#
+    </select>
+    <select id="QueryByNobpkBpkspj" parameterClass="Bpkspj" resultMap="return-result2">
+      select A.NOBPK,A.NOSPJ,A.UNITKEY,B.TGLBPK,B.URAIBPK
+      from BPKSPJ A
+      left outer join BPK B on A.UNITKEY=B.UNITKEY and A.NOBPK=B.NOBPK
+      where A.UNITKEY=#Unitkey# and A.NOBPK=#Nobpk#
+    </select>
+    <procedure id="ExecTransferBPKkeSPJ" parameterMap="transfer-param">
+      WSP_TRANSFER_BPKSPJ
+    </procedure>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Bpkspj">
+      <parameter property="Nospj" column="NOSPJ"/>
+      <parameter property="Nobpk" column="NOBPK"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Bpkspj">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Bpkspj">
+      <parameter property="Nobpk" column="NOBPK"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="transfer-param" class="Bpkspj">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Nobpk" column="nobpk"/>
+      <parameter property="Nospj" column="nospj"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

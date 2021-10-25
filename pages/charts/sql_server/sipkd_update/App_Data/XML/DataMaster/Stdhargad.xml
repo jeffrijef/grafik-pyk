@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Stdhargad" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Stdhargad" type="Usadi.Valid49.BO.StdhargadControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Stdhargad">
+      <result property="Hrgstd" column="HRGSTD"/>
+      <result property="Kdjnsstd" column="KDJNSSTD"/>
+      <result property="Ket" column="KET"/>
+      <result property="Merkstd" column="MERKSTD"/>
+      <result property="Nmstd" column="NMSTD"/>
+      <result property="Nostd" column="NOSTD"/>
+      <result property="Satuan" column="SATUAN"/>
+      <result property="Spekstd" column="SPEKSTD"/>
+      <result property="Stvalid" column="STVALID"/>
+      <result property="Kdkhusus" column="KDKHUSUS"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Mtglevel" column="MTGLEVEL"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Idstdharga" column="IDSTDHARGA"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertStdhargad" parameterMap="insert-param">
+      <generate table="STDHARGAD"/>
+    </insert>
+    <update id="UpdateByStdhargad" parameterMap="update-param">
+      <generate table="STDHARGAD" by="IDSTDHARGA,MTGKEY"/>
+    </update>
+    <delete id="DeleteByStdhargad" parameterMap="delete-param">
+      <generate table="STDHARGAD" by="IDSTDHARGA,MTGKEY"/>
+    </delete>
+    <select id="BaseQueryStdhargad" parameterClass="Stdhargad" resultMap="return-result">
+			select A.IDSTDHARGA,A.MTGKEY
+			,B.HRGSTD,B.KDJNSSTD,B.KET,B.MERKSTD,B.NMSTD,B.NOSTD,B.SATUAN,B.SPEKSTD,B.STVALID
+			,C.KDPER,C.MTGLEVEL,C.NMPER,C.TYPE,C.KDKHUSUS
+			from STDHARGAD A
+			left outer join STDHARGA B on A.IDSTDHARGA = B.IDSTDHARGA
+			left outer join MATANGD C on A.MTGKEY = C.MTGKEY
+		</select>
+    <select id="QueryByAllStdhargad" extends="BaseQueryStdhargad" parameterClass="Stdhargad" resultMap="return-result">
+			where A.MTGKEY=#Mtgkey#  and
+			case #Parameter.Field#
+			when '1' then B.NOSTD
+			when '2' then B.NMSTD
+			end like '%'+ #Parameter.Value# + '%'
+			Order by B.NOSTD
+		</select>
+    <select id="LoadByPKStdhargad" extends="BaseQueryStdhargad" parameterClass="Stdhargad" resultMap="return-result">
+      where A.IDSTDHARGA=#Idstdharga# and A.MTGKEY=#Mtgkey# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Stdhargad">
+			<parameter property="Parameter.Key" column="IDSTDHARGA"/>
+			<parameter property="Mtgkey" column="MTGKEY"/>
+		</parameterMap>
+		<parameterMap id="update-param" class="Stdhargad">
+			<parameter property="Idstdharga" column="IDSTDHARGA"/>
+			<parameter property="Mtgkey" column="MTGKEY"/>
+		</parameterMap>
+    <parameterMap id="delete-param" class="Stdhargad">
+      <parameter property="Idstdharga" column="IDSTDHARGA"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

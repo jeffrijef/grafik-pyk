@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Sp2ddetd" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Sp2ddetd" type="Usadi.Valid49.BO.Sp2ddetdControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Sp2ddetd">
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Nojetra" column="NOJETRA"/>
+      <result property="Nosp2d" column="NOSP2D"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Idxkode" column="IDXKODE"/>
+      <result property="Kdpers" column="KDPERS"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+    </resultMap>
+    <resultMap id="return-result-total" class="Sp2ddetd">
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Nilai" column="NILAI"/>
+    </resultMap>
+    <resultMap id="return-result-total-unit" class="Sp2ddetd">
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nilai" column="NILAI"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSp2ddetd" parameterMap="insert-param">
+      <generate table="SP2DDETD"/>
+    </insert>
+    <update id="UpdateBySp2ddetd" parameterMap="update-param">
+      <generate table="SP2DDETD" by="NOJETRA,MTGKEY,UNITKEY,NOSP2D"/>
+    </update>
+    <delete id="DeleteBySp2ddetd" parameterMap="delete-param">
+      <generate table="SP2DDETD" by="NOJETRA,MTGKEY,UNITKEY,NOSP2D"/>
+    </delete>
+    <delete id="DeleteByAllSp2ddetd" parameterClass="Sp2ddetd" >
+      delete from SP2DDETD
+      where UNITKEY=#Unitkey# and NOSP2D=#Nosp2d#
+    </delete>
+    <select id="BaseQuerySp2ddetd" parameterClass="Sp2ddetd" resultMap="return-result">
+      select A.MTGKEY,A.NILAI,A.NOJETRA,A.NOSP2D,A.UNITKEY
+      ,B.IDXKODE
+      ,C.KDPERS
+      ,rtrim(D.KDPER) as KDPER, rtrim(D.NMPER) as NMPER
+      from SP2DDETD A
+      left outer join SP2D B on A.NOSP2D = B.NOSP2D and A.UNITKEY = B.UNITKEY
+      left outer join JTRNLKAS C on A.NOJETRA = C.NOJETRA
+      left outer join MATANGD D on A.MTGKEY = D.MTGKEY
+    </select>
+    <select id="QueryByAllSp2ddetd" extends="BaseQuerySp2ddetd" parameterClass="Sp2ddetd" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSP2D=#Nosp2d#
+      and case #Parameter.Field#
+      when '1' then D.KDPER
+      when '2' then D.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by D.KDPER
+    </select>
+    <select id="QueryByDetSp2ddetd" extends="BaseQuerySp2ddetd" parameterClass="Sp2ddetd" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSP2D=#Nosp2d# and A.NOJETRA='21'
+      and  A.NOJETRA+'-'+A.MTGKEY not in (#Nojetra#+'-'+#Mtgkey#)
+    </select>
+    <select id="QueryByPotSp2ddetd" extends="BaseQuerySp2ddetd" parameterClass="Sp2ddetd" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSP2D=#Nosp2d# and A.NOJETRA='23'
+      and  A.NOJETRA+'-'+A.MTGKEY not in (#Nojetra#+'-'+#Mtgkey#)
+    </select>
+    <select id="QueryByTotalSp2ddetd" extends="BaseQuerySp2ddetd" parameterClass="Sp2ddetd" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSP2D=#Nosp2d# and A.NOJETRA=#Nojetra#
+    </select>
+    <select id="LoadByPKSp2ddetd" extends="BaseQuerySp2ddetd" parameterClass="Sp2ddetd" resultMap="return-result">
+      where A.MTGKEY=#Mtgkey# and A.UNITKEY=#Unitkey# and A.NOSP2D=#Nosp2d# 
+    </select>
+    <select id="LoadByTotalRekSp2ddetd" parameterClass="Sp2ddetd" resultMap="return-result-total">
+      <![CDATA[
+      select B.KDPER, B.NMPER, B.MTGKEY, sum(case A.NOJETRA when '21' then A.NILAI else -A.NILAI end) AS NILAI
+      from SP2DDETD A
+      left join SP2D S ON A.UNITKEY = S.UNITKEY AND A.NOSP2D = S.NOSP2D
+      left join MATANGD B on A.MTGKEY = B.MTGKEY
+      where A.UNITKEY=#Unitkey# and A.MTGKEY=#Mtgkey#
+      and S.IDXSKO in (select IDXSKO from SKO where UNITKEY=#Unitkey# and TGLSKO <= #Tglsko# and TGLVALID is not NULL)
+      and S.TGLSP2D <= #Tglsp2d# and S.NOSP2D <> #Nosp2d# and S.TGLVALID is not NULL
+      group BY B.KDPER, B.NMPER, B.MTGKEY
+      ]]>
+    </select>
+    <select id="LoadByTotalUnitSp2ddetd" parameterClass="Sp2ddetd" resultMap="return-result-total-unit">
+      <![CDATA[
+      select A.UNITKEY, sum(case A.NOJETRA when '21' then A.NILAI else -A.NILAI end) AS NILAI
+      from SP2DDETD A
+      left join SP2D S ON A.UNITKEY = S.UNITKEY AND A.NOSP2D = S.NOSP2D
+      where A.UNITKEY=#Unitkey# 
+      and S.IDXSKO in (select IDXSKO from SKO where UNITKEY=#Unitkey# and TGLSKO <= #Tglsko# and TGLVALID is not NULL)
+      and S.TGLSP2D <= #Tglsp2d# and S.NOSP2D <> #Nosp2d# and S.TGLVALID is not NULL
+      group BY A.UNITKEY
+      ]]>
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Sp2ddetd">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nosp2d" column="NOSP2D"/>
+    </parameterMap>
+    <parameterMap id="update-param" class="Sp2ddetd">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nosp2d" column="NOSP2D"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Sp2ddetd">
+      <parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nosp2d" column="NOSP2D"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

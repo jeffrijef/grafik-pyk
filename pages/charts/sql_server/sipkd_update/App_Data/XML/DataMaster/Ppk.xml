@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Ppk" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Ppk" type="Usadi.Valid49.BO.PpkControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Ppk">
+      <result property="Nip" column="NIP"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Nama" column="NAMA"/>
+      <result property="Unitkey" column="UNITKEY"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertPpk" parameterMap="insert-param">
+      <generate table="PPK"/>
+    </insert>
+    <update id="UpdateByPpk" parameterMap="update-param">
+      <generate table="PPK" by="UNITKEY"/>
+    </update>
+    <delete id="DeleteByPpk" parameterMap="delete-param">
+      <generate table="PPK" by="UNITKEY"/>
+    </delete>
+    <select id="BaseQueryPpk" parameterClass="Ppk" resultMap="return-result">
+      select PPK.NIP, PPK.UNITKEY
+      ,rtrim(U.KDUNIT) as KDUNIT, rtrim(U.NMUNIT) as NMUNIT
+      , P.NAMA
+      from PPK
+      left outer join DAFTUNIT U on PPK.UNITKEY=U.UNITKEY
+      left outer join PEGAWAI P on PPK.NIP=P.NIP
+    </select>
+    <select id="QueryByAllPpk" extends="BaseQueryPpk" parameterClass="Ppk" resultMap="return-result">
+      <!--090225:GN-->
+      where
+      case #Parameter.Field#
+      when '1' then U.KDUNIT
+      when '2' then U.NMUNIT
+      when '3' then PPK.NIP
+      when '4' then P.NAMA
+      end like '%'+ #Parameter.Value# + '%'
+      order by U.KDUNIT
+    </select>
+    <select id="LoadByPKPpk" extends="BaseQueryPpk" parameterClass="Ppk" resultMap="return-result">
+      where PPK.UNITKEY=#Unitkey# and PPK.NIP=#Nip#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Ppk">
+    <!--090225:GN-->
+      <parameter property="Nip" column="NIP"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Ppk">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Ppk">
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

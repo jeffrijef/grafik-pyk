@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Urusanunit" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Urusanunit" type="Usadi.Valid49.BO.UrusanunitControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Urusanunit">
+      <result property="Kdurus" column="KDURUS"/>
+      <result property="Nmurus" column="NMURUS"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Uruskey" column="URUSKEY"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertUrusanunit" parameterMap="insert-param">
+      <generate table="URUSANUNIT"/>
+    </insert>
+    <update id="UpdateByUrusanunit" parameterMap="update-param">
+      <generate table="URUSANUNIT" by="UNITKEY,URUSKEY"/>
+    </update>
+    <delete id="DeleteByUrusanunit" parameterMap="delete-param">
+      <generate table="URUSANUNIT" by="UNITKEY,URUSKEY"/>
+    </delete>
+    <select id="BaseQueryUrusanunit" parameterClass="Urusanunit" resultMap="return-result">
+	    select UU.*, UR.KDUNIT AS KDURUS, UR.NMUNIT AS NMURUS, UT.KDUNIT, UT.NMUNIT
+      from dbo.URUSANUNIT UU LEFT OUTER JOIN
+      dbo.DAFTUNIT UT ON UU.UNITKEY = UT.UNITKEY LEFT OUTER JOIN
+      dbo.DAFTUNIT UR ON UU.URUSKEY = UR.UNITKEY
+    </select>
+    <select id="QueryByAllUrusanunit" extends="BaseQueryUrusanunit" parameterClass="Urusanunit" resultMap="return-result">
+      where UU.UNITKEY = #Unitkey# and
+      case #Parameter.Field#
+      when '1' then UR.KDUNIT
+      when '2' then UR.NMUNIT
+      end like '%'+ #Parameter.Value# + '%' 
+	    ORDER BY UR.KDUNIT
+    </select>
+    <select id="LoadByPKUrusanunit" extends="BaseQueryUrusanunit" parameterClass="Urusanunit" resultMap="return-result">
+      where UU.UNITKEY=#Unitkey# and UU.URUSKEY=#Uruskey# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Urusanunit">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Parameter.Key" column="URUSKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Urusanunit">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Urusanunit">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Uruskey" column="URUSKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

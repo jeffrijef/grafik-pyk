@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Kegs" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Kegs" type="Usadi.Valid49.BO.KegsControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Kegs">
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Kdkegs" column="KDKEGS"/>
+      <result property="Kdkategori" column="KDKATEGORI"/>
+      <result property="Idprgrms" column="IDPRGRMS"/>
+      <result property="Sasaran" column="SASARAN"/>
+      <result property="Keterangan" column="KETERANGAN"/>
+      <result property="Statustr" column="STATUSTR"/>
+      <result property="Statusvd" column="STATUSVD"/>
+      <result property="Nokegs" column="NOKEGS"/>
+      <result property="Nmkegs" column="NMKEGS"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Noprgrms" column="NOPRGRMS"/>
+      <result property="Nmprgrms" column="NMPRGRMS"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <insert id="InsertKegs" parameterMap="insert-param" >
+      <generate table="KEGS"/>
+    </insert>
+    <update id="UpdateByKegs" parameterMap="update-param" >
+      <generate table="KEGS" by="UNITKEY,KDKEGS"/>
+    </update>
+    <delete id="DeleteByKegs" parameterMap="delete-param" >
+      <generate table="KEGS" by="UNITKEY,KDKEGS"/>
+    </delete>
+    <select id="BaseQueryKegs" parameterClass="Kegs" resultMap="return-result">
+      select      KS.UNITKEY, KS.IDPRGRMS, KS.KDKEGS, KS.KDKATEGORI, KS.SASARAN, KS.KETERANGAN, KS.STATUSTR,
+      KS.STATUSVD, KS.NOKEGS, KS.NMKEGS, PS.NOPRGRMS, PS.NMPRGRMS, UN.KDUNIT, UN.NMUNIT
+      from KEGS KS
+      left outer join PGRMS PS on KS.UNITKEY = PS.UNITKEY and KS.IDPRGRMS = PS.IDPRGRMS
+      left outer join DAFTUNIT UN on KS.UNITKEY = UN.UNITKEY
+    </select>
+    <select id="QueryByAllKegs" extends="BaseQueryKegs" parameterClass="Kegs" resultMap="return-result">
+      where
+      KS.UNITKEY=#Unitkey#
+      and KS.IDPRGRMS=#Idprgrms#
+      and case #Parameter.Field #
+      when '1' then KS.NOKEGS
+      when '2' then KS.NMKEGS
+      end like '%'+#Parameter.Value#+'%'
+      order by KS.NOKEGS
+    </select>
+    <select id="LoadByPKKegs" extends="BaseQueryKegs" parameterClass="Kegs"  resultMap="return-result" >
+      where KS.UNITKEY=#Unitkey# and KS.KDKEGS=#Kdkegs#
+    </select>
+  </statements>
+
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Kegs">
+      <parameter property="Kdkategori" column="KDKATEGORI"/>
+      <parameter property="Idprgrms" column="IDPRGRMS"/>
+      <parameter property="Sasaran" column="SASARAN"/>
+      <parameter property="Keterangan" column="KETERANGAN"/>
+      <parameter property="Statustr" column="STATUSTR"/>
+      <parameter property="Statusvd" column="STATUSVD"/>
+      <parameter property="Nokegs" column="NOKEGS"/>
+      <parameter property="Nmkegs" column="NMKEGS"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Kdkegs" column="KDKEGS"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Kegs">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Kegs">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Kdkegs" column="KDKEGS"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>
+

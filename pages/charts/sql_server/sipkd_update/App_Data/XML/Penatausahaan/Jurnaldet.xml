@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Jurnaldet" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Jurnaldet" type="Usadi.Valid49.BO.JurnaldetControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Jurnaldet">
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Jenis" column="JENIS"/>
+      <result property="Idxkode" column="IDXKODE"/>
+    </resultMap>
+    <resultMap id="return-result2" class="Jurnaldet">
+      <result property="Norekb" column="NOREKB"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Nilai" column="NILAI"/>
+    </resultMap>
+    <resultMap id="return-result-up" class="Jurnaldet">
+      <result property="Nama" column="NAMA"/>
+      <result property="Rekbend" column="REKBEND"/>
+      <result property="Jab_bend" column="JAB_BEND"/>
+      <result property="Nilai" column="NILAI"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <select id="QueryByDetSP2DKegJurnaldet" parameterClass="Jurnaldet" resultMap="return-result">
+      select UNITKEY,MTGKEY as KDKEGUNIT,KDPER,NMPER,NILAI,TYPE,#Nobukti# as NOSP2D,#Jenis# as JENIS,#Idxkode# as IDXKODE from (
+      select P.UNITKEY,UN.UNITKEY as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2'))) as KDPER, isnull(UR.NMUNIT,'NON URUSAN') as NMPER,'H' as TYPE,
+      NILAI=(select sum(S1.NILAI)
+      from SP2DDETR S1
+      inner join KEGUNIT K1 on S1.UNITKEY=K1.UNITKEY and S1.KDKEGUNIT=K1.KDKEGUNIT
+      inner join PGRMUNIT P1 on K1.UNITKEY=P1.UNITKEY and K1.IDPRGRM=P1.IDPRGRM and K1.KDTAHAP=P1.KDTAHAP
+      left outer join MPGRM MP1 on P1.IDPRGRM=MP1.IDPRGRM
+      left outer join DAFTUNIT UR1 on UR1.UNITKEY=MP1.UNITKEY
+      where S1.UNITKEY=#Unitkey# and S1.NOSP2D=#Nobukti#
+      and isnull(UR1.UNITKEY,'')=isnull(UR.UNITKEY,'')
+      group by UR1.UNITKEY
+      )
+      from PGRMUNIT P left outer join MPGRM MP on P.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on P.UNITKEY = UN.UNITKEY
+      where P.UNITKEY =#Unitkey# and
+      P.IDPRGRM in
+      (select IDPRGRM from KEGUNIT where UNITKEY=#Unitkey# and
+      KDKEGUNIT in (select KDKEGUNIT from SP2DDETR where UNITKEY=#Unitkey# and NOSP2D=#Nobukti#))
+      union
+      select P.UNITKEY,P.IDPRGRM as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM) as KDPER, MP.NMPRGRM as NMPER,'H' as TYPE,
+      NILAI=(select sum(S1.NILAI)
+      from SP2DDETR S1
+      inner join KEGUNIT K1 on S1.UNITKEY=K1.UNITKEY and S1.KDKEGUNIT=K1.KDKEGUNIT
+      inner join PGRMUNIT P1 on K1.UNITKEY=P1.UNITKEY and K1.IDPRGRM=P1.IDPRGRM and K1.KDTAHAP=P1.KDTAHAP
+      where S1.UNITKEY=#Unitkey# and S1.NOSP2D=#Nobukti#
+      and P1.IDPRGRM=P.IDPRGRM
+      group by P1.UNITKEY,P1.IDPRGRM
+      )
+      from PGRMUNIT P left outer join MPGRM MP on P.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on P.UNITKEY = UN.UNITKEY
+      where P.UNITKEY =#Unitkey# and
+      P.IDPRGRM in
+      (select IDPRGRM from KEGUNIT where UNITKEY=#Unitkey# and
+      KDKEGUNIT in (select KDKEGUNIT from SP2DDETR where UNITKEY=#Unitkey# and NOSP2D=#Nobukti#))
+      union
+      select K.UNITKEY,K.KDKEGUNIT as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM)+rtrim(MK.NUKEG) as KDPER, MK.NMKEGUNIT as NMPER,'D' as TYPE,
+      NILAI=(select sum(NILAI) from SP2DDETR where UNITKEY=#Unitkey# and NOSP2D=#Nobukti# and KDKEGUNIT=K.KDKEGUNIT and NOJETRA not in('23')) <!--nojetra 23 UM-->
+      from KEGUNIT K
+      left outer join MKEGIATAN MK on MK.KDKEGUNIT=K.KDKEGUNIT
+      left outer join MPGRM MP on MK.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on K.UNITKEY = UN.UNITKEY
+      where K.UNITKEY =#Unitkey# and K.KDKEGUNIT in (select KDKEGUNIT from SP2DDETR where UNITKEY=#Unitkey# and NOSP2D=#Nobukti#)
+      )A
+      where UNITKEY =#Unitkey# and TYPE='D'
+      and case #Parameter.Field#
+      when '1' then KDPER
+      when '2' then NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by KDPER
+    </select>
+    <select id="QueryByDetSP2DKegDetJurnaldet" parameterClass="Jurnaldet" resultMap="return-result">
+      select A.MTGKEY,A.NILAI,A.NOJETRA,A.NOSP2D,A.UNITKEY,A.KDKEGUNIT
+      ,B.IDXKODE,C.KDPERS,rtrim(D.KDPER) as KDPER, rtrim(D.NMPER) as NMPER,#Jenis# as JENIS,#Idxkode# as IDXKODE
+      from SP2DDETR A
+      left outer join SP2D B on A.NOSP2D = B.NOSP2D and A.UNITKEY = B.UNITKEY
+      left outer join JTRNLKAS C on A.NOJETRA = C.NOJETRA
+      left outer join MATANGR D on A.MTGKEY = D.MTGKEY
+      where A.UNITKEY=#Unitkey# and A.NOSP2D=#Nobukti# and A.KDKEGUNIT=#Kdkegunit# and A.NOJETRA = #Nojetra#
+      and case #Parameter.Field#
+      when '1' then D.KDPER
+      when '2' then D.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by D.KDPER
+    </select>
+    <select id="QueryByDetSP2DJurnaldet" parameterClass="Jurnaldet" resultMap="return-result">
+      select KDPER,'' as KDKEGUNIT,NMPER,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from SP2DDETB S left outer join MATANGB M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOSP2D=#Nobukti# and NOJETRA='21'
+      union
+      select KDPER,'' as KDKEGUNIT,NMPER,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from SP2DDETD S left outer join MATANGD M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOSP2D=#Nobukti# and NOJETRA='21'
+      union
+      select KDPER,KDKEGUNIT,NMPER,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from SP2DDETR S left outer join MATANGR M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOSP2D=#Nobukti# and NOJETRA='21'
+      union
+      select KDPER,'' as KDKEGUNIT,NMPER,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from SP2DDETRTL  S left outer join MATANGR M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOSP2D=#Nobukti# and NOJETRA='21'
+    </select>
+    <select id="QueryByPotSP2DJurnaldet" parameterClass="Jurnaldet" resultMap="return-result">
+      select KDPER,NMPER,'' as KDKEGUNIT,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from SP2DDETB  S left outer join MATANGB M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOSP2D=#Nobukti# and NOJETRA='23'
+      union
+      select KDPER,NMPER,'' as KDKEGUNIT,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from SP2DDETD  S left outer join MATANGD M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOSP2D=#Nobukti# and NOJETRA='23'
+      union
+      select KDPER,NMPER,KDKEGUNIT,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from SP2DDETR  S left outer join MATANGR M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOSP2D=#Nobukti# and NOJETRA='23'
+      union
+      select KDPER,NMPER,'' as KDKEGUNIT,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from SP2DDETRTL  S left outer join MATANGR M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOSP2D=#Nobukti# and NOJETRA='23'
+    </select>
+    <select id="QueryByPjkSP2DJurnaldet" parameterClass="Jurnaldet" resultMap="return-result">
+      select J.KDPAJAK as KDPER,J.NMPAJAK as NMPER,S.NILAI,'' as KDKEGUNIT,#Jenis# as JENIS,#Idxkode# as IDXKODE
+      from SP2DPJK S left outer join JPAJAK J on J.PJKKEY=S.PJKKEY
+      where S.UNITKEY=#Unitkey# and S.NOSP2D=#Nobukti#
+    </select>
+    <select id="QueryByDetSTSJurnaldet" parameterClass="Jurnaldet" resultMap="return-result">
+      select KDPER,NMPER,'' as KDKEGUNIT,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from RKMDETB  S left outer join MATANGB M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOSTS=#Nobukti# and (NOJETRA='11' or NOJETRA='12')
+      union
+      select KDPER,NMPER,'' as KDKEGUNIT,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from RKMDETD  S left outer join MATANGD M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOSTS=#Nobukti# and (NOJETRA='11' or NOJETRA='12')
+      union
+      select KDPER,NMPER,KDKEGUNIT,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from RKMDETR  S left outer join MATANGR M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOSTS=#Nobukti# and (NOJETRA='11' or NOJETRA='12')
+      union
+      select KDPER,NMPER,'' as KDKEGUNIT,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from RKMDETRTL  S left outer join MATANGR M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOSTS=#Nobukti# and (NOJETRA='11' or NOJETRA='12')
+    </select>
+    <select id="QueryByPotSTSJurnaldet" parameterClass="Jurnaldet" resultMap="return-result">
+      select KDPER,NMPER,'' as KDKEGUNIT,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from RKMDETB  S left outer join MATANGB M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOSTS=#Nobukti# and NOJETRA='13'
+      union
+      select KDPER,NMPER,'' as KDKEGUNIT,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from RKMDETD  S left outer join MATANGD M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOSTS=#Nobukti# and NOJETRA='13'
+      union
+      select KDPER,NMPER,KDKEGUNIT,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from RKMDETR  S left outer join MATANGR M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOSTS=#Nobukti# and NOJETRA='13'
+      union
+      select KDPER,NMPER,'' as KDKEGUNIT,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from RKMDETRTL  S left outer join MATANGR M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOSTS=#Nobukti# and NOJETRA='13'
+    </select>
+    <select id="QueryByDetTransferJurnaldet" parameterClass="Jurnaldet" resultMap="return-result2">
+      select B.NOREKB,KDPER,NMPER,'' as KDKEGUNIT,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from RKMDETT  S
+      left outer join BKBKAS B on S.NOBBANTU=B.NOBBANTU
+      left outer join MATANGNRC M on B.MTGKEY=M.MTGKEY
+      where S.UNITKEY=#Unitkey# and S.NOSTS=#Nobukti# and S.NOJETRA='31'
+    </select>
+    <select id="QueryByDetTBPJurnaldet" parameterClass="Jurnaldet" resultMap="return-result">
+      select KDPER,NMPER,'' as KDKEGUNIT,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from TBPDETB  S left outer join MATANGB M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOTBP=#Nobukti# and (NOJETRA='11' or NOJETRA='12')
+      union
+      select KDPER,NMPER,'' as KDKEGUNIT,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from TBPDETD  S left outer join MATANGD M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOTBP=#Nobukti# and (NOJETRA='11' or NOJETRA='12')
+      union
+      select KDPER,NMPER,KDKEGUNIT,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from TBPDETR  S left outer join MATANGR M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOTBP=#Nobukti# and (NOJETRA='11' or NOJETRA='12')
+      union
+      select KDPER,NMPER,'' as KDKEGUNIT,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from TBPDETRTL  S left outer join MATANGR M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOTBP=#Nobukti# and (NOJETRA='11' or NOJETRA='12')
+    </select>
+    <select id="QueryByPotTBPJurnaldet" parameterClass="Jurnaldet" resultMap="return-result">
+      select KDPER,NMPER,'' as KDKEGUNIT,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from TBPDETB  S left outer join MATANGB M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOTBP=#Nobukti# and NOJETRA='13'
+      union
+      select KDPER,NMPER,'' as KDKEGUNIT,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from TBPDETD  S left outer join MATANGD M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOTBP=#Nobukti# and NOJETRA='13'
+      union
+      select KDPER,NMPER,'' as KDKEGUNIT,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from TBPDETR  S left outer join MATANGR M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOTBP=#Nobukti# and NOJETRA='13'
+      union
+      select KDPER,NMPER,'' as KDKEGUNIT,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from TBPDETRTL  S left outer join MATANGR M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOTBP=#Nobukti# and NOJETRA='13'
+    </select>
+    <select id="QueryByDetUPJurnaldet" parameterClass="Jurnaldet" resultMap="return-result-up">
+      select NAMA,REKBEND,JAB_BEND,NILAI from TBPDETT S
+      left outer join BEND M on S.KEYBEND=M.KEYBEND
+      left outer join PEGAWAI P on M.NIP=P.NIP
+      where S.UNITKEY=#Unitkey# and NOTBP=#Nobukti# and (NOJETRA in ('31','32'))
+    </select>
+    <select id="QueryByDetSPPJurnaldet" parameterClass="Jurnaldet" resultMap="return-result">
+      select KDPER,'' as KDKEGUNIT,NMPER,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from SPPDETB S left outer join MATANGB M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOSPP=#Nobukti# and NOJETRA='21'
+      union
+      select KDPER,'' as KDKEGUNIT,NMPER,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from SPPDETD S left outer join MATANGD M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOSPP=#Nobukti# and NOJETRA='21'
+      union
+      select KDPER,KDKEGUNIT,NMPER,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from SPPDETR S left outer join MATANGR M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOSPP=#Nobukti# and NOJETRA='21'
+      union
+      select KDPER,'' as KDKEGUNIT,NMPER,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from SPPDETRTL  S left outer join MATANGR M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOSPP=#Nobukti# and NOJETRA='21'
+    </select>
+    <select id="QueryByPotSPPJurnaldet" parameterClass="Jurnaldet" resultMap="return-result">
+      select KDPER,NMPER,'' as KDKEGUNIT,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from SPPDETB  S left outer join MATANGB M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOSPP=#Nobukti# and NOJETRA='23'
+      union
+      select KDPER,NMPER,'' as KDKEGUNIT,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from SPPDETD  S left outer join MATANGD M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOSPP=#Nobukti# and NOJETRA='23'
+      union
+      select KDPER,NMPER,KDKEGUNIT,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from SPPDETR  S left outer join MATANGR M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOSPP=#Nobukti# and NOJETRA='23'
+      union
+      select KDPER,NMPER,'' as KDKEGUNIT,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from SPPDETRTL  S left outer join MATANGR M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOSPP=#Nobukti# and NOJETRA='23'
+    </select>
+    <select id="QueryByDetSPMJurnaldet" parameterClass="Jurnaldet" resultMap="return-result">
+      select KDPER,'' as KDKEGUNIT,NMPER,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from SPMDETB S left outer join MATANGB M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOSPM=#Nobukti# and NOJETRA='21'
+      union
+      select KDPER,'' as KDKEGUNIT,NMPER,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from SPMDETD S left outer join MATANGD M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOSPM=#Nobukti# and NOJETRA='21'
+      union
+      select KDPER,KDKEGUNIT,NMPER,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from SPMDETR S left outer join MATANGR M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOSPM=#Nobukti# and NOJETRA='21'
+      union
+      select KDPER,'' as KDKEGUNIT,NMPER,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from SPMDETRTL  S left outer join MATANGR M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOSPM=#Nobukti# and NOJETRA='21'
+    </select>
+    <select id="QueryByPotSPMJurnaldet" parameterClass="Jurnaldet" resultMap="return-result">
+      select KDPER,NMPER,'' as KDKEGUNIT,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from SPMDETB  S left outer join MATANGB M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOSPM=#Nobukti# and NOJETRA='23'
+      union
+      select KDPER,NMPER,'' as KDKEGUNIT,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from SPMDETD  S left outer join MATANGD M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOSPM=#Nobukti# and NOJETRA='23'
+      union
+      select KDPER,NMPER,KDKEGUNIT,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from SPMDETR  S left outer join MATANGR M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOSPM=#Nobukti# and NOJETRA='23'
+      union
+      select KDPER,NMPER,'' as KDKEGUNIT,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from SPMDETRTL  S left outer join MATANGR M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOSPM=#Nobukti# and NOJETRA='23'
+    </select>
+    <select id="QueryByDetBPKJurnaldet" parameterClass="Jurnaldet" resultMap="return-result">
+      select KDPER,'' as KDKEGUNIT,NMPER,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from BPKDETB S left outer join MATANGB M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOBPK=#Nobukti# and NOJETRA='21'
+      union
+      select KDPER,'' as KDKEGUNIT,NMPER,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from BPKDETD S left outer join MATANGD M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOBPK=#Nobukti# and NOJETRA='21'
+      union
+      select KDPER,KDKEGUNIT,NMPER,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from BPKDETR S left outer join MATANGR M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOBPK=#Nobukti# and NOJETRA='21'
+      union
+      select KDPER,'' as KDKEGUNIT,NMPER,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from BPKDETRTL  S left outer join MATANGR M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOBPK=#Nobukti# and NOJETRA='21'
+    </select>
+    <select id="QueryByPotBPKJurnaldet" parameterClass="Jurnaldet" resultMap="return-result">
+      select KDPER,NMPER,'' as KDKEGUNIT,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from BPKDETB  S left outer join MATANGB M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOBPK=#Nobukti# and NOJETRA='23'
+      union
+      select KDPER,NMPER,'' as KDKEGUNIT,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from BPKDETD  S left outer join MATANGD M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOBPK=#Nobukti# and NOJETRA='23'
+      union
+      select KDPER,NMPER,KDKEGUNIT,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from BPKDETR  S left outer join MATANGR M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOBPK=#Nobukti# and NOJETRA='23'
+      union
+      select KDPER,NMPER,'' as KDKEGUNIT,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from BPKDETRTL  S left outer join MATANGR M on S.MTGKEY=M.MTGKEY
+      where UNITKEY=#Unitkey# and NOBPK=#Nobukti# and NOJETRA='23'
+    </select>
+    <select id="QueryByDetPanjarJurnaldet" parameterClass="Jurnaldet" resultMap="return-result">
+      select NUKEG as KDPER,'' as KDKEGUNIT,NMKEGUNIT as NMPER,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from PANJARDET S left outer join MKEGIATAN M on S.KDKEGUNIT=M.KDKEGUNIT
+      where UNITKEY=#Unitkey# and NOPANJAR=#Nobukti#
+    </select>
+    <select id="QueryByDetPajakJurnaldet" parameterClass="Jurnaldet" resultMap="return-result">
+      select KDPAJAK as KDPER,'' as KDKEGUNIT,NMPAJAK as NMPER,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from BKPAJAKDET S left outer join JPAJAK M on S.PJKKEY = M.PJKKEY
+      where UNITKEY=#Unitkey# and NOBKPAJAK=#Nobukti#
+    </select>
+    <select id="QueryByDetBankJurnaldet" parameterClass="Jurnaldet" resultMap="return-result">
+      select S.NOJETRA as KDPER,'' as KDKEGUNIT,M.NMJETRA as NMPER,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from BKBANKDET S left outer join JTRNLKAS M on S.NOJETRA = M.NOJETRA
+      where UNITKEY=#Unitkey# and NOBUKU=#Nobukti#
+    </select>
+    <select id="QueryByPotPajakJurnaldet" parameterClass="Jurnaldet" resultMap="return-result">
+      select KDPAJAK as KDPER,'' as KDKEGUNIT,NMPAJAK as NMPER,NILAI,#Jenis# as JENIS,#Idxkode# as IDXKODE from BKPAJAKDET S left outer join JPAJAK M on S.PJKKEY = M.PJKKEY
+      where UNITKEY=#Unitkey# and NOBKPAJAK=#Nobukti#
+    </select>
+  </statements>
+  <parameterMaps>
+  </parameterMaps>
+</sqlMap>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Mpgrm" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Mpgrm" type="Usadi.Valid49.BO.MpgrmControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Mpgrm">
+	    <result property="Nmunit" column="NMUNIT"/>
+	    <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmprgrm" column="NMPRGRM"/>
+      <result property="Nuprgrm" column="NUPRGRM"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Idprgrm" column="IDPRGRM"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="IDPRGRM"/>
+      <result property="Field" column="NUPRGRM"/>
+      <result property="Value" column="NMPRGRM"/>
+      <result property="Type" column="TYPE"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertMpgrm" parameterMap="insert-param">
+      <generate table="MPGRM"/>
+    </insert>
+    <update id="UpdateByMpgrm" parameterMap="update-param">
+      <generate table="MPGRM" by="IDPRGRM"/>
+    </update>
+    <delete id="DeleteByMpgrm" parameterMap="delete-param">
+      <generate table="MPGRM" by="IDPRGRM"/>
+    </delete>
+    <select id="BaseQueryMpgrm" parameterClass="Mpgrm" resultMap="return-result">
+      SELECT RTRIM(M.IDPRGRM) as IDPRGRM, RTRIM(M.UNITKEY) as UNITKEY, M.NUPRGRM, M.NMPRGRM, U.KDUNIT, U.NMUNIT
+      FROM MPGRM M
+      LEFT OUTER JOIN DAFTUNIT U ON M.UNITKEY = U.UNITKEY
+    </select>
+    <select id="QueryByAllMpgrm" extends="BaseQueryMpgrm" parameterClass="Mpgrm" resultMap="return-result">
+      where isnull(M.UNITKEY,'')= isnull(#Unitkey#,'')
+      and case #Parameter.Field#
+      when '1' then M.NUPRGRM
+      when '2' then M.NMPRGRM
+      end like '%'+ #Parameter.Value# + '%'
+      order by M.NUPRGRM
+    </select>
+    <select id="QueryByNuprgrmMpgrm" extends="BaseQueryMpgrm" parameterClass="Mpgrm" resultMap="return-result">
+      where isnull(M.UNITKEY,'')= isnull(#Unitkey#,'') and M.NUPRGRM=#Nuprgrm#
+    </select>
+    <select id="QueryByPgrmunitMpgrm" parameterclass="Usadi.Valid49.BO.PgrmunitControl" resultMap="return-lookup">
+      declare @kdunit varchar(30)
+	select @kdunit  = (select LEFT(KDUNIT,(select len(rtrim(numdigit)) from struunit where kdlevel='3')) from DAFTUNIT where UNITKEY =  @param0 ) 
+	select * from (
+      select isnull(MP.UNITKEY,'') as UNITKEY,'H' as IDPRGRM,rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2'))) as  NUPRGRM,isnull(UR.NMUNIT,'NON URUSAN') as NMPRGRM
+      ,'H' as TYPE
+      from MPGRM MP
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      where MP.UNITKEY in (select URUSKEY from URUSANUNIT where
+      UNITKEY = (select UNITKEY from DAFTUNIT where KDUNIT = @kdunit ) 
+      )
+      or MP.UNITKEY is null
+      union
+      select isnull(MP.UNITKEY,''),MP.IDPRGRM, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM) as NUPRGRM, MP.NMPRGRM
+      ,'D' as TYPE
+      from MPGRM MP
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      where MP.UNITKEY in (select URUSKEY from URUSANUNIT where
+      UNITKEY = (select UNITKEY from DAFTUNIT where KDUNIT = @kdunit ) 
+      )
+      or MP.UNITKEY is null
+      )P
+      where isnull(UNITKEY,'')+IDPRGRM not in (select isnull(U.URUSKEY,'')+P.IDPRGRM from PGRMUNIT P
+      left outer join MPGRM MP on P.IDPRGRM=MP.IDPRGRM
+      left outer join URUSANUNIT U on MP.UNITKEY=U.URUSKEY
+      where P.UNITKEY = #Unitkey# and KDTAHAP=#Kdtahap#
+      )
+      order by NUPRGRM
+    </select>
+    <select id="QueryByPgrmunitukMpgrm" parameterclass="Usadi.Valid49.BO.PgrmunitControl" resultMap="return-lookup">
+      select * from (
+      select isnull(MP.UNITKEY,'') as UNITKEY,'H' as IDPRGRM,rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2'))) as  NUPRGRM,isnull(UR.NMUNIT,'NON URUSAN') as NMPRGRM
+      ,'H' as TYPE
+      from MPGRM MP
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      where MP.UNITKEY in (select URUSKEY from URUSANUNIT where UNITKEY=#Unitkeyskpd#) or MP.UNITKEY is null
+      union
+      select isnull(MP.UNITKEY,''),MP.IDPRGRM, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM) as NUPRGRM, MP.NMPRGRM
+      ,'D' as TYPE
+      from MPGRM MP
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      where MP.UNITKEY in (select URUSKEY from URUSANUNIT where UNITKEY=#Unitkeyskpd#)or MP.UNITKEY is null
+      )P
+      where isnull(UNITKEY,'')+IDPRGRM not in (select isnull(U.URUSKEY,'')+P.IDPRGRM from PGRMUNIT P
+      left outer join MPGRM MP on P.IDPRGRM=MP.IDPRGRM
+      left outer join URUSANUNIT U on MP.UNITKEY=U.URUSKEY
+      where P.UNITKEY=#Unitkey# and KDTAHAP=#Kdtahap#
+      )
+      order by NUPRGRM
+    </select>
+    <select id="LoadByPKMpgrm" extends="BaseQueryMpgrm" parameterClass="Mpgrm" resultMap="return-result">
+      where M.IDPRGRM=#Idprgrm# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Mpgrm">
+      <parameter property="Nmprgrm" column="NMPRGRM"/>
+      <parameter property="Nuprgrm" column="NUPRGRM"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Idprgrm" column="IDPRGRM"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Mpgrm">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Mpgrm">
+      <parameter property="Idprgrm" column="IDPRGRM"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

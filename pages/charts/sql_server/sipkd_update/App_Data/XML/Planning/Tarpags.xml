@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Tarpags" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Tarpags" type="Usadi.Valid49.BO.TarpagsControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Tarpags">
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Kdkegs" column="KDKEGS"/>
+      <result property="Kdtahun" column="KDTAHUN"/>
+      <result property="Targetps" column="TARGETPS"/>
+      <result property="Targetfs" column="TARGETFS"/>
+      <result property="Satuants" column="SATUANTS"/>
+      <result property="Paguind" column="PAGUIND"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Idprgrms" column="IDPRGRMS"/>
+      <result property="Noprgrms" column="NOPRGRMS"/>
+      <result property="Nmprgrms" column="NMPRGRMS"/>
+      <result property="Nokegs" column="NOKEGS"/>
+      <result property="Nmkegs" column="NMKEGS"/>
+      <result property="Nmtahun" column="NMTAHUN"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <insert id="InsertTarpags" parameterClass="Tarpags" >
+      insert into TARPAGS (UNITKEY,KDKEGS,KDTAHUN)
+      select K.UNITKEY, K.KDKEGS, TN.KDTAHUN
+      from KEGS K cross join JTAHUN TN
+      where K.UNITKEY=#Unitkey# and K.KDKEGS = #Kdkegs#
+      and (K.UNITKEY+K.KDKEGS+TN.KDTAHUN not in 
+        (select UNITKEY+KDKEGS+KDTAHUN from TARPAGS))
+    </insert>
+    <update id="UpdateByTarpags" parameterMap="update-param" >
+      <generate table="TARPAGS" by="UNITKEY,KDKEGS,KDTAHUN"/>
+    </update>
+    <delete id="DeleteByTarpags" parameterMap="delete-param" >
+      <generate table="TARPAGS" by="UNITKEY,KDKEGS,KDTAHUN"/>
+    </delete>
+    <select id="BaseQueryTarpags" parameterClass="Tarpags" resultMap="return-result">
+      select TKS.UNITKEY, TKS.KDKEGS, TKS.KDTAHUN, TKS.TARGETPS, TKS.TARGETFS, TKS.SATUANTS, TKS.PAGUIND, UN.KDUNIT, UN.NMUNIT,
+      PS.IDPRGRMS, PS.NOPRGRMS, PS.NMPRGRMS, KS.NOKEGS, KS.NMKEGS, TN.NMTAHUN
+      from TARPAGS TKS
+      left outer join DAFTUNIT UN on TKS.UNITKEY = UN.UNITKEY
+      left outer join KEGS KS on TKS.UNITKEY = KS.UNITKEY and TKS.KDKEGS = KS.KDKEGS
+      left outer join PGRMS PS on KS.IDPRGRMS = PS.IDPRGRMS and KS.UNITKEY = PS.UNITKEY
+      left outer join JTAHUN TN on TKS.KDTAHUN = TN.KDTAHUN
+    </select>
+    <select id="QueryByAllTarpags" extends="BaseQueryTarpags" parameterClass="Tarpags" resultMap="return-result">
+      where TKS.UNITKEY=#Unitkey# and TKS.KDKEGS=#Kdkegs#
+      order by TN.NMTAHUN
+    </select>
+    <select id="LoadByPKTarpags" parameterClass="Tarpags"  resultMap="return-result" >
+      select * from TARPAGS
+      where UNITKEY=#Unitkey# AND KDKEGS=#Kdkegs# AND KDTAHUN=#Kdtahun#
+    </select>
+  </statements>
+
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Tarpags">
+      <parameter property="Targetps" column="TARGETPS"/>
+      <parameter property="Targetfs" column="TARGETFS"/>
+      <parameter property="Satuants" column="SATUANTS"/>
+      <parameter property="Paguind" column="PAGUIND"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Kdkegs" column="KDKEGS"/>
+      <parameter property="Kdtahun" column="KDTAHUN"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Tarpags">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Tarpags">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Kdkegs" column="KDKEGS"/>
+      <parameter property="Kdtahun" column="KDTAHUN"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>
+

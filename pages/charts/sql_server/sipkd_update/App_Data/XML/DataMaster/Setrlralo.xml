@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Setrlralo" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Setrlralo" type="Usadi.Valid49.BO.SetrlraloControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Setrlralo">
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Kdperlra" column="KDPERLRA"/>
+      <result property="Nmperlra" column="NMPERLRA"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Mtgkeylra" column="MTGKEYLRA"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSetrlralo" parameterMap="insert-param">
+      <generate table="SETRLRALO"/>
+    </insert>
+    <update id="UpdateBySetrlralo" parameterMap="update-param">
+      <generate table="SETRLRALO" by="MTGKEYLRA,MTGKEY"/>
+    </update>
+    <delete id="DeleteBySetrlralo" parameterMap="delete-param">
+      <generate table="SETRLRALO" by="MTGKEYLRA,MTGKEY"/>
+    </delete>
+    <statement id="DeleteByDelSetrlralo" parameterClass="Setrlralo">
+      delete SETRLRALO where MTGKEY = #Mtgkey# AND MTGKEYLRA=#Mtgkeylra#
+    </statement>
+    <select id="BaseQuerySetrlralo" parameterClass="Setrlralo" resultMap="return-result">
+      select A.MTGKEYLRA,A.MTGKEY
+      ,rtrim(B.KDPER) as KDPERLRA, rtrim(B.NMPER) as NMPERLRA,B.TYPE,B.MTGKEY
+      ,rtrim(C.KDPER) as KDPER,rtrim(C.NMPER) as NMPER
+      from SETRLRALO A
+      left outer join MATANGR B on A.MTGKEY = B.MTGKEY
+      left outer join MATANGR C on A.MTGKEYLRA = C.MTGKEY
+    </select>
+    <select id="QueryByAllSetrlralo" extends="BaseQuerySetrlralo" parameterClass="Setrlralo" resultMap="return-result">
+      where A.MTGKEY = #Mtgkey# and
+      case #Parameter.Field#
+      <!--25 - 02 - 2009 : GN-->
+      when '1' then C.KDPER
+      when '2' then C.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+    </select>
+    <select id="LoadByPKSetrlralo" extends="BaseQuerySetrlralo" parameterClass="Setrlralo" resultMap="return-result">
+      where A.MTGKEYLRA=#Mtgkeylra# and A.MTGKEY=#Mtgkey#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Setrlralo">
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Mtgkeylra" column="MTGKEYLRA"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Setrlralo">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Setrlralo">
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Mtgkeylra" column="MTGKEYLRA"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

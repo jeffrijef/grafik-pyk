@@ -1,0 +1,21 @@
+<!--######################## TEXT SISI KIRI
+
+
+<div style="position:absolute;top:-570px;left:+210px;width:260px;text-align:left;color:black;background:#7CFC00;border:1px solid #ccc;padding:2px;font-family:arial;">
+<center>
+<h3><u>PEMBERITAHUAN</u></h3>
+<p>
+<h5><b>
+</center>
+Untuk belanja: </br></br>
+- CD (compact disk)</br>
+- Flashdisk</br>
+- Catridge / Toner </br></br>
+Agar dialokasikan pada rekening belanja:</br>
+5.2.2.01.16. Belanja Accessories Komputer
+
+</p>
+
+by: adminSIPKD, 20/09/2017 11:32
+</div>
+-->

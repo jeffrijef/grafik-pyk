@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Setdlralo" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Setdlralo" type="Usadi.Valid49.BO.SetdlraloControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Setdlralo">
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Kdperlra" column="KDPERLRA"/>
+      <result property="Nmperlra" column="NMPERLRA"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Mtgkeylra" column="MTGKEYLRA"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSetdlralo" parameterMap="insert-param">
+      <generate table="SETDLRALO"/>
+    </insert>
+    <update id="UpdateBySetdlralo" parameterMap="update-param">
+      <generate table="SETDLRALO" by="MTGKEYLRA,MTGKEY"/>
+    </update>
+    <delete id="DeleteBySetdlralo" parameterMap="delete-param">
+      <generate table="SETDLRALO" by="MTGKEYLRA,MTGKEY"/>
+    </delete>
+    <statement id="DeleteByDelSetdlralo" parameterClass="Setdlralo">
+      delete SETDLRALO where MTGKEY = #Mtgkey# AND MTGKEYLRA=#Mtgkeylra#
+    </statement>
+    <select id="BaseQuerySetdlralo" parameterClass="Setdlralo" resultMap="return-result">
+      select A.MTGKEYLRA,A.MTGKEY
+      ,rtrim(B.KDPER) as KDPERLRA, rtrim(B.NMPER) as NMPERLRA,B.TYPE,B.MTGKEY
+      ,rtrim(C.KDPER) as KDPER,rtrim(C.NMPER) as NMPER
+      from SETDLRALO A
+      left outer join MATANGD B on A.MTGKEY = B.MTGKEY
+      left outer join MATANGD C on A.MTGKEYLRA = C.MTGKEY
+    </select>
+    <select id="QueryByAllSetdlralo" extends="BaseQuerySetdlralo" parameterClass="Setdlralo" resultMap="return-result">
+      where A.MTGKEY = #Mtgkey# and
+      case #Parameter.Field#
+      <!--25 - 02 - 2009  GN-->
+      when '1' then C.KDPER
+      when '2' then C.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+    </select>
+    <select id="LoadByPKSetdlralo" extends="BaseQuerySetdlralo" parameterClass="Setdlralo" resultMap="return-result">
+      where A.MTGKEYLRA=#Mtgkeylra# and A.MTGKEY=#Mtgkey#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Setdlralo">
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Mtgkeylra" column="MTGKEYLRA"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Setdlralo">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Setdlralo">
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Mtgkeylra" column="MTGKEYLRA"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

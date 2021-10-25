@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Fungsinit" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Fungsinit" type="Usadi.Valid49.BO.FungsinitControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Fungsinit">
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Idfung" column="IDFUNG"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <insert id="InsertFungsinit" parameterMap="insert-param" >
+      <generate table="FUNGSINIT"/>
+    </insert>
+    <update id="UpdateByFungsinit" parameterMap="update-param" >
+      <generate table="FUNGSINIT" by="UNITKEY"/>
+    </update>
+    <delete id="DeleteByFungsinit" parameterMap="delete-param" >
+      <generate table="FUNGSINIT" by="UNITKEY"/>
+    </delete>
+    <select id="QueryByAllFungsinit" parameterClass="Fungsinit" resultMap="return-result">
+      select FI.UNITKEY,FI.IDFUNG,U.KDUNIT,U.NMUNIT
+      from FUNGSINIT FI left outer join
+      DAFTUNIT U on U.UNITKEY=FI.UNITKEY
+      where IDFUNG=#Idfung#
+      and case #Parameter.Field #
+      when '1' then U.KDUNIT
+      when '2' then U.NMUNIT
+      end like '%'+#Parameter.Value#+'%'
+      order by U.KDUNIT
+    </select>
+    <select id="LoadByPKFungsinit" parameterClass="Fungsinit"  resultMap="return-result" >
+      SELECT * FROM FUNGSINIT
+      WHERE UNITKEY=#Unitkey#
+    </select>
+  </statements>
+
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Fungsinit">
+      <parameter property="Idfung" column="IDFUNG"/>
+      <parameter property="Parameter.Key" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Fungsinit">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Fungsinit">
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>
+

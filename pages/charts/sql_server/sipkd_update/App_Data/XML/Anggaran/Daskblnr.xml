@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Daskblnr" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Daskblnr" type="Usadi.Valid49.BO.DaskblnrControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Daskblnr">
+      <result property="Ket_bulan" column="KET_BULAN"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Kd_bulan" column="KD_BULAN"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Idxdask" column="IDXDASK"/>
+    </resultMap>
+    <resultMap id="return-result-kas" extends="return-result" class="Daskblnr">
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertDaskblnr" parameterMap="insert-param">
+      <generate table="DASKBLNR"/>
+    </insert>
+    <update id="UpdateByDaskblnr" parameterMap="update-param">
+      <generate table="DASKBLNR" by="KD_BULAN,UNITKEY,KDKEGUNIT,MTGKEY,IDXDASK"/>
+    </update>
+    <update id="UpdateByKasDaskblnr" parameterClass="Daskblnr">
+      update DASKBLNR set NILAI=#Nilai#
+      where UNITKEY=#Unitkey# and KDKEGUNIT=#Kdkegunit# and MTGKEY=#Mtgkey# and KD_BULAN=#Kd_bulan#
+      and IDXDASK in (SELECT IDXDASK from SKDASK where UNITKEY=#Unitkey# and KDTAHAP=#Kdtahap#)
+    </update>
+    <delete id="DeleteByDaskblnr" parameterMap="delete-param">
+      <generate table="DASKBLNR" by="KD_BULAN,UNITKEY,KDKEGUNIT,MTGKEY,IDXDASK"/>
+    </delete>
+    <delete id="DeleteByAllDaskblnr" parameterClass="Daskblnr" >
+      delete from DASKBLNR
+      where MTGKEY=#Mtgkey# and UNITKEY=#Unitkey# and KDKEGUNIT=#Kdkegunit# and IDXDASK=#Idxdask#
+    </delete>
+    <select id="BaseQueryDaskblnr" parameterClass="Daskblnr" resultMap="return-result">
+			select A.IDXDASK,A.KD_BULAN,A.KDKEGUNIT,A.MTGKEY,A.NILAI,A.UNITKEY
+			,B.KET_BULAN
+			from DASKBLNR A
+			LEFT OUTER JOIN BULAN B on A.KD_BULAN = B.KD_BULAN
+			<!--LEFT OUTER JOIN DASKR C on A.MTGKEY = C.MTGKEY AND A.UNITKEY = C.UNITKEY AND A.IDXDASK = C.IDXDASK AND A.KDKEGUNIT = C.KDKEGUNIT-->
+		</select>
+    <select id="QueryByAllDaskblnr" extends="BaseQueryDaskblnr" parameterClass="Daskblnr" resultMap="return-result">
+      where A.KDKEGUNIT=#Kdkegunit# and A.UNITKEY=#Unitkey# and A.MTGKEY=#Mtgkey# and A.IDXDASK=#Idxdask#
+      order by A.KD_BULAN
+    </select>
+    <select id="QueryByTrwDaskblnr" parameterClass="Daskblnr" resultMap="return-result">
+      SELECT UNITKEY, MTGKEY, IDXDASK, KD_TRW AS KD_BULAN, KDKEGUNIT,'Triwulan '+cast(KD_TRW as varchar(2)) as KET_BULAN, SUM(NILAI) AS NILAI
+      FROM (
+      SELECT UNITKEY, MTGKEY, IDXDASK, KD_BULAN,KDKEGUNIT, (KD_BULAN - 1) / 3 + 1 AS KD_TRW, NILAI
+      FROM DASKBLNR AS RB
+      WHERE (UNITKEY = #Unitkey#) AND (MTGKEY = #Mtgkey#) AND (IDXDASK = #Idxdask#)and (KDKEGUNIT=#Kdkegunit#)
+      )T
+      GROUP BY UNITKEY, MTGKEY, IDXDASK, KD_TRW, KDKEGUNIT
+      ORDER BY KD_TRW
+    </select>
+    <select id="QueryByKasDaskblnr" parameterClass="Daskblnr" resultMap="return-result-kas">
+      select A.KDKEGUNIT,A.IDXDASK,A.KD_BULAN,A.MTGKEY,A.NILAI,A.UNITKEY,D.KDPER,D.NMPER
+      ,B.KET_BULAN
+      from DASKBLNR A
+      left outer join BULAN B on A.KD_BULAN = B.KD_BULAN
+      left outer join MATANGR D on A.MTGKEY = D.MTGKEY
+      where A.KD_BULAN=#Kd_bulan# and A.UNITKEY=#Unitkey# and A.KDKEGUNIT=#Kdkegunit#
+      and A.IDXDASK in (select IDXDASK from SKDASK where UNITKEY=#Unitkey# and KDTAHAP=#Kdtahap#)
+      order by A.KD_BULAN
+    </select>
+    <select id="QueryByKasTrwDaskblnr" parameterClass="Daskblnr" resultMap="return-result-kas">
+      SELECT KDKEGUNIT,IDXDASK,UNITKEY, MTGKEY, KD_TRW AS KD_BULAN,'Triwulan '+cast(KD_TRW as varchar(2)) as KET_BULAN, SUM(NILAI) AS NILAI,KDPER,NMPER
+      FROM (
+      SELECT KDKEGUNIT,IDXDASK,UNITKEY, RB.MTGKEY, KD_BULAN,(KD_BULAN - 1) / 3 + 1 AS KD_TRW, NILAI,D.KDPER,D.NMPER
+      FROM DASKBLNR AS RB
+      left outer join MATANGR D on RB.MTGKEY = D.MTGKEY
+      WHERE (UNITKEY = #Unitkey#) and KDKEGUNIT=#Kdkegunit#
+      and IDXDASK in (select IDXDASK from SKDASK where UNITKEY=#Unitkey# and KDTAHAP=#Kdtahap#)
+      )T
+      where KD_TRW = #Kd_bulan#
+      GROUP BY KDKEGUNIT,IDXDASK,UNITKEY, MTGKEY, KD_TRW, KDPER, NMPER
+      ORDER BY KD_TRW
+    </select>
+    <select id="LoadByPKDaskblnr" extends="BaseQueryDaskblnr" parameterClass="Daskblnr" resultMap="return-result">
+      where A.KD_BULAN=#Kd_bulan# and A.UNITKEY=#Unitkey# and A.KDKEGUNIT=#Kdkegunit# and A.MTGKEY=#Mtgkey# and A.IDXDASK=#Idxdask# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Daskblnr">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Kd_bulan" column="KD_BULAN"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Idxdask" column="IDXDASK"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Daskblnr">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Daskblnr">
+      <parameter property="Kd_bulan" column="KD_BULAN"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Idxdask" column="IDXDASK"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

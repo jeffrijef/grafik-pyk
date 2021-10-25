@@ -1,0 +1,4 @@
+TITLE=Kontrol Pengeluaran BUD
+Awal=datetime;Tanggal;30;
+Akhir=datetime;Tanggal;30;
+Unitkey=string;Key Unit;4;

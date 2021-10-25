@@ -1,0 +1,4 @@
+TITLE=BPK
+Unitkey=sring;Key Unit;10;;;;-1;
+Idxkode=string;Index Kode;4;
+Nobpk=String;Nomor BPK;30;

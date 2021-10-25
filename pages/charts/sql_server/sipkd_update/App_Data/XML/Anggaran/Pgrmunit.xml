@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Pgrmunit" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Pgrmunit" type="Usadi.Valid49.BO.PgrmunitControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Pgrmunit">
+      <result property="AllowSuperUser" column="ALLOWSUPERUSER"/>
+      <result property="Nmprgrm" column="NMPRGRM"/>
+      <result property="Nuprgrm" column="NUPRGRM"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Idprgrm" column="IDPRGRM"/>
+      <result property="Kdtahap" column="KDTAHAP"/>
+      <result property="Unitkey" column="UNITKEY"/>
+    </resultMap>
+    <resultMap id="return-result-tree" class="Pgrmunit">
+      <result property="Idprgrm" column="KDKEGUNIT"/>
+      <result property="Nuprgrm" column="NUKEG"/>
+      <result property="Nmprgrm" column="NMKEGUNIT"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Type" column="TYPE"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertPgrmunit" parameterMap="insert-param">
+      <generate table="PGRMUNIT"/>
+    </insert>
+    <update id="UpdateByPgrmunit" parameterMap="update-param">
+      <generate table="PGRMUNIT" by="IDPRGRM,KDTAHAP,UNITKEY"/>
+    </update>
+    <delete id="DeleteByPgrmunit" parameterMap="delete-param">
+      <generate table="PGRMUNIT" by="IDPRGRM,KDTAHAP,UNITKEY"/>
+    </delete>
+    <select id="BaseQueryPgrmunit" parameterClass="Pgrmunit" resultMap="return-result">
+      select #AllowSuperUser# as ALLOWSUPERUSER,A.IDPRGRM,A.KDTAHAP,A.UNITKEY
+      ,rtrim(isnull(D.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(C.NUPRGRM) as NUPRGRM, C.NMPRGRM, B.KDUNIT,B.NMUNIT
+      from PGRMUNIT A
+      left outer join DAFTUNIT B on A.UNITKEY=B.UNITKEY
+      left outer join MPGRM C on A.IDPRGRM=C.IDPRGRM
+      left outer join DAFTUNIT D on C.UNITKEY=D.UNITKEY
+    </select>
+    <select id="QueryByAllPgrmunit" extends="BaseQueryPgrmunit" parameterClass="Pgrmunit" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.KDTAHAP=#Kdtahap#
+      and case #Parameter.Field#
+      when '1' then rtrim(isnull(D.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(C.NUPRGRM)
+      when '2' then C.NMPRGRM
+      end like '%'+ #Parameter.Value# + '%'
+      order by rtrim(isnull(D.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(C.NUPRGRM)
+    </select>
+    <select id="LoadByPKPgrmunit" extends="BaseQueryPgrmunit" parameterClass="Pgrmunit" resultMap="return-result">
+      where A.KDTAHAP=#Kdtahap# and A.UNITKEY=#Unitkey# 
+    </select>
+    <select id="BaseQueryLookupPgrmunit" parameterClass="Pgrmunit" resultMap="return-result-tree">
+      select UNITKEY,KDKEGUNIT,rtrim(NUKEG) as NUKEG,rtrim(NMKEGUNIT) as NMKEGUNIT,TYPE,LEVELKEG,KDSIFAT
+      from (
+      select #Unitkey# as UNITKEY,isnull(UR.UNITKEY,'') as KDKEGUNIT,isnull(rtrim(UR.KDUNIT),(select rtrim(numdigit) from struunit where kdlevel='2'))) as NUKEG,isnull(UR.NMUNIT,'NON URUSAN') as NMKEGUNIT,'H' as TYPE,'0' as LEVELKEG,'' as KDSIFAT
+      from PGRMUNIT P left outer join MPGRM MP on P.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      where
+      ((#Opsi# = 4 and (P.UNITKEY in (select UNITKEY from DAFTUNIT where left(KDUNIT,8)=left(#Kdunit#,8) ))) or
+      (#Opsi# Not in(4) and P.unitkey=#Unitkey#))
+      and P.KDTAHAP=#Kdtahap#
+      union
+      select #Unitkey# as UNITKEY,MP.IDPRGRM as KDKEGUNIT,isnull(rtrim(UR.KDUNIT),(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM) as NUKEG,MP.NMPRGRM as NMKEGUNIT,'D' as TYPE,'1' as LEVELKEG,'' as KDSIFAT
+      from PGRMUNIT P
+      left outer join MPGRM MP on P.IDPRGRM=MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY=UR.UNITKEY
+      where
+      ((#Opsi# = 4 and (P.UNITKEY in (select UNITKEY from DAFTUNIT where left(KDUNIT,8)=left(#Kdunit#,8) ))) or
+      (#Opsi# Not in(4) and P.unitkey=#Unitkey#))
+      and P.KDTAHAP=#Kdtahap#
+      )A
+      where case #Parameter.Field#
+      when '1' then NUKEG
+      when '2' then NMKEGUNIT
+      end like '%'+ #Parameter.Value# + '%'
+    </select>
+    <select id="QueryByUnitkeyPgrmunit" extends="BaseQueryLookupPgrmunit" parameterClass="Pgrmunit" resultMap="return-result-tree">
+      order by NUKEG
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Pgrmunit">
+      <parameter property="Idprgrm" column="IDPRGRM"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Pgrmunit">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Pgrmunit">
+      <parameter property="Idprgrm" column="IDPRGRM"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Sp2dsalur" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <alias>
+      <typeAlias alias="Sp2dsalur" type="Usadi.Valid49.BO.Sp2dsalurControl" />
+    </alias>
+    <resultMaps>
+      <resultMap id="return-result" class="Sp2dsalur">
+        <result property="Nocek" column="NOCEK"/>
+        <result property="Tanggal" column="TANGGAL"/>
+        <result property="Uraisalur" column="URAISALUR"/>
+        <result property="Nosalur" column="NOSALUR"/>
+      </resultMap>
+    </resultMaps>
+    <statements>
+      <insert id="InsertSp2dsalur" parameterMap="insert-param">
+        <generate table="Sp2dsalur"/>
+      </insert>
+      <update id="UpdateBySp2dsalur" parameterMap="update-param">
+        <generate table="Sp2dsalur" by="NOSALUR"/>
+      </update>
+      <delete id="DeleteBySp2dsalur" parameterMap="delete-param">
+        <generate table="Sp2dsalur" by="NOSALUR"/>
+      </delete>
+      <select id="BaseQuerySp2dsalur" parameterClass="Sp2dsalur" resultMap="return-result">
+        select S.NOCEK,S.TANGGAL,S.URAISALUR,S.NOSALUR
+        from SP2DSALUR S
+      </select>
+      <select id="QueryByAllSp2dsalur" extends="BaseQuerySp2dsalur" parameterClass="Sp2dsalur" resultMap="return-result">
+        where S.TANGGAL=#Tanggal# and
+        case #Parameter.Field#
+        when '1' then S.NOCEK
+        when '2' then convert(char(10), S.TANGGAL, 103)
+        when '3' then S.URAISALUR
+        when '4' then S.NOSALUR
+        end like '%'+ #Parameter.Value# + '%'
+        order by S.NOCEK,S.TANGGAL,S.URAISALUR,S.NOSALUR
+      </select>
+      <select id="LoadByPKSp2dsalur" extends="BaseQuerySp2dsalur" parameterClass="Sp2dsalur" resultMap="return-result">
+        where S.NOSALUR = #Nosalur#
+      </select>
+    </statements>
+    <parameterMaps>
+      <parameterMap id="insert-param" class="Sp2dsalur">
+        <parameter property="Nocek" column="NOCEK"/>
+        <parameter property="Tanggal" column="TANGGAL"/>
+        <parameter property="Uraisalur" column="URAISALUR"/>
+        <parameter property="Nosalur" column="NOSALUR"/>
+      </parameterMap>
+      <parameterMap id="update-param" extends="insert-param" class="Sp2dsalur">
+      </parameterMap>
+      <parameterMap id="delete-param" class="Sp2dsalur">
+        <parameter property="Nosalur" column="NOSALUR"/>
+      </parameterMap>
+    </parameterMaps>
+</sqlMap>
+

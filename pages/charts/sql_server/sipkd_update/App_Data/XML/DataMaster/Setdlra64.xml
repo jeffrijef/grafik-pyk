@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Setdlra64" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Setdlra64" type="Usadi.Valid49.BO.Setdlra64Control" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Setdlra64">
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Nlraawal" column="NLRAAWAL"/>
+      <result property="Mtgkeylra" column="MTGKEYLRA"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Kdperlra" column="KDPERLRA"/>
+      <result property="Nmperlra" column="NMPERLRA"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSetdlra64" parameterMap="insert-param">
+      <generate table="SETDLRA64"/>
+    </insert>
+    <update id="UpdateBySetdlra64" parameterMap="update-param">
+      <generate table="SETDLRA64" by="MTGKEY"/>
+    </update>
+    <delete id="DeleteBySetdlra64" parameterMap="delete-param">
+      <generate table="SETDLRA64" by="MTGKEY"/>
+    </delete>
+    <select id="BaseQuerySetdlra64" parameterClass="Setdlra64" resultMap="return-result">
+      select A.MTGKEY,A.MTGKEYLRA
+      ,rtrim(B.KDPER) as KDPERLRA, rtrim(B.NMPER) as NMPERLRA,B.TYPE,B.MTGKEY as MTGKEYLRA,B.NLRAAWAL
+      ,rtrim(C.KDPER) as KDPER,rtrim(C.NMPER) as NMPER
+      from SETDLRA64 A
+      left outer join MATANGDLRA64 B on A.MTGKEYLRA = B.MTGKEY
+      left outer join MATANGD C on A.MTGKEY = C.MTGKEY
+    </select>
+    <select id="QueryByAllSetdlra64" extends="BaseQuerySetdlra64" parameterClass="Setdlra64" resultMap="return-result">
+      where A.MTGKEYLRA = #Mtgkeylra# and
+      case #Parameter.Field#
+      <!--25 - 02 - 2009  GN-->
+      when '1' then C.KDPER
+      when '2' then C.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+    </select>
+    <select id="LoadByPKSetdlra64" extends="BaseQuerySetdlra64" parameterClass="Setdlra64" resultMap="return-result">
+      where A.MTGKEY=#Mtgkey# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Setdlra64">
+      <parameter property="Mtgkeylra" column="MTGKEYLRA"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Setdlra64">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Setdlra64">
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

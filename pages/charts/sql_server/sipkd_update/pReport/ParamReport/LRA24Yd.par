@@ -1,0 +1,5 @@
+TITLE= LRA (SAP)
+Unitkey=string;Key Unit;4;
+Bulan=int;Periode;4;
+Level=string;Level Rekening;4;
+Tahap=string;Kode Tahap;4;

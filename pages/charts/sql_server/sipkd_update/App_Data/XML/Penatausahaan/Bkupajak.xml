@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Bkupajak" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Bkupajak" type="Usadi.Valid49.BO.BkupajakControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Bkupajak">
+      <result property="AllowSuperUser" column="ALLOWSUPERUSER"/>
+      <result property="Idxttd" column="IDXTTD"/>
+      <result property="Keybend" column="KEYBEND"/>
+      <result property="Nobukti" column="NOBKPAJAK"/>
+      <result property="Tglbukti" column="TGLBKPAJAK"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Uraian" column="URAIAN"/>
+      <result property="Tglbkuskpd" column="TGLBKUSKPD"/>
+      <result property="Nobkuskpd" column="NOBKUSKPD"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertBkupajak" parameterMap="insert-param">
+      <generate table="BKUPAJAK"/>
+    </insert>
+    <update id="UpdateByBkupajak" parameterMap="update-param">
+      <generate table="BKUPAJAK" by="NOBKUSKPD,UNITKEY"/>
+    </update>
+		<update id="UpdateByTglvalidBkupajak" parameterClass="Bkupajak">
+      update BKUPAJAK set TGLVALID=#Tglvalid#
+      where UNITKEY=#Unitkey# and NOBKUSKPD=#Nobkuskpd#
+    </update>
+    <update id="UpdateByDraftBkupajak" parameterClass="Bkupajak" >
+      update BKUPAJAK set TGLVALID=null
+      where UNITKEY=#Unitkey# and NOBKUSKPD=#Nobkuskpd#
+    </update>
+    <delete id="DeleteByBkupajak" parameterMap="delete-param">
+      <generate table="BKUPAJAK" by="NOBKUSKPD,UNITKEY"/>
+    </delete>
+    <select id="BaseQueryBkupajak" parameterClass="Bkupajak" resultMap="return-result">
+      select #AllowSuperUser# as ALLOWSUPERUSER,rtrim(A.IDXTTD) as IDXTTD,rtrim(A.KEYBEND) as KEYBEND,A.NOBKPAJAK,A.NOBKUSKPD,A.TGLBKUSKPD,A.TGLVALID,A.UNITKEY,A.URAIAN
+      ,B.TGLBKPAJAK
+      from BKUPAJAK A
+      Left outer Join BKPAJAK B on A.NOBKPAJAK = B.NOBKPAJAK and A.UNITKEY=B.UNITKEY
+    </select>
+    <select id="QueryByNobkpajakBkupajak" extends="BaseQueryBkupajak" parameterClass="Bkupajak" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOBKPAJAK=#Nobukti#
+    </select>
+    <select id="QueryByAllBkupajak" extends="BaseQueryBkupajak" parameterClass="Bkupajak" resultMap="return-result">
+      where A.UNITKEY=#Unitkey#
+      and (S.KEYBEND = #Keybend# or #Keybend#='')
+      and case #Parameter.Field#
+      when '1' then A.NOBKUSKPD
+      when '2' then A.NOBKPAJAK
+      when '3' then convert(char(10), A.TGLBKUSKPD, 103)
+      when '4' then convert(char(10), A.TGLVALID, 103)
+      when '5' then A.URAIAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOBKUSKPD
+    </select>
+    <select id="LoadByPKBkupajak" extends="BaseQueryBkupajak" parameterClass="Bkupajak" resultMap="return-result">
+      where A.NOBKUSKPD=#Nobkuskpd# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Bkupajak">
+      <!--<parameter property="Idxttd" column="IDXTTD"/>-->
+      <parameter property="Keybend" column="KEYBEND"/>
+      <parameter property="Nobukti" column="NOBKPAJAK"/>
+      <parameter property="Tglbkuskpd" column="TGLBKUSKPD"/>
+      <parameter property="Uraian" column="URAIAN"/>
+      <parameter property="Nobkuskpd" column="NOBKUSKPD"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Bkupajak">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Bkupajak">
+      <parameter property="Nobkuskpd" column="NOBKUSKPD"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

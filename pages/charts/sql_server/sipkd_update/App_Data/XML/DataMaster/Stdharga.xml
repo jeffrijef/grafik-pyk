@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Stdharga" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Stdharga" type="Usadi.Valid49.BO.StdhargaControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Stdharga">
+      <result property="Kdjnsstd" column="KDJNSSTD"/>
+      <result property="Ket" column="KET"/>
+      <result property="Ketstandar" column="KETSTANDAR"/>
+      <result property="Nmjnsstd" column="NMJNSSTD"/>
+      <result property="Hrgstd" column="HRGSTD"/>
+      <result property="Merkstd" column="MERKSTD"/>
+      <result property="Nmstd" column="NMSTD"/>
+      <result property="Nostd" column="NOSTD"/>
+      <result property="Satuan" column="SATUAN"/>
+      <result property="Spekstd" column="SPEKSTD"/>
+      <result property="Stvalid" column="STVALID"/>
+      <result property="Idstdharga" column="IDSTDHARGA"/>
+    </resultMap>
+    <resultMap id="return-result-i" class="Stdharga">
+      <result property="Nostd" column="NOSTD"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="IDSTDHARGA"/>
+      <result property="Field" column="NOSTD"/>
+      <result property="Value" column="NMSTD"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertStdharga" parameterMap="insert-param">
+      <generate table="STDHARGA"/>
+    </insert>
+    <update id="UpdateByStdharga" parameterMap="update-param">
+      <generate table="STDHARGA" by="IDSTDHARGA"/>
+    </update>
+    <delete id="DeleteByStdharga" parameterMap="delete-param">
+      <generate table="STDHARGA" by="IDSTDHARGA"/>
+    </delete>
+    <select id="BaseQueryStdharga" parameterClass="Stdharga" resultMap="return-result">
+      select A.HRGSTD,A.IDSTDHARGA,A.KDJNSSTD,A.KET,A.MERKSTD,A.NMSTD,A.NOSTD,A.SATUAN,A.SPEKSTD,A.STVALID
+      , B.NMJNSSTD, B.KET as KETSTANDAR
+      from STDHARGA A
+      left outer join JSTANDAR B on A.KDJNSSTD = B.KDJNSSTD
+    </select>
+    <select id="QueryByAllStdharga" extends="BaseQueryStdharga" parameterClass="Stdharga" resultMap="return-result">
+			where A.KDJNSSTD=#Kdjnsstd# and A.IDSTDHARGA not in ('','-1')
+			and case #Parameter.Field#
+			when '1' then A.NOSTD
+			when '2' then A.NMSTD
+			when '3' then A.SPEKSTD
+			when '4' then A.SATUAN
+			when '5' then convert(varchar(50),A.HRGSTD)
+			when '6' then A.KET
+			end like '%'+ #Parameter.Value# + '%'
+			order by A.NOSTD
+		</select>
+    <select id="QueryByStdhargarStdharga" extends="BaseQueryStdharga" parameterclass="Usadi.Valid49.BO.StdhargarControl" resultMap="return-lookup">
+			where A.IDSTDHARGA not in (select IDSTDHARGA from STDHARGAR where MTGKEY=#Mtgkey#) and
+			case #Parameter.Field#
+			when '1' then A.NOSTD
+			when '2' then A.NMSTD
+			end like '%'+ #Parameter.Value# + '%'
+			order by A.NOSTD
+		</select>
+		<select id="QueryByStdhargadStdharga" extends="BaseQueryStdharga" parameterclass="Usadi.Valid49.BO.StdhargadControl" resultMap="return-lookup">
+			where A.IDSTDHARGA not in (select IDSTDHARGA from STDHARGAD where MTGKEY=#Mtgkey#) and
+			case #Parameter.Field#
+			when '1' then A.NOSTD
+			when '2' then A.NMSTD
+			end like '%'+ #Parameter.Value# + '%'
+			order by A.NOSTD
+		</select>
+    <select id="QueryByNostdStdharga" parameterclass="Stdharga" resultMap="return-result-i">
+      select NOSTD from STDHARGA  where NOSTD=#Nostd#
+    </select>
+    <select id="LoadByPKStdharga" extends="BaseQueryStdharga" parameterClass="Stdharga" resultMap="return-result">
+      where A.IDSTDHARGA=#Idstdharga# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Stdharga">
+      <parameter property="Hrgstd" column="HRGSTD"/>
+      <parameter property="Kdjnsstd" column="KDJNSSTD"/>
+      <parameter property="Ket" column="KET"/>
+      <parameter property="Merkstd" column="MERKSTD"/>
+      <parameter property="Nmstd" column="NMSTD"/>
+      <parameter property="Nostd" column="NOSTD"/>
+      <parameter property="Satuan" column="SATUAN"/>
+      <parameter property="Spekstd" column="SPEKSTD"/>
+      <parameter property="Stvalid" column="STVALID"/>
+      <parameter property="Idstdharga" column="IDSTDHARGA"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Stdharga">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Stdharga">
+      <parameter property="Idstdharga" column="IDSTDHARGA"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

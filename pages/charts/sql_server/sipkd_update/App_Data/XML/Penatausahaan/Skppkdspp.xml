@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Skppkdspp" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Skppkdspp" type="Usadi.Valid49.BO.SkppkdsppControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Skppkdspp">
+      <result property="Tglsk" column="TGLSKP"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Nosk" column="NOSK"/>
+      <result property="Tgspp" column="TGSPP"/>
+      <result property="Nospp" column="NOSPP"/>
+      <result property="Unitkey" column="UNITKEY"/>
+    </resultMap>
+    <resultMap id="return-result-i" class="Skppkdspp">
+      <result property="Nosk" column="NOSK"/>
+      <result property="Nospp" column="NOSPP"/>
+      <result property="Unitkey" column="UNITKEY"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSkppkdspp" parameterMap="insert-param">
+      <generate table="SKPPKDSPP"/>
+    </insert>
+    <update id="UpdateBySkppkdspp" parameterMap="update-param">
+      <generate table="SKPPKDSPP" by="NOSPP,UNITKEY"/>
+    </update>
+    <delete id="DeleteBySkppkdspp" parameterMap="delete-param">
+      <generate table="SKPPKDSPP" by="NOSPP,UNITKEY"/>
+    </delete>
+    <delete id="DeleteByAllSkppkdspp" parameterClass="Skppkdspp" >
+      delete from Skppkdspp
+      where UNITKEY=#Unitkey# and NOSPP=#Nospp# and NOSK=#Nosk#
+    </delete>
+    <select id="BaseQuerySkppkdspp" parameterClass="Skppkdspp" resultMap="return-result">
+      select A.NOSK,A.NOSPP,A.UNITKEY
+      ,T.TGLSPP, T.TGSPP,
+      NILAI =
+      isnull((select sum(isnull(NILAI,0)) from SPPDETRTL C where C.UNITKEY=A.UNITKEY and C.NOSPP=A.NOSPP),0)
+      from Skppkdspp A
+      left outer join SPP T on A.UNITKEY=T.UNITKEY and A.NOSPP=T.NOSPP
+      inner join SKPPKD S on S.UNITKEY=T.UNITKEY and A.NOSK=S.NOSK
+    </select>
+    <select id="QueryByAllSkppkdspp" extends="BaseQuerySkppkdspp" parameterClass="Skppkdspp" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSK=#Nosk#
+      and case #Parameter.Field#
+      when '1' then A.NOSK
+      when '2' then A.NOSPP
+      when '3' then A.UNITKEY
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOSPP
+    </select>
+    <select id="QueryByNoskSkppkdspp" parameterClass="Skppkdspp" resultMap="return-result-i">
+      select A.NOSK,A.NOSPP,A.UNITKEY
+      from Skppkdspp A
+      left outer join SPP T on A.UNITKEY=T.UNITKEY and A.NOSPP=T.NOSPP
+      inner join SKPPKD S on S.UNITKEY=T.UNITKEY and A.NOSK=S.NOSK
+      where A.UNITKEY=#Unitkey# and A.NOSK=#Nosk#
+    </select>    
+    <select id="LoadByPKSkppkdspp" extends="BaseQuerySkppkdspp" parameterClass="Skppkdspp" resultMap="return-result">
+      where A.NOSPP=#Nospp# and A.UNITKEY=#Unitkey#
+    </select>
+    <!--<procedure id="ExecTransferSKkeSPP" parameterMap="transfer-param">
+      WSP_TRANSFER_SKPPKDSPP
+    </procedure>-->
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Skppkdspp">
+      <parameter property="Nosk" column="NOSK"/>
+      <parameter property="Nospp" column="NOSPP"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Skppkdspp">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Skppkdspp">
+      <parameter property="Nospp" column="NOSPP"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="transfer-param" class="Skppkdspp">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Nospp" column="notbp"/>
+      <parameter property="Nosk" column="noskp"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

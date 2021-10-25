@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Laporsah" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Laporsah" type="Usadi.Valid49.BO.LaporsahControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Laporsah">
+			<result property="Kdunit" column="KDUNIT"/>
+			<result property="Nmunit" column="NMUNIT"/>
+			<result property="Ket_bulan" column="KET_BULAN"/>
+			<result property="Kd_bulan" column="KD_BULAN"/>
+			<result property="Unitkey" column="UNITKEY"/>
+		</resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertLaporsah" parameterMap="insert-param">
+      <generate table="LAPORSAH"/>
+    </insert>
+    <update id="UpdateByLaporsah" parameterMap="update-param">
+      <generate table="LAPORSAH" by="UNITKEY"/>
+    </update>
+    <delete id="DeleteByLaporsah" parameterMap="delete-param">
+      <generate table="LAPORSAH" by="UNITKEY"/>
+    </delete>
+    <select id="BaseQueryLaporsah" parameterClass="Laporsah" resultMap="return-result">
+			select A.UNITKEY,BL.KET_BULAN,B.KDUNIT, B.NMUNIT,A.KD_BULAN
+			from LAPORSAH A
+			left outer join DAFTUNIT B on A.UNITKEY = B.UNITKEY
+			left outer join BULAN BL on A.KD_BULAN = BL.KD_BULAN
+		</select>
+    <select id="QueryByAllLaporsah" extends="BaseQueryLaporsah" parameterClass="Laporsah" resultMap="return-result">
+			where
+			case #Parameter.Field#
+			when '1' then B.NMUNIT
+			when '2' then BL.KET_BULAN
+			end like '%'+ #Parameter.Value# + '%'
+			order by B.KDUNIT
+		</select>
+    <select id="LoadByPKLaporsah" extends="BaseQueryLaporsah" parameterClass="Laporsah" resultMap="return-result">
+			where A.UNITKEY=#Unitkey#
+		</select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Laporsah">
+			<parameter property="Kd_bulan" column="KD_BULAN"/>
+			<parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Laporsah">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Laporsah">
+			<parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Daftdok" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Daftdok" type="Usadi.Valid49.BO.DaftdokControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Daftdok">
+      <result property="Nmdok" column="NMDOK"/>
+      <result property="Kddok" column="KDDOK"/>
+      <result property="Ket" column="KET"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertDaftdok" parameterMap="insert-param">
+      <generate table="DAFTDOK"/>
+    </insert>
+    <update id="UpdateByDaftdok" parameterMap="update-param">
+      <generate table="DAFTDOK" by="KDDOK"/>
+    </update>
+    <delete id="DeleteByDaftdok" parameterMap="delete-param">
+      <generate table="DAFTDOK" by="KDDOK"/>
+    </delete>
+    <select id="BaseQueryDaftdok" parameterClass="Daftdok" resultMap="return-result">
+      select D.KDDOK, D.NMDOK, D.KET 
+	    from DAFTDOK D
+    </select>
+    <select id="QueryByAllDaftdok" extends="BaseQueryDaftdok" parameterClass="Daftdok" resultMap="return-result">
+			where
+			case #Parameter.Field#
+			when '1' then D.KDDOK
+			when '2' then D.NMDOK
+			when '3' then D.KET
+			end like '%'+ #Parameter.Value# + '%'
+			Order By D.KDDOK
+		</select>
+    <select id="LoadByPKDaftdok" extends="BaseQueryDaftdok" parameterClass="Daftdok" resultMap="return-result">
+      where D.KDDOK=#Kddok# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Daftdok">
+      <parameter property="Nmdok" column="NMDOK"/>
+      <parameter property="Ket" column="KET"/>
+      <parameter property="Kddok" column="KDDOK"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Daftdok">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Daftdok">
+      <parameter property="Kddok" column="KDDOK"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

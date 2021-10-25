@@ -1,0 +1,7 @@
+TITLE=RKA-SPKD 2.2.1
+Unitkey=string;Key Unit;4;
+Kdkegunit=string;Kode Kegiatan Unit;4;
+Kdtahap=string;Tahap;4;
+Tanggal=datetime;Tanggal;30;
+Hal=string;Halaman;4;
+Idxkode=string;label;50;;-1

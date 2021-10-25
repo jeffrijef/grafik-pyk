@@ -1,0 +1,4 @@
+TITLE=LAPORAN REALISASI PENERIMAAN
+Awal=datetime;Tanggal;30;
+Akhir=datetime;Tanggal;30;
+Kdtahap=string;Tahap;10;

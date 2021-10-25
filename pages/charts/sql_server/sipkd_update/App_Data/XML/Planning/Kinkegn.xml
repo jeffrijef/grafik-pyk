@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Kinkegn" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Kinkegn" type="Usadi.Valid49.BO.KinkegnControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Kinkegn">
+      <result property="Kdtahun" column="KDTAHUN"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Idprgrmn" column="IDPRGRMN"/>
+      <result property="Kdkegs" column="KDKEGS"/>
+      <result property="Kdkegn" column="KDKEGN"/>
+      <result property="Kdjkk" column="KDJKK"/>
+      <result property="Tolokukur" column="TOLOKUKUR"/>
+      <result property="Target" column="TARGET"/>
+      <result property="Urjkk" column="URJKK"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Noprgrmn" column="NOPRGRMN"/>
+      <result property="Nmprgrmn" column="NMPRGRMN"/>
+      <result property="Nokegs" column="NOKEGS"/>
+      <result property="Nmkegs" column="NMKEGS"/>
+      <result property="Nokegn" column="NOKEGN"/>
+      <result property="Nmkegn" column="NMKEGN"/>
+      <result property="Nmtahun" column="NMTAHUN"/>
+    </resultMap>
+    <resultMap id="return-view" class="Kinkegn">
+      <result property="Kdtahun" column="KDTAHUN"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Idprgrmn" column="IDPRGRMN"/>
+      <result property="Kdkegs" column="KDKEGS"/>
+      <result property="Kdkegn" column="KDKEGN"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Noprgrmn" column="NOPRGRMN"/>
+      <result property="Nmprgrmn" column="NMPRGRMN"/>
+      <result property="Nokegs" column="NOKEGS"/>
+      <result property="Nmkegs" column="NMKEGS"/>
+      <result property="Nokegn" column="NOKEGN"/>
+      <result property="Nmkegn" column="NMKEGN"/>
+      <result property="Nmtahun" column="NMTAHUN"/>
+      <result property="Input" column="INPUT"/>
+      <result property="Output" column="OUTPUT"/>
+      <result property="Outcome" column="OUTCOME"/>
+      <result property="Kdjkk" column="KDJKK"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <insert id="InsertKinkegn" parameterMap="insert-param" >
+      <generate table="KINKEGN"/>
+    </insert>
+    <update id="UpdateByKinkegn" parameterMap="update-param" >
+      <generate table="KINKEGN" by="KDTAHUN,UNITKEY,KDKEGN,KDJKK"/>
+    </update>
+    <delete id="DeleteByKinkegn" parameterMap="delete-param" >
+      <generate table="KINKEGN" by="KDTAHUN,UNITKEY,KDKEGN"/>
+    </delete>
+    <select id="BaseQueryKinkegn" parameterClass="Kinkegn" resultMap="return-result">
+      select KKN.UNITKEY, KN.IDPRGRMN, KN.KDKEGS, KN.KDKEGN, KKN.KDJKK, KKN.TOLOKUKUR, KKN.TARGET,
+      JI.URJKK, UN.KDUNIT, UN.NMUNIT, KS.NOKEGS,KS.NMKEGS, PN.NOPRGRMN,PN.NMPRGRMN,KN.NOKEGN,KN.NMKEGN,
+      KKN.KDTAHUN,TN.NMTAHUN
+      from KINKEGN KKN
+      left outer join JINDIKATOR JI on KKN.KDJKK = JI.KDJKK
+      left outer join DAFTUNIT UN on KKN.UNITKEY = UN.UNITKEY
+      left outer join KEGN KN on KKN.UNITKEY = KN.UNITKEY and KKN.KDKEGN = KN.KDKEGN and KKN.KDTAHUN=KN.KDTAHUN
+      left outer join KEGS KS on KN.UNITKEY = KS.UNITKEY and KN.KDKEGS = KS.KDKEGS
+      left outer join PGRMN PN on KN.UNITKEY = PN.UNITKEY and KN.IDPRGRMN = PN.IDPRGRMN and KN.KDTAHUN=PN.KDTAHUN
+      left outer join JTAHUN TN on KKN.KDTAHUN = TN.KDTAHUN
+    </select>
+    <procedure id="ExecSPViewKinkegn" parameterMap="view-param" resultMap="return-view">
+      WSP_KINKEGN
+    </procedure>
+    <select id="LoadByPKKinkegn" extends="BaseQueryKinkegn" parameterClass="Kinkegn"  resultMap="return-result" >
+      where KKN.KDTAHUN=#Kdtahun# and KKN.UNITKEY=#Unitkey# AND KN.KDKEGN=#Kdkegn# AND KKN.KDJKK=#Kdjkk#
+    </select>
+
+  </statements>
+
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Kinkegn">
+      <parameter property="Tolokukur" column="TOLOKUKUR"/>
+      <parameter property="Target" column="TARGET"/>
+      <parameter property="Kdtahun" column="KDTAHUN"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Kdkegn" column="KDKEGN"/>
+      <parameter property="Kdjkk" column="KDJKK"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Kinkegn">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Kinkegn">
+      <parameter property="Kdtahun" column="KDTAHUN"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Kdkegn" column="KDKEGN"/>
+    </parameterMap>
+    <parameterMap id="view-param" class="Kinkegn">
+      <parameter property="Kdtahun" column="kdtahun"/>
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Idprgrmn" column="kdprgrmn"/>
+      <parameter property="Parameter.Field" column="field"/>
+      <parameter property="Parameter.Value" column="value"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>
+

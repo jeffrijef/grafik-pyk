@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Kegunit" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Kegunit" type="Usadi.Valid49.BO.KegunitControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Kegunit">
+      <result property="AllowSuperUser" column="ALLOWSUPERUSER"/>
+      <result property="Jumlahmin1" column="JUMLAHMIN1"/>
+      <result property="Jumlahpls1" column="JUMLAHPLS1"/>
+      <result property="Idprgrm" column="IDPRGRM"/>
+      <result property="Kdsifat" column="KDSIFAT"/>
+      <result property="Ketkeg" column="KETKEG"/>
+      <result property="Lokasi" column="LOKASI"/>
+      <result property="Nip" column="NIP"/>
+      <result property="Noprior" column="NOPRIOR"/>
+      <result property="Pagu" column="PAGU"/>
+      <result property="Sasaran" column="SASARAN"/>
+      <result property="Targetp" column="TARGETP"/>
+      <result property="Tglakhir" column="TGLAKHIR"/>
+      <result property="Tglawal" column="TGLAWAL"/>
+      <result property="Nmprgrm" column="NMPRGRM"/>
+      <result property="Nuprgrm" column="NUPRGRM"/>
+      <result property="Nmkegunit" column="NMKEGUNIT"/>
+      <result property="Nukeg" column="NUKEG"/>
+      <result property="Nmsifat" column="NMSIFAT"/>
+      <result property="Nama" column="NAMA"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Kdtahap" column="KDTAHAP"/>
+      <result property="Unitkey" column="UNITKEY"/>
+    </resultMap>
+    <resultMap id="return-result-tree" class="Kegunit">
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Nukeg" column="NUKEG"/>
+      <result property="Nmkegunit" column="NMKEGUNIT"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Levelkeg" column="LEVELKEG"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="KDKEGUNIT"/>
+      <result property="Field" column="NUKEG"/>
+      <result property="Value" column="NMKEGUNIT"/>
+      <result property="Type" column="TYPE"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertKegunit" parameterMap="insert-param">
+      <generate table="KEGUNIT"/>
+    </insert>
+    <update id="UpdateByKegunit" parameterMap="update-param">
+      <generate table="KEGUNIT" by="KDKEGUNIT,KDTAHAP,UNITKEY"/>
+    </update>
+    <delete id="DeleteByKegunit" parameterMap="delete-param">
+      <generate table="KEGUNIT" by="KDKEGUNIT,KDTAHAP,UNITKEY"/>
+    </delete>
+    <procedure id="ExecDeleteKegunit" timeout="0" parameterMap="delete-param">
+      WSP_DELKEGUNIT
+    </procedure>    
+    <select id="BaseQueryKegunit" parameterClass="Kegunit" resultMap="return-result">
+      select #AllowSuperUser# as ALLOWSUPERUSER,A.JUMLAHMIN1,A.JUMLAHPLS1,A.KDKEGUNIT,A.IDPRGRM,A.KDSIFAT,rtrim(A.KDTAHAP) as KDTAHAP,
+      A.KETKEG,A.LOKASI,A.NIP,A.NOPRIOR,A.PAGU,A.UNITKEY,
+      A.SASARAN,A.TARGETP,A.TGLAKHIR,A.TGLAWAL,
+      B.NMPRGRM, B.NUPRGRM,
+      rtrim(C.NMKEGUNIT) as NMKEGUNIT, rtrim(C.NUKEG) as NUKEG,
+      D.NMSIFAT,
+      rtrim(F.NAMA) as NAMA,
+      rtrim(E.KDUNIT) as KDUNIT, rtrim(E.NMUNIT) as NMUNIT
+      from KEGUNIT A
+      LEFT OUTER JOIN MPGRM B ON A.IDPRGRM=B.IDPRGRM
+      LEFT OUTER JOIN MKEGIATAN C ON A.KDKEGUNIT=C.KDKEGUNIT
+      LEFT OUTER JOIN SIFATKEG D ON A.KDSIFAT=D.KDSIFAT
+      LEFT OUTER JOIN DAFTUNIT E ON A.UNITKEY=E.UNITKEY
+      LEFT OUTER JOIN PEGAWAI F ON A.NIP=F.NIP
+    </select>
+    <select id="QueryByAllKegunit" extends="BaseQueryKegunit" parameterClass="Kegunit" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.IDPRGRM=#Idprgrm# and A.KDTAHAP=#Kdtahap#
+      and case #Parameter.Field#
+        when '1' then C.NUKEG
+        when '2' then C.NMKEGUNIT
+        when '3' then D.NMSIFAT
+        when '4' then F.NAMA
+      end like '%'+ #Parameter.Value# + '%' 
+      order by C.NUKEG
+    </select>
+    <select id="QueryByCopyKegunit" extends="BaseQueryKegunit" parameterClass="Kegunit" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.KDKEGUNIT=#Kdkegunit# and A.KDTAHAP=#Kdtahap#
+      and case #Parameter.Field#
+      when '1' then A.KDKEGUNIT
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.KDKEGUNIT
+    </select>
+    <select id="QueryByKegunit" extends="BaseQueryKegunit" parameterClass="Kegunit" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.IDPRGRM=#Idprgrm# and A.KDTAHAP=#Kdtahap# and C.LEVELKEG='1' 
+      and case #Parameter.Field#
+      when '1' then C.NUKEG
+      when '2' then C.NMKEGUNIT
+      when '3' then D.NMSIFAT
+      when '4' then F.NAMA
+      end like '%'+ #Parameter.Value# + '%'
+      order by C.NUKEG
+    </select>
+    <select id="QueryBySubKegunit" extends="BaseQueryKegunit" parameterClass="Kegunit" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.IDPRGRM=#Idprgrm# and A.KDTAHAP=#Kdtahap# and C.LEVELKEG in ('1','2') 
+      <!--and left(C.NUKEG,len(#ParentNukeg#))=#ParentNukeg#-->
+      and case #Parameter.Field#
+      when '1' then C.NUKEG
+      when '2' then C.NMKEGUNIT
+      when '3' then D.NMSIFAT
+      when '4' then F.NAMA
+      end like '%'+ #Parameter.Value# + '%'
+      order by C.NUKEG
+    </select>
+    <select id="BaseQueryLookupKegunit" parameterClass="Kegunit" resultMap="return-result-tree">
+      select UNITKEY,KDKEGUNIT,rtrim(NUKEG) as NUKEG,rtrim(NMKEGUNIT) as NMKEGUNIT,TYPE,LEVELKEG,KDSIFAT
+      from (
+      select #Unitkey# as UNITKEY,isnull(UR.UNITKEY,'') as KDKEGUNIT,isnull(rtrim(UR.KDUNIT),(select rtrim(numdigit) from struunit where kdlevel='2'))) as NUKEG,isnull(UR.NMUNIT,'NON URUSAN') as NMKEGUNIT,'H' as TYPE,'0' as LEVELKEG,'' as KDSIFAT
+      from PGRMUNIT P left outer join MPGRM MP on P.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      inner join KEGUNIT K on P.UNITKEY=K.UNITKEY and P.IDPRGRM=K.IDPRGRM
+      where
+      ((#Opsi# = 4 and (P.UNITKEY in (select UNITKEY from DAFTUNIT where left(KDUNIT,8)=left(#Kdunit#,8) ))) or
+      (#Opsi# Not in(4) and P.unitkey=#Unitkey#))
+      and P.KDTAHAP=#Kdtahap#
+      <!--and (KDKEGUNIT = (select KDKEGUNIT from USERKEG where UNITUSERID=#Unitkey#))
+      or (select count(*) from USERKEG where UNITUSERID=#Unitkey#)=0-->
+      union
+      select #Unitkey# as UNITKEY,MP.IDPRGRM as KDKEGUNIT,isnull(rtrim(UR.KDUNIT),(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM) as NUKEG,MP.NMPRGRM as NMKEGUNIT,'H' as TYPE,'0' as LEVELKEG,'' as KDSIFAT
+      from PGRMUNIT P
+      left outer join MPGRM MP on P.IDPRGRM=MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY=UR.UNITKEY
+      inner join KEGUNIT K on P.UNITKEY=K.UNITKEY and P.IDPRGRM=K.IDPRGRM
+      where
+      ((#Opsi# = 4 and (P.UNITKEY in (select UNITKEY from DAFTUNIT where left(KDUNIT,8)=left(#Kdunit#,8) ))) or
+      (#Opsi# Not in(4) and P.unitkey=#Unitkey#))
+      and (P.IDPRGRM=#Idprgrm# or isnull(#Idprgrm#,'')='')
+      and P.KDTAHAP=#Kdtahap#
+      <!--and (KDKEGUNIT = (select KDKEGUNIT from USERKEG where UNITUSERID=#Unitkey#))
+      or (select count(*) from USERKEG where UNITUSERID=#Unitkey#)=0-->
+      union
+      select #Unitkey# as UNITKEY,MK.KDKEGUNIT,isnull(rtrim(UR.KDUNIT),(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM)+rtrim(MK.NUKEG),MK.NMKEGUNIT,'D' as TYPE,MK.LEVELKEG,KDSIFAT
+      from KEGUNIT K
+      left outer join MKEGIATAN MK on K.KDKEGUNIT=MK.KDKEGUNIT
+      left outer join MPGRM MP on MK.IDPRGRM=MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY=UR.UNITKEY
+      where
+      ((#Opsi# = 4 and (K.UNITKEY in (select UNITKEY from DAFTUNIT where left(KDUNIT,8)=left(#Kdunit#,8) ))) or
+      (#Opsi# Not in(4) and K.unitkey=#Unitkey#))
+      and (MK.IDPRGRM=#Idprgrm# or isnull(#Idprgrm#,'')='')
+      and K.KDTAHAP=#Kdtahap#
+      <!--and (k.KDKEGUNIT = (select KDKEGUNIT from USERKEG where UNITUSERID=#Unitkey#))
+      or (select count(*) from USERKEG where UNITUSERID=#Unitkey#)=0-->
+      )A
+      where case #Parameter.Field#
+      when '1' then NUKEG
+      when '2' then NMKEGUNIT
+      end like '%'+ #Parameter.Value# + '%'
+    </select>
+    <select id="QueryByUnitkeyKegunit" parameterClass="Kegunit" resultMap="return-result-tree">
+      <!--and LEVELKEG in ('0','1')
+      order by NUKEG-->
+      exec WSP_TREEVIEWKEG #Unitkey#,#Userid#,#Kdtahap#,#Opsi#,#Kdunit#,#Idprgrm#,#Unituserid#
+    </select>
+    <select id="QueryByLookKegunit" parameterClass="Kegunit" resultMap="return-result-tree">
+      exec WSP_TREEKEGRKA #Unitkey#,#Kdtahap#
+    </select>
+    <select id="QueryByUnitkeyAllKegunit"  parameterClass="Kegunit" resultMap="return-result-tree"><!--extends="BaseQueryLookupKegunit"-->
+      <!--and (KDKEGUNIT in (select KDKEGUNIT from USERKEG where USERID=#Userid#) or isnull(#Userid#,'')='')-->
+      <!--and(     KDKEGUNIT in (select KDKEGUNIT from USERKEG where UNITUSERID=(select UNITKEY from WEBUSER where USERID=#Userid#))
+      ) or  #Unituserid#=''
+      order by NUKEG-->
+      exec WSP_TREEVIEWKEG #Unitkey#,#Userid#,#Kdtahap#,#Opsi#,#Kdunit#,#Idprgrm#,#Unituserid#
+    </select>
+    <select id="QueryByBaruKegunit" parameterClass="Kegunit" resultMap="return-result-tree"><!--extends="BaseQueryLookupKegunit"--> 
+      <!--and (KDSIFAT = '1' or KDSIFAT = '')
+      and(     KDKEGUNIT in (select KDKEGUNIT from USERKEG where UNITUSERID=(select UNITKEY from WEBUSER where USERID=#Userid#))
+      ) or  #Unituserid#=''--> 
+      <!--order by NUKEG-->
+      exec WSP_TREEVIEWKEG #Unitkey#,#Userid#,#Kdtahap#,#Opsi#,#Kdunit#,#Idprgrm#,#Unituserid#
+    </select>
+    <select id="QueryByLamaKegunit" extends="BaseQueryLookupKegunit" parameterClass="Kegunit" resultMap="return-result-tree">
+      and KDSIFAT in ('','2')
+      and(     KDKEGUNIT in (select KDKEGUNIT from USERKEG where UNITUSERID=(select UNITKEY from WEBUSER where USERID=#Userid#))
+      ) or  #Unituserid#=''
+      order by NUKEG
+    </select>
+    <select id="QueryByDaskrKegunit" extends="QueryByUnitkeyKegunit" parameterClass="Kegunit" resultMap="return-lookup">
+    </select>
+    <select id="LoadByPKKegunit" extends="BaseQueryKegunit" parameterClass="Kegunit" resultMap="return-result">
+      where A.KDKEGUNIT=#Kdkegunit# and A.KDTAHAP=#Kdtahap# and A.UNITKEY=#Unitkey# 
+    </select>
+    <procedure id="ExecValidate_Pagu_Subkeg" parameterMap="exec-param">
+      WSP_VALIDATE_PAGU_SUBKEG
+    </procedure>
+    <procedure id="ExecVALIDATE_PAGUSKPD" parameterMap="exec-param2">
+      WSP_VALIDATION_PAGUSKPD
+    </procedure>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Kegunit">
+      <parameter property="Jumlahmin1" column="JUMLAHMIN1"/>
+      <parameter property="Jumlahpls1" column="JUMLAHPLS1"/>
+      <parameter property="Idprgrm" column="IDPRGRM"/>
+      <parameter property="Kdsifat" column="KDSIFAT"/>
+      <parameter property="Ketkeg" column="KETKEG"/>
+      <parameter property="Lokasi" column="LOKASI"/>
+      <parameter property="Nip" column="NIP"/>
+      <parameter property="Noprior" column="NOPRIOR"/>
+      <parameter property="Pagu" column="PAGU"/>
+      <parameter property="Sasaran" column="SASARAN"/>
+      <parameter property="Targetp" column="TARGETP"/>
+      <parameter property="Tglakhir" column="TGLAKHIR"/>
+      <parameter property="Tglawal" column="TGLAWAL"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Kegunit">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Kegunit">
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="exec-param" class="Kegunit">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Kdtahap" column="kdtahap"/>
+      <parameter property="Kdkegunit" column="kdkegunit"/>
+      <parameter property="Nukeg" column="nukeg"/>
+      <parameter property="Pagu" column="pagu"/>
+      <parameter property="Prevpagu" column="prevpagu"/>
+    </parameterMap>
+    <parameterMap id="exec-param2" class="Kegunit">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Kdtahap" column="kdtahap"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

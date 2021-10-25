@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Bpkdetr" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Bpkdetr" type="Usadi.Valid49.BO.BpkdetrControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Bpkdetr">
+      <result property="Kdpers" column="KDPERS"/>
+      <result property="Idxkode" column="IDXKODE"/>
+      <result property="Kdstatus" column="KDSTATUS"/>
+      <result property="Keybend" column="KEYBEND"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmjetra" column="NMJETRA"/>
+      <result property="Uraibpk" column="URAIBPK"/>
+      <result property="Penerima" column="PENERIMA"/>
+      <result property="Tglbpk" column="TGLBPK"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Nojetra" column="NOJETRA"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Nobpk" column="NOBPK"/>
+      <result property="Unitkey" column="UNITKEY"/>
+    </resultMap>
+    <resultMap id="return-result-tree" class="Bpkdetr">
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nobpk" column="NOBPK"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Type" column="TYPE"/>
+    </resultMap>
+    <resultMap id="return-result-del" class="Bpkdetr">
+      <result property="Mtgkey" column="MTGKEY"/>
+    </resultMap>
+    <resultMap id="return-result-total" class="Bpkdetr">
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Nilai" column="NILAI"/>
+    </resultMap>
+    <resultMap id="return-result-sisaup" class="Bpkdetr">
+      <result property="Kdkeg" column="KDKEG"/>
+      <result property="Totalup" column="TOTALUP"/>
+      <result property="Totalbpk" column="TOTALBPK"/>
+      <result property="Debet" column="DEBET"/>
+      <result property="Kredit" column="KREDIT"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertBpkdetr" parameterMap="insert-param">
+      <generate table="BPKDETR"/>
+    </insert>
+    <update id="UpdateByBpkdetr" parameterMap="update-param">
+      <generate table="BPKDETR" by="NOJETRA,KDKEGUNIT,MTGKEY,NOBPK,UNITKEY"/>
+    </update>
+    <delete id="DeleteByBpkdetr" parameterMap="delete-param">
+      <generate table="BPKDETR" by="NOJETRA,KDKEGUNIT,MTGKEY,NOBPK,UNITKEY"/>
+    </delete>
+    <update id="UpdateByDelsbdanaBpkdetr" parameterClass="Bpkdetr">
+      delete BPKDETR where UNITKEY=#Unitkey# and NOBPK=#Nobpk# and MTGKEY=#Mtgkey#  and KDKEGUNIT=#Kdkegunit#
+    </update>
+    <select id="BaseQueryBpkdetr" parameterClass="Bpkdetr" resultMap="return-result">
+      SELECT BL.*,rtrim(B.KDSTATUS) as KDSTATUS,B.TGLBPK ,B.URAIBPK, rtrim(B.KEYBEND) as KEYBEND,B.PENERIMA,B.TGLVALID,
+      B.IDXKODE,J.NMJETRA, J.KDPERS, rtrim(M.KDPER) as KDPER, rtrim(M.NMPER) as NMPER
+      FROM BPKDETR BL
+      LEFT OUTER JOIN BPK B ON BL.NOBPK = B.NOBPK and BL.UNITKEY=B.UNITKEY
+      LEFT OUTER JOIN MATANGR M ON BL.MTGKEY = M.MTGKEY
+      LEFT OUTER JOIN JTRNLKAS J ON BL.NOJETRA = J.NOJETRA
+    </select>
+    <select id="QueryByAllBpkdetr" extends="BaseQueryBpkdetr" parameterClass="Bpkdetr" resultMap="return-result">
+      where BL.UNITKEY=#Unitkey# and BL.NOBPK=#Nobpk# and BL.KDKEGUNIT=#Kdkegunit#
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryByFilterBpkdetr" parameterClass="Bpkdetr" resultMap="return-result-tree">
+      select distinct UNITKEY,MTGKEY as KDKEGUNIT,KDPER,NMPER,NILAI,TYPE,#Nobpk# as NOBPK from (
+      select P.UNITKEY,UN.UNITKEY as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2'))) as KDPER, isnull(UR.NMUNIT,'NON URUSAN') as NMPER,'H' as TYPE,
+      NILAI=(select sum(S1.NILAI)
+      from BPKDETR S1
+      inner join KEGUNIT K1 on S1.UNITKEY=K1.UNITKEY and S1.KDKEGUNIT=K1.KDKEGUNIT
+      inner join PGRMUNIT P1 on K1.UNITKEY=P1.UNITKEY and K1.IDPRGRM=P1.IDPRGRM and K1.KDTAHAP=P1.KDTAHAP
+      left outer join MPGRM MP1 on P1.IDPRGRM=MP1.IDPRGRM
+      left outer join DAFTUNIT UR1 on UR1.UNITKEY=MP1.UNITKEY
+      where S1.UNITKEY=#Unitkey# and S1.NOBPK=#Nobpk#
+      and isnull(UR1.UNITKEY,'')=isnull(UR.UNITKEY,'')
+      group by UR1.UNITKEY
+      )
+      from PGRMUNIT P left outer join MPGRM MP on P.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on P.UNITKEY = UN.UNITKEY
+      where P.UNITKEY =#Unitkey# and
+      P.IDPRGRM in
+      (select IDPRGRM from KEGUNIT where UNITKEY=#Unitkey# and
+      KDKEGUNIT in (select KDKEGUNIT from BPKDETR where UNITKEY=#Unitkey# and NOBPK=#Nobpk#))
+      union
+      select P.UNITKEY,P.IDPRGRM as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM) as KDPER, MP.NMPRGRM as NMPER,'H' as TYPE,
+      NILAI=(select sum(S1.NILAI)
+      from BPKDETR S1
+      inner join KEGUNIT K1 on S1.UNITKEY=K1.UNITKEY and S1.KDKEGUNIT=K1.KDKEGUNIT
+      inner join PGRMUNIT P1 on K1.UNITKEY=P1.UNITKEY and K1.IDPRGRM=P1.IDPRGRM and K1.KDTAHAP=P1.KDTAHAP
+      where S1.UNITKEY=#Unitkey# and S1.NOBPK=#Nobpk#
+      and P1.IDPRGRM=P.IDPRGRM
+      group by P1.UNITKEY,P1.IDPRGRM
+      )
+      from PGRMUNIT P left outer join MPGRM MP on P.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on P.UNITKEY = UN.UNITKEY
+      where P.UNITKEY =#Unitkey# and
+      P.IDPRGRM in
+      (select IDPRGRM from KEGUNIT where UNITKEY=#Unitkey# and
+      KDKEGUNIT in (select KDKEGUNIT from BPKDETR where UNITKEY=#Unitkey# and NOBPK=#Nobpk#))
+      union
+      select K.UNITKEY,K.KDKEGUNIT as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM)+rtrim(MK.NUKEG) as KDPER, MK.NMKEGUNIT as NMPER,'H' as TYPE,
+      NILAI=(select sum(NILAI) from BPKDETR where UNITKEY=#Unitkey# and NOBPK=#Nobpk# and KDKEGUNIT=K.KDKEGUNIT)
+      from KEGUNIT K
+      left outer join MKEGIATAN MK on MK.KDKEGUNIT=K.KDKEGUNIT
+      left outer join MPGRM MP on MK.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on K.UNITKEY = UN.UNITKEY
+      where K.UNITKEY =#Unitkey# and K.KDKEGUNIT in (select KDKEGUNIT from BPKDETR where UNITKEY=#Unitkey# and NOBPK=#Nobpk#)
+      )A
+      where UNITKEY =#Unitkey#
+      and case #Parameter.Field#
+      when '1' then KDPER
+      when '2' then NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by KDPER
+    </select>
+    <select id="QueryByTotalBpkdetr" extends="BaseQueryBpkdetr" parameterClass="Bpkdetr" resultMap="return-result">
+      where BL.UNITKEY=#Unitkey# and BL.NOBPK=#Nobpk#  and BL.NOJETRA=#Nojetra#
+    </select>
+    <select id="QueryByMtgbpkBpkdetr" parameterClass="Bpkdetr" resultMap="return-result-del">
+      select MTGKEY from Bpkdetrdana where UNITKEY=#Unitkey# and NOBPK=#Nobpk# and MTGKEY=#Mtgkey# and KDKEGUNIT=#Kdkegunit#
+    </select>
+    <select id="LoadByTotalRekBpkdetr" parameterClass="Bpkdetr" resultMap="return-result-total">
+      <![CDATA[
+      select B.KDPER, B.NMPER, B.MTGKEY, sum(case A.NOJETRA when '21' then A.NILAI else -A.NILAI end) AS NILAI
+      from BPKDETR A
+      left join BPK S ON A.UNITKEY = S.UNITKEY AND A.NOBPK = S.NOBPK
+      left join MATANGR B on A.MTGKEY = B.MTGKEY
+      where A.UNITKEY=#Unitkey# and A.MTGKEY=#Mtgkey# and A.KDKEGUNIT=#Kdkegunit#
+      and S.TGLBPK <= #Tglbpk# and S.Nobpk <> #Nobpk#
+      group BY B.KDPER, B.NMPER, B.MTGKEY
+      ]]>
+    </select>
+    <select id="LoadByPKBpkdetr" extends="BaseQueryBpkdetr" parameterClass="Bpkdetr" resultMap="return-result">
+			where BL.KDKEGUNIT=#Kdkegunit# and BL.MTGKEY=#Mtgkey# and BL.NOBPK=#Nobpk# and BL.UNITKEY=#Unitkey# and BL.NOJETRA=#Nojetra#
+		</select>
+    <select id="LoadByKegBpkdetr" extends="BaseQueryBpkdetr" parameterClass="Bpkdetr" resultMap="return-result">
+      where BL.NOBPK=#Nobpk# and BL.UNITKEY=#Unitkey#
+    </select>
+    <procedure id="ExecSisaUPr" parameterMap="transfer-param" resultMap="return-result-sisaup">
+      GET_SISA_UP_R <!--ini sepertinya tidak di gunakan-->
+    </procedure>
+    <procedure id="ExecVALIDATE_BPKREK_DPA" parameterMap="validate-rek-param">
+      WSP_VALIDATIONBPK_REK
+    </procedure>
+    <procedure id="ExecVALIDATE_BPKREK_SPD" parameterMap="validate-rek-param">
+      WSP_VALIDATIONBPK_REK_SPD
+    </procedure>
+    <procedure id="ExecVALIDATE_BPKPANJAR" parameterMap="validate-tot-panjar-param">
+      WSP_VALIDATIONBPK_PANJAR
+    </procedure>
+    <procedure id="ExecVALIDATE_BPKBANK" parameterMap="validate-tot-bank-param">
+      WSP_VALIDATIONBPK_BANK
+    </procedure>
+    <procedure id="ExecVALIDATE_BPKTUNAI" parameterMap="validate-tot-tunai-param">
+      WSP_VALIDATIONBPK_TUNAI
+    </procedure>
+    <procedure id="ExecVALIDATE_BPK_KOREKSI" parameterMap="validate-koreksi-param">
+      WSP_VALIDATIONBPK_KOREKSI
+    </procedure>
+    <procedure id="ExecVal_bpkrbu" parameterMap="Sbdanar-param1">
+      WSP_VAL_BPKRBU
+    </procedure>
+    <procedure id="ExecValidateBeritaBpk" parameterMap="validate-berita-param">
+      WSP_VALIDATIONBPKBERITA
+    </procedure>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Bpkdetr">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Nobpk" column="NOBPK"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Bpkdetr">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Bpkdetr">
+			<parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Nobpk" column="NOBPK"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="validate-berita-param" class="Bpkdetr">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Kdkegunit" column="kdkegunit"/>
+      <parameter property="Mtgkey" column="mtgkey"/>
+      <parameter property="Noba" column="noba"/>
+      <parameter property="Nobpk" column="nobpk"/>
+      <parameter property="Kdtahap" column="kdtahap"/>
+    </parameterMap>
+    <parameterMap id="transfer-param" class="Bpkdetr">
+      <parameter property="Unitkey" column="Unitkey"/>
+      <parameter property="Kdkegunit" column="Kdkegunit"/>
+    </parameterMap>
+    <parameterMap id="validate-rek-param" class="Bpkdetr">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Kdkegunit" column="kdkegunit"/>
+      <parameter property="Mtgkey" column="mtgkey"/>
+      <parameter property="Kdtahap" column="kdtahap"/>
+    </parameterMap>
+    <parameterMap id="validate-koreksi-param" class="Bpkdetr">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Kdkegunit" column="kdkegunit"/>
+      <parameter property="Mtgkey" column="mtgkey"/>
+      <parameter property="Kdtahap" column="kdtahap"/>
+    </parameterMap>
+    <parameterMap id="validate-tot-panjar-param" class="Bpkdetr">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Keybend" column="keybend"/>
+      <parameter property="Kdkegunit" column="kdkegunit"/>
+      <!--<parameter property="Nobpk" column="nobpk"/>-->
+    </parameterMap>
+    <parameterMap id="validate-tot-bank-param" class="Bpk">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Keybend" column="keybend"/>
+      <!--<parameter property="Nobpk" column="nobpk"/>-->
+    </parameterMap>
+    <parameterMap id="validate-tot-tunai-param" class="Bpk">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Keybend" column="keybend"/>
+      <parameter property="Nobpk" column="nobpk"/>
+    </parameterMap>
+    <parameterMap id="Sbdanar-param1" class="Bpkdetr">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Mtgkey" column="mtgkey"/>
+      <parameter property="Kdkegunit" column="kdkegunit"/>
+      <parameter property="Nobpk" column="nobpk"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

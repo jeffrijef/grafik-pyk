@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Daftunit" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Daftunit" type="Usadi.Valid49.BO.DaftunitControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Daftunit">
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="DafUnitkey" column="DAF_UNITKEY"/>
+      <result property="Kdlevel" column="KDLEVEL"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Akrounit" column="AKROUNIT"/>
+      <result property="Alamat" column="ALAMAT"/>
+      <result property="Telepon" column="TELEPON"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Idxall" column="IDXALL"/>
+      <result property="Idxprn" column="IDXPRN"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="UNITKEY"/>
+      <result property="Field" column="KDUNIT"/>
+      <result property="Value" column="NMUNIT"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <insert id="InsertDaftunit" parameterMap="insert-param" >
+      <generate table="DAFTUNIT"/>
+    </insert>
+    <update id="UpdateByDaftunit" parameterMap="update-param" >
+      <generate table="DAFTUNIT" by="UNITKEY"/>
+    </update>
+    <delete id="DeleteByDaftunit" parameterMap="delete-param" >
+      <generate table="DAFTUNIT" by="UNITKEY"/>
+    </delete>
+    <select id="BaseQueryDaftunit" parameterClass="Daftunit" resultMap="return-result">
+      select * from DAFTUNIT
+    </select>
+    <select id="QueryByAllDaftunit" extends="BaseQueryDaftunit" parameterClass="Daftunit" resultMap="return-result">
+      where
+      case #Parameter.Field#
+        when '1' then KDUNIT
+        when '2' then NMUNIT
+        when '3' then TYPE
+        when '4' then KDLEVEL
+      end like '%'+#Parameter.Value#+'%'
+      order by Kdunit
+    </select>
+    <select id="QueryByUrusanDaftunit" extends="BaseQueryDaftunit" parameterClass="Daftunit" resultMap="return-result">
+      where
+      KDLEVEL in ('2') and
+      case #Parameter.Field#
+        when '1' then KDUNIT
+        when '2' then NMUNIT
+      end like '%'+#Parameter.Value#+'%'
+      order by Kdunit
+    </select>
+    <select id="QueryByFungsinitDaftunit" extends="BaseQueryDaftunit" parameterclass="Usadi.Valid49.BO.FungsinitControl, Usadi.Valid49" resultMap="return-lookup">
+      where UNITKEY not in (select UNITKEY from FUNGSINIT) and KDLEVEL='2'
+      and
+      case #Parameter.Field#
+      when '1' then KDUNIT
+      when '2' then NMUNIT
+      end like '%'+#Parameter.Value#+'%'
+      order by KDUNIT
+    </select>
+    <select id="QueryByUrusunitDaftunit" extends="BaseQueryDaftunit" parameterclass="Usadi.Valid49.BO.UrusunitControl, Usadi.Valid49" resultMap="return-lookup">
+      where UNITKEY not in (select URUSKEY from URUSUNIT) and KDLEVEL='2'
+      and
+      case #Parameter.Field#
+      when '1' then KDUNIT
+      when '2' then NMUNIT
+      end like '%'+#Parameter.Value#+'%'
+      order by KDUNIT
+    </select>
+    <select id="LoadByPKDaftunit" extends="BaseQueryDaftunit" parameterClass="Daftunit"  resultMap="return-result" >
+      WHERE UNITKEY=#Unitkey#
+    </select>
+  </statements>
+
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Daftunit">
+      <parameter property="DafUnitkey" column="DAF_UNITKEY"/>
+      <parameter property="Kdlevel" column="KDLEVEL"/>
+      <parameter property="Kdunit" column="KDUNIT"/>
+      <parameter property="Nmunit" column="NMUNIT"/>
+      <parameter property="Akrounit" column="AKROUNIT"/>
+      <parameter property="Alamat" column="ALAMAT"/>
+      <parameter property="Telepon" column="TELEPON"/>
+      <parameter property="Type" column="TYPE"/>
+      <parameter property="Idxall" column="IDXALL"/>
+      <parameter property="Idxprn" column="IDXPRN"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Daftunit">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Daftunit">
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>
+

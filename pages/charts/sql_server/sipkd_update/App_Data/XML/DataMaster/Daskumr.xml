@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Daskumr" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Daskumr" type="Usadi.Valid49.BO.DaskumrControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Daskumr">
+      <result property="Isidaskum" column="ISIDASKUM"/>
+      <result property="Nodaskum" column="NODASKUM"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Uraidaskum" column="URAIDASKUM"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Kddaskum" column="KDDASKUM"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertDaskumr" parameterMap="insert-param">
+      <generate table="DASKUMR"/>
+    </insert>
+    <update id="UpdateByDaskumr" parameterMap="update-param">
+      <generate table="DASKUMR" by="MTGKEY,KDDASKUM"/>
+    </update>
+    <delete id="DeleteByDaskumr" parameterMap="delete-param">
+      <generate table="DASKUMR" by="MTGKEY,KDDASKUM"/>
+    </delete>
+    <select id="BaseQueryDaskumr" parameterClass="Daskumr" resultMap="return-result">
+      select A.KDDASKUM,A.MTGKEY,A.URAIDASKUM
+      ,B.ISIDASKUM,B.NODASKUM
+      ,C.KDPER,C.NMPER
+      from DASKUMR A
+      left outer join DASKUM B on A.KDDASKUM = B.KDDASKUM
+      left outer join MATANGR C on A.MTGKEY = C.MTGKEY
+    </select>
+    <select id="QueryByAllDaskumr" extends="BaseQueryDaskumr" parameterClass="Daskumr" resultMap="return-result">
+      where A.KDDASKUM=#Kddaskum#
+      and case #Parameter.Field#
+      when '1' then C.KDPER
+      when '2' then C.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by KDPER
+    </select>
+    <select id="LoadByPKDaskumr" extends="BaseQueryDaskumr" parameterClass="Daskumr" resultMap="return-result">
+      where A.MTGKEY=#Mtgkey# and A.KDDASKUM=#Kddaskum# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Daskumr">
+      <parameter property="Uraidaskum" column="URAIDASKUM"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Kddaskum" column="KDDASKUM"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Daskumr">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Daskumr">
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Kddaskum" column="KDDASKUM"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

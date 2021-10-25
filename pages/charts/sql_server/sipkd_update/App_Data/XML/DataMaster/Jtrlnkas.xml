@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Jtrnlkas" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Jtrnlkas" type="Usadi.Valid49.BO.JtrnlkasControl, Usadi.Valid49" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Jtrnlkas">
+      <result property="Kdpers" column="KDPERS"/>
+      <result property="Nmjetra" column="NMJETRA"/>
+      <result property="Nojetra" column="NOJETRA"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="NOJETRA"/>
+      <result property="Field" column="NOJETRA"/>
+      <result property="Value" column="NMJETRA"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertJtrnlkas" parameterMap="insert-param">
+      <generate table="JTRNLKAS"/>
+    </insert>
+    <update id="UpdateByJtrnlkas" parameterMap="update-param">
+      <generate table="JTRNLKAS" by="NOJETRA"/>
+    </update>
+    <delete id="DeleteByJtrnlkas" parameterMap="delete-param">
+      <generate table="JTRNLKAS" by="NOJETRA"/>
+    </delete>
+    <select id="BaseQueryJtrnlkas" parameterClass="Jtrnlkas" resultMap="return-result">
+      select A.KDPERS,A.NMJETRA,A.NOJETRA
+      from JTRNLKAS A
+    </select>
+    <select id="QueryByAllJtrnlkas" extends="BaseQueryJtrnlkas" parameterClass="Jtrnlkas" resultMap="return-result">
+			where
+			case #Parameter.Field#
+			when '1' then A.NOJETRA
+			when '2' then A.NMJETRA
+			when '3' then A.KDPERS
+			end like '%'+ #Parameter.Value# + '%'
+			Order by A.NOJETRA
+		</select>
+    <select id="QueryByNojetraJtrnlkas" extends="BaseQueryJtrnlkas" parameterClass="Jtrnlkas" resultMap="return-result">
+      where A.NOJETRA=#Nojetra#
+    </select>
+    <select id="QueryByBkbankdetJtrnlkas" extends="BaseQueryJtrnlkas" parameterclass="Usadi.Valid49.BO.BkbankdetControl" resultMap="return-lookup">
+			where A.NOJETRA not in (select NOJETRA from BKBANKDET where UNITKEY=#Unitkey# and NOBUKU=#Nobuku#)
+			and A.NOJETRA IN ('31','32')
+			and case #Parameter.Field#
+			when '1' then A.NOJETRA
+			when '2' then A.NMJETRA
+			end like #Parameter.Value# + '%'
+			order by A.NOJETRA
+		</select>
+    <!--<select id="QueryByPanjardetJtrnlkas" extends="BaseQueryJtrnlkas" parameterclass="Usadi.Valid49.BO.PanjardetControl" resultMap="return-lookup">
+      where A.NOJETRA not in (select NOJETRA from PANJARDET)
+      and case #Parameter.Field#
+      when '1' then A.NOJETRA
+      when '2' then A.NMJETRA
+      end like #Parameter.Value# + '%'
+      order by A.NOJETRA
+    </select>-->
+    <select id="LoadByPKJtrnlkas" extends="BaseQueryJtrnlkas" parameterClass="Jtrnlkas" resultMap="return-result">
+      where A.NOJETRA=#Nojetra# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Jtrnlkas">
+      <parameter property="Kdpers" column="KDPERS"/>
+      <parameter property="Nmjetra" column="NMJETRA"/>
+      <parameter property="Nojetra" column="NOJETRA"/>
+    </parameterMap>
+			<parameterMap id="update-param" extends="insert-param" class="Jtrnlkas">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Jtrnlkas">
+      <parameter property="Nojetra" column="NOJETRA"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

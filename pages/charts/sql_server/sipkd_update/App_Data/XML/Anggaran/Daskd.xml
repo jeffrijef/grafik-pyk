@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Daskd" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Daskd" type="Usadi.Valid49.BO.DaskdControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Daskd">
+      <result property="Kdtahap" column="KDTAHAP"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Mtglevel" column="MTGLEVEL"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Idxdask" column="IDXDASK"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Unitkey" column="UNITKEY"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="MTGKEY"/>
+      <result property="Field" column="KDPER"/>
+      <result property="Value" column="NMPER"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertDaskd" parameterMap="insert-param">
+      <generate table="DASKD"/>
+    </insert>
+    <insert id="InsertBulanDaskd" parameterClass="Daskd">
+      insert into DASKBLND ( UNITKEY, MTGKEY, IDXDASK, KD_BULAN, NILAI)
+      select #Unitkey#,#Mtgkey#,#Idxdask#,KD_BULAN,0
+      from BULAN
+    </insert>
+    <update id="UpdateByDaskd" parameterMap="update-param">
+      <generate table="DASKD" by="IDXDASK,MTGKEY,UNITKEY"/>
+    </update>
+    <update id="UpdateByGeserDaskd" parameterClass="Daskd" >
+      update DASKD set MTGKEY=#Mtgkey#
+      where UNITKEY=#Unitkey# and IDXDASK=#Idxdask# and MTGKEY=#Mtgkeyprev#
+    </update>
+    <delete id="DeleteByDaskd" parameterMap="delete-param">
+      <generate table="DASKD" by="IDXDASK,MTGKEY,UNITKEY"/>
+    </delete>
+    <select id="BaseQueryDaskd" parameterClass="Daskd" resultMap="return-result">
+      select A.IDXDASK,A.MTGKEY,A.NILAI,A.UNITKEY
+      ,B.KDPER,B.MTGLEVEL,B.NMPER
+      ,C.NODASK,C.KDTAHAP
+      from DASKD A
+      left outer join MATANGD B on A.MTGKEY=B.MTGKEY
+      left outer join SKDASK C on A.IDXDASK=C.IDXDASK and A.UNITKEY = C.UNITKEY
+    </select>
+    <select id="QueryByKasDaskd" extends="BaseQueryDaskd" parameterClass="Daskd" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and C.KDTAHAP=#Kdtahap#
+    </select>
+    <select id="QueryByAllDaskd" extends="BaseQueryDaskd" parameterClass="Daskd" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.IDXDASK=#Idxdask#
+      and case #Parameter.Field#
+      when '1' then B.KDPER
+      when '2' then B.NMPER
+      when '3' then convert(char(10), A.NILAI)
+      when '4' then A.UNITKEY
+      end like '%'+ #Parameter.Value# + '%'
+      order by B.KDPER
+    </select>
+    <select id="BaseQueryLookupDaskd" parameterClass="Daskd" resultMap="return-lookup">
+      select distinct B.KDPER, B.NMPER,B.MTGKEY+'-'+B.TYPE as MTGKEY
+      from DASKD A
+      left join MATANGD B on A.mtgkey = B.mtgkey
+      where A.UNITKEY=#Unitkey#
+      and A.IDXDASK in (select IDXDASK from SKDASK where UNITKEY=#Unitkey#
+      and (IDXKODE=#Idxkode# or IDXKODE='6') and KDTAHAP=#Kdtahap# and TGLVALID is not NULL)
+    </select>
+    <select id="QueryByTbpdetdDaskd" extends="BaseQueryLookupDaskd" parameterclass="Usadi.Valid49.BO.TbpdetdControl" resultMap="return-lookup">
+      and A.MTGKEY not in (select MTGKEY from TBPDETD S where S.UNITKEY=#Unitkey# and S.NOTBP=#Notbp#  and S.NOJETRA=#Nojetra#)
+      order by B.KDPER
+    </select>
+    <select id="QueryByRkmdetdDaskd" extends="BaseQueryLookupDaskd" parameterclass="Usadi.Valid49.BO.RkmdetdControl" resultMap="return-lookup">
+      and A.MTGKEY not in (select MTGKEY from RKMDETD S where S.UNITKEY=#Unitkey# and S.NOSTS=#Nosts#  and S.NOJETRA=#Nojetra#)
+      order by B.KDPER
+    </select>
+    <select id="QueryBySpjdetdDaskd" extends="BaseQueryLookupDaskd" parameterclass="Usadi.Valid49.BO.SpjdetdControl" resultMap="return-lookup">
+      and A.MTGKEY not in (select MTGKEY from SPJDETD S where S.UNITKEY=#Unitkey# and S.NOSPJ=#Nospj#  and S.NOJETRA=#Nojetra#)
+      order by B.KDPER
+    </select>
+    <select id="QueryBySppdetdDaskd" extends="BaseQueryLookupDaskd" parameterclass="Usadi.Valid49.BO.SppdetdControl" resultMap="return-lookup">
+      and A.MTGKEY not in (select MTGKEY from SPPDETD S where  S.UNITKEY=#Unitkey# and S.NOSPP=#Nospp#  and S.NOJETRA=#Nojetra#)
+      order by B.KDPER
+    </select>
+    <select id="QueryBySpmdetdDaskd" extends="BaseQueryLookupDaskd" parameterclass="Usadi.Valid49.BO.SpmdetdControl" resultMap="return-lookup">
+      and A.MTGKEY not in (select MTGKEY from SPMDETD S where  S.UNITKEY=#Unitkey# and S.NOSPM=#Nospm#  and S.NOJETRA=#Nojetra#)
+      order by B.KDPER
+    </select>
+    <select id="QueryBySp2ddetdDaskd" extends="BaseQueryLookupDaskd" parameterclass="Usadi.Valid49.BO.Sp2ddetdControl" resultMap="return-lookup">
+      and A.MTGKEY not in (select MTGKEY from SP2DDETD S where  S.UNITKEY=#Unitkey# and S.NOSP2D=#Nosp2d#  and S.NOJETRA=#Nojetra#)
+      order by B.KDPER
+    </select>
+    <select id="QueryByTotalDaskd" extends="BaseQueryDaskd" parameterClass="Daskd" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.MTGKEY=#Mtgkey# 
+      and KDTAHAP=#Kdtahap#
+    </select>
+    <select id="QueryBySkpdetDaskd"  parameterclass="Usadi.Valid49.BO.SkpdetControl" resultMap="return-lookup">
+      select A.MTGKEY,B.KDPER,B.NMPER,B.TYPE
+      from DASKD A left outer join MATANGD B on A.MTGKEY=B.MTGKEY
+      where A.UNITKEY=#Unitkey#
+      and A.IDXDASK in (select IDXDASK from SKDASK where UNITKEY=#Unitkey#
+      and IDXKODE='1' and KDTAHAP=#Kdtahap# and TGLVALID is not NULL)
+      and case #Parameter.Field#
+      when '1' then B.KDPER
+      when '2' then B.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by B.KDPER
+    </select>
+    <select id="LoadByPKDaskd" extends="BaseQueryDaskd" parameterClass="Daskd" resultMap="return-result">
+      where A.IDXDASK=#Idxdask# and A.MTGKEY=#Mtgkey# and A.UNITKEY=#Unitkey# 
+    </select>
+    <select id="LoadByKdtahapDaskd" extends="BaseQueryDaskd" parameterClass="Daskd" resultMap="return-result">
+      where C.KDTAHAP=#Kdtahap# and A.MTGKEY=#Mtgkey# and A.UNITKEY=#Unitkey#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Daskd">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Idxdask" column="IDXDASK"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" class="Daskd">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Idxdask" column="IDXDASK"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Daskd">
+      <parameter property="Idxdask" column="IDXDASK"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

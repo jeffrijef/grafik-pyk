@@ -1,0 +1,7 @@
+TITLE=S P D - KELOMPOK
+Unitkey=string;Key Unit;4;
+Kodespd=string;Key Unit;4;;;;-1;
+Idxsko=string;Index SKO;4;
+Bend=string;Bendahara;30;
+Kdtahap=string;Kode Tahap;4;
+Kddok=string;Khusus;4;;-1;03.302

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Skppkd" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Skppkd" type="Usadi.Valid49.BO.SkppkdControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Skppkd">
+      <result property="Kdstatus" column="KDSTATUS"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Tglsk" column="TGLSK"/>
+      <result property="Ket" column="KET"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nosk" column="NOSK"/>      
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="NOSK"/>
+      <result property="Field" column="NOSK"/>
+      <result property="Value" column="KET"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSkppkd" parameterMap="insert-param">
+      <generate table="SKPPKD"/>
+    </insert>
+    <update id="UpdateBySkppkd" parameterMap="update-param">
+      <generate table="SKPPKD" by="UNITKEY,NOSK"/>
+    </update>
+    <update id="UpdateByDraftSkppkd" parameterClass="Skppkd" >
+      update SKPPKD set TGLVALID=null where UNITKEY=#Unitkey# and NOSK=#Nosk#
+    </update>
+    <delete id="DeleteBySkppkd" parameterMap="delete-param">
+      <generate table="SKPPKD" by="UNITKEY,NOSK"/>
+    </delete>
+    <delete id="DeleteBySkppkdr" parameterMap="delete-param">
+      <generate table="SKPPKD" by="UNITKEY,NOSK"/>
+    </delete>
+    <select id="BaseQuerySkppkd" parameterClass="Skppkd" resultMap="return-result">
+      select A.NOSK,A.TGLSK,A.KET,D.UNITKEY,A.TGLVALID,A.KDSTATUS from skppkd A
+      inner join DAFTUNIT D on D.UNITKEY=A.unitkey
+    </select>
+    <select id="QueryByAllSkppkd" extends="BaseQuerySkppkd" parameterClass="Skppkd" resultMap="return-result">
+      where A.UNITKEY=#Unitkey#
+      and case #Parameter.Field#
+      when '1' then A.NOSK
+      when '2' then convert(char(10),A.TGLSK, 103)
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOSK
+    </select>
+    <select id="QueryByNOSKSkppkd" extends="BaseQuerySkppkd" parameterClass="Skppkd" resultMap="return-result">
+      where A.UNITKEY=#Unitkey#
+      order by A.NOSK
+    </select>
+    <select id="QueryByNOSK1Skppkd" extends="BaseQuerySkppkd" parameterClass="Skppkd" resultMap="return-result">
+      where A.UNITKEY=#Unitkey#
+      order by A.NOSK
+    </select>
+    <select id="LoadByPKSkppkd" extends="BaseQuerySkppkd" parameterClass="Skppkd" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSK=#Nosk# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Skppkd">
+      <parameter property="Kdstatus" column="KDSTATUS"/>
+      <parameter property="Tglsk" column="TGLSK"/>
+      <parameter property="Ket" column="KET"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nosk" column="NOSK"/>
+    </parameterMap>
+    <parameterMap id="update-param" class="Skppkd">
+      <parameter property="Tglvalid" column="TGLVALID"/>
+      <parameter property="Kdstatus" column="KDSTATUS"/>
+      <parameter property="Tglsk" column="TGLSK"/>
+      <parameter property="Ket" column="KET"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nosk" column="NOSK"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Skppkd">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nosk" column="NOSK"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Rekkeg" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Rekkeg" type="Usadi.Valid49.BO.RekkegControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Rekkeg">
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Nukeg" column="NUKEG"/>
+      <result property="Nmkegunit" column="NMKEGUNIT"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="MTGKEY"/>
+      <result property="Field" column="KDPER"/>
+      <result property="Value" column="NMPER"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertRekkeg" parameterMap="insert-param">
+      <generate table="Rekkeg"/>
+    </insert>
+    <update id="UpdateByRekkeg" parameterMap="update-param">
+      <generate table="Rekkeg" by="MTGKEY,KDKEGUNIT"/>
+    </update>
+    <delete id="DeleteByRekkeg" parameterMap="delete-param">
+      <generate table="Rekkeg" by="MTGKEY,KDKEGUNIT"/>
+    </delete>
+    <select id="BaseQueryRekkeg" parameterClass="Rekkeg" resultMap="return-result">
+      SELECT r.MTGKEY,KDPER,NMPER,r.KDKEGUNIT,NUKEG,NMKEGUNIT
+      FROM REKKEG r 
+      LEFT OUTER JOIN MATANGR m ON r.MTGKEY=m.MTGKEY
+      LEFT OUTER JOIN MKEGIATAN m1 ON r.KDKEGUNIT=m1.KDKEGUNIT
+    </select>
+    <select id="QueryByAllRekkeg" extends="BaseQueryRekkeg" parameterClass="Rekkeg" resultMap="return-result">
+      where r.KDKEGUNIT=#Kdkegunit# and
+      case #Parameter.Field#
+      when '1' then m.KDPER
+      when '2' then m.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      ORDER BY m.KDPER
+    </select>
+    <select id="BaseQueryLookupRekkeg" parameterClass="Rekkeg" resultMap="return-lookup">
+      select rtrim(M.MTGKEY)+'-'+rtrim(M.TYPE) as MTGKEY,rtrim(M.KDPER) as KDPER, rtrim(M.NMPER) as NMPER,rtrim(M.TYPE) as TYPE
+      from MATANGR M
+      INNER JOIN REKKEG r ON r.MTGKEY = M.MTGKEY
+    </select>
+    <select id="QueryByRaskrRekkeg" extends="BaseQueryLookupRekkeg" parameterclass="Usadi.Valid49.BO.RaskrControl" resultMap="return-lookup">
+      where r.KDKEGUNIT=#Kdkegunit# and M.MTGKEY not in (select MTGKEY from RASKR where UNITKEY=#Unitkey# and KDKEGUNIT=#Kdkegunit# and KDTAHAP=#Kdtahap# )
+      and (left(M.KDPER,3)='5.2' or M.KDPER='5.')
+      and (M.TYPE=#Opsi# or #Opsi#='H')
+      and M.KDKHUSUS not in (case when #Unitkey# = isnull((Select configval from pemda where configid = 'cur_skpkd'),'') then ('') else ('2') end)
+      and case #Parameter.Field#
+      when '1' then M.KDPER                       
+      when '2' then M.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="LoadByPKRekkeg" extends="BaseQueryRekkeg" parameterClass="Rekkeg" resultMap="return-result">
+      where r.KDKEGUNIT=#Kdkegunit#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Rekkeg">
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Rekkeg">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Rekkeg">
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

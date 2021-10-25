@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Sikdpemda" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Sikdpemda" type="Usadi.Valid49.BO.SikdpemdaControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Sikdpemda">
+      <result property="Kdakun" column="KDAKUN"/>
+      <result property="Kddata" column="KDDATA"/>
+      <result property="Kdfung" column="KDFUNG"/>
+      <result property="Kdjns" column="KDJNS"/>
+      <result property="Kdkeg" column="KDKEG"/>
+      <result property="Kdkel" column="KDKEL"/>
+      <result property="Kdkelurus" column="KDKELURUS"/>
+      <result property="Kdobj" column="KDOBJ"/>
+      <result property="Kdorgan" column="KDORGAN"/>
+      <result property="Kdpemda" column="KDPEMDA"/>
+      <result property="Kdpgrm" column="KDPGRM"/>
+      <result property="Kdrinci" column="KDRINCI"/>
+      <result property="Kdsubfung" column="KDSUBFUNG"/>
+      <result property="Kdsubfungdet" column="KDSUBFUNGDET"/>
+      <result property="Kdurus" column="KDURUS"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Satker" column="SATKER"/>
+      <result property="Tahun" column="TAHUN"/>
+      <result property="Uraiakun" column="URAIAKUN"/>
+      <result property="Uraifung" column="URAIFUNG"/>
+      <result property="Uraijns" column="URAIJNS"/>
+      <result property="Uraikeg" column="URAIKEG"/>
+      <result property="Uraikel" column="URAIKEL"/>
+      <result property="Uraikelurus" column="URAIKELURUS"/>
+      <result property="Uraiobj" column="URAIOBJ"/>
+      <result property="Uraiorgan" column="URAIORGAN"/>
+      <result property="Uraipgrm" column="URAIPGRM"/>
+      <result property="Urairinci" column="URAIRINCI"/>
+      <result property="Uraisubfung" column="URAISUBFUNG"/>
+      <result property="Uraisubfungdet" column="URAISUBFUNGDET"/>
+      <result property="Uraiurus" column="URAIURUS"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSikdpemda" parameterMap="insert-param">
+      <generate table="SIKDPEMDA"/>
+    </insert>
+    <!--<update id="UpdateBySikdpemda" parameterMap="update-param">
+      <generate table="SIKDPEMDA" by=""/>
+    </update>
+    <delete id="DeleteBySikdpemda" parameterMap="delete-param">
+      <generate table="SIKDPEMDA" by=""/>
+    </delete>-->
+    <select id="BaseQuerySikdpemda" parameterClass="Sikdpemda" resultMap="return-result">
+      select A.KDAKUN,A.KDDATA,A.KDFUNG,A.KDJNS,A.KDKEG,A.KDKEL,A.KDKELURUS,A.KDOBJ,A.KDORGAN,A.KDPEMDA,A.KDPGRM,
+      A.KDRINCI,A.KDSUBFUNG,A.KDSUBFUNGDET,A.KDURUS,A.NILAI
+      ,A.SATKER,A.TAHUN,
+      A.URAIAKUN,A.URAIFUNG,A.URAIJNS,A.URAIKEG,A.URAIKEL,A.URAIKELURUS,A.URAIOBJ,
+      A.URAIORGAN,A.URAIPGRM,A.URAIRINCI,A.URAISUBFUNG,A.URAISUBFUNGDET,A.URAIURUS
+      from SIKDPEMDA A
+    </select>
+    <select id="QueryByAllSikdpemda" extends="BaseQuerySikdpemda" parameterClass="Sikdpemda" resultMap="return-result">
+    </select>
+    <select id="LoadByPKSikdpemda" extends="BaseQuerySikdpemda" parameterClass="Sikdpemda" resultMap="return-result">
+      where
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Sikdpemda">
+      <parameter property="Kdakun" column="KDAKUN"/>
+      <parameter property="Kddata" column="KDDATA"/>
+      <parameter property="Kdfung" column="KDFUNG"/>
+      <parameter property="Kdjns" column="KDJNS"/>
+      <parameter property="Kdkeg" column="KDKEG"/>
+      <parameter property="Kdkel" column="KDKEL"/>
+      <parameter property="Kdkelurus" column="KDKELURUS"/>
+      <parameter property="Kdobj" column="KDOBJ"/>
+      <parameter property="Kdorgan" column="KDORGAN"/>
+      <parameter property="Kdpemda" column="KDPEMDA"/>
+      <parameter property="Kdpgrm" column="KDPGRM"/>
+      <parameter property="Kdrinci" column="KDRINCI"/>
+      <parameter property="Kdsubfung" column="KDSUBFUNG"/>
+      <parameter property="Kdsubfungdet" column="KDSUBFUNGDET"/>
+      <parameter property="Kdurus" column="KDURUS"/>
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Satker" column="SATKER"/>
+      <parameter property="Tahun" column="TAHUN"/>
+      <parameter property="Uraiakun" column="URAIAKUN"/>
+      <parameter property="Uraifung" column="URAIFUNG"/>
+      <parameter property="Uraijns" column="URAIJNS"/>
+      <parameter property="Uraikeg" column="URAIKEG"/>
+      <parameter property="Uraikel" column="URAIKEL"/>
+      <parameter property="Uraikelurus" column="URAIKELURUS"/>
+      <parameter property="Uraiobj" column="URAIOBJ"/>
+      <parameter property="Uraiorgan" column="URAIORGAN"/>
+      <parameter property="Uraipgrm" column="URAIPGRM"/>
+      <parameter property="Urairinci" column="URAIRINCI"/>
+      <parameter property="Uraisubfung" column="URAISUBFUNG"/>
+      <parameter property="Uraisubfungdet" column="URAISUBFUNGDET"/>
+      <parameter property="Uraiurus" column="URAIURUS"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Sikdpemda">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Sikdpemda">
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

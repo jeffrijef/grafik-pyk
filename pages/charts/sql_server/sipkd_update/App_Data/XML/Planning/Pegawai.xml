@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Pegawai" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Pegawai" type="Usadi.Valid49.BO.PegawaiControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Pegawai">
+      <result property="Nip" column="NIP"/>
+      <result property="Nama" column="NAMA"/>
+      <result property="Alamat" column="ALAMAT"/>
+      <result property="Jabatan" column="JABATAN"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <insert id="InsertPegawai" parameterMap="insert-param" >
+      <generate table="PEGAWAI"/>
+    </insert>
+    <update id="UpdateByPegawai" parameterMap="update-param" >
+      <generate table="PEGAWAI" by="NIP"/>
+    </update>
+    <delete id="DeleteByPegawai" parameterMap="delete-param" >
+      <generate table="PEGAWAI" by="NIP"/>
+    </delete>
+    <select id="BaseQueryPegawai" parameterClass="Pegawai" resultMap="return-result">
+      select P.*,UN.KDUNIT,UN.NMUNIT from PEGAWAI P
+      left outer join DAFTUNIT UN on P.UNITKEY=UN.UNITKEY
+    </select>
+    <select id="QueryByAllPegawai" extends="BaseQueryPegawai" parameterClass="Pegawai" resultMap="return-result">
+      where
+      case #Parameter.Field#
+      when '1' then P.NIP
+      when '2' then P.NAMA
+      when '3' then UN.KDUNIT
+      when '4' then UN.NMUNIT
+      end like '%'+#Parameter.Value#+'%'
+      order by NIP
+    </select>
+    <select id="LoadByPKPegawai" extends="BaseQueryPegawai" parameterClass="Pegawai"  resultMap="return-result" >
+      where NIP=#Nip#
+    </select>
+  </statements>
+
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Pegawai">
+      <parameter property="Nama" column="NAMA"/>
+      <parameter property="Alamat" column="ALAMAT"/>
+      <parameter property="Jabatan" column="JABATAN"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nip" column="NIP"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Pegawai">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Pegawai">
+      <parameter property="Nip" column="NIP"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>
+

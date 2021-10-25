@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Ttapd" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Ttapd" type="Usadi.Valid49.BO.TtapdControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Ttapd">
+			<result property="Unitkey" column="UNITKEY"/>
+			<result property="Nmunit" column="NMUNIT"/>
+			<result property="Kdunit" column="KDUNIT"/>
+			<result property="Nama" column="NAMA"/>
+      <result property="Uraian" column="URAIAN"/>
+      <result property="Kdtahap" column="KDTAHAP"/>
+      <result property="Jabatan" column="JABATAN"/>
+      <result property="Nip" column="NIP"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertTtapd" parameterMap="insert-param">
+      <generate table="TTAPD"/>
+    </insert>
+    <update id="UpdateByTtapd" parameterMap="update-param">
+      <generate table="TTAPD" by="KDTAHAP,NIP"/>
+    </update>
+    <delete id="DeleteByTtapd" parameterMap="delete-param">
+      <generate table="TTAPD" by="KDTAHAP,NIP"/>
+    </delete>
+    <select id="BaseQueryTtapd" parameterClass="Ttapd" resultMap="return-result">
+			select TA.*,P.NAMA,P.JABATAN,T.URAIAN
+			,rtrim(U.KDUNIT) as KDUNIT, rtrim(U.NMUNIT) as NMUNIT
+			from TTAPD TA
+			left outer join PEGAWAI P on TA.NIP=P.NIP
+			left outer join TAHAP T on TA.KDTAHAP=T.KDTAHAP
+			LEFT OUTER JOIN DAFTUNIT U  ON TA.UNITKEY=U.UNITKEY
+		</select>
+    <select id="QueryByAllTtapd" extends="BaseQueryTtapd" parameterClass="Ttapd" resultMap="return-result">
+      where TA.KDTAHAP=#Kdtahap# and (TA.UNITKEY=#Unitkey# or #Unitkey#='')
+      and case #Parameter.Field#
+      when '1' then TA.NIP
+      when '2' then P.NAMA
+      when '3' then P.JABATAN
+      when '4' then U.KDUNIT
+      end like '%'+ #Parameter.Value# + '%'
+      order by TA.NIP
+    </select>
+    <select id="LoadByPKTtapd" extends="BaseQueryTtapd" parameterClass="Ttapd" resultMap="return-result">
+      where TA.KDTAHAP=#Kdtahap# and TA.NIP=#Nip# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Ttapd">
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Parameter.Key" column="NIP"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Ttapd">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Ttapd">
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Nip" column="NIP"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

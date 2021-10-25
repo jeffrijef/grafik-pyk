@@ -1,0 +1,7 @@
+TITLE=SPJ BELANJA - ADMINISTRATIF
+Unitkey=string;Key Unit;4;
+Kdtahap=string;Tahap;4;
+Bend=string; Bendahara;30;
+Bln=string; Bulan;4;
+Jnsbend=string;Jenis Bendahara;4;;-1;2;-1;
+Tanggal=datetime;Tanggal;30;

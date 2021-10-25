@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Matangbppas" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Matangbppas" type="Usadi.Valid49.BO.MatangbppasControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Matangbppas">
+	  <result property="Kdper" column="KDPER"/>
+      <result property="Mtglevel" column="MTGLEVEL"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Kdkhusus" column="KDKHUSUS"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="MTGKEY"/>
+      <result property="Field" column="KDPER"/>
+      <result property="Value" column="NMPER"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertMatangbppas" parameterMap="insert-param">
+      <generate table="MATANGBPPAS"/>
+    </insert>
+    <update id="UpdateByMatangbppas" parameterMap="update-param">
+      <generate table="MATANGBPPAS" by="MTGKEY"/>
+    </update>
+    <delete id="DeleteByMatangbppas" parameterMap="delete-param">
+      <generate table="MATANGBPPAS" by="MTGKEY"/>
+    </delete>
+    <select id="BaseQueryMatangbppas" parameterClass="Matangbppas" resultMap="return-result">
+      select M.MTGKEY, rtrim(M.MTGLEVEL) as MTGLEVEL, M.KDPER, M.NMPER, rtrim(M.KDKHUSUS) as KDKHUSUS, rtrim(M.TYPE) as TYPE
+      from MATANGBPPAS M
+    </select>
+    <select id="QueryByAllMatangbppas" extends="BaseQueryMatangbppas" parameterClass="Matangbppas" resultMap="return-result">
+      where case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like '%'+ #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryByKdperMatangbppas" extends="BaseQueryMatangbppas" parameterClass="Matangbppas" resultMap="return-result">
+      where M.KDPER=#Kdper#
+    </select>
+    <select id="BaseQueryLookupMatangbppas" parameterclass="Usadi.Valid49.BO.RaskbControl" resultMap="return-lookup">
+      select rtrim(M.MTGKEY)+'-'+rtrim(M.TYPE) as MTGKEY,rtrim(M.KDPER) as KDPER, rtrim(M.NMPER) as NMPER,rtrim(M.TYPE) as TYPE
+      from MATANGBPPAS M
+    </select>
+    <select id="QueryByRaskbMatangbppas"  extends="BaseQueryLookupMatangbppas" parameterclass="Usadi.Valid49.BO.RaskbControl" resultMap="return-lookup">
+      where M.MTGKEY not in (select MTGKEY from RASKB where UNITKEY=#Unitkey# AND KDTAHAP=#Kdtahap#)
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like '%'+ #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryByDaskbMatangbppas" extends="BaseQueryLookupMatangbppas" parameterclass="Usadi.Valid49.BO.DaskbControl" resultMap="return-lookup">
+      where M.MTGKEY not in (select MTGKEY from DASKB D left outer join SKDASK S on S.IDXDASK=D.IDXDASK and S.UNITKEY=D.UNITKEY where D.UNITKEY=#Unitkey# AND S.KDTAHAP=#Kdtahap#)
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like '%'+ #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryBySkobdetMatangbppas" extends="BaseQueryLookupMatangbppas" parameterclass="Usadi.Valid49.BO.SkobdetControl" resultMap="return-lookup">
+      where M.MTGKEY not in (select MTGKEY from SKOBDET where UNITKEY=#Unitkey# and IDXSKO=#Idxsko#)
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like '%'+ #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryByTbpdetbMatangbppas" extends="BaseQueryLookupMatangbppas" parameterclass="Usadi.Valid49.BO.TbpdetbControl" resultMap="return-lookup">
+      where M.MTGKEY not in (select MTGKEY from TBPDETB where UNITKEY=#Unitkey# and NOTBP=#Notbp#)
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryByRkmdetbMatangbppas" extends="BaseQueryLookupMatangbppas" parameterclass="Usadi.Valid49.BO.RkmdetbControl" resultMap="return-lookup">
+      where M.MTGKEY not in (select MTGKEY from RKMDETB where UNITKEY=#Unitkey# and NOSTS=#Nosts#)
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryBySppdetbMatangbppas" extends="BaseQueryLookupMatangbppas" parameterclass="Usadi.Valid49.BO.SppdetbControl" resultMap="return-lookup">
+      where M.MTGKEY not in (select MTGKEY from SPPDETB where UNITKEY=#Unitkey# and NOSPP=#Nospp#)
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryBySpmdetbMatangbppas" extends="BaseQueryLookupMatangbppas" parameterclass="Usadi.Valid49.BO.SpmdetbControl" resultMap="return-lookup">
+      where M.MTGKEY not in (select MTGKEY from SPMDETB where UNITKEY=#Unitkey# and NOSPM=#Nospm#)
+      and M.KDPER in (select KDPER from dbo.GetFilterMatangbppas(#Position#,#Idxkode#))
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryBySpjdetbMatangbppas" extends="BaseQueryLookupMatangbppas" parameterclass="Usadi.Valid49.BO.SpjdetbControl" resultMap="return-lookup">
+      where M.MTGKEY not in (select MTGKEY from SPJDETB where UNITKEY=#Unitkey# and NOSPJ=#Nospj#)
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryBySp2ddetbMatangbppas" extends="BaseQueryLookupMatangbppas" parameterclass="Usadi.Valid49.BO.Sp2ddetbControl" resultMap="return-lookup">
+      where M.MTGKEY not in (select MTGKEY from SP2DDETB where UNITKEY=#Unitkey# and NOSP2D=#Nosp2d#)
+      and M.KDPER in (select KDPER from dbo.GetFilterMatangbppas(#Position#,#Idxkode#))
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryByStdhargabMatangbppas" extends="BaseQueryLookupMatangbppas" parameterClass="Matangbppas" resultMap="return-lookup">
+      where case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like '%'+ #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="LoadByPKMatangbppas" extends="BaseQueryMatangbppas" parameterClass="Matangbppas" resultMap="return-result">
+      where M.MTGKEY=#Mtgkey# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Matangbppas">
+      <parameter property="Kdper" column="KDPER"/>
+      <parameter property="Mtglevel" column="MTGLEVEL"/>
+      <parameter property="Nmper" column="NMPER"/>
+      <parameter property="Kdkhusus" column="KDKHUSUS"/>
+      <parameter property="Type" column="TYPE"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Matangbppas">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Matangbppas">
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

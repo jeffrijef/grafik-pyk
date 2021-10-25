@@ -1,0 +1,57 @@
+﻿<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>jQuery UI Dialog - Modal message</title>
+   <link rel="stylesheet" href="/data/modal/jquery-ui.css">
+  <script src="/data/modal/jquery-1.12.4.js"></script>
+  <script src="/data/modal/jquery-ui.js"></script>
+  <script>
+  $( function() {
+    $( "#dialog-message" ).dialog({
+      modal: true,
+      width: "30%",
+      maxWidth: "400px",
+      buttons: {
+		Oke: function() {
+			$( this ).dialog( "close" );
+		}
+      }
+    });
+  } );
+  </script>
+</head>
+
+<body>
+<div id="dialog-message" title="PEMBERITAHUAN">
+	<p>
+		<span class="ui-icon ui-icon-circle-arrow-e" style="float:left; margin:0 7px 60px 0;"></span>
+		PENTING UNTUK MENJADI PERHATIAN :<br><br>
+    </p>
+        <!--
+            <span class="ui-icon ui-icon-circle-arrow-e" style="float:left; margin:0 7px 60px 0;"></span>
+            SPD REVISI PERGESERAN<br><br>
+        </p>
+
+
+        &nbsp;&nbsp;<span class="ui-icon ui-icon-bullet"></span>&nbsp;&nbsp; Perubahan Pendapatan</br>
+        &nbsp;&nbsp;<span class="ui-icon ui-icon-bullet"></span>&nbsp;&nbsp; Perubahan Belanja Tidak Langsung</br>
+        &nbsp;&nbsp;<span class="ui-icon ui-icon-bullet"></span>&nbsp;&nbsp; Perubahan Belanja Langsung</br>
+        (sesuai hasil verifikasi dengan BAPPEDA)
+        </p>
+
+            <span class="ui-icon ui-icon-circle-arrow-e" style="float:left; margin:0 7px 20px 0;"></span>
+            User khusus <b>Modul Penganggaran</b></br>dengan penambahan <b>“ag” + “nama_user”</b>.
+        </p>
+            <span class="ui-icon ui-icon-circle-arrow-e" style="float:left; margin:0 7px 50px 0;"></span>
+            Hardcopy hasil entri kami terima </br>paling lambat 24 Agustus 2018.
+        </p>
+        -->
+
+        1. SEBELUM BENDAHARA MELAKUKAN PROSES PEMBAYARAN MOHOON UNTUK MEMERIKSA KEMBALI KETERSEDIAAN ANGGARAN SESUAI ANGGARAN KAS UNTUK MENGINDARI TERJADINYA KOREKSI BELANJA<br><br>
+		2. UNTUK PENOMORAN DOKUMEN MOHON UNTUK MEMBUAT INDEX SEBAGAI PEMBEDA DENGAN DOKUMEN LAINYA CONTOH (DILARANG HANYA FORMAT 001,002,DST)<br><br>
+		3. UNTUK PERUBAHAN BPP MOHON DISAMPAIKAN KE BKD UNTUK UPDATE DATA SK PELIMPAHAN UP DAN DATA BPP BERSANGKUTAN AGAR DIENTRY PADA DATA MASTER SIPKD (BENDAHARA DAN BENDAHARA KPA)<br><br>
+	<b>by: admin_SIPKD, </b></p>
+</div>
+
+</body>

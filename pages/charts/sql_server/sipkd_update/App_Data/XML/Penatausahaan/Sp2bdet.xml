@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Sp2bdet" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <alias>
+      <typeAlias alias="Sp2bdet" type="Usadi.Valid49.BO.Sp2bdetControl" />
+    </alias>
+    <resultMaps>
+      <resultMap id="return-result" class="Sp2bdet">
+        <!--<result property="Tglvalid" column="TGLVALID"/>-->
+        <result property="Uraisp3b" column="URAISP3B"/>
+        <result property="Nilai" column="NILAI"/>
+        <result property="Unitkey" column="UNITKEY"/>
+        <result property="Nosp2b" column="NOSP2B"/>
+        <result property="Nosp3b" column="NOSP3B"/>
+      </resultMap>
+      <resultMap id="return-result-tot" class="Sp2bdet">
+        <result property="Tot" column="TOT"/>
+        <result property="Unitkey" column="UNITKEY"/>
+      </resultMap>
+    </resultMaps>
+    <statements>
+      <insert id="InsertSp2bdet" parameterMap="insert-param">
+        <generate table="Sp2bdet"/>
+      </insert>
+      <update id="UpdateBySp2bdet" parameterMap="update-param">
+        <generate table="Sp2bdet" by="UNITKEY,NOSP2B,NOSP3B"/>
+      </update>
+      <delete id="DeleteBySp2bdet" parameterMap="delete-param">
+        <generate table="Sp2bdet" by="UNITKEY,NOSP2B,NOSP3B"/>
+      </delete>
+      <select id="BaseQuerySp2bdet" parameterClass="Sp2bdet" resultMap="return-result">
+        select S.NOSP3B,j.URAISP3B,S.NILAI,S.UNITKEY,S.NOSP2B
+        from SP2BDET S
+        left outer join SP3B J on S.UNITKEY=J.UNITKEY and S.NOSP3B=J.NOSP3B
+      </select>
+      <select id="QueryByAllSp2bdet" extends="BaseQuerySp2bdet" parameterClass="Sp2bdet" resultMap="return-result">
+        where S.NOSP2B = #Nosp2b# and
+        case #Parameter.Field#
+        when '1' then S.NILAI
+        when '2' then S.UNITKEY
+        when '3' then S.NOSP2B
+        when '4' then S.NOSP3B
+        end like '%'+ #Parameter.Value# + '%'
+        order by S.NOSP3B
+      </select>
+      <select id="QueryByNosp3bSp2bdet" extends="BaseQuerySp2bdet" parameterClass="Sp2bdet" resultMap="return-result">
+        where S.UNITKEY=#Unitkey# and S.NOSP3B=#Nosp3b#
+      </select>
+      <select id="LoadByTotSp2bdet" parameterClass="Sp2bdet" resultMap="return-result-tot">
+        select sum(NILAI) Tot,Unitkey from Sp3bdet A where A.NOSP3B=#Nosp3b# group by a.unitkey
+      </select>
+      <select id="LoadByPKSp2bdet" extends="BaseQuerySp2bdet" parameterClass="Sp2bdet" resultMap="return-result">
+        where S.UNITKEY = #Unitkey# and S.NOSP2B = #Nosp2b# and S.NOSP3B = #Nosp3b#
+      </select>
+    </statements>
+    <parameterMaps>
+      <parameterMap id="insert-param" class="Sp2bdet">
+        <parameter property="Nilai" column="NILAI"/>
+        <parameter property="Unitkey" column="UNITKEY"/>
+        <parameter property="Nosp2b" column="NOSP2B"/>
+        <parameter property="Nosp3b" column="NOSP3B"/>
+      </parameterMap>
+      <parameterMap id="update-param" extends="insert-param" class="Sp2bdet">
+      </parameterMap>
+      <parameterMap id="delete-param" class="Sp2bdet">
+        <parameter property="Unitkey" column="UNITKEY"/>
+        <parameter property="Nosp2b" column="NOSP2B"/>
+        <parameter property="Nosp3b" column="NOSP3B"/>
+      </parameterMap>
+    </parameterMaps>
+</sqlMap>
+

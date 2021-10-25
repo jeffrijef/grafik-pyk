@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Saldoapbdrtl" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Saldoapbdrtl" type="Usadi.Valid49.BO.SaldoapbdrtlControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Saldoapbdrtl">
+      <result property="Kdlevel" column="KDLEVEL"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Uraian" column="URAIAN"/>
+      <result property="Kdkhusus" column="KDKHUSUS"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Mtglevel" column="MTGLEVEL"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Nprognosis" column="NPROGNOSIS"/>
+      <result property="Soakhir" column="SOAKHIR"/>
+      <result property="Uraiantahap" column="URAIANTAHAP"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Kdtahap" column="KDTAHAP"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSaldoapbdrtl" parameterMap="insert-param">
+      <generate table="SALDOAPBDRTL"/>
+    </insert>
+    <update id="UpdateBySaldoapbdrtl" parameterClass="Saldoapbdrtl" >
+      update SALDOAPBDRTL
+      set  MTGKEY=#Mtgkey#
+      where UNITKEY=#Unitkey# and MTGKEY=#Oldmtgkey#
+    </update>
+    <delete id="DeleteBySaldoapbdrtl" parameterMap="delete-param">
+      <generate table="SALDOAPBDRTL" by="UNITKEY,MTGKEY,KDTAHAP"/>
+    </delete>
+    <select id="BaseQuerySaldoapbdrtl" parameterClass="Saldoapbdrtl" resultMap="return-result">
+      select A.KDTAHAP,A.MTGKEY,A.NPROGNOSIS,A.SOAKHIR,A.UNITKEY,A.URAIAN
+      ,B.URAIAN as URAIANTAHAP
+      ,C.KDLEVEL,C.KDUNIT,C.NMUNIT,C.TYPE
+      ,D.KDKHUSUS,D.KDPER,D.MTGLEVEL,D.NMPER
+      from SALDOAPBDRTL A
+      left outer join TAHAP B on A.KDTAHAP = B.KDTAHAP
+      left outer join DAFTUNIT C on A.UNITKEY = C.UNITKEY
+      left outer join MATANGR D on A.MTGKEY = D.MTGKEY
+    </select>
+    <select id="QueryByAllSaldoapbdrtl" extends="BaseQuerySaldoapbdrtl" parameterClass="Saldoapbdrtl" resultMap="return-result">
+      where
+      case #Parameter.Field#
+        when '1' then A.UNITKEY
+        when '2' then A.KDTAHAP
+        when '3' then A.URAIAN
+        when '4' then A.MTGKEY
+        when '5' then convert(char(10), A.NPROGNOSIS)
+        when '6' then convert(char(10), A.SOAKHIR)
+      end like '%'+ #Parameter.Value# + '%' 
+    </select>
+    <select id="LoadByPKSaldoapbdrtl" extends="BaseQuerySaldoapbdrtl" parameterClass="Saldoapbdrtl" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.MTGKEY=#Mtgkey# and A.KDTAHAP=#Kdtahap# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Saldoapbdrtl">
+      <parameter property="Nprognosis" column="NPROGNOSIS"/>
+      <parameter property="Soakhir" column="SOAKHIR"/>
+      <parameter property="Uraian" column="URAIAN"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Saldoapbdrtl">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Saldoapbdrtl">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

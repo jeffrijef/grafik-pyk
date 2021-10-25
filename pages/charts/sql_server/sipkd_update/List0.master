@@ -1,0 +1,87 @@
+<%@ master language="C#" autoeventwireup="true" inherits="List0Master, App_Web_gly0oex0" %>
+
+<%@ Register Assembly="Microsoft.Web.Atlas" Namespace="Microsoft.Web.UI" TagPrefix="cc1" %>
+<%@ Register Assembly="AtlasControlToolkit" Namespace="AtlasControlToolkit" TagPrefix="act" %>
+<%@ Register TagPrefix="cx" TagName="FormEntry" Src="Ascx/FormEntry.ascx" %>
+<%@ Register TagPrefix="cx" TagName="ViewList" Src="Ascx/ViewList.ascx" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/tr/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+  <meta http-equiv="Expires" content="0" />
+  <meta http-equiv="Cache-Control" content="no-cache" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <title>.::Sistem Informasi Pengelolaan Keuangan Daerah::.</title>
+  <link href="Model.css" rel="stylesheet" type="text/css" />
+
+  <script language="javascript" src="../js/lookup.js" type="text/javascript"></script>
+
+  <script language="javascript" src="../js/common.js" type="text/javascript"></script>
+
+</head>
+<body class="mainbodilist">
+
+  <script language="javascript" type="text/javascript">
+//function noExit() 
+//{
+//  if((event.clientX < 100)||(event.clientY > -25)) {
+//    return "You are not supposed to close this window";
+//  }
+//  if((event.clientX > 500)||(event.clientY > -25)) {
+//    return "You are not supposed to close this window";
+//  }
+//}
+function popKill()
+{
+  //open('Restore.aspx','popup','toolbar=no,location=no,directories=no,status=no,menubar=no,resizable=no,copyhistory=no,scrollbars=no,width=10,height=10');
+}
+  </script>
+
+  <form id="form1" runat="server" defaultfocus="utxt_Focus" enctype="multipart/form-data">
+  <cc1:ScriptManager ID="ScriptManager1" EnablePartialRendering="true" runat="server" />
+  <div>
+    <table id="utbl_Master" border="0" cellpadding="0" cellspacing="0" style="font-size: 12px;
+      width: 100%; font-family: 'Trebuchet MS', Verdana, Arial">
+      <asp:Panel ID="Pnl1" runat="server" Visible="false">
+        <tr>
+          <td class="TopMenuOne" align="right">
+          </td>
+        </tr>
+        <tr>
+          <td align="center">
+            <asp:Label ID="ulbl_infouser" runat="server" Font-Bold="True" Font-Size="12px" ForeColor="#284E98"></asp:Label>
+          </td>
+        </tr>
+        <tr>
+          <td class="TopMenu" colspan="2" align="left">
+            <asp:Menu ID="Menu1" runat="server" BackColor="#B5C7DE" DataSourceID="MenuSMPDS"
+              DynamicHorizontalOffset="2" Font-Names="Verdana" Font-Size="12px" ForeColor="#284E98"
+              StaticSubMenuIndent="10px" Orientation="Horizontal" CssClass="TopMenu" StaticPopOutImageUrl="~/Images/garis.gif"
+              OnDataBound="Menu1_DataBound" OnMenuItemDataBound="Menu1_MenuItemDataBound" OnMenuItemClick="Menu1_MenuItemClick">
+              <StaticMenuItemStyle Font-Size="12px" HorizontalPadding="5px" VerticalPadding="2px"
+                ForeColor="White" />
+              <DynamicHoverStyle BackColor="#284E98" ForeColor="White" />
+              <DynamicMenuStyle BackColor="#B5C7DE" />
+              <StaticSelectedStyle BackColor="#507CD1" />
+              <DynamicSelectedStyle BackColor="#507CD1" />
+              <DynamicMenuItemStyle HorizontalPadding="5px" VerticalPadding="2px" />
+              <StaticHoverStyle BackColor="#284E98" ForeColor="White" />
+            </asp:Menu>
+          </td>
+        </tr>
+      </asp:Panel>
+      <tr>
+        <td colspan="3">
+        <div id="Div" style="height:500;overflow:auto">
+          <span>
+            <asp:ContentPlaceHolder ID="ucon_Master_List" runat="server">
+            </asp:ContentPlaceHolder>
+          </span>
+        </div>
+        </td>
+      </tr>
+    </table>
+    <asp:SiteMapDataSource ID="MenuSMPDS" runat="server" ShowStartingNode="False" />
+  </div>
+  </form>
+</body>
+</html>

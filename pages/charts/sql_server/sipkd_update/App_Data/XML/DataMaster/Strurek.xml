@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Strurek" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Strurek" type="Usadi.Valid49.BO.StrurekControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Strurek">
+      <result property="Nmlevel" column="NMLEVEL"/>
+      <result property="Mtglevel" column="MTGLEVEL"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertStrurek" parameterMap="insert-param">
+      <generate table="STRUREK"/>
+    </insert>
+    <update id="UpdateByStrurek" parameterMap="update-param">
+      <generate table="STRUREK" by="MTGLEVEL"/>
+    </update>
+    <delete id="DeleteByStrurek" parameterMap="delete-param">
+      <generate table="STRUREK" by="MTGLEVEL"/>
+    </delete>
+    <select id="BaseQueryStrurek" parameterClass="Strurek" resultMap="return-result">
+      select rtrim(A.MTGLEVEL) as MTGLEVEL,A.NMLEVEL
+      from STRUREK A
+    </select>
+    <select id="QueryByAllStrurek" extends="BaseQueryStrurek" parameterClass="Strurek" resultMap="return-result">
+			where case #Parameter.Field#
+			when '1' then A.MTGLEVEL
+			when '2' then A.NMLEVEL
+			end like '%'+ #Parameter.Value# + '%'
+			order by A.MTGLEVEL
+		</select>
+    <select id="LoadByPKStrurek" extends="BaseQueryStrurek" parameterClass="Strurek" resultMap="return-result">
+      where A.MTGLEVEL=#Mtglevel# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Strurek">
+      <parameter property="Nmlevel" column="NMLEVEL"/>
+      <parameter property="Mtglevel" column="MTGLEVEL"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Strurek">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Strurek">
+      <parameter property="Mtglevel" column="MTGLEVEL"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

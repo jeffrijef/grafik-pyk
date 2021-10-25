@@ -1,0 +1,6 @@
+TITLE=LAMPIRAN SP2D GU/TU
+Unitkey=string;Key Unit;50;;;;-1;
+Idxkode=string;label;50;
+Kdstatus=string;Jenis Pembebanan;50;;;;-1;
+Jnsrek=string;label;50;
+Nosp2d=string;Nomor SP2D;50;

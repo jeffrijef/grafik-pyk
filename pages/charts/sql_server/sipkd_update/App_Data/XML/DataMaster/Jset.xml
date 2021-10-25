@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Jset" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<alias>
+		<typeAlias alias="Jset" type="Usadi.Valid49.BO.JsetControl" />
+	</alias>
+	<resultMaps>
+		<resultMap id="return-result" class="Jset">
+			<result property="Ket" column="KET"/>
+			<result property="Status" column="STATUS"/>
+			<result property="Nmjnsset" column="NMJNSSET"/>
+			<result property="Kdjnsset" column="KDJNSSET"/>
+		</resultMap>
+	</resultMaps>
+	<statements>
+		<insert id="InsertJset" parameterMap="insert-param">
+			<generate table="JSET"/>
+		</insert>
+		<update id="UpdateByJset" parameterMap="update-param">
+			<generate table="JSET" by="KDJNSSET"/>
+		</update>
+		<delete id="DeleteByJset" parameterMap="delete-param">
+			<generate table="JSET" by="KDJNSSET"/>
+		</delete>
+		<select id="BaseQueryJset" parameterClass="Jset" resultMap="return-result">
+			select J.KET,J.STATUS,J.NMJNSSET,J.KDJNSSET
+			from JSET J
+		</select>
+		<select id="QueryByAllJset" extends="BaseQueryJset" parameterClass="Jset" resultMap="return-result">
+			where
+			case #Parameter.Field#
+			when '1' then J.KDJNSSET
+			when '2' then J.NMJNSSET
+			when '3' then J.STATUS
+			when '4' then J.KET
+			end like '%'+ #Parameter.Value# + '%'
+			order by J.KDJNSSET
+		</select>
+		<select id="LoadByPKJset" extends="BaseQueryJset" parameterClass="Jset" resultMap="return-result">
+			where J.KDJNSSET=#Kdjnsset#
+		</select>
+	</statements>
+	<parameterMaps>
+		<parameterMap id="insert-param" class="Jset">
+			<parameter property="Ket" column="KET"/>
+			<parameter property="Status" column="STATUS"/>
+			<parameter property="Nmjnsset" column="NMJNSSET"/>
+			<parameter property="Kdjnsset" column="KDJNSSET"/>
+		</parameterMap>
+		<parameterMap id="update-param" extends="insert-param" class="Jset">
+		</parameterMap>
+		<parameterMap id="delete-param" class="Jset">
+			<parameter property="Kdjnsset" column="KDJNSSET"/>
+		</parameterMap>
+	</parameterMaps>
+</sqlMap>

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Berita" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Berita" type="Usadi.Valid49.BO.BeritaControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Berita">
+      <result property="Lblstatus" column="LBLSTATUS"/>
+      <result property="Kdstatus" column="KDSTATUS"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Nukeg" column="NUKEG"/>
+      <result property="Nmkegunit" column="NMKEGUNIT"/>
+      <result property="Tglkon" column="TGLKON"/>
+      <result property="Nokon" column="NOKON"/>
+      <result property="Tglba" column="TGLBA"/>
+      <result property="Uraiba" column="URAIBA"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Noba" column="NOBA"/>
+    </resultMap>
+    <resultMap id="return-result-i" class="Berita">
+      <result property="Noba" column="NOBA"/>
+      <result property="Nospp" column="NOSPP"/>
+      <result property="Unitkey" column="UNITKEY"/>
+    </resultMap>
+    <resultMap id="return-result-e" class="Berita">
+      <result property="Nokon" column="NOKON"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertBerita" parameterMap="insert-param">
+      <generate table="BERITA"/>
+    </insert>
+    <update id="UpdateByBerita" parameterMap="update-param">
+      <generate table="BERITA" by="UNITKEY,NOBA"/>
+    </update>
+    <update id="UpdateByDraftBerita" parameterClass="Berita" >
+      update BERITA set TGLVALID=null where UNITKEY=#Unitkey# and NOBA=#Noba#
+    </update>
+    <delete id="DeleteByBerita" parameterMap="delete-param">
+      <generate table="BERITA" by="UNITKEY,NOBA"/>
+    </delete>
+    <select id="BaseQueryBerita" parameterClass="Berita" resultMap="return-result">
+      select A.KDKEGUNIT,rtrim(M.NUKEG) as NUKEG,rtrim(M.NMKEGUNIT) as NMKEGUNIT,A.NOBA,A.TGLBA,A.UNITKEY,A.URAIBA,A.KDSTATUS
+      ,isnull((P.NOKON),'')as NOKON, A.TGLVALID,isnull((S.LBLSTATUS),'')as LBLSTATUS ,P.TGLKON
+      from BERITA A
+      left join KONTRAK P on A.NOKON=P.NOKON and A.UNITKEY=P.UNITKEY
+      left outer join DAFTUNIT U on A.UNITKEY = U.UNITKEY
+      left outer join MKEGIATAN M on A.KDKEGUNIT = M.KDKEGUNIT
+      left outer join STATTRS S on A.KDSTATUS=S.KDSTATUS
+      <!--select A.KDKEGUNIT,rtrim(M.NUKEG) as NUKEG,rtrim(M.NMKEGUNIT) as NMKEGUNIT,A.NOBA,A.TGLBA,A.UNITKEY,A.URAIBA,A.KDSTATUS
+      ,NOKON=ISNULL((SELECT NOKON FROM KONTRAK Z WHERE Z.NOKON=A.NOKON AND Z.UNITKEY=A.UNITKEY),NULL) ,
+      A.TGLVALID,S.LBLSTATUS
+      from BERITA A
+      left outer join DAFTUNIT U on A.UNITKEY = U.UNITKEY
+      left outer join MKEGIATAN M on A.KDKEGUNIT = M.KDKEGUNIT
+      left outer join STATTRS S on A.KDSTATUS=S.KDSTATUS-->
+    </select>
+    <select id="QueryByAllBerita" extends="BaseQueryBerita" parameterClass="Berita" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.KDKEGUNIT=#Kdkegunit# <!--and (A.KDKEGUNIT=#Kdkegunit# or isnull(#Kdkegunit#,'')='')-->
+      <!--and A.NOBA NOT IN (SELECT * FROM BERITADETR WHERE MTGKEY=)-->
+      and case #Parameter.Field#
+      when '1' then A.NOBA
+      when '2' then convert(char(10), A.TGLBA, 103)
+      when '3' then A.URAIBA
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOBA
+    </select>
+    <select id="QueryByBabmBerita" parameterClass="Berita" resultMap="return-result">
+      select A.KDKEGUNIT,rtrim(M.NUKEG) as NUKEG,rtrim(M.NMKEGUNIT) as NMKEGUNIT,A.NOBA,A.TGLBA,A.UNITKEY,A.URAIBA,A.KDSTATUS
+      ,isnull((P.NOKON),'')as NOKON, A.TGLVALID,isnull((S.LBLSTATUS),'')as LBLSTATUS ,P.TGLKON
+      from BERITA A
+      left join KONTRAK P on A.NOKON=P.NOKON and A.UNITKEY=P.UNITKEY
+      left outer join DAFTUNIT U on A.UNITKEY = U.UNITKEY
+      left outer join MKEGIATAN M on A.KDKEGUNIT = M.KDKEGUNIT
+      left outer join STATTRS S on A.KDSTATUS=S.KDSTATUS
+      where A.UNITKEY=#Unitkey# and A.KDKEGUNIT=#Kdkegunit#  and s.KDSTATUS in ('71','74','78')
+      and case #Parameter.Field#
+      when '1' then A.NOBA
+      when '2' then convert(char(10), A.TGLBA, 103)
+      when '3' then A.URAIBA
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOBA
+    </select>
+    <select id="QueryByBanonbmBerita" parameterClass="Berita" resultMap="return-result">
+      select distinct A.KDKEGUNIT,rtrim(M.NUKEG) as NUKEG,rtrim(M.NMKEGUNIT) as NMKEGUNIT,A.NOBA,A.TGLBA,A.UNITKEY,A.URAIBA,A.KDSTATUS
+      ,isnull((P.NOKON),'')as NOKON, A.TGLVALID,isnull((S.LBLSTATUS),'')as LBLSTATUS ,P.TGLKON
+      from BERITA A
+      left join KONTRAK P on A.NOKON=P.NOKON and A.UNITKEY=P.UNITKEY
+      left outer join DAFTUNIT U on A.UNITKEY = U.UNITKEY
+      left outer join MKEGIATAN M on A.KDKEGUNIT = M.KDKEGUNIT
+      left outer join STATTRS S on A.KDSTATUS=S.KDSTATUS
+      where A.UNITKEY=#Unitkey# and A.KDKEGUNIT=#Kdkegunit# and s.KDSTATUS in ('78','79')
+      and case #Parameter.Field#
+      when '1' then A.NOBA
+      when '2' then convert(char(10), A.TGLBA, 103)
+      when '3' then A.URAIBA
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOBA
+    </select>
+    <select id="QueryByNokonBerita" parameterClass="Berita" resultMap="return-result-e">
+      select NOKON from BERITA WHERE UNITKEY=#Unitkey# and NOKON=#Nokon#
+    </select>
+    <select id="QueryByNobaBerita" parameterClass="Berita" resultMap="return-result-i">
+      select A.NOSPP,A.NOBA,A.UNITKEY
+      from SPPBA A
+      left outer join SPP T on A.UNITKEY=T.UNITKEY and A.NOSPP=T.NOSPP
+      inner join Berita S on S.UNITKEY=T.UNITKEY and A.NOBA=S.NOBA
+      where A.UNITKEY=#Unitkey# and A.NOBA=#Noba#
+    </select>
+    <select id="QueryByNoadmBerita" extends="BaseQueryBerita" parameterClass="Berita" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOKON=#Nokon#
+    </select>
+    <select id="LoadByPKBerita" extends="BaseQueryBerita" parameterClass="Berita" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOBA=#Noba# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Berita">
+      <parameter property="Kdstatus" column="KDSTATUS"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Nokon" column="NOKON"/>
+      <parameter property="Tglba" column="TGLBA"/>
+      <parameter property="Uraiba" column="URAIBA"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Noba" column="NOBA"/>
+    </parameterMap>
+    <parameterMap id="update-param" class="Berita">
+      <!--<parameter property="Kdstatus" column="KDSTATUS"/>-->
+      <parameter property="Tglvalid" column="TGLVALID"/>
+      <!--<parameter property="Kdkegunit" column="KDKEGUNIT"/>-->
+      <parameter property="Nokon" column="NOKON"/>
+      <parameter property="Tglba" column="TGLBA"/>
+      <parameter property="Uraiba" column="URAIBA"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Noba" column="NOBA"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Berita">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Noba" column="NOBA"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

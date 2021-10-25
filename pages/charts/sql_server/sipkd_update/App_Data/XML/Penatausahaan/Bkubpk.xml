@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Bkubpk" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Bkubpk" type="Usadi.Valid49.BO.BkubpkControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Bkubpk">
+      <result property="AllowSuperUser" column="ALLOWSUPERUSER"/>
+      <result property="Keybend" column="KEYBEND"/>
+      <result property="Nobukti" column="NOBPK"/>
+      <result property="Tglbukti" column="TGLBPK"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Idxttd" column="IDXTTD"/>
+      <result property="Tglbkuskpd" column="TGLBKUSKPD"/>
+      <result property="Uraian" column="URAIAN"/>
+      <result property="Nobkuskpd" column="NOBKUSKPD"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertBkubpk" parameterMap="insert-param">
+      <generate table="BKUBPK"/>
+    </insert>
+    <update id="UpdateByBkubpk" parameterMap="update-param">
+      <generate table="BKUBPK" by="NOBKUSKPD,UNITKEY"/>
+    </update>
+		<update id="UpdateByTglvalidBkubpk" parameterClass="Bkubpk">
+      update BKUBPK set TGLVALID=#Tglvalid#
+      where UNITKEY=#Unitkey# and NOBKUSKPD=#Nobkuskpd#
+    </update>
+    <update id="UpdateByDraftBkubpk" parameterClass="Bkubpk" >
+      update BKUBPK set TGLVALID=null
+      where UNITKEY=#Unitkey# and NOBKUSKPD=#Nobkuskpd#
+    </update>
+    <delete id="DeleteByBkubpk" parameterMap="delete-param">
+      <generate table="BKUBPK" by="NOBKUSKPD,UNITKEY"/>
+    </delete>
+    <select id="BaseQueryBkubpk" parameterClass="Bkubpk" resultMap="return-result">
+      select #AllowSuperUser# as ALLOWSUPERUSER,rtrim(A.IDXTTD) as IDXTTD,rtrim(A.KEYBEND) as KEYBEND,A.NOBKUSKPD,A.NOBPK,A.TGLBKUSKPD,A.TGLVALID,A.UNITKEY,A.URAIAN
+      ,B.TGLBPK,B.URAIBPK
+      from BKUBPK A
+      Left outer Join BPK B on A.NOBPK = B.NOBPK and A.UNITKEY=B.UNITKEY
+    </select>
+    <select id="QueryByAllBkubpk" extends="BaseQueryBkubpk" parameterClass="Bkubpk" resultMap="return-result">
+      where A.UNITKEY=#Unitkey#
+      and (A.KEYBEND = #Keybend# or #Keybend#='')
+      and case #Parameter.Field#
+      when '1' then A.NOBKUSKPD
+      when '2' then A.NOBPK
+      when '3' then convert(char(10), A.TGLBKUSKPD, 103)
+      when '4' then convert(char(10), A.TGLVALID, 103)
+      when '5' then A.URAIAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOBKUSKPD
+    </select>
+    <select id="QueryByNobpkBkubpk" extends="BaseQueryBkubpk" parameterClass="Bkubpk" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOBPK=#Nobukti#
+    </select>
+    <select id="LoadByPKBkubpk" extends="BaseQueryBkubpk" parameterClass="Bkubpk" resultMap="return-result">
+      where A.NOBKUSKPD=#Nobkuskpd# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Bkubpk">
+      <!--<parameter property="Idxttd" column="IDXTTD"/>-->
+      <parameter property="Keybend" column="KEYBEND"/>
+      <parameter property="Nobukti" column="NOBPK"/>
+      <parameter property="Tglbkuskpd" column="TGLBKUSKPD"/>
+      <parameter property="Uraian" column="URAIAN"/>
+      <parameter property="Nobkuskpd" column="NOBKUSKPD"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Bkubpk">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Bkubpk">
+      <parameter property="Nobkuskpd" column="NOBKUSKPD"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Adendum" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <alias>
+      <typeAlias alias="Adendum" type="Usadi.Valid49.BO.AdendumControl" />
+    </alias>
+    <resultMaps>
+      <resultMap id="return-result" class="Adendum">
+        <result property="Kdkegunit" column="KDKEGUNIT"/>
+        <result property="Nukeg" column="NUKEG"/>
+        <result property="Nmkegunit" column="NMKEGUNIT"/>
+        <result property="Nilai1" column="NILAI1"/>
+        <result property="Nilai2" column="NILAI2"/>
+        <result property="Nokon" column="NOKON"/>
+        <result property="Tgladm" column="TGLADM"/>
+        <result property="Unitkey" column="UNITKEY"/>
+        <result property="Noadm" column="NOADM"/>
+      </resultMap>
+    </resultMaps>
+    <statements>
+      <insert id="InsertAdendum" parameterMap="insert-param">
+        <generate table="Adendum"/>
+      </insert>
+      <update id="UpdateByAdendum" parameterMap="update-param">
+        <generate table="Adendum" by="UNITKEY,NOADM"/>
+      </update>
+      <update id="UpdateByNilkonAdendum" parameterClass="Adendum">
+        
+        update ADENDUM set Nilai2=#Nilai2# where UNITKEY=#Unitkey# and KDKEGUNIT=#Kdkegunit# and NOADM=#Noadm#
+        update KONTRAK set Nilai=#Nilai2# where UNITKEY=#Unitkey# and KDKEGUNIT=#Kdkegunit# and NOKON=#Nokon#
+      </update>
+      <delete id="DeleteByAdendum" parameterMap="delete-param">
+        <generate table="Adendum" by="UNITKEY,NOADM"/>
+      </delete>
+      <select id="BaseQueryAdendum" parameterClass="Adendum" resultMap="return-result">
+        select A.NILAI1,A.NILAI2,A.NOKON,A.TGLADM,A.UNITKEY,A.NOADM,A.KDKEGUNIT,rtrim(M.NUKEG) as NUKEG,rtrim(M.NMKEGUNIT) as NMKEGUNIT
+        from ADENDUM A
+        left join KONTRAK P on A.NOKON=P.NOKON
+        left outer join DAFTUNIT U on A.UNITKEY = U.UNITKEY
+        left outer join MKEGIATAN M on A.KDKEGUNIT = M.KDKEGUNIT
+      </select>
+      <select id="QueryByAllAdendum" extends="BaseQueryAdendum" parameterClass="Adendum" resultMap="return-result">
+        where A.UNITKEY=#Unitkey# and A.KDKEGUNIT=#Kdkegunit#
+        and case #Parameter.Field#
+        when '1' then A.NOADM
+        when '2' then A.NOKON
+        end like '%'+ #Parameter.Value# + '%'
+        order by A.NOADM
+      </select>
+      <procedure id="ExecValADM_DPA" parameterMap="update-dpa" >
+        WSP_VALIDATION_ADM_DPA
+      </procedure>
+      <procedure id="ExecValADM_BERITA" parameterMap="update-berita" >
+        WSP_VALIDATION_ADENDUMBERITA
+      </procedure>
+      <select id="LoadByPKAdendum" extends="BaseQueryAdendum" parameterClass="Adendum" resultMap="return-result">
+        where A.UNITKEY = #Unitkey# and A.NOADM = #Noadm#
+      </select>
+    </statements>
+    <parameterMaps>
+      <parameterMap id="insert-param" class="Adendum">
+        <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+        <parameter property="Nilai1" column="NILAI1"/>
+        <parameter property="Nilai2" column="NILAI2"/>
+        <parameter property="Nokon" column="NOKON"/>
+        <parameter property="Tgladm" column="TGLADM"/>
+        <parameter property="Unitkey" column="UNITKEY"/>
+        <parameter property="Noadm" column="NOADM"/>
+      </parameterMap>
+      <parameterMap id="update-param" extends="insert-param" class="Adendum">
+      </parameterMap>
+      <parameterMap id="update-dpa" class="Adendum">
+        <parameter property="Unitkey" column="unitkey"/>
+        <parameter property="Nokon" column="nokon"/>
+        <parameter property="Kdtahap" column="kdtahap"/>
+      </parameterMap>
+      <parameterMap id="update-berita" class="Adendum">
+        <parameter property="Unitkey" column="unitkey"/>
+        <parameter property="Noadm" column="noadm"/>
+      </parameterMap>
+      <parameterMap id="delete-param" class="Adendum">
+        <parameter property="Unitkey" column="UNITKEY"/>
+        <parameter property="Noadm" column="NOADM"/>
+      </parameterMap>
+    </parameterMaps>
+</sqlMap>
+

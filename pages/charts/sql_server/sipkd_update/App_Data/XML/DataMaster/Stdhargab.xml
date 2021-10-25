@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Stdhargab" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Stdhargab" type="Usadi.Valid49.BO.StdhargabControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Stdhargab">
+      <result property="Hrgstd" column="HRGSTD"/>
+      <result property="Kdjnsstd" column="KDJNSSTD"/>
+      <result property="Ket" column="KET"/>
+      <result property="Merkstd" column="MERKSTD"/>
+      <result property="Nmstd" column="NMSTD"/>
+      <result property="Nostd" column="NOSTD"/>
+      <result property="Satuan" column="SATUAN"/>
+      <result property="Spekstd" column="SPEKSTD"/>
+      <result property="Stvalid" column="STVALID"/>
+      <result property="Kdkhusus" column="KDKHUSUS"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Mtglevel" column="MTGLEVEL"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Idstdharga" column="IDSTDHARGA"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertStdhargab" parameterMap="insert-param">
+      <generate table="STDHARGAB"/>
+    </insert>
+    <update id="UpdateByStdhargab" parameterMap="update-param">
+      <generate table="STDHARGAB" by="IDSTDHARGA,MTGKEY"/>
+    </update>
+    <delete id="DeleteByStdhargab" parameterMap="delete-param">
+      <generate table="STDHARGAB" by="IDSTDHARGA,MTGKEY"/>
+    </delete>
+    <select id="BaseQueryStdhargab" parameterClass="Stdhargab" resultMap="return-result">
+      select A.IDSTDHARGA,A.MTGKEY
+      , B.HRGSTD, B.KDJNSSTD,B.KET,B.MERKSTD,B.NMSTD,B.NOSTD,B.SATUAN,B.SPEKSTD,B.STVALID
+      , C.KDPER,C.MTGLEVEL,C.NMPER,C.TYPE,C.KDKHUSUS
+      from STDHARGAB A
+      left outer join STDHARGA B on A.IDSTDHARGA = B.IDSTDHARGA
+      left outer join MATANGB C on A.MTGKEY = C.MTGKEY
+    </select>
+    <select id="QueryByAllStdhargab" extends="BaseQueryStdhargab" parameterClass="Stdhargab" resultMap="return-result">
+      where A.IDSTDHARGA=#Idstdharga#
+      and case #Parameter.Field#
+      when '1' then A.IDSTDHARGA
+      when '2' then A.MTGKEY
+      end like '%'+ #Parameter.Value# + '%'
+    </select>
+    <select id="LoadByPKStdhargab" extends="BaseQueryStdhargab" parameterClass="Stdhargab" resultMap="return-result">
+      where A.IDSTDHARGA=#Idstdharga# and A.MTGKEY=#Mtgkey# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Stdhargab">
+      <parameter property="Idstdharga" column="IDSTDHARGA"/>
+      <parameter property="Parameter.Key" column="MTGKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Stdhargab">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Stdhargab">
+      <parameter property="Idstdharga" column="IDSTDHARGA"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

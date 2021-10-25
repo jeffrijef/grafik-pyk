@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Tbpdetr" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Tbpdetr" type="Usadi.Valid49.BO.TbpdetrControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Tbpdetr">
+      <result property="Idxkode" column="IDXKODE"/>
+      <result property="Kdpers" column="KDPERS"/>
+      <result property="Nojetra" column="NOJETRA"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Notbp" column="NOTBP"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+    </resultMap>
+		<resultMap id="return-result-tree" class="Tbpdetr">
+			<result property="Unitkey" column="UNITKEY"/>
+			<result property="Notbp" column="NOTBP"/>
+			<result property="Kdkegunit" column="KDKEGUNIT"/>
+			<result property="Kdper" column="KDPER"/>
+			<result property="Nmper" column="NMPER"/>
+			<result property="Nilai" column="NILAI"/>
+			<result property="Type" column="TYPE"/>
+		</resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertTbpdetr" parameterMap="insert-param">
+      <generate table="TBPDETR"/>
+    </insert>
+    <update id="UpdateByTbpdetr" parameterMap="update-param">
+      <generate table="TBPDETR" by="NOJETRA,UNITKEY,NOTBP,MTGKEY,KDKEGUNIT"/>
+    </update>
+    <delete id="DeleteByTbpdetr" parameterMap="delete-param">
+      <generate table="TBPDETR" by="NOJETRA,UNITKEY,NOTBP,MTGKEY,KDKEGUNIT"/>
+    </delete>
+    <select id="BaseQueryTbpdetr" parameterClass="Tbpdetr" resultMap="return-result">
+			select A.KDKEGUNIT,A.MTGKEY,A.NILAI,A.NOJETRA,A.NOTBP,A.UNITKEY
+			,B.IDXKODE
+			,rtrim(C.KDPER) as KDPER, rtrim(C.NMPER) as NMPER, C.TYPE
+			,D.KDPERS
+			from TBPDETR A
+			left outer join TBP B on A.NOTBP = B.NOTBP and A.UNITKEY = B.UNITKEY
+			left outer join MATANGR C on A.MTGKEY = C.MTGKEY
+			left outer join JTRNLKAS D on A.NOJETRA = D.NOJETRA
+		</select>
+    <select id="QueryByAllTbpdetr" extends="BaseQueryTbpdetr" parameterClass="Tbpdetr" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOTBP=#Notbp# and A.KDKEGUNIT=#Kdkegunit#
+      and case #Parameter.Field#
+      when '1' then C.KDPER
+      when '2' then C.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by C.KDPER
+    </select>
+		<select id="QueryByFilterTbpdetr" parameterClass="Tbpdetr" resultMap="return-result-tree">
+			select distinct UNITKEY,MTGKEY as KDKEGUNIT,KDPER,NMPER,NILAI,TYPE,#Notbp# as NOTBP from (
+			<!--select P.UNITKEY,UN.UNITKEY as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2'))) as KDPER, isnull(UR.NMUNIT,'NON URUSAN') as NMPER,'H' as TYPE,
+			NILAI=(select sum(S1.NILAI)
+			from TBPDETR S1
+			inner join KEGUNIT K1 on S1.UNITKEY=K1.UNITKEY and S1.KDKEGUNIT=K1.KDKEGUNIT
+			inner join PGRMUNIT P1 on K1.UNITKEY=P1.UNITKEY and K1.IDPRGRM=P1.IDPRGRM and K1.KDTAHAP=P1.KDTAHAP
+			left outer join MPGRM MP1 on P1.IDPRGRM=MP1.IDPRGRM
+			left outer join DAFTUNIT UR1 on UR1.UNITKEY=MP1.UNITKEY
+			where S1.UNITKEY=#Unitkey# and S1.NOTBP=#Notbp#
+			and isnull(UR1.UNITKEY,'')=isnull(UR.UNITKEY,'')
+			group by UR1.UNITKEY
+			)
+			from PGRMUNIT P left outer join MPGRM MP on P.IDPRGRM = MP.IDPRGRM
+			left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+			left outer join DAFTUNIT UN on P.UNITKEY = UN.UNITKEY
+			where P.UNITKEY =#Unitkey# and
+			P.IDPRGRM in
+			(select IDPRGRM from KEGUNIT where UNITKEY=#Unitkey# and
+			KDKEGUNIT in (select KDKEGUNIT from TBPDETR where UNITKEY=#Unitkey# and NOTBP=#Notbp#))
+			union
+			select P.UNITKEY,P.IDPRGRM as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM) as KDPER, MP.NMPRGRM as NMPER,'H' as TYPE,
+			NILAI=(select sum(S1.NILAI)
+			from TBPDETR S1
+			inner join KEGUNIT K1 on S1.UNITKEY=K1.UNITKEY and S1.KDKEGUNIT=K1.KDKEGUNIT
+			inner join PGRMUNIT P1 on K1.UNITKEY=P1.UNITKEY and K1.IDPRGRM=P1.IDPRGRM and K1.KDTAHAP=P1.KDTAHAP
+			where S1.UNITKEY=#Unitkey# and S1.NOTBP=#Notbp#
+			and P1.IDPRGRM=P.IDPRGRM
+			group by P1.UNITKEY,P1.IDPRGRM
+			)
+			from PGRMUNIT P left outer join MPGRM MP on P.IDPRGRM = MP.IDPRGRM
+			left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+			left outer join DAFTUNIT UN on P.UNITKEY = UN.UNITKEY
+			where P.UNITKEY =#Unitkey# and
+			P.IDPRGRM in
+			(select IDPRGRM from KEGUNIT where UNITKEY=#Unitkey# and
+			KDKEGUNIT in (select KDKEGUNIT from TBPDETR where UNITKEY=#Unitkey# and NOTBP=#Notbp#))
+			union-->
+			select K.UNITKEY,K.KDKEGUNIT as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM)+rtrim(MK.NUKEG) as KDPER, MK.NMKEGUNIT as NMPER,'D' as TYPE,
+			NILAI=(select sum(NILAI) from TBPDETR where UNITKEY=#Unitkey# and NOTBP=#Notbp# and KDKEGUNIT=K.KDKEGUNIT)
+			from KEGUNIT K
+			left outer join MKEGIATAN MK on MK.KDKEGUNIT=K.KDKEGUNIT
+			left outer join MPGRM MP on MK.IDPRGRM = MP.IDPRGRM
+			left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+			left outer join DAFTUNIT UN on K.UNITKEY = UN.UNITKEY
+			where K.UNITKEY =#Unitkey# and K.KDKEGUNIT in (select KDKEGUNIT from TBPDETR where UNITKEY=#Unitkey# and NOTBP=#Notbp#)
+			)A
+			where UNITKEY =#Unitkey#
+			and case #Parameter.Field#
+			when '1' then KDPER
+			when '2' then NMPER
+			end like '%'+ #Parameter.Value# + '%'
+			order by KDPER
+		</select>
+    <select id="QueryByTotalTbpdetr" extends="BaseQueryTbpdetr" parameterClass="Tbpdetr" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOTBP=#Notbp# and A.NOJETRA=#Nojetra#
+    </select>
+    <select id="LoadByPKTbpdetr" extends="BaseQueryTbpdetr" parameterClass="Tbpdetr" resultMap="return-result">
+			where A.UNITKEY=#Unitkey# and A.NOTBP=#Notbp# and A.MTGKEY=#Mtgkey# and A.KDKEGUNIT=#Kdkegunit# and A.NOJETRA=#Nojetra#
+		</select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Tbpdetr">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Notbp" column="NOTBP"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Tbpdetr">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Tbpdetr">
+			<parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Notbp" column="NOTBP"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

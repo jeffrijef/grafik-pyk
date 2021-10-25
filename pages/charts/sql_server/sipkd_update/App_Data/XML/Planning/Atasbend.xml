@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Atasbend" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Atasbend" type="Usadi.Valid49.BO.AtasbendControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Atasbend">
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nip" column="NIP"/>
+      <result property="Nama" column="NAMA"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <insert id="InsertAtasbend" parameterMap="insert-param" >
+      <generate table="ATASBEND"/>
+    </insert>
+    <update id="UpdateByAtasbend" parameterMap="update-param" >
+      <generate table="ATASBEND" by="UNITKEY,NIP"/>
+    </update>
+    <delete id="DeleteByAtasbend" parameterMap="delete-param" >
+      <generate table="ATASBEND" by="UNITKEY,NIP"/>
+    </delete>
+    <select id="BaseQueryAtasbend" parameterClass="Atasbend" resultMap="return-result">
+      select A.*,UN.KDUNIT,UN.NMUNIT,P.NAMA from ATASBEND A
+      left outer join DAFTUNIT UN on A.UNITKEY=UN.UNITKEY
+      left outer join PEGAWAI P on A.NIP=P.NIP
+    </select>
+    <select id="QueryByAllAtasbend" extends="BaseQueryAtasbend" parameterClass="Atasbend" resultMap="return-result">
+      where
+      A.UNITKEY=#Unitkey# and
+      case #Parameter.Field#
+      when '1' then A.NIP
+      when '2' then NAMA
+      when '3' then UN.KDUNIT
+      when '4' then UN.NMUNIT
+      end like '%'+#Parameter.Value#+'%'
+      order by UN.KDUNIT
+    </select>
+    <select id="LoadByPKAtasbend" extends="BaseQueryAtasbend" parameterClass="Atasbend"  resultMap="return-result" >
+      where A.UNITKEY=#Unitkey# AND A.NIP=#Nip#
+    </select>
+  </statements>
+
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Atasbend">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nip" column="NIP"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Atasbend">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Atasbend">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nip" column="NIP"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>
+

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Bpkbu" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <alias>
+      <typeAlias alias="Bpkbu" type="Usadi.Valid49.BO.BpkbuControl" />
+    </alias>
+    <resultMaps>
+      <resultMap id="return-result" class="Bpkbu">
+        <!--<result property="Unitkey" column="UNITKEY"/>-->
+        <result property="Nmper" column="NMPER"/>
+        <result property="Kdper" column="KDPER"/>
+        <result property="Nilai" column="NILAI"/>
+        <result property="Nobpk" column="NOBPK"/>
+        <result property="Mtgkey" column="MTGKEY"/>
+        <result property="Nobu" column="NOBU"/>
+      </resultMap>
+    </resultMaps>
+    <statements>
+      <insert id="InsertBpkbu" parameterMap="insert-param">
+        <generate table="Bpkbu"/>
+      </insert>
+      <update id="UpdateByBpkbu" parameterMap="update-param">
+        <generate table="Bpkbu" by="NOBPK,MTGKEY,NOBU"/>
+      </update>
+      <update id="UpdateByInbpkbuBpkbu" parameterClass="Bpkbu">
+        insert into BPKBU (NOBU,NOBPK,MTGKEY,NILAI)
+        select #Nobu#,#Nobpk#,MTGKEY,NILAI from BPKDETR
+        where UNITKEY=#Unitkey# and NOBPK=#Nobpk#
+	union all
+        select #Nobu#,#Nobpk#,MTGKEY,NILAI from SP2DDETR
+        where UNITKEY=#Unitkey# and NOSP2D=#Nobpk#
+      </update>
+      <update id="UpdateByInbuBpkbu" parameterClass="Bpkbu">
+        insert into BU (NOBU,NOBPK,MTGKEY,MTGKEYNRC,NILAI)
+        select #Nobu#,#Nobpk#,a.MTGKEY,p.MTGKEY,0 from BERITADETR a
+        INNER JOIN PERICTK p ON p.UNITKEY=a.UNITKEY AND p.NOBA = a.NOBA
+        LEFT JOIN bubam b on b.NOBA = a.NOBA
+        LEFT JOIN bpkbu c on c.nobu = b.nobu
+        where a.UNITKEY=#Unitkey# and c.NOBPK=#Nobpk#
+      </update>
+      <delete id="DeleteByBpkbu" parameterMap="delete-param">
+        <generate table="Bpkbu" by="NOBPK,MTGKEY,NOBU"/>
+      </delete>
+      <select id="BaseQueryBpkbu" parameterClass="Bpkbu" resultMap="return-result">
+        select B.NILAI,B.NOBPK,B.MTGKEY,B.NOBU,A.KDPER,A.NMPER
+        <!--,C.UNITKEY-->
+        from BPKBU B
+        LEFT JOIN MATANGR A ON A.MTGKEY=B.MTGKEY
+        <!--LEFT JOIN BUBAM C ON C.NOBU=B.NOBU-->
+      </select>
+      <select id="QueryByAllBpkbu" extends="BaseQueryBpkbu" parameterClass="Bpkbu" resultMap="return-result">
+        where B.NOBU=#Nobu# AND
+        case #Parameter.Field#
+        when '1' then B.NOBPK
+        when '2' then A.KDPER
+        when '2' then A.NMPER
+        end like '%'+ #Parameter.Value# + '%'
+        order by B.NOBPK, A.KDPER
+      </select>
+      <select id="LoadByPKBpkbu" extends="BaseQueryBpkbu" parameterClass="Bpkbu" resultMap="return-result">
+        where B.NOBPK = #Nobpk# and B.MTGKEY = #Mtgkey# and B.NOBU = #Nobu#
+      </select>
+    </statements>
+    <parameterMaps>
+      <parameterMap id="insert-param" class="Bpkbu">
+        <parameter property="Nilai" column="NILAI"/>
+        <parameter property="Nobpk" column="NOBPK"/>
+        <parameter property="Mtgkey" column="MTGKEY"/>
+        <parameter property="Nobu" column="NOBU"/>
+      </parameterMap>
+      <parameterMap id="update-param" extends="insert-param" class="Bpkbu">
+      </parameterMap>
+      <parameterMap id="delete-param" class="Bpkbu">
+        <parameter property="Nobpk" column="NOBPK"/>
+        <parameter property="Mtgkey" column="MTGKEY"/>
+        <parameter property="Nobu" column="NOBU"/>
+      </parameterMap>
+    </parameterMaps>
+</sqlMap>
+

@@ -1,0 +1,6 @@
+TITLE=Buku Besar - Belanja
+Idxkode=string;Index Kode;4;;-1;;-1
+Kdkegunit=string;Kegiatan;4;;-1;1;-1
+Tahap=string;Tahap;4;
+Tgl=datetime;Tanggal;30;
+Mtgkey=string;Tahap;10;

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Nextkey" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Nextkey" type="CoreNET.Common.BO.NextkeyControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Nextkey">
+      <result property="Tableid" column="TABLEID"/>
+      <result property="Nextkey" column="NEXTKEY"/>
+      <result property="Nextkeydesc" column="NEXTKEYDESC"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <update id="UpdateByNextkey" parameterMap="update-param">
+      <generate table="NEXTKEY" by="TABLEID"/>
+    </update>
+    <update id="UpdateByNextNextkey" parameterClass="Nextkey" >
+      update NEXTKEY set NEXTKEY = (rtrim(cast((cast(rtrim(replace(NEXTKEY,'_','')) as int)+1) as char(20))) + '_') 
+      where TABLEID = #Tableid#
+    </update>
+    <select id="QueryByAllNextkey" parameterClass="Nextkey" resultMap="return-result">
+      select * from NEXTKEY
+      where case (#Parameter.Field#)
+      when '1' then TABLEID
+      when '2' then NEXTKEYDESC
+      end like '%'+#Parameter.Value#+'%'
+      order by TABLEID
+    </select>
+    <select id="LoadByPKNextkey" parameterClass="Nextkey"  resultMap="return-result" >
+      select * from NEXTKEY
+      where TABLEID=#Tableid#
+    </select>
+  </statements>
+
+
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Nextkey">
+      <parameter property="Nextkey" column="NEXTKEY"/>
+      <parameter property="Nextkeydesc" column="NEXTKEYDESC"/>
+      <parameter property="Tableid" column="TABLEID"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Nextkey">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Nextkey">
+      <parameter property="Tableid" column="TABLEID"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>
+

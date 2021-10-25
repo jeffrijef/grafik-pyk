@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Profil" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Profil" type="Usadi.Valid49.BO.ProfilControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Profil">
+      <result property="Nmprofil" column="NMPROFIL"/>
+      <result property="Kdprofil" column="KDPROFIL"/>
+      </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertProfil" parameterMap="insert-param">
+      <generate table="PROFIL"/>
+    </insert>
+    <update id="UpdateByProfil" parameterMap="update-param">
+      <generate table="PROFIL" by="KDPROFIL"/>
+    </update>
+    <delete id="DeleteByProfil" parameterMap="delete-param">
+      <generate table="PROFIL" by="KDPROFIL"/>
+    </delete>
+    <select id="BaseQueryProfil" parameterClass="Profil" resultMap="return-result">
+      select A.KDPROFIL,A.NMPROFIL
+      from PROFIL A
+    </select>
+    <select id="QueryByAllProfil" extends="BaseQueryProfil" parameterClass="Profil" resultMap="return-result">
+      where
+	    case #Parameter.Field#
+        when '1' then A.KDPROFIL
+        when '2' then A.NMPROFIL
+      end like '%'+ #Parameter.Value# + '%' 
+      order by A.KDPROFIL
+    </select>
+    <select id="QueryByListProfil" extends="BaseQueryProfil" parameterclass="Usadi.Valid49.BO.ProfilunitControl" resultMap="return-result">
+      where A.KDPROFIL not in (select KDPROFIL from PROFILUNIT where UNITKEY=#Unitkey#)
+      order by A.KDPROFIL
+    </select>
+    <select id="LoadByPKProfil" extends="BaseQueryProfil" parameterClass="Profil" resultMap="return-result">
+      where A.KDPROFIL=#Kdprofil# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Profil">
+      <parameter property="Nmprofil" column="NMPROFIL"/>
+      <parameter property="Kdprofil" column="KDPROFIL"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Profil">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Profil">
+      <parameter property="Kdprofil" column="KDPROFIL"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

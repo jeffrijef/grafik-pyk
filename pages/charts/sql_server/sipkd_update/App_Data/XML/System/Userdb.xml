@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Userdb" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Userdb" type="CoreNET.Common.BO.UserdbControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Userdb">
+      <result property="Dbname" column="DBNAME"/>
+      <result property="Pwd" column="PWD"/>
+      <result property="Server" column="SERVER"/>
+      <result property="Userid" column="USERID"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertUserdb" parameterMap="insert-param">
+      <generate table="USERDB"/>
+    </insert>
+    <update id="UpdateByUserdb" parameterMap="update-param">
+      <generate table="USERDB" by="USERID"/>
+    </update>
+    <delete id="DeleteByUserdb" parameterMap="delete-param">
+      <generate table="USERDB" by="USERID"/>
+    </delete>
+    <select id="BaseQueryUserdb" parameterClass="Userdb" resultMap="return-result">
+      select UDB.DBNAME,UDB.PWD,UDB.SERVER,UDB.USERID
+      from USERDB UDB
+    </select>
+    <select id="QueryByAllUserdb" extends="BaseQueryUserdb" parameterClass="Userdb" resultMap="return-result">
+      where 
+      case #Parameter.Field#
+        when '1' then UDB.DBNAME
+        when '2' then UDB.PWD
+        when '3' then UDB.SERVER
+        when '4' then UDB.USERID
+      end like '%'+ #Parameter.Value# + '%' 
+    </select>
+    <select id="LoadByPKUserdb" extends="BaseQueryUserdb" parameterClass="Userdb" resultMap="return-result">
+      where UDB.USERID=#Userid# 
+    </select>
+    <insert id="Insert0Userdb" parameterClass="Userdb">
+      create table USERDB
+      (
+        USERID varchar(30) not null primary key,
+        PWD varchar(30) null,
+        SERVER varchar(30) null,
+        DBNAME varchar(30) null
+      )
+    </insert>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Userdb">
+      <parameter property="Dbname" column="DBNAME"/>
+      <parameter property="Pwd" column="PWD"/>
+      <parameter property="Server" column="SERVER"/>
+      <parameter property="Userid" column="USERID"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Userdb">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Userdb">
+      <parameter property="Userid" column="USERID"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

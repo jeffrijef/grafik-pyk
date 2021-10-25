@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Sp2ddetr" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Sp2ddetr" type="Usadi.Valid49.BO.Sp2ddetrControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Sp2ddetr">
+      <result property="Kddana" column="KDDANA"/>
+      <result property="Nmdana" column="NMDANA"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Nojetra" column="NOJETRA"/>
+      <result property="Nosp2d" column="NOSP2D"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+    </resultMap>
+    <resultMap id="return-result-tree" class="Sp2ddetr">
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nosp2d" column="NOSP2D"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Type" column="TYPE"/>
+    </resultMap>
+    <resultMap id="return-result-total" class="Sp2ddetr">
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Nilai" column="NILAI"/>
+    </resultMap>
+    <resultMap id="return-result-total-unit" class="Sp2ddetr">
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nilai" column="NILAI"/>
+    </resultMap>
+    <resultMap id="return-result-pot" class="Sp2ddetr">
+      <result property="Nmper" column="NMPER"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Nojetra" column="NOJETRA"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nosp2d" column="NOSP2D"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSp2ddetr" parameterMap="insert-param">
+      <generate table="SP2DDETR"/>
+    </insert>
+    <update id="UpdateBySp2ddetr" parameterMap="update-param">
+      <generate table="SP2DDETR" by="NOJETRA,KDKEGUNIT,MTGKEY,UNITKEY,NOSP2D"/>
+    </update>
+    <delete id="DeleteBySp2ddetr" parameterMap="delete-param">
+      <generate table="SP2DDETR" by="NOJETRA,KDKEGUNIT,MTGKEY,UNITKEY,NOSP2D"/>
+    </delete>
+    <delete id="DeleteByAllSp2ddetr" parameterClass="Sp2ddetr" >
+      delete from SP2DDETR
+      where UNITKEY=#Unitkey# and NOSP2D=#Nosp2d# 
+    </delete>
+    <delete id="DeleteByKegSp2ddetr" parameterClass="Sp2ddetr" >
+      delete from SP2DDETR
+      where UNITKEY=#Unitkey# and NOSP2D=#Nosp2d# and KDKEGUNIT=#Kdkegunit#
+    </delete>
+    <select id="BaseQuerySp2ddetr" parameterClass="Sp2ddetr" resultMap="return-result">
+      select A.MTGKEY,A.NILAI,A.NOJETRA,A.NOSP2D,A.UNITKEY,A.KDKEGUNIT,rtrim(A.KDDANA) as KDDANA,isnull(JD.NMDANA,'') as NMDANA
+      ,rtrim(D.KDPER) as KDPER, rtrim(D.NMPER) as NMPER
+      from SP2DDETR A
+      left outer join MATANGR D on A.MTGKEY = D.MTGKEY
+      left outer join JDANA JD on A.KDDANA = JD.KDDANA
+    </select>
+    <select id="QueryByAllSp2ddetr" extends="BaseQuerySp2ddetr" parameterClass="Sp2ddetr" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSP2D=#Nosp2d# and A.KDKEGUNIT=#Kdkegunit# and A.NOJETRA = #Nojetra#
+      and case #Parameter.Field#
+      when '1' then D.KDPER
+      when '2' then D.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by D.KDPER
+    </select>
+    <select id="QueryByPotSp2ddetr" parameterClass="Sp2ddetr" resultMap="return-result-pot">
+      select * from
+      (select A.MTGKEY,A.NILAI,A.NOJETRA,A.NOSP2D,A.UNITKEY
+      ,rtrim(D.KDPER) as KDPER, rtrim(D.NMPER) as NMPER
+      from SP2DDETB A
+      left outer join MATANGB D on A.MTGKEY = D.MTGKEY
+      where A.UNITKEY=#Unitkey# and A.NOSP2D=#Nosp2d# and A.NOJETRA in ('23')
+      union
+      select A.MTGKEY,A.NILAI,A.NOJETRA,A.NOSP2D,A.UNITKEY
+      ,rtrim(D.KDPER) as KDPER, rtrim(D.NMPER) as NMPER
+      from SP2DDETR A
+      left outer join MATANGR D on A.MTGKEY = D.MTGKEY
+      where A.UNITKEY=#Unitkey# and A.NOSP2D=#Nosp2d# and A.NOJETRA in ('23')
+      )A
+      where case #Parameter.Field#
+      when '1' then A.NOSP2D
+      when '2' then A.UNITKEY
+      when '3' then A.NOJETRA
+      when '4' then A.MTGKEY
+      when '5' then convert(char(10), A.NILAI)
+      end like '%'+ #Parameter.Value# + '%'
+      order by KDPER
+    </select>
+    <select id="QueryByDetSp2ddetr" extends="BaseQuerySp2ddetr" parameterClass="Sp2ddetr" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSP2D=#Nosp2d# and A.KDKEGUNIT=#Kdkegunit# and A.NOJETRA = '21'
+      and  A.NOJETRA+'-'+A.MTGKEY not in (#Nojetra#+'-'+#Mtgkey#)
+      order by D.KDPER
+    </select>
+    <!--<select id="QueryByPotSp2ddetr" extends="BaseQuerySp2ddetr" parameterClass="Sp2ddetr" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSP2D=#Nosp2d# and A.KDKEGUNIT=#Kdkegunit# and A.NOJETRA = '23'
+      and  A.NOJETRA+'-'+A.MTGKEY not in (#Nojetra#+'-'+#Mtgkey#)
+      order by D.KDPER
+    </select>-->
+    <select id="QueryByUntilnowSp2ddetr" parameterClass="Sp2ddetr" resultMap="return-result-total">
+      select S.UNITKEY,S.NOSP2D,S.MTGKEY,case when S.NOJETRA='21' then S.NILAI else -S.NILAI end as NILAI
+      from SP2DDETR S
+      left outer join SP2D SK on SK.UNITKEY=S.UNITKEY and SK.NOSP2D=S.NOSP2D
+      where S.UNITKEY=#Unitkey# and <![CDATA[SK.TGLSP2D <= #Tglsp2d#]]> and TGLVALID is not null
+      and S.NOSP2D not in (#Nosp2d#)
+    </select>
+    <select id="QueryByFilterSp2ddetr" parameterClass="Sp2ddetr" resultMap="return-result-tree">
+      select distinct UNITKEY,MTGKEY as KDKEGUNIT,KDPER,NMPER,NILAI,TYPE,#Nosp2d# as NOSP2D from (
+      <!--select P.UNITKEY,UN.UNITKEY as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2'))) as KDPER, isnull(UR.NMUNIT,'NON URUSAN') as NMPER,'H' as TYPE,
+      NILAI=(select sum(S1.NILAI)
+      from SP2DDETR S1
+      inner join KEGUNIT K1 on S1.UNITKEY=K1.UNITKEY and S1.KDKEGUNIT=K1.KDKEGUNIT
+      inner join PGRMUNIT P1 on K1.UNITKEY=P1.UNITKEY and K1.IDPRGRM=P1.IDPRGRM and K1.KDTAHAP=P1.KDTAHAP
+      left outer join MPGRM MP1 on P1.IDPRGRM=MP1.IDPRGRM
+      left outer join DAFTUNIT UR1 on UR1.UNITKEY=MP1.UNITKEY
+      where S1.UNITKEY=#Unitkey# and S1.NOSP2D=#Nosp2d#
+      and isnull(UR1.UNITKEY,'')=isnull(UR.UNITKEY,'')
+      group by UR1.UNITKEY
+      )
+      from PGRMUNIT P left outer join MPGRM MP on P.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on P.UNITKEY = UN.UNITKEY
+      where P.UNITKEY =#Unitkey# and
+      P.IDPRGRM in
+      (select IDPRGRM from KEGUNIT where UNITKEY=#Unitkey# and
+      KDKEGUNIT in (select KDKEGUNIT from SP2DDETR where UNITKEY=#Unitkey# and NOSP2D=#Nosp2d#))
+      union
+      select P.UNITKEY,P.IDPRGRM as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM) as KDPER, MP.NMPRGRM as NMPER,'H' as TYPE,
+      NILAI=(select sum(S1.NILAI)
+      from SP2DDETR S1
+      inner join KEGUNIT K1 on S1.UNITKEY=K1.UNITKEY and S1.KDKEGUNIT=K1.KDKEGUNIT
+      inner join PGRMUNIT P1 on K1.UNITKEY=P1.UNITKEY and K1.IDPRGRM=P1.IDPRGRM and K1.KDTAHAP=P1.KDTAHAP
+      where S1.UNITKEY=#Unitkey# and S1.NOSP2D=#Nosp2d#
+      and P1.IDPRGRM=P.IDPRGRM
+      group by P1.UNITKEY,P1.IDPRGRM
+      )
+      from PGRMUNIT P left outer join MPGRM MP on P.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on P.UNITKEY = UN.UNITKEY
+      where P.UNITKEY =#Unitkey# and
+      P.IDPRGRM in
+      (select IDPRGRM from KEGUNIT where UNITKEY=#Unitkey# and
+      KDKEGUNIT in (select KDKEGUNIT from SP2DDETR where UNITKEY=#Unitkey# and NOSP2D=#Nosp2d#))
+      union-->
+      select K.UNITKEY,K.KDKEGUNIT as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM)+rtrim(MK.NUKEG) as KDPER, MK.NMKEGUNIT as NMPER,'D' as TYPE,
+      NILAI=(select sum(NILAI) from SP2DDETR where UNITKEY=#Unitkey# and NOSP2D=#Nosp2d# and KDKEGUNIT=K.KDKEGUNIT)
+      from KEGUNIT K
+      left outer join MKEGIATAN MK on MK.KDKEGUNIT=K.KDKEGUNIT
+      left outer join MPGRM MP on MK.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on K.UNITKEY = UN.UNITKEY
+      where K.UNITKEY =#Unitkey# and K.KDKEGUNIT in (select KDKEGUNIT from SP2DDETR where UNITKEY=#Unitkey# and NOSP2D=#Nosp2d#)
+      )A
+      where UNITKEY =#Unitkey#
+      and case #Parameter.Field#
+      when '1' then KDPER
+      when '2' then NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by KDPER
+    </select>
+    <select id="QueryByTotalSp2ddetr" extends="BaseQuerySp2ddetr" parameterClass="Sp2ddetr" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSP2D=#Nosp2d# and A.NOJETRA=#Nojetra#
+    </select>
+    <select id="LoadByPKSp2ddetr" extends="BaseQuerySp2ddetr" parameterClass="Sp2ddetr" resultMap="return-result">
+      where A.KDKEGUNIT=#Kdkegunit# and A.MTGKEY=#Mtgkey# and A.UNITKEY=#Unitkey# and A.NOSP2D=#Nosp2d# 
+    </select>
+    <select id="LoadByTotalRekSp2ddetr" parameterClass="Sp2ddetr" resultMap="return-result-total">
+      <![CDATA[
+      select B.KDPER, B.NMPER, B.MTGKEY, sum(case A.NOJETRA when '21' then A.NILAI else -A.NILAI end) AS NILAI
+      from SP2DDETR A
+      left join SP2D S ON A.UNITKEY = S.UNITKEY AND A.NOSP2D = S.NOSP2D
+      left join MATANGR B on A.MTGKEY = B.MTGKEY
+      where A.UNITKEY=#Unitkey# and A.MTGKEY=#Mtgkey#
+      and S.IDXSKO in (select IDXSKO from SKO where UNITKEY=#Unitkey# and TGLSKO <= #Tglsko# and TGLVALID is not NULL)
+      and S.TGLSP2D <= #Tglsp2d# and S.NOSP2D <> #Nosp2d# and S.TGLVALID is not NULL
+      group BY B.KDPER, B.NMPER, B.MTGKEY
+      ]]>
+    </select>
+    <select id="LoadByTotalUnitSp2ddetr" parameterClass="Sp2ddetr" resultMap="return-result-total-unit">
+      <![CDATA[
+      select A.UNITKEY, sum(case A.NOJETRA when '21' then A.NILAI else -A.NILAI end) AS NILAI
+      from SP2DDETR A
+      left join SP2D S ON A.UNITKEY = S.UNITKEY AND A.NOSP2D = S.NOSP2D
+      where A.UNITKEY=#Unitkey# 
+      and S.IDXSKO in (select IDXSKO from SKO where UNITKEY=#Unitkey# and TGLSKO <= #Tglsko# and TGLVALID is not NULL)
+      and S.TGLSP2D <= #Tglsp2d# and S.NOSP2D <> #Nosp2d# and S.TGLVALID is not NULL
+      group BY A.UNITKEY
+      ]]>
+    </select>
+
+    <procedure id="ExecValidateSp2dTot2" parameterMap="validate-tot-param">
+      WSP_SISASPDSP2D
+    </procedure>
+    
+    <procedure id="ExecValidateSbdanaSp2drRek" parameterMap="ValidateSbdanaSp2drRek-param">
+      WSP_VALIDATION_SBDANASP2DR_REK
+    </procedure>
+    <!-- PJ:04 Mei 2011; Validasi SP2D terhadap Sumber Dana Rekening  -->
+
+    <procedure id="ExecValidateSp2dRekDpa2" parameterMap="validate-rek-param">
+      WSP_VALIDATIONSP2D_REK
+    </procedure>
+
+    <procedure id="ExecValidateSp2dRekSpd2" parameterMap="validate-rek-param">
+      WSP_VALIDATIONSP2D_REK_SPD
+    </procedure>
+    <procedure id="ExecValidateKontrakSp2d1" parameterMap="validate-kontrak-param">
+      WSP_VALIDATIONKONTRAK1
+    </procedure>
+    <procedure id="ExecValidateKontrakSp2d2" parameterMap="validate-kontrak-param2">
+      WSP_VALIDATIONKONTRAK2
+    </procedure>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Sp2ddetr">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nosp2d" column="NOSP2D"/>
+    </parameterMap>
+    <parameterMap id="update-param" class="Sp2ddetr">
+      <parameter property="Kddana" column="KDDANA"/>
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nosp2d" column="NOSP2D"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Sp2ddetr">
+      <parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nosp2d" column="NOSP2D"/>
+    </parameterMap>
+    <parameterMap id="validate-tot-param" class="Sp2ddetr">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Tglsko" column="tglsko"/>
+    </parameterMap>
+    <parameterMap id="validate-rek-param" class="Sp2ddetr">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Kdper" column="kdper"/>
+      <parameter property="Kdkegunit" column="kdkegunit"/>
+      <parameter property="Tglsp2d" column="tglsp2d"/>
+      <parameter property="Kdtahap" column="kdtahap"/>
+    </parameterMap>
+    <parameterMap id="validate-kontrak-param" class="Sp2ddetr">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Kdkegunit" column="kdkegunit"/>
+      <parameter property="Kdper" column="kdper"/>
+      <parameter property="Nokontrak" column="nokon"/>
+    </parameterMap>
+    <parameterMap id="validate-kontrak-param2" class="Sp2ddetr">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Kdkegunit" column="kdkegunit"/>
+      <parameter property="Kdper" column="kdper"/>
+      <parameter property="Nokontrak" column="nokon"/>
+      <parameter property="Trw" column="kdbulan"/>
+    </parameterMap>
+    <parameterMap id="ValidateSbdanaSp2drRek-param" class="Sp2ddetr">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Kdkegunit" column="kdkegunit"/>
+      <parameter property="Mtgkey" column="mtgkey"/>
+      <parameter property="Kddana" column="kddana"/>
+    </parameterMap>
+    <!-- PJ:04 Mei 2011; Validasi SP2D terhadap Sumber Dana Rekening  -->
+
+  </parameterMaps>
+</sqlMap>

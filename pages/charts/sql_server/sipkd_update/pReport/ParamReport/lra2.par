@@ -1,0 +1,6 @@
+TITLE= LRA PERDA LAMPIRAN I.2
+Unitkey=string;Key Unit;4;
+Kdlevel=string;LEVEL Rekening;4;
+Kdtahap=string;Tahap;4;
+Bulan=string; Bulan;4;
+Hal=string;Halaman;4;

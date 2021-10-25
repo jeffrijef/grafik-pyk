@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Setdlak" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Setdlak" type="Usadi.Valid49.BO.SetdlakControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Setdlak">
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Nlakawal" column="NLAKAWAL"/>
+      <result property="Mtgkeylak" column="MTGKEYLAK"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Kdperlak" column="KDPERLAK"/>
+      <result property="Nmperlak" column="NMPERLAK"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSetdlak" parameterMap="insert-param">
+      <generate table="SETDLAK"/>
+    </insert>
+    <update id="UpdateBySetdlak" parameterMap="update-param">
+      <generate table="SETDLAK" by="MTGKEY"/>
+    </update>
+    <delete id="DeleteBySetdlak" parameterMap="delete-param">
+      <generate table="SETDLAK" by="MTGKEY"/>
+    </delete>
+    <select id="BaseQuerySetdlak" parameterClass="Setdlak" resultMap="return-result">
+      select A.MTGKEY,A.MTGKEYLAK
+      ,rtrim(B.KDPER) as KDPERLAK, rtrim(B.NMPER) as NMPERLAK,B.TYPE,B.MTGKEY as MTGKEYLAK,B.NLAKAWAL
+      ,rtrim(C.KDPER) as KDPER,rtrim(C.NMPER) as NMPER
+      from SETDLAK A
+      left outer join MATANGDLAK B on A.MTGKEYLAK = B.MTGKEY
+      left outer join MATANGD C on A.MTGKEY = C.MTGKEY
+      <!--select A.MTGKEY,A.MTGKEYLAK-->
+      <!--,rtrim(B.KDPER) as KDPERLAK, rtrim(B.NMPER) as NMPERLAK,B.TYPE,B.MTGKEY as MTGKEYLAK,B.NLAKAWAL
+      ,case when left(#Kdper#,4)='6.1.' then rtrim(D.KDPER) else rtrim(C.KDPER) end
+      ,rtrim(D.NMPER) as NMPER
+      from SETDLAK A
+      left outer join MATANGDLAK B on A.MTGKEYLAK = B.MTGKEY
+      left outer join MATANGD C on A.MTGKEY = C.MTGKEY
+      left outer join MATANGB D on D.MTGKEY=A.MTGKEY-->
+    </select>
+    <select id="QueryByAllSetdlak" extends="BaseQuerySetdlak" parameterClass="Setdlak" resultMap="return-result">
+      where A.MTGKEYLAK = #Mtgkeylak# and
+      case #Parameter.Field#
+      <!--25 - 02 - 2009  GN-->
+      when '1' then C.KDPER
+      when '2' then C.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+    </select>
+    <select id="LoadByPKSetdlak" extends="BaseQuerySetdlak" parameterClass="Setdlak" resultMap="return-result">
+      where A.MTGKEY=#Mtgkey# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Setdlak">
+      <parameter property="Mtgkeylak" column="MTGKEYLAK"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Setdlak">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Setdlak">
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

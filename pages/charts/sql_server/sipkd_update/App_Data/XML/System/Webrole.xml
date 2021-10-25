@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Webrole" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Webrole" type="CoreNET.Common.BO.WebroleControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Webrole">
+      <result property="Bantuan" column="BANTUAN"/>
+      <result property="Menuid" column="MENUID"/>
+      <result property="Role" column="ROLE"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Roleid" column="ROLEID"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="KEYS"/>
+      <result property="Field" column="ROLEID"/>
+      <result property="Value" column="ROLE"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertWebrole" parameterMap="insert-param">
+      <generate table="WEBROLE"/>
+    </insert>
+    <update id="UpdateByWebrole" parameterClass="Webrole">
+      update WEBROLE set ROLE=#Role#,TYPE=#Type#,MENUID=#Menuid#,BANTUAN=#Bantuan#
+      where ROLEID=#Roleid#
+    </update>
+    <delete id="DeleteByWebrole" parameterMap="delete-param">
+      <generate table="WEBROLE" by="ROLEID"/>
+    </delete>
+    <select id="BaseQueryWebrole" parameterClass="Webrole" resultMap="return-result">
+      select R.ROLE,R.ROLEID,R.TYPE,R.MENUID,R.BANTUAN
+      from WEBROLE R
+    </select>
+    <select id="QueryByAllWebrole" extends="BaseQueryWebrole" parameterClass="Webrole" resultMap="return-result">
+      where
+      case #Parameter.Field#
+      when '1' then R.ROLEID
+      when '2' then R.ROLE
+      when '3' then R.TYPE
+      end like #Parameter.Value# + '%'
+      order by R.ROLEID
+    </select>
+    <select id="QueryByWebotorWebrole" parameterclass="CoreNET.Common.BO.WebotorControl" resultMap="return-lookup">
+      select rtrim(R.ROLEID)+'-'+R.TYPE as KEYS,R.ROLE,R.ROLEID,R.TYPE,R.MENUID
+      from WEBROLE R
+      where R.ROLEID not in (
+        select O.ROLEID from WEBOTOR O
+        inner join WEBROLE R on O.ROLEID=R.ROLEID
+        where O.GROUPID=#Groupid# and R.TYPE='D'
+      )
+      and case #Parameter.Field#
+      when '1' then R.ROLEID
+      when '2' then R.ROLE
+      when '3' then R.TYPE
+      end like #Parameter.Value# + '%'
+      order by R.ROLEID
+    </select>
+    <select id="LoadByPKWebrole" extends="BaseQueryWebrole" parameterClass="Webrole" resultMap="return-result">
+      where R.ROLEID=#Roleid# 
+    </select>
+    <select id="LoadByMenuidWebrole" extends="BaseQueryWebrole" parameterClass="Webrole" resultMap="return-result">
+      where R.MENUID=#Menuid#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Webrole">
+      <parameter property="Bantuan" column="BANTUAN"/>
+      <parameter property="Menuid" column="MENUID"/>
+      <parameter property="Role" column="ROLE"/>
+      <parameter property="Type" column="TYPE"/>
+      <parameter property="Roleid" column="ROLEID"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Webrole">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Webrole">
+      <parameter property="Roleid" column="ROLEID"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

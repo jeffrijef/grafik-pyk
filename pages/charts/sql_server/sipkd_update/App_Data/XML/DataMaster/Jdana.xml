@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Jdana" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Jdana" type="Usadi.Valid49.BO.JdanaControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Jdana">
+      <result property="Nmdana" column="NMDANA"/>
+      <result property="Kddana" column="KDDANA"/>
+      <result property="Ket" column="KET"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="KDDANA"/>
+      <result property="Field" column="KDDANA"/>
+      <!--<result property="Field" column="KET"/>-->
+      <result property="Value" column="NMDANA"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertJdana" parameterMap="insert-param">
+      <generate table="JDANA"/>
+    </insert>
+    <update id="UpdateByJdana" parameterMap="update-param">
+      <generate table="JDANA" by="KDDANA"/>
+    </update>
+    <delete id="DeleteByJdana" parameterMap="delete-param">
+      <generate table="JDANA" by="KDDANA"/>
+    </delete>
+    <select id="BaseQueryJdana" parameterClass="Jdana" resultMap="return-result">
+      select distinct J.KDDANA,J.NMDANA,J.KET   
+			from JDANA J
+    </select>
+    <select id="QueryByAllJdana" extends="BaseQueryJdana" parameterClass="Jdana" resultMap="return-result">
+      where case #Parameter.Field#
+      when '1' then J.KDDANA
+      when '2' then J.KET
+      when '3' then J.NMDANA
+      end like '%'+ #Parameter.Value# + '%'
+      order by J.KDDANA
+    </select>
+    <select id="QueryBySpmJdana" extends="BaseQueryJdana" parameterClass="Jdana" resultMap="return-result">
+      where J.kddana in ('301','302','303','304','305')
+      order by J.KDDANA
+    </select>
+    <select id="QueryByMtgsbdanaJdana" extends="BaseQueryJdana" parameterclass="Usadi.Valid49.BO.MtgsbdanaControl" resultMap="return-lookup">
+      where KDDANA not in (select KDDANA from Mtgsbdana where KDDANA=#Kddana#)
+      and case #Parameter.Field#
+      when '1' then J.KDDANA
+      when '2' then J.NMDANA
+      when '3' then J.KET
+      end like '%'+ #Parameter.Value# + '%'
+      order by J.KDDANA
+    </select>
+    <select id="QueryBySbdanartlJdana" extends="BaseQueryJdana" parameterclass="Usadi.Valid49.BO.SbdanartlControl" resultMap="return-lookup">
+      where KDDANA not in (select KDDANA from SBDANARTL where UNITKEY=#Unitkey# and KDTAHAP=#Kdtahap# and MTGKEY=#Mtgkey#)
+      <!--090226:GN-->
+      <!--and KDDANA in (select KDDANA from SBDANAKEG where UNITKEY=#Unitkey# and KDTAHAP=#Kdtahap#)-->
+      and case #Parameter.Field#
+      when '1' then J.KDDANA
+      when '2' then J.NMDANA
+      when '3' then J.KET
+      end like '%'+ #Parameter.Value# + '%'
+      order by J.KDDANA
+    </select>
+    <select id="QueryBySbdanarJdana" extends="BaseQueryJdana" parameterclass="Usadi.Valid49.BO.SbdanarControl" resultMap="return-lookup">
+      where KDDANA not in (select KDDANA from SBDANAR where UNITKEY=#Unitkey# and KDKEGUNIT =#Kdkegunit# and KDTAHAP=#Kdtahap# and MTGKEY=#Mtgkey#)
+      and KDDANA in (select KDDANA from SBDANAKEG where UNITKEY=#Unitkey# and KDKEGUNIT =#Kdkegunit# and KDTAHAP=#Kdtahap#)
+      and case #Parameter.Field#
+      when '1' then J.KDDANA
+      when '2' then J.NMDANA
+      when '3' then J.KET
+      end like '%'+ #Parameter.Value# + '%'
+      order by J.KDDANA
+    </select>
+    <select id="QueryBySbdanabJdana" extends="BaseQueryJdana" parameterclass="Usadi.Valid49.BO.SbdanabControl" resultMap="return-lookup">
+      where KDDANA not in (select KDDANA from SBDANAB where UNITKEY=#Unitkey# and KDTAHAP=#Kdtahap# and MTGKEY=#Mtgkey#)
+      <!--090226:GN-->
+      <!--and KDDANA in (select KDDANA from SBDANAKEG where UNITKEY=#Unitkey# and KDTAHAP=#Kdtahap#)-->
+      and case #Parameter.Field#
+      when '1' then J.KDDANA
+      when '2' then J.NMDANA
+      when '3' then J.KET
+      end like '%'+ #Parameter.Value# + '%'
+      order by J.KDDANA
+    </select>
+    <select id="QueryBySbdanakegJdana" extends="BaseQueryJdana" parameterclass="Usadi.Valid49.BO.SbdanakegControl" resultMap="return-lookup">
+      where KDDANA not in (select KDDANA from SBDANAKEG where UNITKEY=#Unitkey# and KDTAHAP=#Kdtahap# and KDKEGUNIT=#Kdkegunit#)
+      and case #Parameter.Field#
+      when '1' then J.KDDANA
+      when '2' then J.NMDANA
+      when '3' then J.KET
+      end like '%'+ #Parameter.Value# + '%'
+      order by J.KDDANA
+    </select>
+    <select id="LoadByPKJdana" extends="BaseQueryJdana" parameterClass="Jdana" resultMap="return-result">
+      where J.KDDANA=#Kddana# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Jdana">
+      <parameter property="Nmdana" column="NMDANA"/>
+      <parameter property="Ket" column="KET"/>
+      <parameter property="Kddana" column="KDDANA"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Jdana">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Jdana">
+      <parameter property="Kddana" column="KDDANA"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

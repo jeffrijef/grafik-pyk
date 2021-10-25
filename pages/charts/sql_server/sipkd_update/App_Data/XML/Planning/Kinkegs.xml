@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Kinkegs" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Kinkegs" type="Usadi.Valid49.BO.KinkegsControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Kinkegs">
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Idprgrms" column="IDPRGRMS"/>
+      <result property="Kdkegs" column="KDKEGS"/>
+      <result property="Kdjkk" column="KDJKK"/>
+      <result property="Tolokukur" column="TOLOKUKUR"/>
+      <result property="Target" column="TARGET"/>
+      <result property="Urjkk" column="URJKK"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Noprgrms" column="NOPRGRMS"/>
+      <result property="Nmprgrms" column="NMPRGRMS"/>
+      <result property="Nokegs" column="NOKEGS"/>
+      <result property="Nmkegs" column="NMKEGS"/>
+    </resultMap>
+    <resultMap id="return-view" class="Kinkegs">
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Idprgrms" column="IDPRGRMS"/>
+      <result property="Kdkegs" column="KDKEGS"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Noprgrms" column="NOPRGRMS"/>
+      <result property="Nmprgrms" column="NMPRGRMS"/>
+      <result property="Input" column="INPUT"/>
+      <result property="Output" column="OUTPUT"/>
+      <result property="Outcome" column="OUTCOME"/>
+      <result property="Kdjkk" column="KDJKK"/>
+      <result property="Nokegs" column="NOKEGS"/>
+      <result property="Nmkegs" column="NMKEGS"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <insert id="InsertKinkegs" parameterMap="insert-param" >
+      <generate table="KINKEGS"/>
+    </insert>
+    <update id="UpdateByKinkegs" parameterMap="update-param" >
+      <generate table="KINKEGS" by="UNITKEY,KDKEGS,KDJKK"/>
+    </update>
+    <delete id="DeleteByKinkegs" parameterMap="delete-param" >
+      <generate table="KINKEGS" by="UNITKEY,KDKEGS"/>
+    </delete>
+    <select id="BaseQueryKinkegs" parameterClass="Kinkegs" resultMap="return-result">
+      select KKS.UNITKEY, KS.IDPRGRMS, KKS.KDKEGS, KKS.KDJKK, KKS.TOLOKUKUR, KKS.TARGET,
+      JI.URJKK, UN.KDUNIT, UN.NMUNIT, KS.NOKEGS,KS.NMKEGS, PS.NOPRGRMS,PS.NMPRGRMS
+      from KINKEGS KKS
+      left outer join JINDIKATOR JI on KKS.KDJKK = JI.KDJKK
+      left outer join DAFTUNIT UN on KKS.UNITKEY = UN.UNITKEY
+      left outer join KEGS KS on KKS.UNITKEY = KS.UNITKEY and KKS.KDKEGS = KS.KDKEGS
+      left outer join PGRMS PS on KS.UNITKEY = PS.UNITKEY and KS.IDPRGRMS = PS.IDPRGRMS
+    </select>
+    <procedure id="ExecSPViewKinkegs" parameterMap="view-param" resultMap="return-view">
+      WSP_KINKEGS
+    </procedure>
+    <select id="LoadByPKKinkegs" extends="BaseQueryKinkegs" parameterClass="Kinkegs"  resultMap="return-result" >
+      where KKS.UNITKEY=#Unitkey# AND KS.KDKEGS=#Kdkegs# AND KKS.KDJKK=#Kdjkk#
+    </select>
+  </statements>
+
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Kinkegs">
+      <parameter property="Tolokukur" column="TOLOKUKUR"/>
+      <parameter property="Target" column="TARGET"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Kdkegs" column="KDKEGS"/>
+      <parameter property="Kdjkk" column="KDJKK"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Kinkegs">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Kinkegs">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Kdkegs" column="KDKEGS"/>
+    </parameterMap>
+    <parameterMap id="view-param" class="Kinkegs">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Idprgrms" column="kdprgrms"/>
+      <parameter property="Parameter.Field" column="field"/>
+      <parameter property="Parameter.Value" column="value"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>
+

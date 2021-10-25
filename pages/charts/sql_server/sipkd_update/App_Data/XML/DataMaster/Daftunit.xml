@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Daftunit" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Daftunit" type="Usadi.Valid49.BO.DaftunitControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Daftunit">
+      <result property="Akrounit" column="AKROUNIT"/>
+      <result property="Alamat" column="ALAMAT"/>
+      <result property="Kdlevel" column="KDLEVEL"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Telepon" column="TELEPON"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Unitkey" column="UNITKEY"/>
+     </resultMap>
+    <resultMap id="return-result-uk" class="Daftunit">
+      <result property="Akrounit" column="AKROUNIT"/>
+      <result property="Alamat" column="ALAMAT"/>
+      <result property="Kdlevel" column="KDLEVEL"/>
+      <result property="Kdunituk" column="KDUNITUK"/>
+      <result property="Nmunituk" column="NMUNITUK"/>
+      <result property="Telepon" column="TELEPON"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Unitkeyuk" column="UNITKEYUK"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="UNITKEY"/>
+      <result property="Field" column="KDUNIT"/>
+      <result property="Value" column="NMUNIT"/>
+    </resultMap>
+    <resultMap id="return-uk-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="UNITKEYUK"/>
+      <result property="Field" column="KDUNITUK"/>
+      <result property="Value" column="NMUNITUK"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertDaftunit" parameterMap="insert-param">
+      <generate table="DAFTUNIT"/>
+    </insert>
+    <update id="UpdateByDaftunit" parameterMap="update-param">
+      <generate table="DAFTUNIT" by="UNITKEY"/>
+    </update>
+    <insert id="InsertUnitkerjaDaftunit" parameterMap="insert-param-uk">
+      <generate table="DAFTUNIT"/>
+    </insert>
+    <update id="UpdateByUnitkerjaDaftunit" parameterMap="update-param-uk">
+      <generate table="DAFTUNIT" by="UNITKEY"/>
+    </update>
+    <update id="UpdateByFormatDaftunit" parameterClass="Daftunit">
+      update DAFTUNIT set KDUNIT = left(KDUNIT,5)+#Infiks#+right(KDUNIT,len(KDUNIT)-5-(case #Infiks# when '' then 1 else 0 end))
+      where len(KDUNIT) > 5
+    </update>
+    <update id="UpdateByFormatukDaftunit" parameterClass="Daftunit">
+      update DAFTUNIT set KDUNIT = left(KDUNIT,len(#Kdunit#))+#Infiks#+right(KDUNIT,len(KDUNIT)-len(#Kdunit#)-(case #Infiks# when '' then 1 else 0 end))
+      where len(KDUNIT) > len(#Kdunit#) and <![CDATA[len(right(KDUNIT,len(KDUNIT)-len(#Kdunit#)))<>len(#Format#)]]>
+    </update>
+    <delete id="DeleteByDaftunit" parameterMap="delete-param">
+      <generate table="DAFTUNIT" by="UNITKEY"/>
+    </delete>
+    <delete id="DeleteByUnitkerjaDaftunit" parameterMap="delete-param-uk">
+      <generate table="DAFTUNIT" by="UNITKEY"/>
+    </delete>
+    <select id="BaseQueryDaftunit" parameterClass="Daftunit" resultMap="return-result">
+      select rtrim(U.UNITKEY) as UNITKEY, rtrim(U.KDLEVEL) as KDLEVEL, rtrim(U.KDUNIT) as KDUNIT, 
+      rtrim(U.NMUNIT) as NMUNIT, U.AKROUNIT, U.ALAMAT, U.TELEPON, rtrim(U.TYPE) as TYPE
+      from DAFTUNIT U
+    </select>
+    <select id="QueryByAllDaftunit" extends="BaseQueryDaftunit" parameterClass="Daftunit" resultMap="return-result">
+      where (UNITKEY in (select UNITKEY from USERSKPD where USERID=#Userid#) or isnull(#Userid#,'')='')
+      and case #Parameter.Field#
+      when '1' then U.KDUNIT
+      when '2' then U.NMUNIT
+      when '3' then U.TYPE
+      end like '%'+ #Parameter.Value# + '%'
+      order by U.KDUNIT
+    </select>
+    <select id="QueryByUnitDaftunit" extends="BaseQueryDaftunit" parameterClass="Daftunit" resultMap="return-result">
+      WHERE LEFT(kdunit,len(#Kdunit#))=(select kdunit from daftunit where unitkey=#Unitkey#)
+      and UNITKEY in (select UNITKEY from USERSKPD where USERID=#Userid#)
+    </select>
+		<select id="QueryByUnitTransDaftunit" extends="BaseQueryDaftunit" parameterClass="Daftunit" resultMap="return-result">
+			WHERE LEFT(kdunit,len(#Kdunit#))=(select kdunit from daftunit where unitkey=#Unitkey#)
+			<!--and UNITKEY in (select UNITKEY from USERSKPD where USERID=#Userid#)-->
+		</select>
+    <select id="QueryByAllUnitDaftunit" extends="BaseQueryDaftunit" parameterClass="Daftunit" resultMap="return-result">
+      <!--where U.KDLEVEL in ('1','2','3')-->
+      where 1=1
+      and (UNITKEY in (select UNITKEY from USERSKPD where USERID=#Userid#) or isnull(#Userid#,'')='')
+      and case #Parameter.Field#
+      when '1' then U.KDUNIT
+      when '2' then U.NMUNIT
+      when '3' then U.TYPE
+      end like '%'+ #Parameter.Value# + '%'
+      order by U.KDUNIT
+    </select>
+    <select id="QueryBySub01Daftunit" extends="BaseQueryDaftunit" parameterClass="Daftunit" resultMap="return-result">
+      where  <!--U.KDLEVEL not in ('4') (or (U.KDLEVEL='4' and right(rtrim(U.KDUNIT),3) = '01.' ) )
+      and--> (UNITKEY in (select UNITKEY from USERSKPD where USERID=#Userid#) or isnull(#Userid#,'')='')
+      <!--and U.KDUNIT not in ('1.20.00.')-->
+      and case #Parameter.Field#
+      when '1' then U.KDUNIT
+      when '2' then U.NMUNIT
+      when '3' then U.TYPE
+      end like '%'+ #Parameter.Value# + '%'
+      order by U.KDUNIT
+    </select>
+    <select id="QueryBySub02Daftunit" extends="BaseQueryDaftunit" parameterClass="Daftunit" resultMap="return-result">
+      where ( U.KDLEVEL not in ('4') or (U.KDLEVEL='4' and right(rtrim(U.KDUNIT),3) = '02.' ) )
+      and (UNITKEY in (select UNITKEY from USERSKPD where USERID=#Userid#) or isnull(#Userid#,'')='')
+      <!--and U.KDUNIT not in ('1.20.00.')-->
+      and case #Parameter.Field#
+      when '1' then U.KDUNIT
+      when '2' then U.NMUNIT
+      when '3' then U.TYPE
+      end like '%'+ #Parameter.Value# + '%'
+      order by U.KDUNIT
+    </select>
+    <select id="BaseQueryukDaftunit" parameterClass="Daftunit" resultMap="return-result">
+      select rtrim(U.UNITKEY) as UNITKEYUK, rtrim(U.KDLEVEL) as KDLEVEL, right(rtrim(U.KDUNIT),len(rtrim(U.KDUNIT))-len(#Kdunit#)) as KDUNITUK,
+      rtrim(U.NMUNIT) as NMUNITUK, U.AKROUNIT, U.ALAMAT, U.TELEPON, rtrim(U.TYPE) as TYPE
+      from DAFTUNIT U
+    </select>
+    <select id="QueryByUnitkerjaDaftunit" extends="BaseQueryukDaftunit" parameterClass="Daftunit" resultMap="return-result-uk">
+      where U.KDLEVEL='4' and left(U.KDUNIT,len(#Kdunit#))=#Kdunit# and U.KDUNIT not in (#Kdunit#)
+      and case #Parameter.Field#
+      when '1' then U.KDUNIT
+      when '2' then U.NMUNIT
+      when '3' then U.TYPE
+      end like '%'+ #Parameter.Value# + '%'
+      order by U.KDUNIT
+    </select>
+    <select id="QueryByDaftunitukDaftunit" extends="BaseQueryukDaftunit" parameterClass="Daftunit" resultMap="return-uk-lookup">
+      where U.KDLEVEL='4' and left(U.KDUNIT,len(#Kdunit#))=#Kdunit# and U.KDUNIT not in (#Kdunit#)
+      and U.UNITKEY not in (select UNITKEYUK from DAFTUNITUK)
+      and case #Parameter.Field#
+      when '1' then U.KDUNIT
+      when '2' then U.NMUNIT
+      when '3' then U.TYPE
+      end like '%'+ #Parameter.Value# + '%'
+      order by U.KDUNIT
+    </select>
+    <select id="QueryByLsDaftunit" extends="BaseQueryDaftunit" parameterClass="Daftunit" resultMap="return-result">
+      where (UNITKEY in (select UNITKEY from USERSKPD where USERID=#Userid#) or isnull(#Userid#,'')='')
+      <!--and U.KDUNIT not in ('1.20.00.')-->
+      and U.UNITKEY not in (select CONFIGVAL from PEMDA  where CONFIGID='cur_skpkd')
+      order by U.KDUNIT
+    </select>
+    <select id="QueryByAllUnitLsDaftunit" extends="BaseQueryDaftunit" parameterClass="Daftunit" resultMap="return-result">
+      <!--where U.KDLEVEL in ('1','2','3','4')-->
+      where (UNITKEY in (select UNITKEY from USERSKPD where USERID=#Userid#) or isnull(#Userid#,'')='')
+      <!--and U.KDUNIT not in ('1.20.00.')-->
+      and U.UNITKEY not in (select CONFIGVAL from PEMDA  where CONFIGID='cur_skpkd')
+      order by U.KDUNIT
+    </select>
+    <select id="QueryByKdunitDaftunit" extends="BaseQueryDaftunit" parameterClass="Daftunit" resultMap="return-result">
+      where U.KDUNIT=#Kdunit#
+    </select>
+    <select id="QueryByKdunitukDaftunit" extends="BaseQueryDaftunit" parameterClass="Daftunit" resultMap="return-result">
+      where U.KDUNIT=#Kdunituk#
+    </select>
+    <select id="QueryByUrusanunitDaftunit" extends="BaseQueryDaftunit" parameterclass="Usadi.Valid49.BO.UrusanunitControl" resultMap="return-lookup">
+      where U.KDLEVEL in ('2') and (U.UNITKEY not in (select URUSKEY from URUSANUNIT where UNITKEY=#Unitkey#))
+      and case #Parameter.Field#
+      when '1' then U.KDUNIT
+      when '2' then U.NMUNIT
+      when '3' then U.UNITKEY
+      end like '%'+ #Parameter.Value# + '%'
+      order by U.KDUNIT
+    </select>
+    <select id="QueryByUserskpdDaftunit" extends="BaseQueryDaftunit" parameterclass="Usadi.Valid49.BO.UserskpdControl" resultMap="return-lookup">
+			where (U.UNITKEY not in (select UNITKEY from USERSKPD where USERID=#Userid#))
+			and U.KDLEVEL in ('3')
+      and case #Parameter.Field#
+      when '1' then U.KDUNIT
+      when '2' then U.NMUNIT
+      when '3' then U.UNITKEY
+      end like '%'+ #Parameter.Value# + '%'
+      order by U.KDUNIT
+    </select>
+    <select id="QueryByKelolaunitDaftunit" extends="BaseQueryDaftunit" parameterclass="Usadi.Valid49.BO.KelolaunitControl" resultMap="return-lookup">
+      where U.KDLEVEL in ('3') and (U.UNITKEY not in(select unitkey from KELOLAUNIT where UNITKEY=#Unitkey#))
+      and case #Parameter.Field#
+      when '1' then U.KDUNIT
+      when '2' then U.NMUNIT
+      when '3' then U.UNITKEY
+      end like '%'+ #Parameter.Value# + '%'
+      order by U.KDUNIT
+    </select>
+    <!--unitkey unik, 1 urusan 1 fungsi, 1 fungsi n urusan-->
+    <select id="QueryByFungsinitDaftunit" extends="BaseQueryDaftunit" parameterclass="Usadi.Valid49.BO.FungsinitControl" resultMap="return-lookup">
+      where U.KDLEVEL in ('2') and (U.UNITKEY not in (select UNITKEY from FUNGSINIT))
+      and case #Parameter.Field#
+      when '1' then U.KDUNIT
+      when '2' then U.NMUNIT
+      when '3' then U.TYPE
+      when '4' then U.AKROUNIT
+      when '5' then U.ALAMAT
+      when '6' then U.KDLEVEL
+      when '7' then U.TELEPON
+      when '8' then U.UNITKEY
+      end like '%'+ #Parameter.Value# + '%'
+      order by U.KDUNIT
+    </select>
+    <select id="LoadByPKDaftunit" extends="BaseQueryDaftunit" parameterClass="Daftunit" resultMap="return-result">
+      where U.UNITKEY=#Unitkey# 
+    </select>
+    <select id="LoadByPKukDaftunit" extends="BaseQueryukDaftunit" parameterClass="Daftunit" resultMap="return-result-uk">
+      where U.UNITKEY=#Unitkeyuk#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Daftunit">
+      <parameter property="Akrounit" column="AKROUNIT"/>
+      <parameter property="Alamat" column="ALAMAT"/>
+      <parameter property="Kdlevel" column="KDLEVEL"/>
+      <parameter property="Kdunit" column="KDUNIT"/>
+      <parameter property="Nmunit" column="NMUNIT"/>
+      <parameter property="Telepon" column="TELEPON"/>
+      <parameter property="Type" column="TYPE"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+     </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Daftunit">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Daftunit">
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="insert-param-uk" class="Daftunit">
+      <parameter property="Akrounit" column="AKROUNIT"/>
+      <parameter property="Alamat" column="ALAMAT"/>
+      <parameter property="Kdlevel" column="KDLEVEL"/>
+      <parameter property="Kdunituk" column="KDUNIT"/>
+      <parameter property="Nmunituk" column="NMUNIT"/>
+      <parameter property="Telepon" column="TELEPON"/>
+      <parameter property="Type" column="TYPE"/>
+      <parameter property="Unitkeyuk" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param-uk" extends="insert-param-uk" class="Daftunit">
+    </parameterMap>
+    <parameterMap id="delete-param-uk" class="Daftunit">
+      <parameter property="Unitkeyuk" column="UNITKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

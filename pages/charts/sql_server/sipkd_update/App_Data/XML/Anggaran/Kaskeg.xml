@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Kaskeg" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Kaskeg" type="Usadi.Valid49.BO.KaskegControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Kaskeg">
+      <result property="Ket_bulan" column="KET_BULAN"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Kd_bulan" column="KD_BULAN"/>
+      <result property="Kdtahap" column="KDTAHAP"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Unitkey" column="UNITKEY"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertKaskeg" parameterMap="insert-param">
+      <generate table="KASKEG"/>
+    </insert>
+    <update id="UpdateByKaskeg" parameterMap="update-param">
+      <generate table="KASKEG" by="KD_BULAN,KDTAHAP,KDKEGUNIT,UNITKEY"/>
+    </update>
+    <delete id="DeleteByKaskeg" parameterMap="delete-param">
+      <generate table="KASKEG" by="KD_BULAN,KDTAHAP,KDKEGUNIT,UNITKEY"/>
+    </delete>
+    <delete id="DeleteByAllKaskeg" parameterMap="delete-all-param">
+      <generate table="KASKEG" by="KDTAHAP,KDKEGUNIT,UNITKEY"/>
+    </delete>
+    <select id="BaseQueryKaskeg" parameterClass="Kaskeg" resultMap="return-result">
+      select distinct A.KD_BULAN,A.KDKEGUNIT,A.KDTAHAP,A.NILAI,A.UNITKEY ,B.KET_BULAN,s.TGLVALID
+      from KASKEG A
+      inner join BULAN B on A.KD_BULAN = B.KD_BULAN
+      <!--left outer join SKDASK S on S.Unitkey=A.Unitkey and S.Kdtahap=A.KDTAHAP
+      left outer join DASKR D on S.IDXDASK=D.IDXDASK and D.Unitkey=S.Unitkey and D.KDKEGUNIT=A.KDKEGUNIT-->
+			left outer join DASKR D on  D.Unitkey=A.Unitkey and D.KDKEGUNIT=A.KDKEGUNIT
+			left outer join SKDASK S on S.Unitkey=D.Unitkey and S.Kdtahap=A.KDTAHAP and S.IDXDASK=D.IDXDASK
+		</select>
+    <select id="QueryByAllKaskeg" extends="BaseQueryKaskeg" parameterClass="Kaskeg" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.KDKEGUNIT=#Kdkegunit# and A.KDTAHAP=#Kdtahap# and
+      ((a.Kdtahap % 2 = 1 AND s.KDTAHAP IS NULL) OR (a.Kdtahap % 2 = 0 AND s.KDTAHAP IS not NULL) )
+      order by A.KD_BULAN
+    </select>
+    <select id="QueryByTrwKaskeg" parameterClass="Kaskeg" resultMap="return-result">
+      select UNITKEY, KDKEGUNIT, KDTAHAP, KD_TRW AS KD_BULAN, 'Triwulan '+cast(KD_TRW as varchar(2)) as KET_BULAN, sum(NILAI) AS NILAI
+      ,TGLVALID
+      from (
+      select distinct RB.UNITKEY, RB.KDKEGUNIT, RB.KDTAHAP, RB.KD_BULAN, (KD_BULAN - 1) / 3 + 1 AS KD_TRW, RB.NILAI
+      ,s.TGLVALID
+      from KASKEG RB
+      left outer join DASKR D on D.Unitkey=RB.Unitkey and D.KDKEGUNIT=RB.KDKEGUNIT
+      left outer join SKDASK S on S.IDXDASK=D.IDXDASK and S.Unitkey=D.Unitkey and S.Kdtahap=RB.KDTAHAP
+      where (RB.UNITKEY = #Unitkey#) and (RB.KDKEGUNIT = #Kdkegunit#) and (RB.KDTAHAP = #Kdtahap#) and
+      ((RB.Kdtahap % 2 = 1 AND s.KDTAHAP IS NULL) OR (RB.Kdtahap % 2 = 0 AND s.KDTAHAP IS not NULL) )
+      )T
+      group by UNITKEY, KDKEGUNIT, KDTAHAP, KD_TRW,TGLVALID
+      order by KD_TRW
+    </select>
+    <select id="LoadByPKKaskeg" extends="BaseQueryKaskeg" parameterClass="Kaskeg" resultMap="return-result">
+      where A.KD_BULAN=#Kd_bulan# and A.KDTAHAP=#Kdtahap# and A.KDKEGUNIT=#Kdkegunit# and A.UNITKEY=#Unitkey# 
+    </select>
+    <select id="LoadByPKTrwKaskeg" parameterClass="Kaskeg" resultMap="return-result">
+      select UNITKEY, KDKEGUNIT, KDTAHAP, KD_TRW AS KD_BULAN, 'Triwulan '+cast(KD_TRW as varchar(2)) as KET_BULAN, sum(NILAI) AS NILAI
+      ,TGLVALID
+      from (
+      select distinct RB.UNITKEY, RB.KDKEGUNIT, RB.KDTAHAP, RB.KD_BULAN, (KD_BULAN - 1) / 3 + 1 AS KD_TRW, RB.NILAI,
+      s.TGLVALID
+      from KASKEG RB
+      left outer join DASKR D on D.Unitkey=RB.Unitkey and D.KDKEGUNIT=RB.KDKEGUNIT
+      left outer join SKDASK S on S.IDXDASK=D.IDXDASK and S.Unitkey=D.Unitkey and S.Kdtahap=RB.KDTAHAP
+      where (RB.UNITKEY = #Unitkey#) and (RB.KDKEGUNIT = #Kdkegunit#) and (RB.KDTAHAP = #Kdtahap#) and
+      ((RB.Kdtahap % 2 = 1 AND s.KDTAHAP IS NULL) OR (RB.Kdtahap % 2 = 0 AND s.KDTAHAP IS not NULL) )
+      )T
+      where KD_TRW = #Kd_bulan#
+      group by UNITKEY, KDKEGUNIT, KDTAHAP, KD_TRW,TGLVALID
+      order by KD_TRW
+    </select>
+    <procedure id="ExecUpKASKEG" parameterMap="select-param-Up">
+      USD_UpKASKEG
+    </procedure>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Kaskeg">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Kd_bulan" column="KD_BULAN"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Kaskeg">
+    </parameterMap>
+    <parameterMap id="select-param-Up" class="Kaskeg">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Kdkegunit" column="kdkegunit"/>
+      <parameter property="Kdtahap" column="kdtahap"/>
+      <parameter property="Kd_bulan" column="kdbulan"/>
+      <parameter property="Nilai" column="nilbln"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Kaskeg">
+      <parameter property="Kd_bulan" column="KD_BULAN"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="delete-all-param" class="Kaskeg">
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

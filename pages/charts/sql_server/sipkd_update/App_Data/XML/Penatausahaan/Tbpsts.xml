@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Tbpsts" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Tbpsts" type="Usadi.Valid49.BO.TbpstsControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Tbpsts">
+      <result property="Tglsts" column="TGLSTS"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Nosts" column="NOSTS"/>
+      <result property="Idxkode" column="IDXKODE"/>
+      <result property="Tgltbp" column="TGLTBP"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Uraitbp" column="URAITBP"/>
+      <result property="Notbp" column="NOTBP"/>
+      <result property="Unitkey" column="UNITKEY"/>
+    </resultMap>
+    <resultMap id="return-result-del" class="Tbpsts">
+      <result property="Nosts" column="NOSTS"/>
+      <result property="Notbp" column="NOTBP"/>
+      <result property="Unitkey" column="UNITKEY"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertTbpsts" parameterMap="insert-param">
+      <generate table="TBPSTS"/>
+    </insert>
+    <update id="UpdateByTbpsts" parameterMap="update-param">
+      <generate table="TBPSTS" by="NOTBP,UNITKEY"/>
+    </update>
+    <delete id="DeleteByTbpsts" parameterMap="delete-param">
+      <generate table="TBPSTS" by="NOTBP,UNITKEY"/>
+    </delete>
+    <select id="BaseQueryTbpsts" parameterClass="Tbpsts" resultMap="return-result">
+      select A.NOSTS,A.NOTBP,A.UNITKEY
+      , T.IDXKODE, T.TGLTBP, T.TGLVALID, T.URAITBP,
+      NILAI =
+      isnull((select sum(isnull(NILAI,0)) from TBPDETD C where C.UNITKEY=A.UNITKEY and C.NOTBP=A.NOTBP),0)
+      +isnull((select sum(isnull(NILAI,0)) from TBPDETB C where C.UNITKEY=A.UNITKEY and C.NOTBP=A.NOTBP),0),
+      S.TGLSTS
+      from TBPSTS A
+      left outer join TBP T on A.UNITKEY=T.UNITKEY and A.NOTBP=T.NOTBP
+      inner join STS S on S.UNITKEY=T.UNITKEY and A.NOSTS=S.NOSTS
+    </select>
+    <select id="QueryByAllTbpsts" extends="BaseQueryTbpsts" parameterClass="Tbpsts" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSTS=#Nosts#
+      and case #Parameter.Field#
+      when '1' then A.NOSTS
+      when '2' then A.NOTBP
+      when '3' then A.UNITKEY
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOTBP
+    </select>
+    <select id="QueryByNotbpTbpsts" parameterClass="Tbpsts" resultMap="return-result-del">
+      select A.NOSTS,A.NOTBP,A.UNITKEY
+      , T.IDXKODE, T.TGLTBP, T.TGLVALID, T.URAITBP,S.TGLSTS
+      from TBPSTS A
+      left outer join TBP T on A.UNITKEY=T.UNITKEY and A.NOTBP=T.NOTBP
+      inner join STS S on S.UNITKEY=T.UNITKEY and A.NOSTS=S.NOSTS
+      where A.UNITKEY=#Unitkey# and A.NOTBP=#Notbp#
+    </select>    
+    <select id="LoadByPKTbpsts" extends="BaseQueryTbpsts" parameterClass="Tbpsts" resultMap="return-result">
+      where A.NOTBP=#Notbp# and A.UNITKEY=#Unitkey# 
+    </select>
+    <procedure id="ExecTransferTBPkeSTS" parameterMap="transfer-param">
+      WSP_TRANSFER_TBPSTS
+    </procedure>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Tbpsts">
+      <parameter property="Nosts" column="NOSTS"/>
+      <parameter property="Notbp" column="NOTBP"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Tbpsts">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Tbpsts">
+      <parameter property="Notbp" column="NOTBP"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="transfer-param" class="Tbpsts">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Notbp" column="notbp"/>
+      <parameter property="Nosts" column="nosts"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

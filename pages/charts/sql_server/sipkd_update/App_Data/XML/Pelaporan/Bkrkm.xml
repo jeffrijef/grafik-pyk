@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Bkrkm" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Bkrkm" type="Usadi.Valid49.BO.BkrkmControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Bkrkm">
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nobkuskpd" column="NOBKUSKPD"/>
+      <result property="Tglbkuskpd" column="TGLBKUSKPD"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Uraian" column="URAIAN"/>
+      <result property="Tglbk" column="TGLBK"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nobk" column="NOBK"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertBkrkm" parameterMap="insert-param">
+      <generate table="BKRKM"/>
+    </insert>
+    <update id="UpdateByTglvalidBkrkm" parameterClass="Bkrkm">
+      update BKRKM set TGLVALID=#Tglvalid#
+      where UNITKEY=#Unitkey# and NOBK=#Nobk#
+    </update>
+    <update id="UpdateByDraftBkrkm" parameterClass="Bkrkm" >
+      update BKRKM set TGLVALID=null
+      where UNITKEY=#Unitkey# and NOBK=#Nobk#
+    </update>
+    <update id="UpdateByBkrkm" parameterMap="update-param">
+      <generate table="BKRKM" by="UNITKEY,NOBK"/>
+    </update>
+    <delete id="DeleteByBkrkm" parameterMap="delete-param">
+      <generate table="BKRKM" by="UNITKEY,NOBK"/>
+    </delete>
+    <select id="BaseQueryBkrkm" parameterClass="Bkrkm" resultMap="return-result">
+      SELECT A.*, U.KDUNIT, U.NMUNIT, B.TGLBKUSKPD
+	    FROM BKRKM A
+	    LEFT OUTER JOIN DAFTUNIT U ON A.UNITKEY = U.UNITKEY
+	    LEFT OUTER JOIN BKUSP2D B on A.NOBKUSKPD = B.NOBKUSKPD
+    </select>
+    <select id="QueryByAllBkrkm" extends="BaseQueryBkrkm" parameterClass="Bkrkm" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# 
+      and case #Parameter.Field#
+      when '1' then A.NOBK
+	    when '2' then convert(char(10), A.TGLBK, 103)
+	    when '3' then A.NOBKUSKPD
+	    when '4' then A.URAIAN
+      end like '%'+ #Parameter.Value# + '%' 
+    </select>
+    <select id="LoadByPKBkrkm" extends="BaseQueryBkrkm" parameterClass="Bkrkm" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOBK=#Nobk# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Bkrkm">
+      <parameter property="Nobkuskpd" column="NOBKUSKPD"/>
+      <parameter property="Tglbk" column="TGLBK"/>
+      <!--<parameter property="Tglvalid" column="TGLVALID"/>-->
+      <parameter property="Uraian" column="URAIAN"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nobk" column="NOBK"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Bkrkm">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Bkrkm">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nobk" column="NOBK"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Tbpdett" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Tbpdett" type="Usadi.Valid49.BO.TbpdettControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Tbpdett">
+      <result property="Jab_bend" column="JAB_BEND"/>
+      <result property="Jns_bend" column="JNS_BEND"/>
+      <result property="Nip" column="NIP"/>
+      <result property="Rekbend" column="REKBEND"/>
+      <result property="Saldobend" column="SALDOBEND"/>
+      <result property="Kdpers" column="KDPERS"/>
+      <result property="Nmjetra" column="NMJETRA"/>
+      <result property="Idxkode" column="IDXKODE"/>
+      <result property="Kdstatus" column="KDSTATUS"/>
+      <result property="Penyetor" column="PENYETOR"/>
+      <result property="Tgltbp" column="TGLTBP"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Uraitbp" column="URAITBP"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Keybend" column="KEYBEND"/>
+      <result property="Nojetra" column="NOJETRA"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Notbp" column="NOTBP"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Nama" column="NAMA"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertTbpdett" parameterMap="insert-param">
+      <generate table="TBPDETT"/>
+    </insert>
+    <update id="UpdateByTbpdett" parameterMap="update-param">
+      <generate table="TBPDETT" by="KEYBEND,NOJETRA,UNITKEY,NOTBP"/>
+    </update>
+    <update id="UpdateByTotalTbpdett" parameterClass="Tbpdett">
+      update TBPDETT
+      set NILAI = (
+      select sum(NILAI) from TBPDETTKEG
+      where KEYBEND=#Keybend# and NOJETRA=#Nojetra# and UNITKEY=#Unitkey# and NOTBP=#Notbp#
+      )
+      where KEYBEND=#Keybend# and NOJETRA=#Nojetra# and UNITKEY=#Unitkey# and NOTBP=#Notbp#
+    </update>
+    <update id="UpdateByTotalupdateTbpdett" parameterClass="Tbpdett">
+      update TBPDETT
+      set NILAI = 0
+      where KEYBEND=#Keybend# and NOJETRA=#Nojetra# and UNITKEY=#Unitkey# and NOTBP=#Notbp#
+    </update>
+    <delete id="DeleteByTbpdett" parameterMap="delete-param">
+      <generate table="TBPDETT" by="KEYBEND,NOJETRA,UNITKEY,NOTBP"/>
+    </delete>
+    <select id="BaseQueryTbpdett" parameterClass="Tbpdett" resultMap="return-result">
+      select rtrim(A.KEYBEND) as KEYBEND,A.NILAI,A.NOJETRA,A.NOTBP,A.UNITKEY
+      ,B.IDXKODE,rtrim(B.KDSTATUS) as KDSTATUS,B.PENYETOR,B.TGLTBP,B.TGLVALID,B.URAITBP
+      ,C.JAB_BEND,C.JNS_BEND,C.NIP,C.REKBEND,C.SALDOBEND
+      ,D.KDPERS,D.NMJETRA,N.MTGKEY,P.NAMA
+      from TBPDETT A
+      left outer join TBP B on A.NOTBP = B.NOTBP and A.UNITKEY = B.UNITKEY
+      left outer join BEND C on A.KEYBEND = C.KEYBEND
+      left outer join JTRNLKAS D on A.NOJETRA = D.NOJETRA
+      left outer join NRCBEND N on A.KEYBEND=N.KEYBEND
+      left outer join PEGAWAI P on C.NIP=P.NIP
+    </select>
+    <select id="QueryByAllTbpdett" extends="BaseQueryTbpdett" parameterClass="Tbpdett" resultMap="return-result">
+      where A.UNITKEY =#Unitkey# and A.NOTBP=#Notbp# and
+      case #Parameter.Field#
+      when '1' then P.NAMA
+      when '2' then C.REKBEND
+      when '3' then C.JAB_BEND
+      when '4' then convert(char(10), A.NILAI)
+      end like '%'+ #Parameter.Value# + '%'
+      ORDER BY P.NAMA
+    </select>
+    <select id="QueryByTotalTbpdett" extends="BaseQueryTbpdett" parameterClass="Tbpdett" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOTBP=#Notbp# and A.NOJETRA=#Nojetra#
+    </select>
+    <select id="LoadByPKTbpdett" extends="BaseQueryTbpdett" parameterClass="Tbpdett" resultMap="return-result">
+      where A.KEYBEND=#Keybend# and A.NOJETRA=#Nojetra# and A.UNITKEY=#Unitkey# and A.NOTBP=#Notbp#
+    </select>
+    <!--WSP_VALIDATIONLIMPAH_UP-->
+    <procedure id="ExecValidateLIMPAHUP" parameterMap="transfer-param4">
+      WSP_VALIDATIONLIMPAH_UP
+    </procedure>
+    <procedure id="ExecValidateLIMPAHUPT" parameterMap="transfer-param4">
+      WSP_VALIDATIONLIMPAH_UPT
+    </procedure>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Tbpdett">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Keybend" column="KEYBEND"/>
+      <parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Notbp" column="NOTBP"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Tbpdett">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Tbpdett">
+      <parameter property="Keybend" column="KEYBEND"/>
+      <parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Notbp" column="NOTBP"/>
+    </parameterMap>
+    <parameterMap id="transfer-param4" class="Tbpdett">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Keybend" column="keybend"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

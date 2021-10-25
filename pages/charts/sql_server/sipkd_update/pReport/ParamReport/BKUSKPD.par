@@ -1,0 +1,5 @@
+TITLE=BUKU KAS UMUM SKPD
+Jnsbend=string;Jenis Bendahara;4;;-1;
+Unitkey=sring;Key Unit;10;
+Keybend=string;Key Bendahara;10;
+Tgl=datetime;Tanggal;10;

@@ -1,0 +1,7 @@
+TITLE=DPA-PKPD
+Unitkey=string;Key Unit;4;;;;1;
+Kdtahap=string;Tahap;4;
+Kdlevel=string;Kode Level;4;
+Tanggal=datetime;Tanggal;30;
+Hal=string;Halaman;4;
+Kdkhusus=string;Khusus;4;;-1;2

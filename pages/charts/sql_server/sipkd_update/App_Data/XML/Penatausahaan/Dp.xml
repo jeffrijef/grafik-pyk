@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Dp" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Dp" type="Usadi.Valid49.BO.DpControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Dp">
+      <result property="AllowSuperUser" column="ALLOWSUPERUSER"/>
+      <result property="Idxttd" column="IDXTTD"/>
+      <result property="Nip" column="NIP"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Idxkode" column="IDXKODE"/>
+      <result property="Uraian" column="URAIAN"/>
+      <result property="Berita" column="BERITA"/>
+      <result property="Tgldp" column="TGLDP"/>
+      <!--<result property="Tglvalid" column="TGLVALID"/>-->
+      <result property="Nodp" column="NODP"/>
+    </resultMap>
+      <resultMap id="return-result-valid" extends="return-result" class="Dp">
+        <result property="Tglvalid" column="TGLVALID"/>
+        <result property="Nama" column="NAMA"/>
+      </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="NODP"/>
+      <result property="Field" column="NODP"/>
+      <result property="Value" column="NAMA"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertDp" parameterMap="insert-param">
+      <generate table="DP"/>
+    </insert>
+    <update id="UpdateByDp" parameterMap="update-param">
+      <generate table="DP" by="NODP"/>
+    </update>
+    <update id="InsertByValidDp" parameterClass="Dp">
+      UPDATE DP
+      SET TGLVALID=#Tglvalid#
+      WHERE NODP=#Nodp#
+    </update>
+    <update id="UpdateByValidDp" parameterClass="Dp">
+      UPDATE DP
+      SET TGLVALID=#Tglvalid#
+      WHERE NODP=#Nodp#
+    </update>
+    <update id="UpdateByDraftDp" parameterClass="Dp">
+      UPDATE DP
+      SET TGLVALID=NULL
+      WHERE NODP=#Nodp#
+    </update>
+    <delete id="DeleteByDp" parameterMap="delete-param">
+      <generate table="DP" by="NODP"/>
+    </delete>
+    <select id="BaseQueryDp" parameterClass="Dp" resultMap="return-result">
+      select #AllowSuperUser# as ALLOWSUPERUSER,A.BERITA,A.IDXKODE,rtrim(A.IDXTTD) as IDXTTD,A.NODP,A.TGLDP
+      ,B.NIP,B.UNITKEY
+      ,C.URAIAN
+      from DP A
+      left outer join JABTTD B on A.IDXTTD = B.IDXTTD
+      left outer join ZKODE C on A.IDXKODE = C.IDXKODE
+    </select>
+    <select id="QueryByAllDp" extends="BaseQueryDp" parameterClass="Dp" resultMap="return-result">
+      where C.IDXKODE=#Idxkode#
+      and case #Parameter.Field#
+      when '1' then A.NODP
+      when '2' then convert(char(10), A.TGLDP, 103)
+      when '3' then A.BERITA
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NODP
+    </select>
+    <select id="QueryByValidDp" parameterClass="Dp" resultMap="return-result-valid">
+      select #AllowSuperUser# as ALLOWSUPERUSER,A.BERITA,A.IDXKODE,rtrim(A.IDXTTD) as IDXTTD,A.NODP,A.TGLDP
+      ,A.TGLVALID,B.NIP,D.NAMA,B.UNITKEY,C.URAIAN
+      from DP A
+      left outer join JABTTD B on A.IDXTTD = B.IDXTTD
+      left outer join ZKODE C on A.IDXKODE = C.IDXKODE
+      left outer join PEGAWAI D on B.NIP=D.NIP
+      where A.TGLVALID=#Tglvalid# and A.TGLVALID IS NOT NULL and
+       case #Parameter.Field#
+      when '1' then A.NODP
+      when '2' then convert(char(10), A.TGLDP, 103)
+      when '3' then A.BERITA
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NODP
+    </select>
+    <select id="QueryByNodpDp" extends="BaseQueryDp" parameterClass="Dp" resultMap="return-result">
+      order by A.NODP
+    </select>
+    <select id="QueryByDpDp"  parameterclass="Usadi.Valid49.BO.DpControl" resultMap="return-lookup">
+      SELECT D.NODP,D.IDXTTD,P.NAMA,convert(char(10), D.TGLDP, 103) AS TGLDP
+      FROM DP D LEFT OUTER JOIN JABTTD J ON D.IDXTTD=J.IDXTTD
+      LEFT OUTER JOIN PEGAWAI P ON J.NIP=P.NIP
+      where D.NODP in (select NODP FROM DP WHERE TGLVALID IS NULL) and
+       case #Parameter.Field#
+      when '1' then D.NODP
+      when '2' then convert(char(10), D.TGLDP, 103)
+      when '3' then P.NAMA
+      end like '%'+ #Parameter.Value# + '%'
+      order by D.NODP
+    </select>
+    <select id="QueryByOrderByNodpDp" extends="BaseQueryDp" parameterClass="Dp" resultMap="return-result">
+      order by A.NODP
+    </select>
+    <select id="LoadByPKDp" extends="BaseQueryDp" parameterClass="Dp" resultMap="return-result">
+      where A.NODP=#Nodp# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Dp">
+      <parameter property="Berita" column="BERITA"/>
+      <parameter property="Idxkode" column="IDXKODE"/>
+      <parameter property="Idxttd" column="IDXTTD"/>
+      <parameter property="Tgldp" column="TGLDP"/>
+      <!--<parameter property="Tglvalid" column="TGLVALID"/>-->
+      <parameter property="Nodp" column="NODP"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Dp">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Dp">
+      <parameter property="Nodp" column="NODP"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

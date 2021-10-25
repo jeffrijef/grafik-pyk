@@ -1,0 +1,6 @@
+TITLE=Perda Pertanggungjawaban - Lampiran I.2
+Unitkey=string;Key Unit;4;
+Level=string;Level Rekening;2;
+Tahap=string;Tahap;2;
+Tanggal=datetime;Tanggal;10;
+Hal=string;Halaman;10;

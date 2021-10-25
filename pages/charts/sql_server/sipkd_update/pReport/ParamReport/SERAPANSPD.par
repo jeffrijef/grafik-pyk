@@ -1,0 +1,5 @@
+TITLE=SERAPAN SPD BELANJA LANGSUNG
+Unitkey=string;Key Unit;4;
+Kdkegunit=string;Kegiatan;4;
+Idxkode=string;Index Kode;4;;-1;;-1
+Mtgkey=string;Rekening;10;

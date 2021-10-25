@@ -1,0 +1,4 @@
+TITLE=Kartu Kendali Kegiatan
+Unitkey=string;Key Unit;4;
+Kdkegunit=string;Key Unit;4;
+Kdtahap=string;Tahap;4;

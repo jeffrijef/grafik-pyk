@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Bendkpa" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Bendkpa" type="Usadi.Valid49.BO.BendkpaControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Bendkpa">
+      <result property="Nip" column="NIP"/>
+      <result property="Nipb" column="NIPB"/>
+      <result property="Namab" column="NAMA"/>
+      <result property="Jab_bend" column="JAB_BEND"/>
+      <result property="Rekbend" column="REKBEND"/>
+      <result property="Kdunituk" column="KDUNIT"/>
+      <result property="Nmunituk" column="NMUNIT"/>
+      <result property="Keybend" column="KEYBEND"/>
+      <result property="Unitkeyuk" column="UNITKEY"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertBendkpa" parameterMap="insert-param">
+      <generate table="BENDKPA"/>
+    </insert>
+    <update id="UpdateByBendkpa" parameterMap="update-param">
+      <generate table="BENDKPA" by="NIP,KEYBEND,UNITKEY"/>
+    </update>
+    <delete id="DeleteByBendkpa" parameterMap="delete-param">
+      <generate table="BENDKPA" by="NIP,KEYBEND,UNITKEY"/>
+    </delete>
+    <select id="BaseQueryBendkpa" parameterClass="Bendkpa" resultMap="return-result">
+      select A.NIP,P.NIP as NIPB,A.UNITKEY,A.KEYBEND,B.REKBEND,B.JAB_BEND
+      ,rtrim(U.KDUNIT) as KDUNIT, rtrim(U.NMUNIT) as NMUNIT
+      ,P.NAMA
+      from BENDKPA A
+      left outer join KPA K on A.UNITKEY=K.UNITKEY and A.NIP=K.NIP
+      left outer join DAFTUNIT U on A.UNITKEY=U.UNITKEY
+      left outer join BEND B     on A.KEYBEND=B.KEYBEND
+      left outer join PEGAWAI P  on B.NIP=P.NIP
+
+    </select>
+    <select id="QueryByAllBendkpa" extends="BaseQueryBendkpa" parameterClass="Bendkpa" resultMap="return-result">
+      where B.UNITKEY=#Unitkey#  and
+      case #Parameter.Field#
+      when '1' then B.NIP
+      when '2' then P.NAMA
+      when '3' then B.JAB_BEND
+      when '4' then B.REKBEND
+      end like '%'+ #Parameter.Value# + '%'
+      order by U.KDUNIT
+    </select>
+    <select id="LoadByPKBendkpa" extends="BaseQueryBendkpa" parameterClass="Bendkpa" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.KEYBEND=#Keybend#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Bendkpa">
+      <parameter property="Nip" column="NIP"/>
+      <parameter property="Keybend" column="KEYBEND"/>
+      <parameter property="Unitkeyuk" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Bendkpa">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Bendkpa">
+      <parameter property="Nip" column="NIP"/>
+      <parameter property="Keybend" column="KEYBEND"/>
+      <parameter property="Unitkeyuk" column="UNITKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

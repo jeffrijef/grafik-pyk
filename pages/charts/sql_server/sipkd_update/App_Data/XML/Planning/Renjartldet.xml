@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Renjartldet" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Renjartldet" type="Usadi.Valid49.BO.RenjartldetControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Renjartldet">
+      <result property="Kdrek" column="KDREK"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Kdtahun" column="KDTAHUN"/>
+      <result property="Nmtahun" column="NMTAHUN"/>
+      <result property="Nilaimin1" column="NILAIMIN1"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Nilaipls1" column="NILAIPLS1"/>
+      <result property="Nmrek" column="NMREK"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <insert id="InsertRenjartldet" parameterMap="insert-param" >
+      <generate table="RENJARTLDET"/>
+    </insert>
+    <update id="UpdateByRenjartldet" parameterMap="update-param" >
+      <generate table="RENJARTLDET" by="KDREK,UNITKEY,KDTAHUN"/>
+    </update>
+    <delete id="DeleteByRenjartldet" parameterMap="delete-param" >
+      <generate table="RENJARTLDET" by="KDREK,UNITKEY,KDTAHUN"/>
+    </delete>
+    <select id="BaseQueryRenjartldet" parameterClass="Renjartldet" resultMap="return-result">
+      select RRTL.KDREK, RRTL.UNITKEY, RRTL.KDTAHUN, RRTL.NILAIMIN1, RRTL.NILAI, RRTL.NILAIPLS1, UN.KDUNIT, UN.NMUNIT, TN.NMTAHUN, JR.NMREK
+      from RENJARTLDET RRTL
+      left outer join DAFTUNIT UN on RRTL.UNITKEY = UN.UNITKEY
+      left outer join JTAHUN TN on RRTL.KDTAHUN = TN.KDTAHUN
+      left outer join JBELANJA JR on RRTL.KDREK = JR.KDREK
+    </select>
+    <select id="QueryByAllRenjartldet" extends="BaseQueryRenjartldet" parameterClass="Renjartldet" resultMap="return-result">
+      where RRTL.UNITKEY=#Unitkey# and RRTL.KDTAHUN=#Kdtahun#
+      order by JR.KDREK
+    </select>
+    <select id="LoadByPKRenjartldet" extends="BaseQueryRenjartldet" parameterClass="Renjartldet"  resultMap="return-result" >
+      where RRTL.UNITKEY=#Unitkey# and RRTL.KDTAHUN=#Kdtahun# and RRTL.KDREK=#Kdrek#
+    </select>
+  </statements>
+
+  <parameterMaps>
+    <parameterMap id="base-param" class="Renjartldet">
+      <parameter property="Nilaimin1" column="NILAIMIN1"/>
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Nilaipls1" column="NILAIPLS1"/>
+    </parameterMap>
+    <parameterMap id="insert-param" extends="base-param" class="Renjartldet">
+      <parameter property="Parameter.Key" column="KDREK"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Kdtahun" column="KDTAHUN"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="base-param" class="Renjartldet">
+      <parameter property="Kdrek" column="KDREK"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Kdtahun" column="KDTAHUN"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Renjartldet">
+      <parameter property="Kdrek" column="KDREK"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Kdtahun" column="KDTAHUN"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>
+

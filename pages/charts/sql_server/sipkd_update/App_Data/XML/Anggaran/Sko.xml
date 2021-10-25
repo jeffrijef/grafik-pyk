@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Sko" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Sko" type="Usadi.Valid49.BO.SkoControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result-multikeg" class="Sko">
+      <result property="AllowSuperUser" column="ALLOWSUPERUSER"/>
+      <result property="Idxdask" column="IDXDASK"/>
+      <result property="Idxkode" column="IDXKODE"/>
+      <result property="Nodask" column="NODASK"/>
+      <result property="Nosah" column="NOSAH"/>
+      <result property="Tgldask" column="TGLDASK"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Idxttd" column="IDXTTD"/>
+      <result property="Kd_bulan1" column="KD_BULAN1"/>
+      <result property="Kd_bulan2" column="KD_BULAN2"/>
+      <result property="Keterangan" column="KETERANGAN"/>
+      <result property="Noskdpa" column="NOSKDPA"/>
+      <result property="Nosko" column="NOSKO"/>
+      <result property="Tglskdpa" column="TGLSKDPA"/>
+      <result property="Tglsko" column="TGLSKO"/>
+      <result property="Idxsko" column="IDXSKO"/>
+    </resultMap>
+    <resultMap id="return-result" extends="return-result-multikeg" class="Sko">
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+    </resultMap>
+    <resultMap id="return-result-kdbulan" class="Sko">
+      <result property="Nosko" column="NOSKO"/>
+      <result property="Kd_bulan1" column="KD_BULAN1"/>
+      <result property="Kd_bulan2" column="KD_BULAN2"/>
+    </resultMap>
+    <resultMap id="return-result-total" class="Sko">
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Nilai" column="NILAI"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSko" parameterMap="insert-param">
+      <generate table="SKO"/>
+    </insert>
+    <update id="UpdateBySko" parameterMap="update-param">
+      <generate table="SKO" by="IDXSKO"/>
+    </update>
+    <update id="UpdateBySahSko" parameterClass="Sko">
+      update SKO set TGLVALID=#Tglvalid#
+      where UNITKEY=#Unitkey# and IDXSKO=#Idxsko#
+    </update>
+    <update id="UpdateByDraftSko" parameterClass="Sko" >
+      update SKO set TGLVALID=null
+      where UNITKEY=#Unitkey# and IDXSKO=#Idxsko#
+    </update>
+    <delete id="DeleteBySko" parameterMap="delete-param">
+      <generate table="SKO" by="IDXSKO"/>
+    </delete>
+    <procedure id="ExecDeleteSko" parameterMap="delete-param">
+      WSP_DELSKO
+    </procedure>
+    <select id="BaseQuerySko" parameterClass="Sko" resultMap="return-result">
+      select distinct #AllowSuperUser# as ALLOWSUPERUSER,S.IDXDASK,S.IDXKODE,S.IDXSKO,rtrim(S.IDXTTD) as IDXTTD,
+      S.KD_BULAN1,S.KD_BULAN2,rtrim(S.KDDSR) as KDDSR,S.KETERANGAN,rtrim(S.KEYBEND) as KEYBEND,S.NOSKDPA,
+      S.NOSKO,S.TGLSKDPA,S.TGLSKO,S.TGLVALID,rtrim(S.UNITKEY) as UNITKEY,SK.NODASK, SK.NOSAH, SK.TGLDASK
+      , T.URAIAN as URAITAHAP,isnull(D.KDKEGUNIT,#Kdkegunit#) as KDKEGUNIT
+      from SKO S
+      left outer join SKORDET D on S.UNITKEY=D.UNITKEY and S.IDXSKO=D.IDXSKO
+      left outer join SKDASK SK on S.UNITKEY=SK.UNITKEY and S.IDXDASK=SK.IDXDASK
+      left outer join TAHAP T on SK.KDTAHAP=T.KDTAHAP
+    </select>
+    <select id="QueryByAllSko" extends="BaseQuerySko" parameterClass="Sko" resultMap="return-result">
+      where S.UNITKEY=#Unitkey# and (S.IDXKODE=#Idxkode# or (#Idxkode# = 3 and S.IDXKODE in ('3','4')))
+      and case #Parameter.Field#
+      when '1' then S.NOSKO
+      when '2' then convert(char(10), S.TGLSKO, 103)
+      when '3' then S.KETERANGAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by S.NOSKO
+    </select>
+    <select id="QueryByKdbulanSko" parameterClass="Sko" resultMap="return-result-kdbulan">
+      select distinct IDXKODE,KD_BULAN1,KD_BULAN2,NOSKO
+      from SKO S left outer join SKORDET D on S.UNITKEY=D.UNITKEY and S.IDXSKO=D.IDXSKO
+      where S.UNITKEY=#Unitkey# and S.IDXKODE=#Idxkode# and
+      ((#Kd_bulan1# between S.KD_BULAN1 and S.KD_BULAN2) or (#Kd_bulan2# between S.KD_BULAN1 and S.KD_BULAN2)) and
+      (D.KDKEGUNIT = #Kdkegunit# or #Kdkegunit# = '')
+    </select>
+    <select id="QueryByKegSko" extends="BaseQuerySko" parameterClass="Sko" resultMap="return-result">
+      where S.UNITKEY=#Unitkey# and S.IDXKODE=#Idxkode#
+      and (SK.KDTAHAP=#Kdtahap# or #Kdtahap#='4')
+      and (isnull(D.KDKEGUNIT,'')=isnull(#Kdkegunit#,'') or isnull(#Kdkegunit#,'')='')
+      and case #Parameter.Field#
+      when '1' then S.NOSKO
+      when '2' then convert(char(10), S.TGLSKO, 103)
+      when '3' then S.KETERANGAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by S.NOSKO
+    </select>
+    <select id="QueryBySkorSko" extends="BaseQuerySko" parameterClass="Sko" resultMap="return-result">
+      where S.UNITKEY=#Unitkey# and S.IDXKODE=#Idxkode#
+      and case #Parameter.Field#
+      when '1' then S.NOSKO
+      when '2' then convert(char(10), S.TGLSKO, 103)
+      when '3' then S.KETERANGAN
+      end like '%'+ #Parameter.Value# + '%'
+    </select>
+    <select id="QueryByIdxdaskSko" extends="BaseQuerySko" parameterClass="Sko" resultMap="return-result">
+      where S.UNITKEY=#Unitkey# and S.IDXDASK=#Idxdask#
+    </select>
+    <select id="QueryByNoskoSko" extends="BaseQuerySko" parameterClass="Sko" resultMap="return-result">
+      where <!--S.UNITKEY=#Unitkey# and-->
+       (S.NOSKO=#Nosko# or #Nosko#='')
+      order by S.NOSKO
+    </select>
+    <select id="LoadByPKSko" extends="BaseQuerySko" parameterClass="Sko" resultMap="return-result">
+      where S.IDXSKO=#Idxsko# 
+    </select>
+    <select id="LoadByIdxkodeSko" extends="BaseQuerySko" parameterClass="Sko" resultMap="return-result">
+      where S.IDXKODE=#Idxkode# and S.UNITKEY=#Unitkey#
+    </select>
+    <select id="QueryByMultikegSko" parameterClass="Sko" resultMap="return-result-multikeg">
+      select distinct #AllowSuperUser# as ALLOWSUPERUSER,S.IDXDASK,S.IDXKODE,S.IDXSKO,rtrim(S.IDXTTD) as IDXTTD,
+      S.KD_BULAN1,S.KD_BULAN2,rtrim(S.KDDSR) as KDDSR,S.KETERANGAN,rtrim(S.KEYBEND) as KEYBEND,S.NOSKDPA,
+      S.NOSKO,S.TGLSKDPA,S.TGLSKO,S.TGLVALID,rtrim(S.UNITKEY) as UNITKEY,SK.NODASK, SK.NOSAH, SK.TGLDASK
+      , T.URAIAN as URAITAHAP
+      from SKO S
+      left outer join SKORDET D on S.UNITKEY=D.UNITKEY and S.IDXSKO=D.IDXSKO
+      left outer join SKDASK SK on S.UNITKEY=SK.UNITKEY and S.IDXDASK=SK.IDXDASK
+      left outer join TAHAP T on SK.KDTAHAP=T.KDTAHAP
+      where S.UNITKEY=#Unitkey# and (S.IDXKODE=#Idxkode# or (#Idxkode# = 3 and S.IDXKODE in ('3','4')))
+      and case #Parameter.Field#
+      when '1' then S.NOSKO
+      when '2' then convert(char(10), S.TGLSKO, 103)
+      when '3' then S.KETERANGAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by S.NOSKO
+    </select>
+    <procedure id="ExecTransferDPADkeSPD" parameterMap="transfer-param">
+      WSP_SKODTRANSFER
+    </procedure>
+    <procedure id="ExecTransferDPARkeSPD" parameterMap="transfer-param">
+      WSP_SKORTRANSFER
+    </procedure>
+    <procedure id="ExecTransferDPARSkpdSPD" parameterMap="transfer-param0">
+      WSP_SKORSKPDTRANSFER
+    </procedure>
+    <procedure id="ExecTransferDPARTLkeSPD" parameterMap="transfer-param0">
+      WSP_SKORTLTRANSFER
+    </procedure>
+    <procedure id="ExecTransferDPABkeSPD" parameterMap="transfer-param0">
+      WSP_SKOBTRANSFER
+    </procedure>
+    <select id="LoadBySPDSKPDSko" parameterClass="Sko" resultMap="return-result-total">
+      select #Unitkey# as UNITKEY,'' as KDKEGUNIT,'' as MTGKEY,'' as KDPER,'' as NMPER,sum(NILAI) as NILAI
+      from dbo.GetSkodet(#Unitkey#,#Kdkegunit#,#Tglsko#,#Idxsko#)
+    </select>
+    <select id="LoadBySPDKegSko" parameterClass="Sko" resultMap="return-result-total">
+      select UNITKEY,KDKEGUNIT,'' as MTGKEY,'' as KDPER,'' as NMPER,sum(NILAI) as NILAI
+      from dbo.GetSkodet(#Unitkey#,#Kdkegunit#,#Tglsko#,#Idxsko#)
+      group by UNITKEY,KDKEGUNIT
+    </select>
+    <select id="LoadBySPDRekSko" parameterClass="Sko" resultMap="return-result-total">
+      select UNITKEY,'' as KDKEGUNIT,MTGKEY,KDPER,NMPER,NILAI
+      from dbo.GetSkodet(#Unitkey#,#Kdkegunit#,#Tglsko#,#Idxsko#)
+      where MTGKEY=#Mtgkey#
+    </select>
+    <select id="LoadBySPDRekRSko" parameterClass="Sko" resultMap="return-result-total">
+      select UNITKEY,KDKEGUNIT,MTGKEY,KDPER,NMPER,NILAI
+      from dbo.GetSkodet(#Unitkey#,#Kdkegunit#,#Tglsko#,#Idxsko#)
+      where MTGKEY=#Mtgkey#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Sko">
+      <parameter property="Idxdask" column="IDXDASK"/>
+      <parameter property="Idxkode" column="IDXKODE"/>
+      <parameter property="Idxttd" column="IDXTTD"/>
+      <parameter property="Kd_bulan1" column="KD_BULAN1"/>
+      <parameter property="Kd_bulan2" column="KD_BULAN2"/>
+      <parameter property="Kddsr" column="KDDSR"/>
+      <parameter property="Keterangan" column="KETERANGAN"/>
+      <parameter property="Noskdpa" column="NOSKDPA"/>
+      <parameter property="Nosko" column="NOSKO"/>
+      <!--<parameter property="Tglskdpa" column="TGLSKDPA"/>-->
+      <parameter property="Tglsko" column="TGLSKO"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Idxsko" column="IDXSKO"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Sko">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Sko">
+      <parameter property="Idxsko" column="IDXSKO"/>
+    </parameterMap>
+    <parameterMap id="transfer-param0" class="Sko">
+      <parameter property="Kdtahap" column="kdtahap"/>
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Idxdask" column="idxdask"/>
+      <parameter property="Idxsko" column="idxsko"/>
+      <parameter property="Kd_bulan1" column="kd_bulan1"/>
+      <parameter property="Kd_bulan2" column="kd_bulan2"/>
+      <parameter property="Optdpa" column="optdpa"/>
+    </parameterMap>
+    <parameterMap id="transfer-param" extends="transfer-param0" class="Sko">
+      <parameter property="Kdkegunit" column="kdkegunit"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

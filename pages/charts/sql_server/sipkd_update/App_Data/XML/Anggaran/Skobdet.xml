@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Skobdet" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Skobdet" type="Usadi.Valid49.BO.SkobdetControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Skobdet">
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Idxsko" column="IDXSKO"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="MTGKEY"/>
+      <result property="Field" column="KDPER"/>
+      <result property="Value" column="NMPER"/>
+    </resultMap>
+    <resultMap id="return-result-total" class="Skobdet">
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Nilai" column="NILAI"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSkobdet" parameterMap="insert-param">
+      <generate table="SKOBDET"/>
+    </insert>
+    <update id="UpdateBySkobdet" parameterMap="update-param">
+      <generate table="SKOBDET" by="UNITKEY,MTGKEY,IDXSKO"/>
+    </update>
+    <delete id="DeleteBySkobdet" parameterMap="delete-param">
+      <generate table="SKOBDET" by="UNITKEY,MTGKEY,IDXSKO"/>
+    </delete>
+    <select id="BaseQuerySkobdet" parameterClass="Skobdet" resultMap="return-result">
+      select S.UNITKEY,S.IDXSKO,S.MTGKEY,S.NILAI,M.KDPER,M.NMPER
+      from SKOBDET S
+      left outer join MATANGB M on S.MTGKEY=M.MTGKEY
+    </select>
+    <select id="QueryByAllSkobdet" extends="BaseQuerySkobdet" parameterClass="Skobdet" resultMap="return-result">
+      where S.UNITKEY=#Unitkey# and S.IDXSKO=#Idxsko#
+      and case #Parameter.Field#
+      when '1' then KDPER
+      when '2' then NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by KDPER
+    </select>
+    <select id="QueryByUntilnowSkobdet" parameterClass="Skobdet" resultMap="return-result-total">
+      select S.UNITKEY,S.IDXSKO,S.MTGKEY,S.NILAI
+      from SKOBDET S
+      left outer join SKO SK on SK.UNITKEY=S.UNITKEY and SK.IDXSKO=S.IDXSKO
+      where S.UNITKEY=#Unitkey# and <![CDATA[SK.TGLSKO <= #Tglsko#]]> and TGLVALID is not null
+    </select>
+    <select id="LoadByPKSkobdet" extends="BaseQuerySkobdet" parameterClass="Skobdet" resultMap="return-result">
+      where S.UNITKEY=#Unitkey# and S.MTGKEY=#Mtgkey# and S.IDXSKO=#Idxsko#
+    </select>
+    <select id="BaseQueryTotalSkobdet" parameterClass="Skobdet" resultMap="return-result-total">
+      select D.MTGKEY,sum(D.NILAI) as NILAI
+      from SKOBDET D
+      left outer join SKO S on D.IDXSKO=S.IDXSKO and D.UNITKEY=S.UNITKEY
+    </select>
+    <select id="QueryByLastSkobdet" extends="BaseQueryTotalSkobdet" parameterClass="Skobdet" resultMap="return-result-total">
+      where S.UNITKEY=#Unitkey# and D.MTGKEY=#Mtgkey# and <![CDATA[S.TGLSKO <= #Tglsko# and S.IDXSKO <> #Idxsko#]]>
+      group by D.MTGKEY
+    </select>
+    <select id="QueryByTotalSkobdet" extends="BaseQueryTotalSkobdet" parameterClass="Skobdet" resultMap="return-result-total">
+      where S.UNITKEY=#Unitkey# and S.IDXSKO=#Idxsko#
+      group by D.MTGKEY
+    </select>
+    <select id="BaseQueryLookupSkobdet" parameterClass="Skobdet" resultMap="return-lookup">
+      <![CDATA[
+      select distinct B.KDPER, B.NMPER,B.MTGKEY
+      from SKOBDET A
+      left join MATANGB B on A.mtgkey = B.mtgkey
+      where A.UNITKEY=#Unitkey#
+      and A.IDXSKO in (select IDXSKO from SKO where UNITKEY=#Unitkey# 
+      and TGLSKO <= (select TGLSKO from SKO where UNITKEY=#Unitkey# 
+      and IDXSKO = #Idxsko#) and TGLVALID is not NULL)
+      ]]>
+    </select>
+    <select id="QueryBySppdetbSkobdet" extends="BaseQueryLookupSkobdet" parameterclass="Usadi.Valid49.BO.SppdetbControl" resultMap="return-lookup">
+      <!--gn:090318-->
+      and A.MTGKEY not in (select MTGKEY from SPPDETB S where S.UNITKEY=#Unitkey# and S.NOSPP=#Nospp# and NOJETRA=#Nojetra# )
+      order by B.KDPER
+    </select>
+    <select id="QueryBySpmdetbSkobdet" extends="BaseQueryLookupSkobdet" parameterclass="Usadi.Valid49.BO.SpmdetbControl" resultMap="return-lookup">
+      <!--gn:090318-->
+      and A.MTGKEY not in (select MTGKEY from SPMDETB S where S.UNITKEY=#Unitkey# and S.NOSPM=#Nospm# and NOJETRA=#Nojetra# )
+      order by B.KDPER
+    </select>
+    <select id="QueryBySp2ddetbSkobdet" extends="BaseQueryLookupSkobdet" parameterclass="Usadi.Valid49.BO.Sp2ddetbControl" resultMap="return-lookup">
+      <!--gn:090318-->
+      and A.MTGKEY not in (select MTGKEY from SP2DDETB S where S.UNITKEY=#Unitkey# and S.NOSP2D=#Nosp2d# and NOJETRA=#Nojetra# )
+      order by B.KDPER
+    </select>
+    <procedure id="ExecValidateSPDB" parameterMap="transfer-param0">
+      WSP_VALIDATIONSKO
+    </procedure>
+  </statements>
+  
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Skobdet">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Idxsko" column="IDXSKO"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Skobdet">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Skobdet">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Idxsko" column="IDXSKO"/>
+    </parameterMap>
+    <parameterMap id="transfer-param0" class="Skobdet">
+      <parameter property="Kdtahap" column="kdtahap"/>
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Kdkegunit" column="kdkegunit"/>
+      <parameter property="Kdper" column="kdper"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

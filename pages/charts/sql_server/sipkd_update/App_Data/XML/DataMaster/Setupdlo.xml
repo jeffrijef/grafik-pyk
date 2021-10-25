@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Setupdlo" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Setupdlo" type="Usadi.Valid49.BO.SetupdloControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Setupdlo">
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Type" column="TYPE"/>
+      <!--<result property="Nlraawal" column="NLRAAWAL"/>-->
+      <result property="Kdperlra" column="KDPERLRA"/>
+      <result property="Nmperlra" column="NMPERLRA"/>
+      <result property="Mtgkeylra" column="MTGKEYLRA"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSetupdlo" parameterMap="insert-param">
+      <generate table="SETUPDLO"/>
+    </insert>
+    <update id="UpdateBySetupdlo" parameterMap="update-param">
+      <generate table="SETUPDLO" by="MTGKEYLRA,MTGKEY"/>
+    </update>
+    <delete id="DeleteBySetupdlo" parameterMap="delete-param">
+      <generate table="SETUPDLO" by="MTGKEYLRA,MTGKEY"/>
+    </delete>
+    <statement id="DeleteByDelSetupdlo" parameterClass="Setupdlo">
+      delete SETUPDLO where MTGKEY = #Mtgkey# AND MTGKEYLRA=#Mtgkeylra#
+    </statement>
+    <select id="BaseQuerySetupdlo" parameterClass="Setupdlo" resultMap="return-result">
+      <!--select A.MTGKEY,A.MTGKEYLRA
+      ,rtrim(B.KDPER) as KDPERLRA, rtrim(B.NMPER) as NMPERLRA,B.TYPE,B.MTGKEY as MTGKEYLRA,B.NLRAAWAL
+      ,rtrim(C.KDPER) as KDPER,rtrim(C.NMPER) as NMPER
+      from SETUPDLO A
+      left outer join MATANGDLRALO B on A.MTGKEYLRA = B.MTGKEY
+      left outer join MATANGD C on A.MTGKEY = C.MTGKEY-->
+      select A.MTGKEY,A.MTGKEYLRA
+      ,rtrim(B.KDPER) as KDPERLRA, rtrim(B.NMPER) as NMPERLRA,B.TYPE,B.MTGKEY as MTGKEYLRA
+      ,rtrim(C.KDPER) as KDPER,rtrim(C.NMPER) as NMPER
+      from SETUPDLO A
+      left outer join MATANGD B on A.MTGKEYLRA = B.MTGKEY
+      left outer join MATANGD C on A.MTGKEY = C.MTGKEY
+    </select>
+    <select id="QueryByAllSetupdlo" extends="BaseQuerySetupdlo" parameterClass="Setupdlo" resultMap="return-result">
+      where A.MTGKEYLRA = #Mtgkeylra# 
+      and case #Parameter.Field#
+      <!--25 - 02 - 2009  GN-->
+      when '1' then C.KDPER
+      when '2' then C.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+    </select>
+    <select id="LoadByPKSetupdlo" extends="BaseQuerySetupdlo" parameterClass="Setupdlo" resultMap="return-result">
+      where A.MTGKEYLRA=#Mtgkeylra# A.MTGKEY=#Mtgkey#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Setupdlo">
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Mtgkeylra" column="MTGKEYLRA"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Setupdlo">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Setupdlo">
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Mtgkeylra" column="MTGKEYLRA"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

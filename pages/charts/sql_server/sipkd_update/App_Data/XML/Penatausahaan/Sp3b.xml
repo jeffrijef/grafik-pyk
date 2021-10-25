@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Sp3b" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Sp3b" type="Usadi.Valid49.BO.Sp3bControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Sp3b">
+      <result property="Unitkey2" column="UNITKEY2"/>
+      <result property="Keybend" column="KEYBEND"/>
+      <result property="Tglsp3b" column="TGLSP3B"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Uraisp3b" column="URAISP3B"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nosp3b" column="NOSP3B"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="NOSP3B"/>
+      <result property="Field" column="NOSP3B"/>
+      <result property="Value" column="URAISP3B"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSp3b" parameterMap="insert-param">
+      <generate table="Sp3b"/>
+    </insert>
+    <update id="UpdateBySp3b" parameterMap="update-param">
+      <generate table="Sp3b" by="UNITKEY,NOSP3B"/>
+    </update>
+    <update id="UpdateBySahSp3b" parameterClass="Sp3b">
+      update SP3B set TGLVALID=#Tglvalid#
+      where UNITKEY=#Unitkey# and NOSP3B=#Nosp3b#
+    </update>
+    <delete id="DeleteBySp3b" parameterMap="delete-param">
+      <generate table="Sp3b" by="UNITKEY,NOSP3B"/>
+    </delete>
+    <update id="UpdateByDraftSp3b" parameterClass="Sp3b" >
+      update SP3B set TGLVALID=null
+      where UNITKEY=#Unitkey# and NOSP3B=#Nosp3b#
+    </update>
+    <select id="BaseQuerySp3b" parameterClass="Sp3b" resultMap="return-result">
+      select S.TGLSP3B,S.TGLVALID,S.URAISP3B,S.UNITKEY,S.NOSP3B,S.KEYBEND,S.UNITKEY2
+      from SP3B S
+    </select>
+    <select id="QueryByAllSp3b" extends="BaseQuerySp3b" parameterClass="Sp3b" resultMap="return-result">
+      where S.UNITKEY = #Unitkey# and S.KEYBEND=#Keybend# and
+      case #Parameter.Field#
+      when '1' then S.TGLSP3B
+      when '2' then S.TGLVALID
+      when '3' then S.URAISP3B
+      when '4' then S.UNITKEY
+      when '5' then S.NOSP3B
+      end like '%'+ #Parameter.Value# + '%'
+      order by S.NOSP3B
+    </select>
+    <select id="QueryBySp2bdetSp3b" parameterClass="Sp3b" resultMap="return-lookup">
+      select A.NOSP3B,convert(char(10),A.TGLSP3B, 103) as TGLSP3B,rtrim(left(A.URAISP3B,100)) As URAISP3B from SP3B A
+      <!--where A.UNITKEY=#Unitkey#-->
+      where A.NOSP3B not in (select NOSP3B from SP2BDET where UNITKEY=#Unitkey#)
+      and case #Parameter.Field#
+      when '1' then A.NOSP3B
+      when '2' then A.URAISP3B
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOSP3B
+    </select>
+    <select id="LoadByPKSp3b" extends="BaseQuerySp3b" parameterClass="Sp3b" resultMap="return-result">
+      where S.UNITKEY = #Unitkey# and S.NOSP3B = #Nosp3b#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Sp3b">
+      <parameter property="Unitkey2" column="UNITKEY2"/>
+      <parameter property="Keybend" column="KEYBEND"/>
+      <parameter property="Tglsp3b" column="TGLSP3B"/>
+      <parameter property="Uraisp3b" column="URAISP3B"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nosp3b" column="NOSP3B"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Sp3b">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Sp3b">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nosp3b" column="NOSP3B"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>
+

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Mtgdunit" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Mtgdunit" type="Usadi.Valid49.BO.MtgdunitControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Mtgdunit">
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Unitkey" column="UNITKEY"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="MTGKEY"/>
+      <result property="Field" column="KDPER"/>
+      <result property="Value" column="NMPER"/>
+      <result property="Type" column="TYPE"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertMtgdunit" parameterMap="insert-param">
+      <generate table="MTGDUNIT"/>
+    </insert>
+    <update id="UpdateByMtgdunit" parameterMap="update-param">
+      <generate table="MTGDUNIT" by="MTGKEY,UNITKEY"/>
+    </update>
+    <delete id="DeleteByMtgdunit" parameterMap="delete-param">
+      <generate table="MTGDUNIT" by="MTGKEY,UNITKEY"/>
+    </delete>
+    <select id="BaseQueryMtgdunit" parameterClass="Mtgdunit" resultMap="return-result">
+      select A.MTGKEY,A.UNITKEY
+      ,B.KDUNIT,B.NMUNIT,RTRIM(C.TYPE) as TYPE
+      ,C.KDPER,C.NMPER
+      from MTGDUNIT A
+      left outer join DAFTUNIT B on A.UNITKEY = B.UNITKEY
+      left outer join MATANGD C on A.MTGKEY = C.MTGKEY
+    </select>
+    <select id="QueryByAllMtgdunit" extends="BaseQueryMtgdunit" parameterClass="Mtgdunit" resultMap="return-result">
+      where  A.UNITKEY=#Unitkey#
+      and case #Parameter.Field#
+      when '1' then C.KDPER
+      when '2' then C.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      Order by C.KDPER
+    </select>
+    <select id="QueryByRaskdMtgdunit" parameterclass="Usadi.Valid49.BO.RaskdControl" resultMap="return-lookup">
+      select rtrim(M.MTGKEY)+'-'+rtrim(M.TYPE) as MTGKEY,M.TYPE
+      ,M.KDPER,M.NMPER
+      from MTGDUNIT MU
+      left outer join MATANGD M on M.MTGKEY = MU.MTGKEY
+      where  MU.UNITKEY=(select UNITKEY from DAFTUNIT where rtrim(KDUNIT)=left(#Kdunit#,(select len(rtrim(numdigit)) from struunit where kdlevel='3'))) 
+      and MU.MTGKEY not in (select MTGKEY from RASKD where UNITKEY=#Unitkey# and KDTAHAP=#Kdtahap#)
+      and M.KDKHUSUS not in (case when #Unitkey# = isnull((Select configval from pemda where configid = 'cur_skpkd'),'') then ('') else ('2') end)
+      and (M.TYPE=#Opsi# or #Opsi#='H')
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryByDaskdMtgdunit" parameterclass="Usadi.Valid49.BO.DaskdControl" resultMap="return-lookup">
+      select rtrim(M.MTGKEY)+'-'+rtrim(M.TYPE) as MTGKEY,M.TYPE
+      ,M.KDPER,M.NMPER
+      from MTGDUNIT MU
+      left outer join MATANGD M on M.MTGKEY = MU.MTGKEY
+      where  MU.UNITKEY in (select UNITKEY from DAFTUNIT where KDUNIT=(select left(KDUNIT,11) from DAFTUNIT where UNITKEY=#Unitkey#))
+      and MU.MTGKEY not in (select MTGKEY from DASKD D left outer join SKDASK S on S.UNITKEY=D.UNITKEY where S.UNITKEY=#Unitkey# and S.KDTAHAP=#Kdtahap#)
+      and M.KDKHUSUS not in (case when #Unitkey# = isnull((Select configval from pemda where configid = 'cur_skpkd'),'') then ('') else ('2') end)
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryByTbpdetdMtgdunit" parameterclass="Usadi.Valid49.BO.TbpdetdControl" resultMap="return-lookup">
+      <!--GN:090311-->
+      <!--select rtrim(M.MTGKEY)+'-'+rtrim(M.TYPE) as MTGKEY,M.TYPE
+      ,M.KDPER,M.NMPER
+      from MTGDUNIT MU
+      left outer join MATANGD M on M.MTGKEY = MU.MTGKEY
+      where  MU.UNITKEY=#Unitkey# and MU.MTGKEY not in (select MTGKEY from TBPDETD where UNITKEY=#Unitkey# and NOJETRA = #Nojetra# and NOTBP = #Notbp#)
+      and M.KDKHUSUS not in (case when #Unitkey# = isnull((Select configval from pemda where configid = 'cur_skpkd'),'') then ('') else ('2') end)
+      
+      and M.TYPE='D'
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by M.KDPER
+      -->
+      WSP_LOOKUPREKTBP @unitkey=#Unitkey#,@notbp=#Notbp#
+    </select>
+    <select id="QueryBySkpdetMtgdunit" parameterclass="Usadi.Valid49.BO.SkpdetControl" resultMap="return-lookup">
+      select rtrim(M.MTGKEY)+'-'+rtrim(M.TYPE) as MTGKEY,M.TYPE
+      ,M.KDPER,M.NMPER
+      from MTGDUNIT MU
+      left outer join MATANGD M on M.MTGKEY = MU.MTGKEY
+      where  MU.UNITKEY=#Unitkey# and MU.MTGKEY not in (select MTGKEY from SKPDET where UNITKEY=#Unitkey# and NOJETRA = #Nojetra# and NOSKP = #Noskp#)
+      and M.KDKHUSUS not in (case when #Unitkey# = isnull((Select configval from pemda where configid = 'cur_skpkd'),'') then ('') else ('2') end)
+      and M.TYPE='D'
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryByRkmdetdMtgdunit" parameterclass="Usadi.Valid49.BO.RkmdetdControl" resultMap="return-lookup">
+			
+			select rtrim(M.MTGKEY)+'-'+rtrim(M.TYPE) as MTGKEY,M.TYPE
+			,M.KDPER,M.NMPER
+			from MTGDUNIT MU
+			left outer join MATANGD M on M.MTGKEY = MU.MTGKEY
+			where  MU.UNITKEY=#Unitkey# and MU.MTGKEY not in (select MTGKEY from RKMDETD where UNITKEY=#Unitkey# and NOJETRA = #Nojetra# and NOSTS = #Nosts#)
+			<!--and M.KDKHUSUS not in (case when #Unitkey# = isnull((Select configval from pemda where configid = 'cur_skpkd'),'') then ('') else ('2') end)-->
+			and M.TYPE='D'
+			and case #Parameter.Field#
+			when '1' then M.KDPER
+			when '2' then M.NMPER
+			end like '%'+ #Parameter.Value# + '%'
+			order by M.KDPER
+		</select>
+    <select id="LoadByPKMtgdunit" extends="BaseQueryMtgdunit" parameterClass="Mtgdunit" resultMap="return-result">
+      where A.MTGKEY=#Mtgkey# and A.UNITKEY=#Unitkey# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Mtgdunit">
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+			<parameterMap id="update-param" extends="insert-param" class="Mtgdunit">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Mtgdunit">
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

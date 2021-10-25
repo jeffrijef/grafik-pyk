@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Bend" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Bend" type="Usadi.Valid49.BO.BendControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Bend">
+      <result property="Urai_bend" column="URAI_BEND"/>
+      <result property="Nama" column="NAMA"/>
+      <result property="Nipnama" column="NIPNAMA"/>
+	    <result property="Kdunit" column="KDUNIT"/>
+	    <result property="Nmunit" column="NMUNIT"/>
+      <result property="Jab_bend" column="JAB_BEND"/>
+      <result property="Jns_bend" column="JNS_BEND"/>
+      <result property="Kdbank" column="KDBANK"/>
+      <result property="Nip" column="NIP"/>
+      <result property="Npwpbend" column="NPWPBEND"/>
+      <result property="Rekbend" column="REKBEND"/>
+      <result property="Saldobend" column="SALDOBEND"/>
+      <result property="Saldobendt" column="SALDOBENDT"/>
+      <result property="Tglstopbend" column="TGLSTOPBEND"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Keybend" column="KEYBEND"/>
+    </resultMap>
+    <resultMap id="return-result-jabbend" class="Bend">
+      <result property="Jab_bend" column="JAB_BEND"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="KEYBEND"/>
+      <result property="Field" column="URAI_BEND"/>
+      <result property="Value" column="NAMA"/>
+    </resultMap>
+    <resultMap id="return-lookup1" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="KEYBEND"/>
+      <result property="Field" column="KDUNIT"/>
+      <result property="Value" column="NAMA"/>
+    </resultMap>
+    <resultMap id="return-lookup2" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="KEYBEND"/>
+      <result property="Field" column="NAMA"/>
+      <result property="Value" column="REKBEND"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertBend" parameterMap="insert-param">
+      <generate table="BEND"/>
+    </insert>
+    <update id="UpdateByBend" parameterMap="update-param">
+      <generate table="BEND" by="KEYBEND"/>
+    </update>
+    <delete id="DeleteByBend" parameterMap="delete-param">
+      <generate table="BEND" by="KEYBEND"/>
+    </delete>
+    <select id="BaseQueryBend" parameterClass="Bend" resultMap="return-result">
+      select rtrim(B.KEYBEND) as KEYBEND,B.JNS_BEND, B.NIP, B.KDBANK, B.UNITKEY, B.JAB_BEND, B.REKBEND, B.SALDOBEND,B.SALDOBENDT, B.NPWPBEND, B.TGLSTOPBEND,
+      rtrim(D.KDUNIT) as KDUNIT, rtrim(D.NMUNIT) as NMUNIT
+      , P.NAMA,(rtrim(B.NIP)+' - '+ rtrim(P.NAMA)) as NIPNAMA, P.JABATAN
+      ,J.URAI_BEND
+      from BEND B
+      left outer join DAFTUNIT D on B.UNITKEY = D.UNITKEY
+      left outer join PEGAWAI P on B.NIP = P.NIP
+      left outer join JBEND J on B.JNS_BEND=J.JNS_BEND
+    </select>
+    <select id="QueryByAllBend" extends="BaseQueryBend" parameterClass="Bend" resultMap="return-result">
+      where B.UNITKEY=#Unitkey#
+      and case #Parameter.Field#
+      when '1' then B.NIP
+      when '2' then P.NAMA
+      when '3' then J.URAI_BEND
+      when '4' then B.JAB_BEND
+      when '5' then B.REKBEND
+      end like '%'+ #Parameter.Value# + '%'
+      <!--gn:090323-->
+      order by J.JNS_BEND,B.NIP
+    </select>
+		<!--gn:090323-->
+    <select id="QueryByListBend" extends="BaseQueryBend" parameterClass="Bend" resultMap="return-result">
+      where B.UNITKEY=#Unitkey# and (RIGHT(B.JNS_BEND,1) = #Jns_bend# or B.JNS_BEND=#Jns_bend#)
+      order by J.JNS_BEND,B.NIP
+    </select>
+    <select id="QueryByNipunitBend" extends="BaseQueryBend" parameterClass="Bend" resultMap="return-result">
+      where B.NIP=#Nip# and B.UNITKEY=#Unitkey#
+    </select>
+    <select id="QueryBySpdBend" extends="BaseQueryBend" parameterClass="Bend" resultMap="return-result">
+      where B.UNITKEY=#Unitkey# and B.JNS_BEND = '02'
+      order by J.JNS_BEND,B.NIP
+    </select>
+    <select id="QueryByJabbendBend" parameterClass="Bend" resultMap="return-result-jabbend">
+      select substring(rtrim(JAB_BEND),2,2)JAB_BEND from BEND where UNITKEY=#Unitkey# and JNS_BEND=#Jns_bend#
+    </select>
+    <!--2009.21.09 Req. by GN, pada Lookup Bend--> 
+    <select id="QueryByNrcbendBend1" extends="BaseQueryBend" parameterclass="Usadi.Valid49.BO.NrcbendControl" resultMap="return-lookup">
+      where (B.KEYBEND not in (select KEYBEND from NRCBEND))
+      and case #Parameter.Field#
+      when '1' then J.URAI_BEND
+      when '2' then P.NAMA
+      end like '%'+ #Parameter.Value# + '%'
+      order by J.URAI_BEND
+    </select>
+    <select id="QueryByNrcbendBend" extends="BaseQueryBend" parameterclass="Usadi.Valid49.BO.NrcbendControl" resultMap="return-lookup1">
+      where (B.KEYBEND not in (select KEYBEND from NRCBEND))
+      and case #Parameter.Field#
+      when '1' then D.KDUNIT
+      when '2' then P.NAMA
+      end like '%'+ #Parameter.Value# + '%'
+      order by D.KDUNIT
+    </select>
+    <select id="QueryByTbpdettBend"  parameterclass="Usadi.Valid49.BO.TbpdettControl" resultMap="return-lookup2">
+      select RTRIM(B.KEYBEND) AS KEYBEND,B.REKBEND,P.NAMA,RTRIM(REKBEND) AS KDPER,RTRIM(JAB_BEND) AS NMPER,'' AS TYPE
+      from BEND B
+      left outer join PEGAWAI P ON B.NIP=P.NIP
+      left outer join DAFTUNIT U on B.UNITKEY=U.UNITKEY
+      where (B.UNITKEY=#Unitkey# or (left(rtrim(U.KDUNIT),8)=left(#Kdunit#,8) ))
+      and (B.KEYBEND not in (select B.KEYBEND from TBPDETT B LEFT OUTER JOIN TBP T ON B.NOTBP=T.NOTBP
+      where B.UNITKEY=#Unitkey# and T.Notbp=#Notbp#))
+      and B.JNS_BEND in ('02')
+      and case #Parameter.Field#
+      when '1' then P.NAMA
+      when '2' then B.REKBEND
+      end like '%'+ #Parameter.Value# + '%'
+      order by B.REKBEND
+    </select>
+    <select id="QueryByTbpdettbpBend"  parameterclass="Usadi.Valid49.BO.TbpdettControl" resultMap="return-lookup2">
+
+      IF (SELECT KDSTATUS FROM TBP WHERE UNITKEY=#Unitkey#   AND NOTBP=#Notbp#) IN ('51','52','53')
+      BEGIN
+
+      SELECT  RTRIM(B.KEYBEND) AS KEYBEND,B.REKBEND,P.NAMA,RTRIM(REKBEND) AS KDPER,RTRIM(JAB_BEND) AS NMPER,'' AS TYPE
+      FROM BEND B
+      LEFT OUTER JOIN PEGAWAI P ON B.NIP=P.NIP
+      where (B.UNITKEY=#Unitkey# OR B.UNITKEY = (SELECT UNITKEYSKPD FROM DAFTUNITUK WHERE UNITKEYUK = #Unitkey#)) and (B.KEYBEND not in (select KEYBEND from BEND B where B.KEYBEND=#Keybendparent#))
+      and (B.KEYBEND not in (select B.KEYBEND from TBPDETT B LEFT OUTER JOIN TBP T ON B.NOTBP=T.NOTBP
+      where (B.UNITKEY=#Unitkey# OR B.UNITKEY = (SELECT UNITKEYSKPD FROM DAFTUNITUK WHERE UNITKEYUK = #Unitkey#)) and T.Notbp=#Notbp#))
+      and left(B.JNS_BEND,2) in ('02')
+      and case #Parameter.Field#
+      when '1' then P.NAMA
+      when '2' then B.JAB_BEND
+      end like '%'+ #Parameter.Value# + '%'
+      order by B.REKBEND
+
+      END ELSE
+      IF (SELECT KDSTATUS FROM TBP WHERE UNITKEY=#Unitkey#   AND NOTBP=#Notbp#) IN ('37','38','39')
+      BEGIN
+      SELECT  RTRIM(B.KEYBEND) AS KEYBEND,B.REKBEND,P.NAMA,RTRIM(REKBEND) AS KDPER,RTRIM(JAB_BEND) AS NMPER,'' AS TYPE
+      FROM BEND B
+      LEFT OUTER JOIN PEGAWAI P ON B.NIP=P.NIP
+      where (B.UNITKEY=#Unitkey# or B.UNITKEY in (select UNITKEYUK from DAFTUNITUK where UNITKEYSKPD=#Unitkey#)) and (B.KEYBEND not in (select KEYBEND from BEND B where B.KEYBEND=#Keybendparent#))
+      and (B.KEYBEND not in (select B.KEYBEND from TBPDETT B LEFT OUTER JOIN TBP T ON B.NOTBP=T.NOTBP
+      where B.UNITKEY=#Unitkey# and T.Notbp=#Notbp#))
+      and left(B.JNS_BEND,2) in ('12')
+      and case #Parameter.Field#
+      when '1' then P.NAMA
+      when '2' then B.JAB_BEND
+      end like '%'+ #Parameter.Value# + '%'
+      order by B.REKBEND
+      END
+    </select>
+    <select id="LoadByPKBend" extends="BaseQueryBend" parameterClass="Bend" resultMap="return-result">
+      where B.KEYBEND=#Keybend# 
+    </select>
+    <select id="LoadByBendBend" extends="BaseQueryBend" parameterClass="Bend" resultMap="return-result">
+      where B.NIP=#Nip# and B.UNITKEY=#Unitkey#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Bend">
+      <parameter property="Jab_bend" column="JAB_BEND"/>
+      <parameter property="Jns_bend" column="JNS_BEND"/>
+      <parameter property="Kdbank" column="KDBANK"/>
+      <parameter property="Nip" column="NIP"/>
+      <parameter property="Npwpbend" column="NPWPBEND"/>
+      <parameter property="Rekbend" column="REKBEND"/>
+      <parameter property="Saldobend" column="SALDOBEND"/>
+      <parameter property="Saldobendt" column="SALDOBENDT"/>
+      <!--<parameter property="Tglstopbend" column="TGLSTOPBEND"/>-->
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Keybend" column="KEYBEND"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Bend">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Bend">
+      <parameter property="Keybend" column="KEYBEND"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

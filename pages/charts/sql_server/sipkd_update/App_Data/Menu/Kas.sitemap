@@ -1,0 +1,507 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<siteMap xmlns="http://schemas.microsoft.com/AspNet/SiteMap-File-1.0" >
+  <siteMapNode url="~/Default.aspx?id=4" title="Penatausahaan" roles="ALL">
+    <siteMapNode url="~/Default.aspx?id=401"  title="Utama" roles="ALL">
+      <siteMapNode url="~/Logout.aspx?id=40101" title="Ke Halaman Muka" roles="ALL"/>
+      <!--<siteMapNode url="~/pSistem/SetPassword.aspx?id=40102" title="Ubah Sandi" roles="ALL"/>-->
+      <siteMapNode url="~/pSistem/Konfigurasi.aspx?id=40103" title="Pindah Tahapan" roles="MDSKPKD"/>
+      <siteMapNode url="~/pSistem/Database.aspx?id=40104&amp;mode=importspd" title="Terima Data SPD" roles="MDSKPKD"/>
+
+      <siteMapNode url="~/pSistem/Database.aspx?id=40108&amp;mode=exporttbpsts" title="Kirim Data TBP-STS" roles="MDSKPKD"/>
+      <siteMapNode url="~/pSistem/Database.aspx?id=40109&amp;mode=importtbpsts" title="Terima Data TBP-STS" roles="MDSKPKD"/>
+
+      <siteMapNode url="~/pSistem/Database.aspx?id=40103&amp;mode=exportspm" title="Kirim Data SPM" roles="MDSKPKD"/>
+      <siteMapNode url="~/pSistem/Database.aspx?id=40105&amp;mode=importspm" title="Terima Data SPM" roles="MDSKPKD"/>
+
+      <siteMapNode url="~/pSistem/Database.aspx?id=40110&amp;mode=exportbpkspj" title="Kirim Data BPK-SPJ" roles="MDSKPKD"/>
+      <siteMapNode url="~/pSistem/Database.aspx?id=40111&amp;mode=importbpkspj" title="Terima Data BPK-SPJ" roles="MDSKPKD"/>
+
+      <siteMapNode url="~/pSistem/Database.aspx?id=40106&amp;mode=exportsp2d" title="Kirim Data SP2D" roles="MDSKPKD"/>
+      <siteMapNode url="~/pSistem/Database.aspx?id=40107&amp;mode=importsp2d" title="Terima Data SP2D" roles="MDSKPKD"/>
+
+      <siteMapNode url="~/pSistem/Database.aspx?id=40114&amp;mode=exportvalidasikas" title="Kirim Data Validasi Kas BUD" roles="MDSKPKD"/>
+      <siteMapNode url="~/pSistem/Database.aspx?id=40115&amp;mode=importvalidasikas" title="Terima Data Validasi Kas BUD" roles="MDSKPKD"/>
+
+      <siteMapNode url="~/Default.aspx?id=412"  title="Integrasi" roles="ALL">
+        <siteMapNode url="~/pSistem/Database.aspx?id=4013001&amp;mode=tarikpiutang" title="Tarik Data SKP-SKR-TBPSTS" roles="MDSKPKD"/>
+        <siteMapNode url="~/pSistem/Database.aspx?id=4013301&amp;mode=tarikaset" title="Tarik Data BAST Belanja Modal" roles="MDSKPKD"/>
+        <siteMapNode url="~/pSistem/Database.aspx?id=4013202&amp;mode=tarikinv" title="Tarik Data BAST Persediaan" roles="MDSKPKD"/>
+        <siteMapNode url="~/pSistem/Database.aspx?id=40134&amp;mode=tarikspjjkn" title="Tarik Data SPJ JKN" roles="MDSKPKD"/>
+        <siteMapNode url="~/pSistem/Database.aspx?id=40117&amp;mode=importcsv&amp;kode=gaji" title="Tarik Data Gaji" roles="MDSKPKD"/>
+      </siteMapNode>
+
+      <siteMapNode url="~/Default.aspx?id=411"  title="Rekanan" roles="ALL">
+        <siteMapNode url="~/pPage/PageAAA.aspx?id=10216" title="Rekanan" roles="MDSKPKD"/>
+        <siteMapNode url="~/pPage/PageAAA.aspx?id=40116" title="Kontrak" roles="MDSKPKD"/>
+        <siteMapNode url="~/pPage/PageAAA.aspx?id=41103" title="Berita Acara" roles="MDSKPKD"/>
+        <siteMapNode url="~/pPage/PageAAA.aspx?id=41107" title="Berita Acara Modal" roles="MDSKPKD"/>
+        <siteMapNode url="~/pPage/PageAAA.aspx?id=41106" title="Adendum" roles="MDSKPKD"/>
+      </siteMapNode>
+      <siteMapNode url="~/pPage/PageAAA.aspx?id=999&amp;kode=Mk" title="Option" roles="MDSKPKD"/>
+      <siteMapNode url="~/pSistem/Log.aspx?id=990" title="Method Log" roles="DEV"/>
+    </siteMapNode>
+
+    <siteMapNode url="~/Default.aspx?id=402" title="Penatausahaan Penerimaan" resourceKey="2-4-22-6">
+      <siteMapNode url="~/pPage/PageAAA.aspx?id=40205&amp;kode=1&amp;bend=1" title="Penetapan Pendapatan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+      <siteMapNode url="~/Default.aspx?id=40201" title="Penerimaan" resourceKey="2-4-22-6">
+        <siteMapNode url="~/Default.aspx?id=4020101" title="Pengajuan" roles="MASKPD" resourceKey="2-4-22-6">
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=402010101&amp;kode=1&amp;bend=1" title="Tanpa Penetapan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=402010102&amp;kode=1&amp;bend=1" title="Penetapan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=402010103&amp;kode=1&amp;bend=1" title="Diterima Dimuka" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+        </siteMapNode>
+        <siteMapNode url="~/Default.aspx?id=4020102" title="Persetujuan" roles="MASKPD" resourceKey="2-4-22-6">
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=402010201&amp;kode=1&amp;bend=1" title="Tanpa Penetapan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=402010202&amp;kode=1&amp;bend=1" title="Penetapan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=402010203&amp;kode=1&amp;bend=1" title="Diterima Dimuka" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+        </siteMapNode>
+      </siteMapNode>
+      <siteMapNode url="~/Default.aspx?id=40202" title="Penyetoran" resourceKey="2-4-22-6">
+        <siteMapNode url="~/Default.aspx?id=4020201" title="Pengajuan" roles="MASKPD" resourceKey="2-4-22-6">
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=402020101&amp;kode=1&amp;bend=1" title="Pendapatan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=402020102&amp;kode=5&amp;bend=1" title="Pembiayaan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=402020103&amp;kode=7&amp;bend=1" title="Non Anggaran" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=402020104&amp;kode=1&amp;bend=1" title="Penetapan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+        </siteMapNode>
+        <siteMapNode url="~/Default.aspx?id=4020202" title="Persetujuan" roles="MASKPD" resourceKey="2-4-22-6">
+          <siteMapNode url="~/pPage/PageRedirector.aspx?id=402020201&amp;kode=1&amp;bend=1" title="Pendapatan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageRedirector.aspx?id=402020202&amp;kode=5&amp;bend=1" title="Pembiayaan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageRedirector.aspx?id=402020203&amp;kode=7&amp;bend=1" title="Non Anggaran" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageRedirector.aspx?id=402020204&amp;kode=1&amp;bend=1" title="Penetapan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+        </siteMapNode>
+      </siteMapNode>
+      <siteMapNode url="~/Default.aspx?id=40203" title="Pengembalian" resourceKey="2-4-22-6">
+        <siteMapNode url="~/Default.aspx?id=402030201" title="Pengajuan" roles="MASKPD" resourceKey="2-4-22-6">
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4160101&amp;kode=1&amp;bend=1" title="Pengembalian Pendapatan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <!--di hide tes tgl 05112014-->
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4160105&amp;kode=5&amp;bend=1" title="Pengembalian Pembiayaan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+        </siteMapNode>
+        <siteMapNode url="~/Default.aspx?id=402030202" title="Persetujuan" roles="MASKPD" resourceKey="2-4-22-6">
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4160201&amp;kode=1&amp;bend=1" title="Pengembalian Pendapatan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <!--di hide tes tgl 05112014-->
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4160205&amp;kode=5&amp;bend=1" title="Pembiayaan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+        </siteMapNode>
+      </siteMapNode>
+      <siteMapNode url="~/pPage/PageAAA.aspx?id=40204&amp;bend=1" title="Buku Penerimaan dan Penyetoran" roles="MASKPD" resourceKey="2-4-22-6"/>
+    </siteMapNode>
+	
+	
+
+    <siteMapNode url="~/Default.aspx?id=403&amp;bend=12" title="Penatausahaan BPP" resourceKey="2-4-22-6">
+      <siteMapNode url="~/Default.aspx?id=40301&amp;bend=12" title="S P P" resourceKey="2-4-22-6">
+        <siteMapNode url="~/Default.aspx?id=4030101&amp;bend=12" title="Pengajuan" roles="MASKPD" resourceKey="2-4-22-6">
+          <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=4050106&amp;kode=6&amp;bend=12" title="Uang Persediaan" roles="MDSKPKD" resourceKey="2-4-22-6"/>-->
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4050107&amp;kode=2&amp;bend=12" title="Ganti/Tambah UP Belanja" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=4050103&amp;kode=4&amp;bend=12" title="Belanja Tidak Langsung Pegawai" roles="MDSKPKD" resourceKey="2-4-22-6"/>-->
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4050104&amp;kode=2&amp;bend=12" title="Belanja LS" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+        </siteMapNode>
+        <siteMapNode url="~/Default.aspx?id=4030102&amp;bend=12" title="Persetujuan" resourceKey="2-4-22-6">
+          <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=4050206&amp;kode=6&amp;bend=12" title="Uang Persediaan" roles="MDSKPKD" resourceKey="2-4-22-6"/>-->
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4050207&amp;kode=2&amp;bend=12" title="Ganti/Tambah UP Belanja" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=4050203&amp;kode=4&amp;bend=12" title="Belanja Tidak Langsung Pegawai" roles="MDSKPKD" resourceKey="2-4-22-6"/>-->
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4050204&amp;kode=2&amp;bend=12" title="Belanja LS" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+        </siteMapNode>
+      </siteMapNode>
+      <siteMapNode url="~/Default.aspx?id=41302&amp;bend=12" title="S P M" resourceKey="2-4-22-6">
+        <siteMapNode url="~/Default.aspx?id=4130201&amp;bend=12" title="Pengajuan" roles="MASKPD" resourceKey="2-4-22-6">
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4160107&amp;kode=2&amp;bend=12" title="Ganti/Tambah UP Belanja" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=4160103&amp;kode=4&amp;bend=12" title="Belanja Tidak Langsung Pegawai" roles="MDSKPKD" resourceKey="2-4-22-6"/>-->
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4160104&amp;kode=2&amp;bend=12" title="Belanja LS" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+        </siteMapNode>
+        <siteMapNode url="~/Default.aspx?id=4130202&amp;bend=12" title="Persetujuan" roles="MASKPD" resourceKey="2-4-22-6">
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4160207&amp;kode=2&amp;bend=12" title="Ganti/Tambah UP Belanja" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=4160203&amp;kode=4&amp;bend=12" title="Belanja Tidak Langsung Pegawai" roles="MDSKPKD" resourceKey="2-4-22-6"/>-->
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4160204&amp;kode=2&amp;bend=12" title="Belanja LS" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+        </siteMapNode>
+      </siteMapNode>
+      <siteMapNode url="~/pPage/PageAAA.aspx?id=40801&amp;bend=12" title="Pergeseran Uang" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+      <siteMapNode url="~/pPage/PageAAA.aspx?id=40802&amp;bend=12" title="Panjar" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+      <!--<siteMapNode url="~/Default.aspx?id=40307&amp;bend=12" title="Belanja" roles="MDSKPKD" resourceKey="2-4-22-6">-->
+        <siteMapNode url="~/pPage/PageAAA.aspx?id=4070103&amp;kode=2&amp;bend=12" title="Tanda Bukti Pengeluaran (TBP)" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+      <!--</siteMapNode>-->
+
+      <siteMapNode url="~/Default.aspx?id=40306&amp;bend=12" title="Pajak" resourceKey="2-4-22-6">
+        <siteMapNode url="~/pPage/PageAAA.aspx?id=4030601&amp;kode=2&amp;bend=12" title="Pemungutan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageAAA.aspx?id=4030602&amp;kode=2&amp;bend=12" title="Penyetoran" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+      </siteMapNode>
+	  
+	  <siteMapNode url="~/Default.aspx?id=4030901&amp;bend=12" title="Koreksi Belanja" roles="MDSKPKD" resourceKey="2-4-22-6">
+        <siteMapNode url="~/pPage/PageAAA.aspx?id=4130901&amp;kode=2&amp;bend=12" title="Belanja Langsung" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+      </siteMapNode>
+
+      <siteMapNode url="~/Default.aspx?id=40308&amp;bend=12" title="Pertanggung Jawaban UP/GU/TU" resourceKey="2-4-22-6">
+        <siteMapNode url="~/Default.aspx?id=40711&amp;bend=12" title="Pengajuan" roles="MDSKPKD" resourceKey="2-4-22-6">
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=41403&amp;kode=2&amp;bend=12" title="Tanda Bukti Pengeluaran (TBP)" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=413080103&amp;kode=2&amp;bend=12" title="Koreksi Belanja" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+        </siteMapNode>
+        <siteMapNode url="~/Default.aspx?id=50211&amp;bend=12" title="Persetujuan" roles="MDSKPKD" resourceKey="2-4-22-6">
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=50203&amp;kode=2&amp;bend=12" title="Tanda Bukti Pengeluaran (TBP)" roles="MDSKPKD"/>
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=413080203&amp;kode=2&amp;bend=12" title="Koreksi Belanja" roles="MDSKPKD"/>
+        </siteMapNode>
+      </siteMapNode>
+      
+      <siteMapNode url="~/Default.aspx?id=40309&amp;bend=12" title="Pengembalian Uang" roles="MDSKPKD" resourceKey="2-4-22-6">
+        <siteMapNode url="~/pPage/PageAAA.aspx?id=4030901&amp;kode=6&amp;bend=12" title="Pengembalian Uang dari BPP ke BP" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+      </siteMapNode>
+      <siteMapNode url="~/Default.aspx?id=4030902&amp;bend=12" title="Penyetoran Pengembalian Belanja" resourceKey="2-4-22-6">
+        <siteMapNode url="~/Default.aspx?id=403090201&amp;bend=12" title="Pengajuan" roles="MASKPD" resourceKey="2-4-22-6">
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=40309020105&amp;kode=6&amp;bend=12" title="Uang Persediaan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=40309020102&amp;kode=4&amp;bend=12" title="Belanja Tidak Langsung Pegawai" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=40309020103&amp;kode=2&amp;bend=12" title="Belanja Langsung" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+        </siteMapNode>
+        <siteMapNode url="~/Default.aspx?id=403090202" title="Persetujuan" roles="MASKPD" resourceKey="2-4-22-6">
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=40309020205&amp;kode=6&amp;bend=12" title="Uang Persediaan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=40309020202&amp;kode=4&amp;bend=12" title="Belanja Tidak Langsung Pegawai" roles="MDSKPKD" resourceKey="2-4-22-6"/>-->
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=40309020203&amp;kode=2&amp;bend=12" title="Belanja Langsung" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+        </siteMapNode>
+      </siteMapNode>
+      <siteMapNode url="~/pPage/PageAAA.aspx?id=40901&amp;bend=12" title="BKU Bendahara Pengeluaran" roles="MASKPD" resourceKey="2-4-22-6"/>
+    </siteMapNode>
+
+    <siteMapNode url="~/Default.aspx?id=413&amp;bend=02" title="Penatausahaan BP" resourceKey="2-4-22-6">
+      <siteMapNode url="~/pPage/PageAAA.aspx?id=41310&amp;kode=6&amp;bend=02" title="SK UP" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+	  
+      <siteMapNode url="~/Default.aspx?id=41301&amp;bend=02" title="S P P" resourceKey="2-4-22-6">
+        <siteMapNode url="~/Default.aspx?id=4130101&amp;bend=02" title="Pengajuan" roles="MASKPD" resourceKey="2-4-22-6">
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4150106&amp;kode=6&amp;bend=02" title="Uang Persediaan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=4150108&amp;kode=3&amp;bend=02" title="Ganti/Tambah UP Belanja Tidak Langsung" roles="MDSKPKD" resourceKey="2-4-22-6"/>-->
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4150107&amp;kode=2&amp;bend=02" title="Ganti/Tambah UP Belanja" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=4150102&amp;kode=3&amp;bend=02" title="Belanja PPKD" roles="MDSKPKD" resourceKey="2-4-22-6"/>-->
+          <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=4150103&amp;kode=4&amp;bend=02" title="Belanja Tidak Langsung Pegawai" roles="MDSKPKD" resourceKey="2-4-22-6"/>-->
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4150104&amp;kode=2&amp;bend=02" title="Belanja LS" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4150105&amp;kode=5&amp;bend=02" title="Pembiayaan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <!--NAD-->
+          <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=4050110&amp;kode=2&amp;bend=02" title="Belanja Langsung/LS Multi Kegiatan" roles="MDSKPKD" resourceKey="2-4-22-6"/>-->
+        </siteMapNode>
+        <siteMapNode url="~/Default.aspx?id=4130102&amp;bend=02" title="Persetujuan" resourceKey="2-4-22-6">
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4150206&amp;kode=6&amp;bend=02" title="Uang Persediaan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=4150208&amp;kode=3&amp;bend=02" title="Ganti/Tambah UP Tidak Belanja Langsung" roles="MDSKPKD" resourceKey="2-4-22-6"/>-->
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4150207&amp;kode=2&amp;bend=02" title="Ganti/Tambah UP Belanja" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=4150202&amp;kode=3&amp;bend=02" title="Belanja PPKD" roles="MDSKPKD" resourceKey="2-4-22-6"/>-->
+          <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=4150203&amp;kode=4&amp;bend=02" title="Belanja Tidak Langsung Pegawai" roles="MDSKPKD" resourceKey="2-4-22-6"/>-->
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4150204&amp;kode=2&amp;bend=02" title="Belanja LS" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4150205&amp;kode=5&amp;bend=02" title="Pembiayaan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <!--NAD-->
+          <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=4050210&amp;kode=2&amp;bend=2" title="Belanja Langsung/LS Multi Kegiatan" roles="MDSKPKD" resourceKey="2-4-22-6"/>-->
+        </siteMapNode>
+      </siteMapNode>
+      <siteMapNode url="~/Default.aspx?id=41302&amp;bend=02" title="S P M" resourceKey="2-4-22-6">
+        <siteMapNode url="~/Default.aspx?id=4130201&amp;bend=02" title="Pengajuan" roles="MASKPD" resourceKey="2-4-22-6">
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4160106&amp;kode=6&amp;bend=02" title="Uang Persediaan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=4160108&amp;kode=3&amp;bend=02" title="Ganti/Tambah UP Belanja Tidak Langsung" roles="MDSKPKD" resourceKey="2-4-22-6"/>-->
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4160107&amp;kode=2&amp;bend=02" title="Ganti/Tambah UP Belanja" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=4160102&amp;kode=3&amp;bend=02" title="Belanja PPKD" roles="MDSKPKD" resourceKey="2-4-22-6"/>-->
+          <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=4160103&amp;kode=4&amp;bend=02" title="Belanja Tidak Langsung Pegawai" roles="MDSKPKD" resourceKey="2-4-22-6"/>-->
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4160104&amp;kode=2&amp;bend=02" title="Belanja LS" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4160109&amp;kode=5&amp;bend=02" title="Pembiayaan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <!--NAD-->
+          <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=4060110&amp;kode=2&amp;bend=02" title="Belanja Langsung/LS Multi Kegiatan" roles="MDSKPKD" resourceKey="2-4-22-6"/>-->
+        </siteMapNode>
+        <siteMapNode url="~/Default.aspx?id=4130202&amp;bend=02" title="Persetujuan" roles="MASKPD" resourceKey="2-4-22-6">
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4160206&amp;kode=6&amp;bend=02" title="Uang Persediaan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=4160208&amp;kode=3&amp;bend=02" title="Ganti/Tambah UP Belanja Tidak Langsung" roles="MDSKPKD" resourceKey="2-4-22-6"/>-->
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4160207&amp;kode=2&amp;bend=02" title="Ganti/Tambah UP Belanja" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=4160202&amp;kode=3&amp;bend=02" title="Belanja PPKD" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4160203&amp;kode=4&amp;bend=02" title="Belanja Tidak Langsung Pegawai" roles="MDSKPKD" resourceKey="2-4-22-6"/>-->
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4160204&amp;kode=2&amp;bend=02" title="Belanja LS" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4160209&amp;kode=5&amp;bend=02" title="Pembiayaan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <!--NAD-->
+          <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=4060210&amp;kode=2&amp;bend=02" title="Belanja Langsung/LS Multi Kegiatan" roles="MDSKPKD" resourceKey="2-4-22-6"/>-->
+        </siteMapNode>
+      </siteMapNode>
+      
+      <siteMapNode url="~/pPage/PageAAA.aspx?id=41801&amp;bend=02" title="Pergeseran Uang" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+      <siteMapNode url="~/pPage/PageAAA.aspx?id=41802&amp;bend=02" title="Panjar" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+      <!--<siteMapNode url="~/Default.aspx?id=41307&amp;bend=02" title="Belanja" roles="MDSKPKD" resourceKey="2-4-22-6">
+        <siteMapNode url="~/pPage/PageAAA.aspx?id=4170102&amp;kode=3&amp;bend=02" title="Belanja Tidak Langsung" roles="MDSKPKD" resourceKey="2-4-22-6"/>-->
+        <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=4170103&amp;kode=2&amp;bend=02" title="Tanda Bukti Pengeluaran (TBP)" roles="MDSKPKD" resourceKey="2-4-22-6"/>-->
+        <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=41108" title="Belanja Umum" roles="MDSKPKD"/>
+      </siteMapNode>-->
+      <!--<siteMapNode url="~/Default.aspx?id=41309&amp;bend=2" title="Koreksi Belanja" roles="MDSKPKD" resourceKey="2-4-22-6">
+        <siteMapNode url="~/pPage/PageAAA.aspx?id=4130901&amp;kode=2&amp;bend=02" title="Belanja Langsung" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+      </siteMapNode>-->
+      <siteMapNode url="~/Default.aspx?id=41306&amp;bend=02" title="Pajak" resourceKey="2-4-22-6">
+        <siteMapNode url="~/pPage/PageAAA.aspx?id=4130601&amp;kode=2&amp;bend=02" title="Pemungutan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageAAA.aspx?id=4130602&amp;kode=2&amp;bend=02" title="Penyetoran" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+      </siteMapNode>
+	  
+	  <siteMapNode url="~/pPage/PageAAA.aspx?id=4170103&amp;kode=2&amp;bend=02" title="Tanda Bukti Pengeluaran (TBP)" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+	  
+      <siteMapNode url="~/Default.aspx?id=41309&amp;bend=2" title="Koreksi Belanja" roles="MDSKPKD" resourceKey="2-4-22-6">
+        <siteMapNode url="~/pPage/PageAAA.aspx?id=4130901&amp;kode=2&amp;bend=02" title="Belanja Langsung" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+        <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=4130901&amp;kode=2&amp;bend=12" title="Belanja Langsung 2" roles="MDSKPKD" resourceKey="2-4-22-6"/>-->
+      </siteMapNode>
+
+      <siteMapNode url="~/Default.aspx?id=41308&amp;bend=02" title="Pertanggung Jawaban UP/GU/TU" resourceKey="2-4-22-6">
+        <siteMapNode url="~/Default.aspx?id=4130801&amp;bend=02" title="Pengajuan" roles="MDSKPKD" resourceKey="2-4-22-6">
+          <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=413080101&amp;kode=3&amp;bend=02" title="Belanja Tidak Langsung" roles="MDSKPKD" resourceKey="2-4-22-6"/>-->
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=413080102&amp;kode=2&amp;bend=02" title="Tanda Bukti Pengeluaran (TBP)" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=413080103&amp;kode=2&amp;bend=02" title="Koreksi Belanja" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+        </siteMapNode>
+        <siteMapNode url="~/Default.aspx?id=4130802&amp;bend=02" title="Persetujuan" roles="MDSKPKD" resourceKey="2-4-22-6">
+          <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=413080201&amp;kode=3&amp;bend=02" title="Belanja Tidak Langsung" roles="MDSKPKD"/>-->
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=413080202&amp;kode=2&amp;bend=02" title="Tanda Bukti Pengeluaran (TBP)" roles="MDSKPKD"/>
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=413080203&amp;kode=2&amp;bend=02" title="Koreksi Belanja" roles="MDSKPKD"/>
+        </siteMapNode>
+        <siteMapNode url="~/Default.aspx?id=4130803&amp;bend=02" title="JKN" roles="MDSKPKD" resourceKey="2-4-22-6">
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=413080301&amp;kode=2&amp;bend=02" title="SPJ" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=413080104&amp;bend=2" title="Pengajuan SP3B" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=413080204&amp;bend=2" title="Persetujuan SP3B" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+        </siteMapNode>
+      </siteMapNode>
+      <siteMapNode url="~/Default.aspx?id=41910&amp;bend=02" title="Pelimpahan Uang" roles="MDSKPKD" resourceKey="2-4-22-6">
+        <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=4091002&amp;kode=6&amp;bend=02" title="SK UP BPP (Belum Ready)" roles="MDSKPKD" resourceKey="2-4-22-6"/>-->
+        <siteMapNode url="~/pPage/PageAAA.aspx?id=4091001&amp;kode=6&amp;bend=02" title="Pelimpahan Uang dari BP ke BP" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageAAA.aspx?id=4091003&amp;kode=6&amp;bend=02" title="Pelimpahan Uang dari BP ke BPP" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+      </siteMapNode>
+      <siteMapNode url="~/Default.aspx?id=4130902&amp;bend=02" title="Penyetoran Pengembalian Belanja" resourceKey="2-4-22-6">
+        <siteMapNode url="~/Default.aspx?id=413090201" title="Pengajuan" roles="MASKPD" resourceKey="2-4-22-6">
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=41309020105&amp;kode=6&amp;bend=02" title="Uang Persediaan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=41309020101&amp;kode=3&amp;bend=02" title="Belanja PPKD" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=41309020102&amp;kode=4&amp;bend=02" title="Belanja Tidak Langsung Pegawai" roles="MDSKPKD" resourceKey="2-4-22-6"/>-->
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=41309020103&amp;kode=2&amp;bend=02" title="Belanja LS" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=41309020104&amp;kode=5&amp;bend=02" title="Pembiayaan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+        </siteMapNode>
+        <siteMapNode url="~/Default.aspx?id=413090202&amp;bend=02" title="Persetujuan" roles="MASKPD" resourceKey="2-4-22-6">
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=41309020205&amp;kode=6&amp;bend=02" title="Uang Persediaan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=41309020201&amp;kode=3&amp;bend=02" title="Belanja PPKD" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=41309020202&amp;kode=4&amp;bend=02" title="Belanja Tidak Langsung Pegawai" roles="MDSKPKD" resourceKey="2-4-22-6"/>-->
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=41309020203&amp;kode=2&amp;bend=02" title="Belanja LS" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=41309020204&amp;kode=5&amp;bend=02" title="Pembiayaan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+        </siteMapNode>
+      </siteMapNode>
+      <siteMapNode url="~/pPage/PageAAA.aspx?id=41901&amp;bend=02" title="BKU Bendahara Pengeluaran" roles="MASKPD" resourceKey="2-4-22-6"/>
+    </siteMapNode>
+
+    <siteMapNode url="~/Default.aspx?id=404" title="Penatausahaan BUD" resourceKey="2-4-22-6">
+      <siteMapNode url="~/Default.aspx?id=40401" title="SP2D" roles="MASKPD" resourceKey="2-4-22-6">
+        <siteMapNode url="~/Default.aspx?id=4040101" title="Pengajuan" roles="MASKPD" resourceKey="2-4-22-6">
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4100106&amp;kode=6&amp;bend=02" title="Uang Persediaan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=4100110&amp;kode=3&amp;bend=2" title="Ganti/Tambah UP Belanja Tidak Langsung" roles="MDSKPKD" resourceKey="2-4-22-6"/>-->
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4100107&amp;kode=2&amp;bend=2" title="Ganti/Tambah UP Belanja" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=4100102&amp;kode=3&amp;bend=02" title="Belanja PPKD" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4100103&amp;kode=4&amp;bend=02" title="Belanja Tidak Langsung Pegawai" roles="MDSKPKD" resourceKey="2-4-22-6"/>-->
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4100104&amp;kode=2&amp;bend=2" title="Belanja LS" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4100105&amp;kode=5&amp;bend=02" title="Pembiayaan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4100101&amp;kode=1&amp;bend=01" title="Pengembalian Pendapatan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4100108&amp;kode=5&amp;bend=01" title="Pengembalian Penerimaan Pembiayaan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4100109&amp;kode=7&amp;bend=02" title="Non Anggaran" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <!--NAD-->
+          <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=4100112&amp;kode=2&amp;bend=2" title="Belanja Langsung/LS Multi Kegiatan" roles="MDSKPKD" resourceKey="2-4-22-6"/>-->
+        </siteMapNode>
+        <siteMapNode url="~/Default.aspx?id=4040102" title="Persetujuan" roles="MASKPD" resourceKey="2-4-22-6">
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4100206&amp;kode=6&amp;bend=02" title="Uang Persediaan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=4100210&amp;kode=3&amp;bend=2" title="Ganti/Tambah UP Belanja Tidak Langsung" roles="MDSKPKD" resourceKey="2-4-22-6"/>-->
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4100207&amp;kode=2&amp;bend=2" title="Ganti/Tambah UP Belanja Langsung" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=4100202&amp;kode=3&amp;bend=02" title="Belanja PPKD" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4100203&amp;kode=4&amp;bend=02" title="Belanja Tidak Langsung Pegawai" roles="MDSKPKD" resourceKey="2-4-22-6"/>-->
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4100204&amp;kode=2&amp;bend=2" title="Belanja LS" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4100205&amp;kode=5&amp;bend=02" title="Pembiayaan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4100201&amp;kode=1&amp;bend=01" title="Pengembalian Pendapatan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4100208&amp;kode=5&amp;bend=01" title="Pengembalian Penerimaan Pembiayaan" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageAAA.aspx?id=4100209&amp;kode=7&amp;bend=02" title="Non Anggaran" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+          <!--NAD-->
+          <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=4100212&amp;kode=2&amp;bend=2" title="Belanja Langsung/LS Multi Kegiatan" roles="MDSKPKD" resourceKey="2-4-22-6"/>-->
+
+        </siteMapNode>
+      </siteMapNode>
+      <siteMapNode url="~/pPage/PageAAA.aspx?id=41101" title="Daftar Penguji" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+      <siteMapNode url="~/pPage/PageAAA.aspx?id=41102" title="Kelengkapan Dokumen" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+	  <siteMapNode url="~/pPage/PageAAA.aspx?id=413021" title="SPM ID Billing" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+      <siteMapNode url="~/pPage/PageAAA.aspx?id=41104" title="Pengiriman Daftar Penguji" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+      <siteMapNode url="~/pPage/PageAAA.aspx?id=41201&amp;kode=0&amp;bend=02" title="Transfer Antar Rekening" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+      <siteMapNode url="~/pPage/PageAAA.aspx?id=41105&amp;kode=2" title="SP2D NTPN" roles="MASKPD" resourceKey="2-4-22-6"/>
+      <siteMapNode url="~/Default.aspx?id=4100111" title="SP2B" roles="MASKPD" resourceKey="2-4-22-6">
+        <siteMapNode url="~/pPage/PageAAA.aspx?id=410011101&amp;bend=02" title="Pengajuan SP2B" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageAAA.aspx?id=410011102&amp;bend=02" title="Persetujuan SP2B" roles="MDSKPKD" resourceKey="2-4-22-6"/>
+      </siteMapNode>
+      <siteMapNode url="~/pPage/PageAAA.aspx?id=40404&amp;var=2" title="Validasi Kas Daerah" roles="MASKPD" resourceKey="2-4-22-6"/>
+    </siteMapNode>
+
+    <siteMapNode url="~/Default.aspx?id=413" title="Cetak" description="Laporan" resourceKey="2-4-22-6">
+      <siteMapNode url="~/Default.aspx?id=45001" title="Register" description="Register" roles="MPSKPD" resourceKey="2-4-22-6">
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500103&amp;name=regspp" title="SPP" description="SPP" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500104&amp;name=regspm" title="SPM" description="SPM" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500104&amp;name=regspmpemda" title="SPM PEMDA" description="SPM PEMDA" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/Default.aspx?id=4500206" title="SP2D&lt;hr/&gt;" description="SP2D" roles="MPSKPD" resourceKey="2-4-22-6">
+          <siteMapNode url="~/pPage/PageReport1x.aspx?id=450020601&amp;name=REGSP2D&amp;suffix=default,keseluruhan,cair,akuntansi" title="SP2D" description="SP2D" roles="MPSKPD" resourceKey="2-4-22-6"/>
+		  
+          <siteMapNode url="~/pPage/PageReport1x.aspx?id=450020601&amp;name=REGSP2DNONANGGARAN" title="SP2D NON ANGGARAN" description="SP2D NON ANGGARAN" roles="MPSKPD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageReport1x.aspx?id=450020601&amp;name=REGSP2DGUNIHIL" title="SP2D GU NIHIL" description="SP2D GU NIHIL" roles="MPSKPD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageReport1x.aspx?id=450020601&amp;name=REGSP2DPJKPOT&amp;suffix=TGLSAH,TGLCAIR" title="SP2D PAJAK POTONGAN GLOBAL" description="SP2D PAJAK POTONGAN GLOBAL" roles="MPSKPD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageReport1x.aspx?id=450020601&amp;name=REGSP2D_ALL" title="SP2D KESELURUHAN" description="SP2D KESELURUHAN" roles="MPSKPD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageReport1x.aspx?id=450020601&amp;name=REGSP2DPP24" title="SP2D SAP" description="SP2D SAP" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        </siteMapNode>
+
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500107" title="STS&lt;hr/&gt;" roles="MASKPD" resourceKey="2-4-22-6">
+          <siteMapNode url="~/pPage/PageReport1x.aspx?id=405010701&amp;name=regsts&amp;suffix=default,cair" title="STS" description="STS" roles="MPSKPD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageReport1x.aspx?id=405010701&amp;name=regstsrek&amp;kode=1" title="STS per Rekening" description="Register STS per Rekening" roles="MPSKPD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageReport1x.aspx?id=405010701&amp;name=rekapregstsrek&amp;kode=1" title="Rekap STS per Rekening" description="Rekap Register STS per Rekening" roles="MPSKPD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageReport1x.aspx?id=405010701&amp;name=regstspengembalian" title="STS Pengemballian" description="STS Pengemballian" roles="MPSKPD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageReport1x.aspx?id=405010701&amp;name=regstspengembalianvalid" title="STS Pengemballian Uang Bendahara ke Kas BUD" description="STS Pengemballian Uang Bendahara ke Kas BUD" roles="MPSKPD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageReport1x.aspx?id=405010701&amp;name=regststransfer" title="STS Transfer Antar Bank" description="STS Transfer Antar Bank" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        </siteMapNode>
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500108&amp;name=regsppspmsp2d" title="Register SPP/SPM/SP2D" description="Register SPP/SPM/SP2D" roles="MPSKPD" resourceKey="2-4-22-6"/>
+		 <siteMapNode url="~/pPage/PageRedirector.aspx?id=4500108&amp;name=REGSP2D_DANAMODEL2" title="REGISTER SP2D DANA MODEL 2" description="REGISTER SP2D DANA MODEL 2" roles="MPSKPD" resourceKey="2-4-6"/>
+      </siteMapNode>
+      <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500101&amp;name=skp&amp;kode=1" title="SKP&lt;hr/&gt;" description="SKP" roles="MPSKPD" resourceKey="2-4-22-6"/>
+      <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500101&amp;name=tbp&amp;kode=1" title="Penerimaan (TBP)" description="Penerimaan" roles="MPSKPD" resourceKey="2-4-22-6"/>
+      <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500102&amp;name=sts&amp;suffix=default,V2" title="Penyetoran (STS)" description="Penyetoran" roles="MPSKPD" resourceKey="2-4-22-6"/>
+      <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500105&amp;name=bpk" title="Bukti Pengeluaran Kas (KWITANSI)" description="BPK" roles="MPSKPD" resourceKey="2-4-22-6"/>
+      <siteMapNode url="~/Default.aspx?id=45006" title="S P P" description="S P P" roles="MPSKPD" resourceKey="2-4-22-6">
+	  
+		<siteMapNode url="~/pPage/PageReport1x.aspx?id=4500601" title="Surat Pernyataan" roles="MASKPD" resourceKey="2-4-22-6">
+			<siteMapNode url="~/pPage/PageReport1x.aspx?id=4500601&amp;name=spp_sp&amp;suffix=LS" title="LS" description="Surat Pernyataan LS" roles="MPSKPD" resourceKey="2-4-22-6"/>
+			<siteMapNode url="~/pPage/PageReport1x.aspx?id=4500601&amp;name=spp_sp&amp;suffix=GU" title="GU" description="Surat Pernyataan GU" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        
+		</siteMapNode>
+		<siteMapNode url="~/pPage/PageReport1x.aspx?id=4500602" title="Verifikasi PPK" roles="MASKPD" resourceKey="2-4-22-6">
+			<siteMapNode url="~/pPage/PageReport1x.aspx?id=4500602&amp;name=spp_sp&amp;suffix=verifikasi" title="LS" description="Verifikasi PPK LS" roles="MPSKPD" resourceKey="2-4-22-6"/>
+			<siteMapNode url="~/pPage/PageReport1x.aspx?id=4500602&amp;name=spp_sp&amp;suffix=verifikasiGU" title="GU" description="Verifikasi PPK GU" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        
+		</siteMapNode>
+        <!--<siteMapNode url="~/pPage/PageReport1x.aspx?id=4500601&amp;name=spp_sp&amp;suffix=GU,LS,verifikasi,verifikasiGU" title="Surat pernyataan / Verifikasi PPK" description="Surat Pengantar" roles="MPSKPD" resourceKey="2-4-22-6"/>-->
+        <!-- Standar <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500601&amp;name=spp_sp&amp;suffix=GU,LS,verifikasi,verifikasiGU" title="Surat pernyataan / Verifikasi PPK" description="Surat Pengantar" roles="MPSKPD" resourceKey="2-4-22-6"/>-->
+        <!--<siteMapNode url="~/pPage/PageReport1x.aspx?id=4500602&amp;name=sppRing" title="Surat Ringkasan" description="Surat Ringkasan" roles="MPSKPD" resourceKey="2-4-22-6"/> menghilangkan ringkasan -->
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500603&amp;name=sppRup_Rinc" title="Surat Rincian" description="Surat Rincian" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <!-- Yang lama <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500604&amp;name=spp&amp;suffix=PA,KPA,setda,tanpapptk" title="Ringkasan Permen 77" description="Surat Rincian" roles="MPSKPD" resourceKey="2-4-22-6"/> -->
+        <!-- Standar <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500604&amp;name=spp&amp;suffix=PA,KPA" title="Ringkasan Permen 77" description="Surat Rincian" roles="MPSKPD" resourceKey="2-4-22-6"/>-->
+		<siteMapNode url="~/pPage/PageReport1x.aspx?id=4500604" title="Ringkasan Permen 77" description="Ringkasan Permen 77" roles="MPSKPD" resourceKey="2-4-22-6">
+			<siteMapNode url="~/pPage/PageReport1x.aspx?id=4500604&amp;name=spp&amp;suffix=PA" title="Pengguna Anggaran (PA)" description="Pengguna Anggaran (PA)" roles="MPSKPD" resourceKey="2-4-22-6"/>
+			<siteMapNode url="~/pPage/PageReport1x.aspx?id=4500604&amp;name=spp&amp;suffix=KPA" title="Kuasa Pengguna Anggaran (KPA)" description="Kepala Pengguna Anggaran (KPA)" roles="MPSKPD" resourceKey="2-4-22-6"/>
+		</siteMapNode>
+      </siteMapNode>
+	  
+	  
+	  <siteMapNode url="~/Default.aspx?id=45000" title="S P M&lt;hr/&gt;" description="S P M" roles="MPSKPD" resourceKey="2-4-22-6">
+			<siteMapNode url="~/pPage/PageReport1x.aspx?id=45000&amp;name=spm&amp;suffix=default" title="S P M" description="S P M" roles="MPSKPD" resourceKey="2-4-22-6"/>
+			<siteMapNode url="~/pPage/PageReport1x.aspx?id=45000&amp;name=spm&amp;suffix=sptjm" title="SPTJM  S P M  LS" description="SPTJM  S P M  LS" roles="MPSKPD" resourceKey="2-4-22-6"/>
+			<siteMapNode url="~/pPage/PageReport1x.aspx?id=45000&amp;name=spm&amp;suffix=sptjmgu" title="SPTJM  S P M  GU" description="SPTJM  S P M  GU" roles="MPSKPD" resourceKey="2-4-22-6"/>
+	  </siteMapNode> <!-- Ditambahkan -->
+	  
+	  
+	  
+
+      <!-- Standar<siteMapNode url="~/pPage/PageReport1x.aspx?id=45000&amp;name=spm&amp;suffix=default,sptjm,sptjmgu" title="S P M&lt;hr/&gt;" roles="MASKPD" resourceKey="2-4-22-6">
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500001&amp;name=spm&amp;suffix=default,setda" title="S P M" description="SPM" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500001&amp;name=SPMGU_LAMP&amp;suffix=default,setda" title="Lampiran SPM GU/TU" description="Lampiran SPM GU" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500001&amp;name=SPJlamp_gu&amp;" title="SPJ Pengesahan GU" description="SPJ Pengesahan GU" roles="MPSKPD" resourceKey="2-4-22-6"/>
+      </siteMapNode>-->
+
+      <siteMapNode url="~/Default.aspx?id=45002" title="SP2D" description="SP2D" roles="MPSKPD" resourceKey="2-4-22-6">
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500201&amp;name=SP2D&amp;suffix=default,model1,model2,Qanun,setda" title="SP2D" description="SP2D" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <!--<siteMapNode url="~/pPage/PageReport1x.aspx?id=4500201&amp;name=SP2D_BARCODE&amp;suffix=default,model1,model2,Qanun,setda" title="SP2D" description="SP2D" roles="MPSKPD" resourceKey="2-4-22-6"/>-->
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500201&amp;name=STATUSSP2D&amp;suffix=default" title="STATUS SP2D" description="STATUS SP2D" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500205&amp;name=SP2D_BlmCair" title="SP2D Belum Cair" description="SP2D" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500201&amp;name=SP2D_Outstanding" title="SP2D Outstanding" description="SP2D Yang terlambat di cairkan" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500201&amp;name=SP2DGU_LAMP" title="Lampiran GU/TU" description="Lampiran GU/TU" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500201&amp;name=Karken_Kegrek&amp;kode=2" title="Kartu Kendali Kegiatan Per Rekening" description="Kartu Kendali Kegiatan Per Rekening" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500201&amp;name=SP2DGUNIHIL_LAMP" title="SP2D GU NIHIL" description="SP2D" roles="MPSKPD" resourceKey="2-4-22-6"/>
+      </siteMapNode>
+
+      <siteMapNode url="~/pPage/PageReport1x.aspx?id=45007&amp;name=DP&amp;suffix=default,model1" title="Daftar Penguji" description="Penerimaan" roles="MPSKPD" resourceKey="2-4-22-6"/>
+      <siteMapNode url="~/Default.aspx?id=45003" title="BKU Bendahara SKPD" description="Buku Bendahara" roles="MPSKPD" resourceKey="2-4-22-6">
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500301&amp;name=bkubendd" title="Buku Penerimaan dan Penyetoran" description="Buku Penerimaan dan Penyeoran" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500301&amp;name=lptr_skpd" title="Laporan Realisasi Penerimaan&lt;hr/&gt;" description="Laporan Realisasi Penerimaan" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500302&amp;name=bkubendk" title="Buku Bendahara Pengeluaran" description="Buku Bendahara Pengeluaran" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500304&amp;name=kastunai" title="Buku Kas Tunai" description="Buku Kas Tunai" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500305&amp;name=simbank" title="Buku Simpanan/Bank" description="Buku Simpanan/Bank" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/Default.aspx?id=4500306" title="Panjar&lt;hr/&gt;" description="Panjar" roles="MPSKPD" resourceKey="2-4-22-6">
+          <siteMapNode url="~/pPage/PageReport1x.aspx?id=450030601&amp;name=panjar" title="Buku Panjar" description="Buku Panjar" roles="MPSKPD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageReport1x.aspx?id=450030601&amp;name=panjarperkegiatan" title="Buku Panjar Perkegiatan" description="Buku Panjar Perkegiatan" roles="MPSKPD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageReport1x.aspx?id=450030601&amp;name=saldopanjarseluruhkegiatan" title="Saldo Panjar Seluruh Kegiatan" description="Saldo Panjar Seluruh Kegiatan" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        </siteMapNode>
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500307&amp;name=serapanspd&amp;kode=2" title="Serapan SPD Belanja Langsung&lt;hr/&gt;" description="Serapan SPD Belanja Langsung" roles="MPSKPD"  resourceKey="2-4-22-6"/>
+        <!--<siteMapNode url="~/pPage/PageReport1x.aspx?id=4500307&amp;name=serapanspdbtl" title="Serapan SPD Belanja Tidak Langsung&lt;hr/&gt;" description="Serapan SPD Belanja Tidak Langsung" roles="MPSKPD"  resourceKey="2-4-22-6"/>-->
+        <siteMapNode url="~/Default.aspx?id=4500307&amp;name=skpd" title="Rincian Objek" description="SPJ" roles="MPSKPD" resourceKey="2-4-22-6">
+          <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500307&amp;name=rincd&amp;kode=1" title="Rincian Objek Penerimaan&lt;hr/&gt;" description="Rincian Objek Penerimaan" roles="MPSKPD"  resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500307&amp;name=rincbelanja&amp;kode=2" title="Rincian Objek Belanja Langsung" description="Rincian Objek Belanja Langsung" roles="MPSKPD"  resourceKey="2-4-22-6"/>
+          <!--<siteMapNode url="~/pPage/PageReport1x.aspx?id=4500307&amp15:08 05/03/202115:08 05/03/2021;name=rincbelanjabpp&amp;kode=2" title="Rincian Objek Belanja Langsung BPP&lt;hr/&gt;" description="Rincian Objek Belanja Langsung BPP" roles="MPSKPD"  resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500307&amp;name=rincbelanjasetda&amp;kode=2" title="Rincian Objek Belanja Langsung Setda&lt;hr/&gt;" description="Rincian Objek Belanja Langsung Setda" roles="MPSKPD"  resourceKey="2-4-22-6"/>-->
+          <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500307&amp;name=rincbelanjafull&amp;kode=2" title="Rincian Objek Belanja Langsung Landscape" description="Rincian Objek Belanja Langsung Landscape" roles="MPSKPD"  resourceKey="2-4-22-6"/>
+          <!--<siteMapNode url="~/pPage/PageReport1x.aspx?id=4500307&amp;name=rincbtl&amp;kode=4" title="Rincian Objek BTL&lt;hr/&gt;" description="Rincian Objek BTL" roles="MPSKPD"  resourceKey="2-4-22-6"/>-->
+        </siteMapNode>
+        <siteMapNode url="~/Default.aspx?id=4500308&amp;name=pajak" title="Pajak" description="Pajak" roles="MPSKPD" resourceKey="2-4-22-6">
+          <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500308&amp;name=pajak" title="Buku Pajak Per Bendahara" description="Buku Pajak Per Bendahara" roles="MPSKPD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageReport1x.aspx?id=450030801&amp;name=pajakskpd" title="Buku Pajak Per SKPD" description="Buku Pajak Per SKPD" roles="MPSKPD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageReport1x.aspx?id=450030801&amp;name=pajakkomplit" title="Buku Pajak UP/GU/TU Rinci Per Bendahara" description="Buku Pajak UP/GU/TU Rinci Per Bendahara" roles="MPSKPD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageReport1x.aspx?id=450030801&amp;name=pajakkomplitskpd" title="Buku Pajak UP/GU/TU Rinci Per SKPD" description="Buku Pajak UP/GU/TU Rinci Per SKPD" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        </siteMapNode>
+		
+		
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500307&amp;name=DTH" title="Daftar Transaksi Harian Belanja Daerah (DTH)&lt;hr/&gt;" description="Daftar Transaksi Harian Belanja Daerah (DTH)" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/Default.aspx?id=4500309" title="Laporan Pertanggung Jawaban" description="SPJ" roles="MPSKPD" resourceKey="2-4-22-6">
+          <siteMapNode url="~/pPage/PageReport1x.aspx?id=450030901&amp;name=bendup&amp; suffix=default" title="LPJ UP BP" description="Laporan Pertanggung Jawaban UP Bendahara Pengeluaran" roles="MPSKPD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageReport1x.aspx?id=450030902&amp;name=bendupbpp&amp;suffix=default" title="LPJ UP BPP" description="Laporan Pertanggung Jawaban UP Bendahara Pengeluaran Pembantu" roles="MPSKPD" resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500309&amp;name=bendtu" title="LPJ TU" description="laporan Pertanggung Jawaban TU" roles="MPSKPD"  resourceKey="2-4-22-6"/>
+        </siteMapNode>
+		
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=45003010&amp;name=bktutupkas" title="Laporan Penutupan Kas" description="Laporan Penutupan Kas" roles="MPSKPD" resourceKey="2-4-22-6"/>
+      </siteMapNode>
+      <!--<siteMapNode url="~/Default.aspx?id=45003&amp;name=ppkd" title="BKU Bendahara PPKD" description="Buku Bendahara" roles="MPSKPD" resourceKey="2-4-22-6">
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500301&amp;name=bkubendd-ppkd" title="Buku Penerimaan" description="Buku Penerimaan dan Penyeoran" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500302&amp;name=bkubendk-ppkd" title="Buku Bendahara Pengeluaran" description="Buku Bendahara Pengeluaran" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/Default.aspx?id=4500307&amp;name=ppkd" title="Rincian Objek Belanja" description="SPJ" roles="MPSKPD" resourceKey="2-4-22-6">
+          <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500307&amp;name=rincbiaya-ppkd&amp;kode=5" title="Rincian Objek Pembiayaan" description="SPJ Administratif" roles="MPSKPD"  resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500307&amp;name=rincbtl-ppkd&amp;kode=3" title="Rincian Objek BTL" description="SPJ Fungsional" roles="MPSKPD"  resourceKey="2-4-22-6"/>
+        </siteMapNode>
+      </siteMapNode>-->
+      <siteMapNode url="~/Default.aspx?id=45004" title="S P J" description="SPJ" roles="MPSKPD" resourceKey="2-4-22-6">
+        <siteMapNode url="~/Default.aspx?id=45006&amp;name=spj" title="S K P D" description="SPJ SKPD" roles="MPSKPD" resourceKey="2-4-22-6">
+          <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500401&amp;name=spjadm&amp;suffix=default,SP2DFung,PPKD" title="SPJ Pengeluaran Administratif" description="SPJ Administratif" roles="MPSKPD"  resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500402&amp;name=spjfung&amp;suffix=default,SP2DFung,SP2DFungV2" title="SPJ Pengeluaran Fungsional" description="SPJ Fungsional" roles="MPSKPD"  resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500402&amp;name=spjfungREK&amp;suffix=default,PPKD" title="SPJ Pengeluaran Fungsional Per Rekening" description="SPJ Fungsional Per Rekening" roles="MPSKPD"  resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500402&amp;name=RegSPJ" title="Register SPJ&lt;hr/&gt;" description="Register SPJ" roles="MPSKPD"  resourceKey="2-4-22-6"/>
+          <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500403&amp;name=SPJTRadm" title="SPJ Penerimaan Administratif" description="SPJ Penerimaan Administratif" roles="MPSKPD"  resourceKey="2-4-22-6"/>
+          <!--<siteMapNode url="~/pPage/PageReport1x.aspx?id=4500404&amp;name=SPJTRfung&amp;suffix=default,format1" title="SPJ Penerimaan Fungsional&lt;hr/&gt;" description="SPJ Penerimaan Fungsional" roles="MPSKPD"  resourceKey="2-4-22-6"/>-->
+          <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500404&amp;name=SPJTRfungpyk&amp;suffix=default" title="SPJ Penerimaan Fungsional V2 &lt;hr/&gt;" description="SPJ Penerimaan Fungsional" roles="MPSKPD"  resourceKey="2-4-22-6"/>
+        </siteMapNode>
+        <!--<siteMapNode url="~/Default.aspx?id=45007&amp;name=spj" title="PPKD" description="SPJ PPKD" roles="MPSKPD" resourceKey="2-4-22-6">
+          <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500404&amp;name=spj-ppkd" title="SPJ Pengeluaran PPKD" description="SPJ PPKD" roles="MPSKPD"  resourceKey="2-4-22-6"/>
+        </siteMapNode>-->
+        <!--<siteMapNode url="~/pPage/PageReport1x.aspx?id=4500405&amp;name=SPJBPP&amp;suffix=default,setda" title="SPJ BPP" description="SPJBPP" roles="MPSKPD"  resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500405&amp;name=SPJBPPNONBIRO&amp;suffix=default" title="SPJ BPP NON BIRO&lt;hr/&gt;" description="SPJBPPNONBIRO" roles="MPSKPD"  resourceKey="2-4-22-6"/>-->
+      </siteMapNode>
+      <siteMapNode url="~/Default.aspx?id=45005" title="Pencairan" description="cair" roles="MPSKPD" resourceKey="2-4-22-6">
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500501&amp;name=Karken_Keg" title="Kartu Kendali Kegiatan" description="Kartu Kendali Kegiatan" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <!--<siteMapNode url="~/pPage/PageReport1x.aspx?id=4500502&amp;name=Karken_RTL" title="Kartu Kendali BTL&lt;hr/&gt;" description="Kartu Kendali BTL" roles="MPSKPD" resourceKey="2-4-22-6"/>-->
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500503&amp;name=lpkh&amp;suffix=default,GLOBAL,GLOBALTGLSAH" title="Laporan Posisi Kas Harian (LPKH)" description="Laporan Posisi Kas Harian" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500504&amp;name=BKU&amp;suffix=default,bulanan" title="BKU" description="BKU BUD" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500505&amp;name=BKU_REK" title="BKU Per Rekening" description="BKU BUD-Per Rekening" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500506&amp;name=konkeluarbud" title="Kontrol Pengeluaran BUD&lt;hr/&gt;" description="Kontrol Pengeluaran BUD" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500507&amp;name=DTH" title="Daftar Transaksi Harian Belanja Daerah (DTH)" description="Daftar Transaksi Harian Belanja Daerah (DTH)" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500508&amp;name=RTH" title="Rekapitulasi Transaksi Harian Belanja Daerah (RTH)&lt;hr/&gt;" description="Rekapitulasi Transaksi Harian Belanja Daerah (RTH)" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500509&amp;name=LRA_SP2D&amp;suffix=default,update" title="LRA SP2D (Realisasi SPD-SP2D)" description="LRA SP2D" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500510&amp;name=spjsp2d" title="Realisasi berdasarkan SP2D" description="Realisasi berdasarkan SP2D" roles="MPSKPD"  resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500511&amp;name=lptr" title="Laporan Realisasi Penerimaan" description="Laporan Realisasi Penerimaan" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500512&amp;name=lrp" title="Laporan Realisasi Pengeluaran" description="Laporan Realisasi Pengeluaran" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <!--<siteMapNode url="~/pPage/PageReport1x.aspx?id=4500513&amp;name=lrbtl" title="Laporan Realisasi Belanja Tidak Langsung" description="Laporan Realisasi Belanja Tidak Langsung" roles="MPSKPD" resourceKey="2-4-22-6"/>-->
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500514&amp;name=lratunai_nontunai" title="Laporan Realisasi Belanja Tunai dan Non Tunai" description="Laporan Realisasi Belanja Tunai dan Non Tunai" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500515&amp;name=REKAPSP2DPJKPOT&amp;suffix=default,all,sah" title="Laporan Rekap Belanja Potongan dan Pajak" description="Laporan Rekap Belanja Potongan dan Pajak" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <!--<siteMapNode url="~/pPage/PageReport1x.aspx?id=4500516&amp;name=REKAPSP2DPJKPOTBTL&amp;suffix=default,tglsp2d" title="Laporan Rekap Belanja Potongan dan Pajak Belanja Tidak Langsung" description="Laporan Rekap Belanja Potongan dan Pajak Belanja Tidak Langsung" roles="MPSKPD" resourceKey="2-4-22-6"/>-->
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500517&amp;name=STSPERUPT&amp;suffix=default,Entry" title="Laporan Penerimaan Berdasarkan Objek Pendapatan" description="Laporan Penerimaan Berdasarkan Objek Pendapatan" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500518&amp;name=REKAPSTSPERUPT&amp;suffix=default,Entry" title="Laporan Penerimaan Berdasarkan Objek Pendapatan (Rekap)" description="Laporan Penerimaan Berdasarkan Objek Pendapatan (Rekap)" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500519&amp;name=LHP" title="Laporan Harian Penerimaan&lt;hr/&gt;" description="Laporan Harian penerimaan" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500520&amp;name=konsp2dspd" title="Kontrol DPA terhadap SP2D - SPD" description="Kontrol DPA terhadap SP2D - SPD" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500521&amp;name=konsp2dspdperdinas" title="Kontrol DPA terhadap SP2D - SPD Per Dinas" description="Kontrol DPA terhadap SP2D - SPD Per Dinas" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500522&amp;name=konsp2dspj" title="Kontrol DPA terhadap SP2D - SPJ" description="Kontrol DPA terhadap SP2D - SPJ" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500523&amp;name=konsp2dspjperdinas" title="Kontrol DPA terhadap SP2D - SPJ Per Dinas&lt;hr/&gt;" description="Kontrol DPA terhadap SP2D - SPJ Per Dinas" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500524&amp;name=nota_d" title="Nota Debet" description="Nota Debet" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500525&amp;name=nota_k" title="Nota Kredit" description="Nota Kredit" roles="MPSKPD" resourceKey="2-4-22-6"/>
+        <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500526&amp;name=nota" title="Nota Pembayaran" description="Nota Pembayaran&lt;hr/&gt;" roles="MPSKPD" resourceKey="2-4-22-6"/>
+      </siteMapNode>
+      <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500509&amp;name=SP3B" title=" S P 3 B " description="S P 3 B" roles="MPSKPD" resourceKey="2-4-22-6"/>
+      <siteMapNode url="~/pPage/PageReport1x.aspx?id=4500509&amp;name=SP2B" title=" S P 2 B " description="S P 2 B" roles="MPSKPD" resourceKey="2-4-22-6"/>
+
+    </siteMapNode>
+    <siteMapNode url="~/Files/Default.aspx"  title="File Pendukung" roles="ALL">
+      <!--<siteMapNode url="~/pSistem/Download.aspx?id=911&amp;kode=ma" title="Dokumen" roles="ALL"/>-->
+      <siteMapNode url="~/Files/Default.aspx?file=2"  title="Manual&lt;hr size=0.1/&gt;" roles="ALL">
+        <siteMapNode url="~/Files/ManualHelp.aspx?pdfName=DATAMASTERSIPKDR6" title="MODUL DATA MASTER SIPKD R6 vers. 1.0&lt;hr size=0.1/&gt;" roles="ALL"/>
+        <siteMapNode url="~/Files/ManualHelp.aspx?pdfName=ANGGARANSIPKDR6" title="MODUL ANGGARAN SIPKD R6 vers. 1.0&lt;hr size=0.1/&gt;" roles="ALL"/>
+        <siteMapNode url="~/Files/ManualHelp.aspx?pdfName=PENATAUSAHAANSIPKDR6" title="MODUL PENATAUSAHAAN SIPKD R6 vers. 1.0&lt;hr size=0.1/&gt;" roles="ALL"/>
+        <siteMapNode url="~/Files/ManualHelp.aspx?pdfName=PERTANGGUNGJAWABANSIPKDR6" title="MODUL PERTANGGUNGJAWABAN SIPKD R6 vers. 1.0&lt;hr size=0.1/&gt;" roles="ALL"/>
+        <siteMapNode url="~/Files/ManualHelp.aspx?pdfName=Option" title="Option Sipkd.V@Lid akrual&lt;hr size=0.1/&gt;" roles="ALL"/>
+      </siteMapNode>
+    </siteMapNode>
+  </siteMapNode>
+</siteMap>

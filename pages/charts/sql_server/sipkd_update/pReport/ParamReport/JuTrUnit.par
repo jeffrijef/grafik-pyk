@@ -1,0 +1,4 @@
+TITLE=Jurnal Penyetoran Pendapatan
+Unitkey=string;Key Unit;10;
+Tglawal=datetime;Tanggal Awal;10;
+Tglakhir=datetime;Tanggal Akhir;10;

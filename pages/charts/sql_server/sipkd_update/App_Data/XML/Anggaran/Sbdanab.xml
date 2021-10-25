@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Sbdanab" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Sbdanab" type="Usadi.Valid49.BO.SbdanabControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Sbdanab">
+      <result property="Nmdana" column="NMDANA"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Kdtahap" column="KDTAHAP"/>
+      <result property="Kddana" column="KDDANA"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="KDDANA"/>
+      <result property="Field" column="KDDANA"/>
+      <result property="Value" column="NMDANA"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSbdanab" parameterMap="insert-param">
+      <generate table="SBDANAB"/>
+    </insert>
+    <update id="UpdateBySbdanab" parameterMap="update-param">
+      <generate table="SBDANAB" by="UNITKEY,MTGKEY,KDTAHAP,KDDANA"/>
+    </update>
+    <delete id="DeleteBySbdanab" parameterMap="delete-param">
+      <generate table="SBDANAB" by="UNITKEY,MTGKEY,KDTAHAP,KDDANA"/>
+    </delete>
+    <select id="BaseQuerySbdanab" parameterClass="Sbdanab" resultMap="return-result">
+      select A.KDDANA,A.KDTAHAP,A.MTGKEY,A.NILAI,A.UNITKEY
+      , B.NMDANA
+      from SBDANAB A
+      LEFT OUTER JOIN JDANA B ON A.KDDANA = B.KDDANA
+    </select>
+    <select id="QueryByAllSbdanab" extends="BaseQuerySbdanab" parameterClass="Sbdanab" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.MTGKEY=#Mtgkey# and A.KDTAHAP=#Kdtahap# and
+      case #Parameter.Field#
+      when '1' then A.KDDANA
+      when '2' then A.KDTAHAP
+      when '3' then A.MTGKEY
+      when '4' then convert(char(10), A.NILAI)
+      when '5' then A.UNITKEY
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.KDDANA
+    </select>
+    <select id="QueryBySppdetbdanaSbdanab" extends="BaseQuerySbdanab" parameterclass="Usadi.Valid49.BO.SppdetbdanaControl" resultMap="return-lookup">
+      where A.UNITKEY=#Unitkey# and A.MTGKEY=#Mtgkey# and A.KDTAHAP=#Kdtahap# and
+      A.KDDANA not in (select KDDANA from Sppdetbdana where MTGKEY=#Mtgkey# and NOSPP=#Nospp#) and
+      case #Parameter.Field#
+      when '1' then A.KDDANA
+      when '2' then B.NMDANA
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.KDDANA
+    </select>
+    <select id="LoadByPKSbdanab" extends="BaseQuerySbdanab" parameterClass="Sbdanab" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.MTGKEY=#Mtgkey# and A.KDTAHAP=#Kdtahap# and A.KDDANA=#Kddana# 
+    </select>
+  <procedure id="ExecValidateSbdanaRekB" parameterMap="Sbdanab-param0">
+    WSP_VALIDATION_SBDANAB_REK
+  </procedure>
+
+    <procedure id="ExecVal_dpabdana" parameterMap="Sbdanab-param1">
+      WSP_VAL_DPABDANA
+    </procedure>
+  
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Sbdanab">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Parameter.Key" column="KDDANA"/>
+    </parameterMap>
+    <parameterMap id="update-param" class="Sbdanab">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Kddana" column="KDDANA"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Sbdanab">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Kddana" column="KDDANA"/>
+    </parameterMap>
+    <parameterMap id="Sbdanab-param0" class="Sbdanab">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Kdtahap" column="kdtahap"/>
+      <parameter property="Mtgkey" column="mtgkey"/>
+    </parameterMap>
+    <parameterMap id="Sbdanab-param1" class="Sbdanab">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Kdtahap" column="kdtahap"/>
+      <parameter property="Mtgkey" column="mtgkey"/>
+      <parameter property="Kddana" column="kddana"/>
+      <parameter property="Dok" column="dok"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

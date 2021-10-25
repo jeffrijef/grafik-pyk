@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Kasb" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Kasb" type="Usadi.Valid49.BO.KasbControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Kasb">
+      <result property="Nilai" column="NILAI"/>
+      <result property="Kode" column="KODE"/>
+      <result property="Ket_bulan" column="KET_BULAN"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Kd_bulan" column="KD_BULAN"/>
+      <result property="Kdtahap" column="KDTAHAP"/>
+      <result property="Unitkey" column="UNITKEY"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertKasb" parameterMap="insert-param">
+      <generate table="KASB"/>
+    </insert>
+    <update id="UpdateByKasb" parameterMap="update-param">
+      <generate table="KASB" by="KODE,KD_BULAN,KDTAHAP,UNITKEY"/>
+    </update>
+    <delete id="DeleteByKasb" parameterMap="delete-param">
+      <generate table="KASB" by="KODE,KD_BULAN,KDTAHAP,UNITKEY"/>
+    </delete>
+    <select id="BaseQueryKasb" parameterClass="Kasb" resultMap="return-result">
+      select distinct A.KD_BULAN,A.KDTAHAP,A.NILAI,A.UNITKEY,A.KODE
+      ,B.KET_BULAN,S.TGLVALID
+      from KASB A
+      inner join BULAN B on A.KD_BULAN = B.KD_BULAN
+      <!--left outer join SKDASK S on S.Unitkey=A.Unitkey and S.Kdtahap=A.KDTAHAP
+      left outer join DASKB D on S.IDXDASK=D.IDXDASK and D.Unitkey=S.Unitkey-->
+			left outer join DASKB D on  D.Unitkey=A.Unitkey
+			left outer join SKDASK S on S.Unitkey=D.Unitkey and S.Kdtahap=A.KDTAHAP and S.IDXDASK=D.IDXDASK
+		</select>
+    <select id="QueryByAllKasb" extends="BaseQueryKasb" parameterClass="Kasb" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.KDTAHAP=#Kdtahap# and A.KODE=#Kode# and
+      ((A.Kdtahap % 2 = 1 AND s.KDTAHAP IS NULL) OR (A.Kdtahap % 2 = 0 AND s.KDTAHAP IS not NULL) )
+      order by A.KD_BULAN
+    </select>
+    <select id="QueryByTrwKasb" parameterClass="Kasb" resultMap="return-result">
+      select UNITKEY, KDTAHAP, KD_TRW AS KD_BULAN, 'Triwulan '+cast(KD_TRW as varchar(2)) as KET_BULAN, KODE, sum(NILAI) AS NILAI,TGLVALID
+      from (
+      select distinct RB.UNITKEY, RB.KDTAHAP, RB.KD_BULAN, (KD_BULAN - 1) / 3 + 1 AS KD_TRW, RB.KODE, RB.NILAI,S.TGLVALID
+      from KASB RB
+      <!--left outer join SKDASK S on S.Unitkey=RB.Unitkey and S.Kdtahap=RB.KDTAHAP
+      left outer join DASKB D on S.IDXDASK=D.IDXDASK and D.Unitkey=S.Unitkey-->
+			left outer join DASKB D on  D.Unitkey=RB.Unitkey
+			left outer join SKDASK S on S.Unitkey=D.Unitkey and S.Kdtahap=RB.KDTAHAP and S.IDXDASK=D.IDXDASK
+			where (RB.UNITKEY = #Unitkey#) and (RB.KDTAHAP = #Kdtahap#) and (RB.KODE=#Kode#) and
+			((RB.Kdtahap % 2 = 1 AND s.KDTAHAP IS NULL) OR (RB.Kdtahap % 2 = 0 AND s.KDTAHAP IS not NULL) )
+			)T
+			group by UNITKEY,KDTAHAP, KD_TRW,KODE,TGLVALID
+			order by KD_TRW
+		</select>
+    <select id="LoadByPKKasb" extends="BaseQueryKasb" parameterClass="Kasb" resultMap="return-result">
+      where A.KDTAHAP=#Kdtahap# and A.UNITKEY=#Unitkey# 
+    </select>
+    <select id="LoadByPKTrwKasb" parameterClass="Kasb" resultMap="return-result">
+      select UNITKEY, KDTAHAP, KD_TRW AS KD_BULAN, 'Triwulan '+cast(KD_TRW as varchar(2)) as KET_BULAN, KODE, sum(NILAI) AS NILAI,TGLVALID
+      from (
+      select distinct RB.UNITKEY, RB.KDTAHAP, RB.KD_BULAN, (KD_BULAN - 1) / 3 + 1 AS KD_TRW, RB.KODE, RB.NILAI,S.TGLVALID
+      from KASB RB
+      left outer join SKDASK S on S.Unitkey=RB.Unitkey and S.Kdtahap=RB.KDTAHAP
+      left outer join DASKB D on S.IDXDASK=D.IDXDASK and D.Unitkey=S.Unitkey
+      where (RB.UNITKEY = #Unitkey#)and (RB.KDTAHAP = #Kdtahap#) and
+      ((RB.Kdtahap % 2 = 1 AND s.KDTAHAP IS NULL) OR (RB.Kdtahap % 2 = 0 AND s.KDTAHAP IS not NULL) )
+      )T
+      where KD_TRW = #Kd_bulan#
+      group by UNITKEY, KDTAHAP, KD_TRW,KODE,TGLVALID
+      order by KD_TRW
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Kasb">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Kode" column="KODE"/>
+      <parameter property="Kd_bulan" column="KD_BULAN"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Kasb">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Kasb">
+      <parameter property="Kode" column="KODE"/>
+      <parameter property="Kd_bulan" column="KD_BULAN"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

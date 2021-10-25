@@ -1,0 +1,6 @@
+TITLE=S P D - SKPD
+Unitkey=string;Key Unit;4;
+Idxsko=string;Index SKO;4;
+Bend=string;Bendahara;30;
+Kdtahap=string;Kode Tahap;4;
+Kddok=string;Khusus;4;;-1;03.302

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Mappfk" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <alias>
+      <typeAlias alias="Mappfk" type="Usadi.Valid49.BO.MappfkControl" />
+    </alias>
+    <resultMaps>
+      <resultMap id="return-result" class="Mappfk">
+        <result property="Kdper" column="KDPER"/>
+        <result property="Nmper" column="NMPER"/>
+        <result property="Mtgkey_nrc" column="MTGKEY_NRC"/>
+        <result property="Mtgkey_pot" column="MTGKEY_POT"/>
+      </resultMap>
+    </resultMaps>
+    <statements>
+      <insert id="InsertMappfk" parameterMap="insert-param">
+        <generate table="MAP_PFK"/>
+      </insert>
+      <update id="UpdateByMappfk" parameterMap="update-param">
+        <generate table="MAP_PFK" by="MTGKEY_NRC,MTGKEY_POT"/>
+      </update>
+      <delete id="DeleteByMappfk" parameterMap="delete-param">
+        <generate table="MAP_PFK" by="MTGKEY_NRC,MTGKEY_POT"/>
+      </delete>
+      <select id="BaseQueryMappfk" parameterClass="Mappfk" resultMap="return-result">
+        select A.MTGKEY_NRC,A.MTGKEY_POT, rtrim(A.KDPER) as KDPER, rtrim(A.NMPER) as NMPER
+        from(
+        select S.MTGKEY_NRC,S.MTGKEY_POT
+        , rtrim(M.KDPER) as KDPER, rtrim(M.NMPER) as NMPER
+        from MAP_PFK S
+        inner join MATANGB M on M.MTGKEY=S.MTGKEY_POT
+        union
+        select S.MTGKEY_NRC,S.MTGKEY_POT
+        , rtrim(M.KDPAJAK) as KDPER, rtrim(M.NMPAJAK) as NMPER
+        from MAP_PFK S
+        inner join JPAJAK M on M.PJKKEY=S.MTGKEY_POT
+        )A
+      </select>
+      <select id="QueryByAllMappfk" extends="BaseQueryMappfk" parameterClass="Mappfk" resultMap="return-result">
+        where  A.MTGKEY_NRC = #Mtgkey_nrc# and
+        case #Parameter.Field#
+        when '1' then A.KDPER
+        when '2' then A.NMPER
+        end like '%'+ #Parameter.Value# + '%'
+        order by A.KDPER
+      </select>
+      <select id="LoadByPKMappfk" extends="BaseQueryMappfk" parameterClass="Mappfk" resultMap="return-result">
+        where A.MTGKEY_NRC = #Mtgkey_nrc# and A.MTGKEY_POT = #Mtgkey_pot#
+      </select>
+    </statements>
+    <parameterMaps>
+      <parameterMap id="insert-param" class="Mappfk">
+        <parameter property="Mtgkey_nrc" column="MTGKEY_NRC"/>
+        <parameter property="Mtgkey_pot" column="MTGKEY_POT"/>
+      </parameterMap>
+      <parameterMap id="update-param" extends="insert-param" class="Mappfk">
+      </parameterMap>
+      <parameterMap id="delete-param" class="Mappfk">
+        <parameter property="Mtgkey_nrc" column="MTGKEY_NRC"/>
+        <parameter property="Mtgkey_pot" column="MTGKEY_POT"/>
+      </parameterMap>
+    </parameterMaps>
+</sqlMap>
+

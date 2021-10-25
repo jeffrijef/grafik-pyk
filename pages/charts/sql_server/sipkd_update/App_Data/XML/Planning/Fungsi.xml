@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Fungsi" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Fungsi" type="Usadi.Valid49.BO.FungsiControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Fungsi">
+      <result property="Idfung" column="IDFUNG"/>
+      <result property="Kdfung" column="KDFUNG"/>
+      <result property="Nmfung" column="NMFUNG"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <insert id="InsertFungsi" parameterMap="insert-param" >
+      <generate table="FUNGSI"/>
+    </insert>
+    <update id="UpdateByFungsi" parameterMap="update-param" >
+      <generate table="FUNGSI" by="IDFUNG"/>
+    </update>
+    <delete id="DeleteByFungsi" parameterMap="delete-param" >
+      <generate table="FUNGSI" by="IDFUNG"/>
+    </delete>
+    <select id="QueryByAllFungsi" parameterClass="Fungsi" resultMap="return-result">
+      select * from FUNGSI
+      order by KDFUNG
+    </select>
+    <select id="LoadByPKFungsi" parameterClass="Fungsi"  resultMap="return-result" >
+      SELECT * FROM FUNGSI
+      WHERE IDFUNG=#Idfung#
+    </select>
+  </statements>
+
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Fungsi">
+      <parameter property="Kdfung" column="KDFUNG"/>
+      <parameter property="Nmfung" column="NMFUNG"/>
+      <parameter property="Idfung" column="IDFUNG"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Fungsi">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Fungsi">
+      <parameter property="Idfung" column="IDFUNG"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>
+

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Jposting" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Jposting" type="Usadi.Valid49.BO.JpostingControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Jposting">
+      <result property="Nmposting" column="NMPOSTING"/>
+      <result property="Kdposting" column="KDPOSTING"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertJposting" parameterMap="insert-param">
+      <generate table="JPOSTING"/>
+    </insert>
+    <update id="UpdateByJposting" parameterMap="update-param">
+      <generate table="JPOSTING" by="KDPOSTING"/>
+    </update>
+    <delete id="DeleteByJposting" parameterMap="delete-param">
+      <generate table="JPOSTING" by="KDPOSTING"/>
+    </delete>
+    <select id="BaseQueryJposting" parameterClass="Jposting" resultMap="return-result">
+      select A.KDPOSTING,A.NMPOSTING
+      from JPOSTING A
+    </select>
+    <select id="QueryByAllJposting" extends="BaseQueryJposting" parameterClass="Jposting" resultMap="return-result">
+      where
+      case #Parameter.Field#
+        when '1' then A.KDPOSTING
+        when '2' then A.NMPOSTING
+      end like '%'+ #Parameter.Value# + '%' 
+    </select>
+    <select id="LoadByPKJposting" extends="BaseQueryJposting" parameterClass="Jposting" resultMap="return-result">
+      where A.KDPOSTING=#Kdposting# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Jposting">
+      <parameter property="Nmposting" column="NMPOSTING"/>
+      <parameter property="Kdposting" column="KDPOSTING"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Jposting">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Jposting">
+      <parameter property="Kdposting" column="KDPOSTING"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

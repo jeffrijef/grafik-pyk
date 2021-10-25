@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Jkinkeg" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Jkinkeg" type="Usadi.Valid49.BO.JkinkegControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Jkinkeg">
+    <result property="Urjkk" column="URJKK"/>
+    <result property="Kdjkk" column="KDJKK"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertJkinkeg" parameterMap="insert-param">
+      <generate table="JKINKEG"/>
+    </insert>
+    <update id="UpdateByJkinkeg" parameterMap="update-param">
+      <generate table="JKINKEG" by="KDJKK"/>
+    </update>
+    <delete id="DeleteByJkinkeg" parameterMap="delete-param">
+      <generate table="JKINKEG" by="KDJKK"/>
+    </delete>
+    <select id="BaseQueryJkinkeg" parameterClass="Jkinkeg" resultMap="return-result">
+     	select JK.KDJKK, JK.URJKK 
+			from JKINKEG JK
+    </select>
+    <select id="QueryByAllJkinkeg" extends="BaseQueryJkinkeg" parameterClass="Jkinkeg" resultMap="return-result">
+			where
+			case #Parameter.Field#
+			when '1' then JK.KDJKK
+			when '2' then JK.URJKK
+			end like '%'+ #Parameter.Value# + '%'
+			order by JK.KDJKK
+		</select>
+    <select id="QueryByListJkinkeg" extends="BaseQueryJkinkeg" parameterclass="Usadi.Valid49.BO.KinkegControl" resultMap="return-result">
+      where JK.KDJKK not in (select KDJKK from KINKEG where UNITKEY=#Unitkey# and KDTAHAP=#Kdtahap# and KDKEGUNIT=#Kdkegunit#)
+      order by JK.KDJKK
+    </select>
+    <select id="QueryByList2Jkinkeg" extends="BaseQueryJkinkeg" parameterclass="Usadi.Valid49.BO.KinnonControl" resultMap="return-result">
+      where JK.KDJKK not in (select KDJKK from KINNON where UNITKEY=#Unitkey# and KDTAHAP=#Kdtahap# and IDXKODE=#Idxkode#)
+      order by JK.KDJKK
+    </select>
+    <select id="LoadByPKJkinkeg" extends="BaseQueryJkinkeg" parameterClass="Jkinkeg" resultMap="return-result">
+      where JK.KDJKK=#Kdjkk# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Jkinkeg">
+      <parameter property="Urjkk" column="URJKK"/>
+      <parameter property="Kdjkk" column="KDJKK"/>
+    </parameterMap>
+			<parameterMap id="update-param" extends="insert-param" class="Jkinkeg">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Jkinkeg">
+      <parameter property="Kdjkk" column="KDJKK"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

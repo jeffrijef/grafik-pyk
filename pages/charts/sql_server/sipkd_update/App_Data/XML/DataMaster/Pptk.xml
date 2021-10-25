@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Pptk" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Pptk" type="Usadi.Valid49.BO.PptkControl, Usadi.Valid49" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Pptk">
+      <result property="Kodekeg" column="KODEKEG"/>
+      <result property="Nmprgrm" column="NMPRGRM"/>
+      <result property="Nmkegunit" column="NMKEGUNIT"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Kdtahap" column="KDTAHAP"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Kdkegunit1" column="KDKEGUNIT1"/>
+      <result property="Nip" column="NIP"/>
+      <result property="Nama" column="NAMA"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="NIP"/>
+      <result property="Field" column="NIP"/>
+      <result property="Value" column="NAMA"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <!--<insert id="InsertPptk" parameterMap="insert-param">
+      <generate table="Pptk"/>
+    </insert>-->
+    <update id="UpdateByPptk" parameterMap="update-param">
+      <generate table="Kegunit" by="KDKEGUNIT,KDTAHAP,UNITKEY"/>
+    </update>
+    <!--<delete id="DeleteByPptk" parameterMap="delete-param">
+      <generate table="Pptk" by="NIP"/>
+    </delete>-->
+    <select id="BaseQueryPptk" parameterClass="Pptk" resultMap="return-result">
+      SELECT ISNULL((d.KDUNIT),'0.00.00.')+RTRIM(m2.NUPRGRM)+RTRIM(m.NUKEG) AS KODEKEG,
+      m2.NMPRGRM, m.NMKEGUNIT, k.UNITKEY, k.KDTAHAP, k.KDKEGUNIT, k.KDKEGUNIT AS KDKEGUNIT1, 
+      ISNULL(k.NIP,'') AS NIP, isnull(p.NAMA,'') AS NAMA, d1.KDUNIT, d1.NMUNIT
+      FROM KEGUNIT k
+      LEFT JOIN DAFTUNIT d1 ON d1.UNITKEY = k.UNITKEY
+      LEFT JOIN MKEGIATAN m ON m.KDKEGUNIT = k.KDKEGUNIT
+      LEFT JOIN MPGRM m2 ON m2.IDPRGRM = m.IDPRGRM
+      LEFT JOIN DAFTUNIT d ON d.UNITKEY = m2.UNITKEY
+      LEFT JOIN PEGAWAI p ON p.NIP = k.NIP
+    </select>
+    <select id="QueryByAllPptk" extends="BaseQueryPptk" parameterClass="Pptk" resultMap="return-result">
+      where pagu != 0 and k.UNITKEY = #Unitkey# and k.KDTAHAP = #Kdtahap# and
+      case #Parameter.Field#
+      when '1' then ISNULL((d.KDUNIT),'0.00.00.')+RTRIM(m2.NUPRGRM)+RTRIM(m.NUKEG)
+      when '2' then m.NMKEGUNIT
+      when '3' then k.NIP
+      when '4' then p.NAMA
+      end like '%'+ #Parameter.Value# + '%'
+      order by KODEKEG
+    </select>
+    <select id="LoadByPKPptk" extends="BaseQueryPptk" parameterClass="Pptk" resultMap="return-result">
+      <!--where k.NIP=#Nip#-->
+    </select>
+  </statements>
+  <parameterMaps>
+    <!--<parameterMap id="insert-param" class="Pptk">
+      <parameter property="Nip" column="NIP"/>
+    </parameterMap>-->
+    <parameterMap id="update-param" class="Pptk">
+      <parameter property="Nip" column="NIP"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <!--<parameterMap id="delete-param" class="Pptk">
+      <parameter property="Nip" column="NIP"/>
+    </parameterMap>-->
+  </parameterMaps>
+</sqlMap>

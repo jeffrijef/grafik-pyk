@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Bkbank" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Bkbank" type="Usadi.Valid49.BO.BkbankControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Bkbank">
+      <result property="AllowSuperUser" column="ALLOWSUPERUSER"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Idxttd" column="IDXTTD"/>
+      <result property="Kddok" column="KDDOK"/>
+      <result property="Kdstatus" column="KDSTATUS"/>
+      <result property="Lblstatus" column="LBLSTATUS"/>
+      <result property="Uraistatus" column="URAISTATUS"/>
+      <result property="Uraian" column="URAIAN"/>
+      <result property="Keybend1" column="KEYBEND1"/>
+      <result property="Keybend2" column="KEYBEND2"/>
+      <result property="Tglbuku" column="TGLBUKU"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nobuku" column="NOBUKU"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertBkbank" parameterMap="insert-param">
+      <generate table="BKBANK"/>
+    </insert>
+    <update id="UpdateByBkbank" parameterMap="update-param">
+      <generate table="BKBANK" by="UNITKEY,NOBUKU"/>
+    </update>
+    <update id="UpdateByTglvalidBkbank" parameterClass="Bkbank" >
+      update BKBANK set TGLVALID = #Tglvalid#
+      where UNITKEY=#Unitkey# and NOBUKU=#Nobuku#
+    </update>
+    <update id="UpdateByDraftBkbank" parameterClass="Bkbank" >
+      update BKBANK set TGLVALID = null
+      where UNITKEY=#Unitkey# and NOBUKU=#Nobuku#
+    </update>
+    <delete id="DeleteByBkbank" parameterMap="delete-param">
+      <generate table="BKBANK" by="UNITKEY,NOBUKU"/>
+    </delete>
+    <select id="BaseQueryBkbank" parameterClass="Bkbank" resultMap="return-result">
+      select #AllowSuperUser# as ALLOWSUPERUSER,rtrim(A.IDXTTD) as IDXTTD,rtrim(A.KDSTATUS) as KDSTATUS,rtrim(A.KEYBEND1) as KEYBEND1,rtrim(A.KEYBEND2) as KEYBEND2,A.NOBUKU,A.TGLBUKU,A.TGLVALID,A.UNITKEY,A.URAIAN
+      ,rtrim(C.KDUNIT) as KDUNIT, rtrim(C.NMUNIT) as NMUNIT
+      , D.KDDOK
+      , E.LBLSTATUS, E.URAIAN as URAISTATUS
+      from BKBANK A
+      LEFT OUTER JOIN DAFTUNIT C on A.UNITKEY=C.UNITKEY
+      LEFT OUTER JOIN JABTTD D on A.IDXTTD=D.IDXTTD
+      LEFT OUTER JOIN STATTRS E on A.KDSTATUS=E.KDSTATUS
+    </select>
+    <select id="QueryByAllBkbank" extends="BaseQueryBkbank" parameterClass="Bkbank" resultMap="return-result">
+      where A.UNITKEY=#Unitkey#
+      <!--and (A.KEYBEND1 = #Keybend# or #Keybend#='')-->
+      and A.KEYBEND1 = #Keybend#
+      and case #Parameter.Field#
+      when '1' then A.NOBUKU
+      when '2' then convert(char(10), A.TGLBUKU, 103)
+      when '3' then convert(char(10), A.TGLVALID, 103)
+      when '4' then A.URAIAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOBUKU
+    </select>
+    <select id="LoadByPKBkbank" extends="BaseQueryBkbank" parameterClass="Bkbank" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOBUKU=#Nobuku# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Bkbank">
+      <parameter property="Idxttd" column="IDXTTD"/>
+      <parameter property="Kdstatus" column="KDSTATUS"/>
+      <parameter property="Keybend1" column="KEYBEND1"/>
+      <parameter property="Keybend2" column="KEYBEND2"/>
+      <parameter property="Tglbuku" column="TGLBUKU"/>
+      <!--<parameter property="Tglvalid" column="TGLVALID"/>-->
+      <parameter property="Uraian" column="URAIAN"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nobuku" column="NOBUKU"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Bkbank">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Bkbank">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nobuku" column="NOBUKU"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

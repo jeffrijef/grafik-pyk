@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Daskum" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Daskum" type="Usadi.Valid49.BO.DaskumControl" />
+  </alias>
+  <resultMaps>
+		<resultMap id="return-result" class="Daskum">
+			<result property="Kdunit" column="KDUNIT"/>
+			<result property="Nmunit" column="NMUNIT"/>
+			<result property="Nodaskum" column="NODASKUM"/>
+			<result property="Isidaskum" column="ISIDASKUM"/>
+			<result property="Unitkey" column="UNITKEY"/>
+			<result property="Kddaskum" column="KDDASKUM"/>
+     </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertDaskum" parameterMap="insert-param">
+      <generate table="DASKUM"/>
+    </insert>
+    <update id="UpdateByDaskum" parameterMap="update-param">
+      <generate table="DASKUM" by="KDDASKUM"/>
+    </update>
+    <delete id="DeleteByDaskum" parameterMap="delete-param">
+      <generate table="DASKUM" by="KDDASKUM"/>
+    </delete>
+    <select id="BaseQueryDaskum" parameterClass="Daskum" resultMap="return-result">
+			SELECT D.KDDASKUM, D.NODASKUM, D.ISIDASKUM,D.UNITKEY
+			,rtrim(U.KDUNIT) as KDUNIT, rtrim(U.NMUNIT) as NMUNIT
+			FROM DASKUM D
+			left outer join DAFTUNIT U on D.UNITKEY = U.UNITKEY
+		</select>
+    <select id="QueryByAllDaskum" extends="BaseQueryDaskum" parameterClass="Daskum" resultMap="return-result">
+      where D.UNITKEY = #Unitkey# or ISNULL(#Unitkey#,'') = '' and
+      case #Parameter.Field#
+      when '1' then D.KDDASKUM
+      when '2' then D.NODASKUM
+      when '3' then D.ISIDASKUM
+      when '4' then U.KDUNIT
+      end like '%'+ #Parameter.Value# + '%'
+      Order by D.KDDASKUM
+    </select>
+    <select id="LoadByPKDaskum" extends="BaseQueryDaskum" parameterClass="Daskum" resultMap="return-result">
+      where D.KDDASKUM=#Kddaskum# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Daskum">
+			<parameter property="Unitkey" column="UNITKEY"/>
+			<parameter property="Isidaskum" column="ISIDASKUM"/>
+			<parameter property="Nodaskum" column="NODASKUM"/>
+			<parameter property="Kddaskum" column="KDDASKUM"/>
+			</parameterMap>
+			<parameterMap id="update-param" extends="insert-param" class="Daskum">
+			</parameterMap>
+			<parameterMap id="delete-param" class="Daskum">
+      <parameter property="Kddaskum" column="KDDASKUM"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

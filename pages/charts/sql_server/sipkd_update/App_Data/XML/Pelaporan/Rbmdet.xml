@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Rbmdet" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Rbmdet" type="Usadi.Valid49.BO.RbmdetControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Rbmdet">
+      <result property="Idxttd" column="IDXTTD"/>
+      <result property="Kdbm" column="KDBM"/>
+      <result property="Referensi" column="REFERENSI"/>
+      <result property="Tglbm" column="TGLBM"/>
+      <result property="Validbm" column="VALIDBM"/>
+      <result property="Kdpers" column="KDPERS"/>
+      <result property="Nmpers" column="NMPERS"/>
+      <result property="Kdkhusus" column="KDKHUSUS"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Mtglevel" column="MTGLEVEL"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nobm" column="NOBM"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+    </resultMap>
+    <resultMap id="return-result-detil" class="Rbmdet">
+      <result property="Jenis" column="JENIS"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Kdpers" column="KDPERS"/>
+      <result property="Nobm" column="NOBM"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Nilai" column="NILAI"/>
+    </resultMap>
+    <resultMap id="return-result-detil2" extends="return-result-detil" class="Rbmdet">
+      <result property="Kredit" column="KREDIT"/>
+      <result property="Debet" column="DEBET"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertRbmdet" parameterMap="insert-param">
+      <generate table="RBMDETD"/>
+    </insert>
+    <update id="UpdateByRbmdet" parameterMap="update-param">
+      <generate table="RBMDETD" by="UNITKEY,NOBM,MTGKEY"/>
+    </update>
+    <delete id="DeleteByRbmdet" parameterMap="delete-param">
+      <generate table="RBMDETD" by="UNITKEY,NOBM,MTGKEY"/>
+    </delete>
+    <select id="BaseQueryRbmdet" parameterClass="Rbmdet" resultMap="return-result">
+      select A.KDPERS,A.MTGKEY,A.NILAI,A.NOBM,A.UNITKEY
+      ,rtrim(B.IDXTTD) as IDXTTD,B.KDBM,B.REFERENSI,B.TGLBM,B.VALIDBM
+      ,C.NMPERS
+      ,D.KDKHUSUS,D.KDPER,D.MTGLEVEL,D.NMPER
+      from RBMDETD A
+      left outer join BKTMEM B on A.NOBM = B.NOBM
+      left outer join PERSACC C on A.KDPERS = C.KDPERS
+      left outer join MATANGD D on A.MTGKEY = D.MTGKEY
+    </select>
+    <!--<select id="QueryByAllRbmdet" extends="BaseQueryRbmdet" parameterClass="Rbmdet" resultMap="return-result">
+      where A.UNITKEY=#Unitkey#
+      and case #Parameter.Field#
+      when '1' then A.NOBM
+      when '2' then A.UNITKEY
+      when '3' then A.KDPERS
+      when '4' then A.MTGKEY
+      when '5' then convert(char(10), A.NILAI)
+      end like '%'+ #Parameter.Value# + '%'
+    </select>-->
+    <select id="QueryByAllRbmdet" parameterClass="Rbmdet" resultMap="return-result-detil">
+      SELECT * FROM (
+      SELECT R.NOBM,R.MTGKEY,R.UNITKEY,'' AS KDKEGUNIT, R.KDPERS,'1' AS JENIS, M.KDPER, M.NMPER,NILAI
+      FROM RBMDETD R LEFT OUTER JOIN MATANGD M ON R.MTGKEY=M.MTGKEY
+      UNION
+      SELECT R.NOBM,R.MTGKEY,R.UNITKEY,R.KDKEGUNIT,R.KDPERS,'2' AS JENIS,M.KDPER, M.NMPER,NILAI
+      FROM RBMDETR R LEFT OUTER JOIN MATANGR M ON R.MTGKEY=M.MTGKEY
+      UNION
+      SELECT R.NOBM,R.MTGKEY,R.UNITKEY,'' AS KDKEGUNIT,R.KDPERS,'3' AS JENIS,M.KDPER, M.NMPER,NILAI
+      FROM RBMDETRTL R LEFT OUTER JOIN MATANGR M ON R.MTGKEY=M.MTGKEY
+      UNION
+      SELECT R.NOBM,R.MTGKEY,R.UNITKEY,'' AS KDKEGUNIT,R.KDPERS,'5' AS JENIS,M.KDPER, M.NMPER,NILAI
+      FROM RBMDETB R LEFT OUTER JOIN MATANGB M ON R.MTGKEY=M.MTGKEY
+      UNION
+      SELECT R.NOBM,R.MTGKEY,R.UNITKEY,'' AS KDKEGUNIT,R.KDPERS,'0' AS JENIS,M.KDPER, M.NMPER,NILAI
+      FROM RBMDETN R LEFT OUTER JOIN MATANGNRC M ON R.MTGKEY=M.MTGKEY)R
+      WHERE (R.UNITKEY=#Unitkey# or #Unitkey#='')AND (R.NOBM=#Nobm# or #Nobm# = '')
+      and case #Parameter.Field#
+      when '1' then KDPER
+      when '2' then NMPER
+      end like '%'+#Parameter.Value#+'%'
+      ORDER BY R.KDPERS
+    </select>
+    <select id="QueryByAll1Rbmdet" parameterClass="Rbmdet" resultMap="return-result-detil2">
+      SELECT * FROM (
+      SELECT R.NOBM,R.MTGKEY,R.UNITKEY,'' AS KDKEGUNIT,R.KDPERS,'1' AS JENIS,
+      M.KDPER,M.NMPER,R.NILAI,
+      (CASE KDPERS WHEN 'D' THEN NILAI ELSE 0 END) AS DEBET,
+      (CASE KDPERS WHEN 'D' THEN 0 ELSE NILAI END) AS KREDIT
+      FROM RBMDETD R LEFT OUTER JOIN MATANGD M ON R.MTGKEY=M.MTGKEY
+      UNION
+      SELECT R.NOBM,R.MTGKEY,R.UNITKEY,R.KDKEGUNIT,R.KDPERS,'2' AS JENIS,
+      M.KDPER,M.NMPER,R.NILAI,
+      (CASE KDPERS WHEN 'D' THEN NILAI ELSE 0 END) AS DEBET,
+      (CASE KDPERS WHEN 'D' THEN 0 ELSE NILAI END) AS KREDIT
+      FROM RBMDETR R LEFT OUTER JOIN MATANGR M ON R.MTGKEY=M.MTGKEY
+      UNION
+      SELECT R.NOBM,R.MTGKEY,R.UNITKEY,'' AS KDKEGUNIT,R.KDPERS,'3' AS JENIS,
+      M.KDPER,M.NMPER,R.NILAI,
+      (CASE KDPERS WHEN 'D' THEN NILAI ELSE 0 END) AS DEBET,
+      (CASE KDPERS WHEN 'D' THEN 0 ELSE NILAI END) AS KREDIT
+      FROM RBMDETRTL R LEFT OUTER JOIN MATANGR M ON R.MTGKEY=M.MTGKEY
+      UNION
+      SELECT R.NOBM,R.MTGKEY,R.UNITKEY,'' AS KDKEGUNIT,R.KDPERS,'5' AS JENIS,
+      M.KDPER,M.NMPER,R.NILAI,
+      (CASE KDPERS WHEN 'D' THEN NILAI ELSE 0 END) AS DEBET,
+      (CASE KDPERS WHEN 'D' THEN 0 ELSE NILAI END) AS KREDIT
+      FROM RBMDETB R LEFT OUTER JOIN MATANGB M ON R.MTGKEY=M.MTGKEY
+      UNION
+      SELECT R.NOBM,R.MTGKEY,R.UNITKEY,'' AS KDKEGUNIT,R.KDPERS,'0' AS JENIS,
+      M.KDPER,M.NMPER,R.NILAI,
+      (CASE KDPERS WHEN 'D' THEN NILAI ELSE 0 END) AS DEBET,
+      (CASE KDPERS WHEN 'D' THEN 0 ELSE NILAI END) AS KREDIT
+      FROM RBMDETN R LEFT OUTER JOIN MATANGNRC M ON R.MTGKEY=M.MTGKEY)R
+      WHERE R.UNITKEY=#Unitkey# AND R.NOBM=#Nobm#
+and case #Parameter.Field#
+when '1' then KDPER
+when '2' then NMPER
+end like '%'+#Parameter.Value#+'%'
+      ORDER BY R.KREDIT,R.KDPER
+    </select>
+    <select id="LoadByPKRbmdet" extends="BaseQueryRbmdet" parameterClass="Rbmdet" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOBM=#Nobm# and A.MTGKEY=#Mtgkey# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Rbmdet">
+      <parameter property="Kdpers" column="KDPERS"/>
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nobm" column="NOBM"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Rbmdet">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Rbmdet">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nobm" column="NOBM"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

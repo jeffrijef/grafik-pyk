@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Sppdetb" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Sppdetb" type="Usadi.Valid49.BO.SppdetbControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Sppdetb">
+			<!--<result property="Type" column="TYPE"/>
+			<result property="Kdpers" column="KDPERS"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Idxkode" column="IDXKODE"/>-->
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Nojetra" column="NOJETRA"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nospp" column="NOSPP"/>
+    </resultMap>
+    <resultMap id="return-result-total" class="Sppdetb">
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Nilai" column="NILAI"/>
+    </resultMap>
+    <resultMap id="return-result-del" class="Sppdetb">
+      <result property="Mtgkey" column="MTGKEY"/>
+    </resultMap>
+    <resultMap id="return-result-total-unit" class="Sppdetb">
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nilai" column="NILAI"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSppdetb" parameterMap="insert-param">
+      <generate table="SPPDETB"/>
+    </insert>
+    <update id="UpdateBySppdetb" parameterMap="update-param">
+      <generate table="SPPDETB" by="NOJETRA,MTGKEY,UNITKEY,NOSPP"/>
+    </update>
+    <delete id="DeleteBySppdetb" parameterMap="delete-param">
+      <generate table="SPPDETB" by="NOJETRA,MTGKEY,UNITKEY,NOSPP"/>
+    </delete>
+    <delete id="DeleteByAllSppdetb" parameterClass="Sppdetb" >
+      delete from SPPDETB
+      where UNITKEY=#Unitkey# and NOSPP=#Nospp#
+    </delete>
+    <select id="BaseQuerySppdetb" parameterClass="Sppdetb" resultMap="return-result">
+			select A.MTGKEY,A.NILAI,A.NOJETRA,A.NOSPP,A.UNITKEY
+			<!--,B.IDXKODE,D.KDPERS-->
+			,rtrim(C.KDPER) as KDPER, rtrim(C.NMPER) as NMPER, C.TYPE
+			from SPPDETB A
+			left outer join MATANGB C on A.MTGKEY = C.MTGKEY
+      <!--left outer join SPP B on A.NOSPP = B.NOSPP and A.UNITKEY = B.UNITKEY-->
+			<!--left outer join JTRNLKAS D on A.NOJETRA = D.NOJETRA-->
+		</select>
+    <select id="QueryByAllSppdetb" extends="BaseQuerySppdetb" parameterClass="Sppdetb" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSPP=#Nospp# and A.NOJETRA=#Nojetra#
+      and case #Parameter.Field#
+      when '1' then C.KDPER
+      when '2' then C.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by C.KDPER
+    </select>
+    <select id="QueryByTotalSppdetb" extends="BaseQuerySppdetb" parameterClass="Sppdetb" resultMap="return-result">
+      where A.UNITKEY=#Unitkey#
+    </select>
+    <select id="QueryByDetSppdetb" extends="BaseQuerySppdetb" parameterClass="Sppdetb" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSPP=#Nospp# and A.NOJETRA='21'
+      and  A.NOJETRA+'-'+A.MTGKEY not in (#Nojetra#+'-'+#Mtgkey#)
+    </select>
+    <select id="QueryByPotSppdetb" extends="BaseQuerySppdetb" parameterClass="Sppdetb" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSPP=#Nospp# and A.NOJETRA='23'
+      and  A.NOJETRA+'-'+A.MTGKEY not in (#Nojetra#+'-'+#Mtgkey#)
+    </select>
+    <select id="QueryByUntilnowSppdetb" parameterClass="Sppdetb" resultMap="return-result-total">
+      select S.UNITKEY,S.NOSPP,S.MTGKEY,case when S.NOJETRA='21' then S.NILAI else -S.NILAI end as NILAI
+      from SPPDETB S
+      left outer join SPP SK on SK.UNITKEY=S.UNITKEY and SK.NOSPP=S.NOSPP
+      where S.UNITKEY=#Unitkey# and <![CDATA[SK.TGSPP <= #Tgspp#]]> and TGLVALID is not null
+      and S.NOSPP not in (#Nospp#)
+    </select>
+    <select id="LoadByTotalRekSppdetb" parameterClass="Sppdetb" resultMap="return-result-total">
+      <![CDATA[
+      select B.KDPER, B.NMPER, B.MTGKEY, sum(case A.NOJETRA when '21' then A.NILAI else -A.NILAI end) AS NILAI
+      from SPPDETB A
+      left join SPP S ON A.UNITKEY = S.UNITKEY AND A.NOSPP = S.NOSPP
+      left join MATANGB B on A.MTGKEY = B.MTGKEY
+      where A.UNITKEY=#Unitkey# and A.MTGKEY=#Mtgkey#
+      and S.IDXSKO in (select IDXSKO from SKO where UNITKEY=#Unitkey# and TGLSKO <= #Tglsko# and TGLVALID is not NULL)
+      and S.TGSPP <= #Tgspp# and S.Nospp <> #Nospp# and S.TGLVALID is not NULL
+      group BY B.KDPER, B.NMPER, B.MTGKEY
+      ]]>
+    </select>
+    <select id="LoadByTotalUnitSppdetb" parameterClass="Sppdetb" resultMap="return-result-total-unit">
+      <![CDATA[
+      select A.UNITKEY, sum(case A.NOJETRA when '21' then A.NILAI else -A.NILAI end) AS NILAI
+      from SPPDETB A
+      left join SPP S ON A.UNITKEY = S.UNITKEY AND A.NOSPP = S.NOSPP
+      where A.UNITKEY=#Unitkey# 
+      and S.IDXSKO in (select IDXSKO from SKO where UNITKEY=#Unitkey# and TGLSKO <= #Tglsko# and TGLVALID is not NULL)
+      and S.TGSPP <= #Tgspp# and S.Nospp <> #Nospp# and S.TGLVALID is not NULL
+      group BY A.UNITKEY
+      ]]>
+    </select>
+    <select id="QueryByMtgsppSppdetb" parameterClass="Sppdetb" resultMap="return-result-del">
+      select MTGKEY from Sppdetbdana where UNITKEY=#Unitkey# and NOSPP=#Nospp# and MTGKEY=#Mtgkey#
+    </select>
+    <select id="LoadByPKSppdetb" extends="BaseQuerySppdetb" parameterClass="Sppdetb" resultMap="return-result">
+			where A.MTGKEY=#Mtgkey# and A.UNITKEY=#Unitkey# and A.NOSPP=#Nospp# and A.NOJETRA=#Nojetra#
+		</select>
+    <procedure id="ExecValidateSppTot5" parameterMap="validate-tot-param">
+      WSP_SISASPDSPP
+    </procedure>
+    <procedure id="ExecValidateSppRekDpa5" parameterMap="validate-rek-param">
+      WSP_VALIDATIONSPP_REK
+    </procedure>
+    <procedure id="ExecValidateSppRekSpd5" parameterMap="validate-rek-param">
+      WSP_VALIDATIONSPP_REK_SPD
+    </procedure>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Sppdetb">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nospp" column="NOSPP"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Sppdetb">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Sppdetb">
+			<parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nospp" column="NOSPP"/>
+    </parameterMap>
+    <parameterMap id="transfer-param" class="Sppdetb">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Mtgkey" column="mtgkey"/>
+      <parameter property="Tgspp" column="tglspp"/>
+    </parameterMap>
+    
+    <parameterMap id="validate-tot-param" class="Sppdetb">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Tglsko" column="tglsko"/>
+    </parameterMap>
+    <parameterMap id="validate-rek-param" class="Sppdetb">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Kdper" column="kdper"/>
+      <parameter property="Kdkegunit" column="kdkegunit"/>
+      <parameter property="Tgspp" column="tglspp"/>
+      <parameter property="Kdtahap" column="kdtahap"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

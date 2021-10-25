@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Posnormal" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Posnormal" type="Usadi.Valid49.BO.PosnormalControl, Usadi.Valid49" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Posnormal">
+      <result property="Kdpers" column="KDPERS"/>
+      <result property="Nmbab" column="NMBAB"/>
+      <result property="Kdbab" column="KDBAB"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertPosnormal" parameterMap="insert-param">
+      <generate table="POSNORMAL"/>
+    </insert>
+    <update id="UpdateByPosnormal" parameterMap="update-param">
+      <generate table="POSNORMAL" by="KDBAB"/>
+    </update>
+    <delete id="DeleteByPosnormal" parameterMap="delete-param">
+      <generate table="POSNORMAL" by="KDBAB"/>
+    </delete>
+    <select id="BaseQueryPosnormal" parameterClass="Posnormal" resultMap="return-result">
+      select A.KDBAB,A.KDPERS,A.NMBAB
+      from POSNORMAL A
+    </select>
+    <select id="QueryByAllPosnormal" extends="BaseQueryPosnormal" parameterClass="Posnormal" resultMap="return-result">
+			where
+			case #Parameter.Field#
+			when '1' then A.KDBAB
+			when '2' then A.NMBAB
+			end like '%'+ #Parameter.Value# + '%'
+			Order by A.KDBAB
+		</select>
+    <select id="LoadByPKPosnormal" extends="BaseQueryPosnormal" parameterClass="Posnormal" resultMap="return-result">
+      where A.KDBAB=#Kdbab# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Posnormal">
+      <parameter property="Kdpers" column="KDPERS"/>
+      <parameter property="Nmbab" column="NMBAB"/>
+      <parameter property="Kdbab" column="KDBAB"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Posnormal">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Posnormal">
+      <parameter property="Kdbab" column="KDBAB"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

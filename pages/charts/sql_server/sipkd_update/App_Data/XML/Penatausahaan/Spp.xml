@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Spp" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Spp" type="Usadi.Valid49.BO.SppControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result-multikeg" class="Spp">
+      <result property="AllowSuperUser" column="ALLOWSUPERUSER"/>
+      <result property="Status" column="STATUS"/>
+      <result property="Idxttd" column="IDXTTD"/>
+      <result property="Tglsko" column="TGLSKO"/>
+      <result property="Nosko" column="NOSKO"/>
+      <result property="Idxkode" column="IDXKODE"/>
+      <result property="Idxsko" column="IDXSKO"/>
+      <result property="Kd_bulan" column="KD_BULAN"/>
+      <result property="Kdp3" column="KDP3"/>
+      <result property="Nmp3" column="NMP3"/>
+      <result property="Kdstatus" column="KDSTATUS"/>
+      <result property="Keperluan" column="KEPERLUAN"/>
+      <result property="Ketotor" column="KETOTOR"/>
+      <result property="Keybend" column="KEYBEND"/>
+      <result property="Jns_bend" column="JNS_BEND"/>
+      <result property="Nokon" column="NOKONTRAK"/>
+      <result property="Tglkon" column="TGLKON"/>
+      <result property="Nokontrak" column="NOKONTRAK"/>
+      <result property="Noreg" column="NOREG"/>
+      <result property="Penolakan" column="PENOLAKAN"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Tgspp" column="TGSPP"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nospp" column="NOSPP"/>
+    </resultMap>
+    <resultMap id="return-result" extends="return-result-multikeg" class="Spp">
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+    </resultMap>
+    <resultMap id="return-result-ba" extends="return-result-multikeg" class="Spp">
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Noba" column="NOBA"/>
+    </resultMap>
+    <!--<resultMap id="return-result" extends="return-result-ppkd" class="Spp">
+      <result property="Nosk" column="NOSK"/>
+      <result property="Tglsk" column="TGLSK"/>
+    </resultMap>-->
+    <resultMap id="return-result-sppmulti" class="Spp">
+      <result property="AllowSuperUser" column="ALLOWSUPERUSER"/>
+      <result property="Status" column="STATUS"/>
+      <result property="Idxttd" column="IDXTTD"/>
+      <result property="Tglsko" column="TGLSKO"/>
+      <result property="Nosko" column="NOSKO"/>
+      <result property="Idxkode" column="IDXKODE"/>
+      <result property="Idxsko" column="IDXSKO"/>
+      <result property="Kd_bulan" column="KD_BULAN"/>
+      <result property="Kdp3" column="KDP3"/>
+      <result property="Nmp3" column="NMP3"/>
+      <result property="Kdstatus" column="KDSTATUS"/>
+      <result property="Keperluan" column="KEPERLUAN"/>
+      <result property="Ketotor" column="KETOTOR"/>
+      <result property="Keybend" column="KEYBEND"/>
+      <result property="Nokon" column="NOKONTRAK"/>
+      <result property="Tglkon" column="TGLKON"/>
+      <result property="Nokontrak" column="NOKONTRAK"/>
+      <result property="Noreg" column="NOREG"/>
+      <result property="Penolakan" column="PENOLAKAN"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Tgspp" column="TGSPP"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nospp" column="NOSPP"/>
+    </resultMap>
+    <resultMap id="return-result-nospp" class="Spp">
+      <result property="Nospp" column="NOSPP"/>
+    </resultMap>
+    <resultMap id="return-result-noreg" class="Spp">
+      <result property="Noreg" column="NOREG"/>
+    </resultMap>
+    <resultMap id="return-result-total" class="Spp">
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Nilai" column="NILAI"/>
+    </resultMap>
+    <resultMap id="return-result-kodegaji" class="Spp">
+      <result property="KodeGaji" column="KODEGAJI"/>
+      <result property="UraiGaji" column="URAIGAJI"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSpp" parameterMap="insert-param">
+      <generate table="SPP"/>
+    </insert>
+    <insert id="InsertSppbaSpp" parameterClass="Spp">
+      insert into SPP(NOSPP,UNITKEY,TGSPP,PENOLAKAN,NOREG,NOKONTRAK,KEYBEND,KETOTOR,KEPERLUAN,KDSTATUS,KDP3,KD_BULAN,IDXSKO,IDXTTD,IDXKODE,STATUS)
+      values(#Nospp#,#Unitkey#,#Tgspp#,#Penolakan#,#Noreg#,#Nokontrak#,#Keybend#,#Ketotor#,#Keperluan#,#Kdstatus#,#Kdp3#,#Kd_bulan#,#Idxsko#,#Idxttd#,#Idxkode#,#Status#)
+
+
+
+
+      delete from SPPDETR
+      where UNITKEY=#Unitkey# and NOSPP=#Nospp# and KDKEGUNIT=#Kdkegunit# and NOJETRA='21'
+      delete from SPPBA  where UNITKEY=#Unitkey# and NOSPP=#Nospp#
+      insert into SPPBA (NOSPP,UNITKEY,NOBA)
+      Values(#Nospp#,#Unitkey#,#Noba#)
+      INSERT INTO SPPDETR (MTGKEY,KDKEGUNIT,UNITKEY,NOJETRA,NOSPP,NILAI)
+      select BT.MTGKEY,B.KDKEGUNIT,BT.UNITKEY,'21',#Nospp#,(BT.NILAI-isnull((c.NILAI),0))NILAI
+      from BERITADETR BT
+      inner join BERITA B on B.NOBA=BT.NOBA and B.UNITKEY = BT.UNITKEY
+      left join BERITAPOT C on c.UNITKEY=b.UNITKEY and c.NOBA=b.NOBA and c.KDKEGUNIT=b.KDKEGUNIT
+      where BT.UNITKEY=#Unitkey# and BT.NOBA= #Noba# and B.KDKEGUNIT=#Kdkegunit#
+
+      delete from SPPDETRDANA where UNITKEY=#Unitkey# and NOSPP=#Nospp# and KDKEGUNIT=#Kdkegunit#
+      insert into SPPDETRDANA (MTGKEY,KDKEGUNIT,UNITKEY,NOSPP,KDDANA,NILAI)
+      select top 1 A.MTGKEY,A.KDKEGUNIT,A.UNITKEY,#Nospp#,KDDANA,(B.NILAI-isnull((c.NILAI),0)) NILAI from SBDANAR A
+      left join BERITADETR B on a.UNITKEY=b.UNITKEY and a.MTGKEY=b.MTGKEY and B.NOBA= #Noba#
+      left join BERITAPOT C on c.UNITKEY=b.UNITKEY and c.NOBA=b.NOBA and c.KDKEGUNIT=a.KDKEGUNIT
+      where A.UNITKEY=#Unitkey# and A.KDKEGUNIT=#Kdkegunit# and a.KDTAHAP=#Kdtahap#
+    </insert>
+    <insert id="InsertSppdetbaSpp" parameterClass="Spp">
+      delete from SPPBA
+      where UNITKEY=#Unitkey# and NOSPP=#Nospp#
+      insert into SPPBA (NOSPP,UNITKEY,NOBA)
+      Values(#Nospp#,#Unitkey#,#Noba#)
+
+      delete from SPPDETR
+      where UNITKEY=#Unitkey# and NOSPP=#Nospp# and KDKEGUNIT=#Kdkegunit# and NOJETRA='21'
+
+      INSERT INTO SPPDETR (MTGKEY,KDKEGUNIT,UNITKEY,NOJETRA,NOSPP,NILAI)
+      select BT.MTGKEY,B.KDKEGUNIT,BT.UNITKEY,'21',#Nospp#,BT.NILAI
+      from BERITADETR BT
+      inner join BERITA B on B.NOBA=BT.NOBA and B.UNITKEY = BT.UNITKEY
+      where BT.UNITKEY=#Unitkey# and BT.NOBA= #Noba# and B.KDKEGUNIT=#Kdkegunit#
+    </insert>
+    <insert id="InsertSppskSpp" parameterClass="Spp">
+      INSERT INTO SPPDETRTL (MTGKEY,NOJETRA,UNITKEY,NOSPP,NILAI)
+      select MTGKEY,'21',UNITKEY,#Nospp#,sum(NILAI)as NILAI from SKPPKDDET where UNITKEY=#Unitkey# and NOSK= #Nosk#
+      group by UNITKEY,MTGKEY
+    </insert>
+    <update id="UpdateBySpp" parameterMap="update-param">
+      <generate table="SPP" by="UNITKEY,NOSPP"/>
+    </update>
+    <update id="UpdateBySppbaSpp" parameterClass="Spp">
+      update SPPBA set Noba=#Noba#
+      where UNITKEY=#Unitkey# and NOSPP=#Nospp#
+    </update>
+    <update id="UpdateBySahSpp" parameterClass="Spp">
+      update SPP set TGLVALID=#Tglvalid#
+      where UNITKEY=#Unitkey# and NOSPP=#Nospp#
+    </update>
+    <update id="UpdateByDraftSpp" parameterClass="Spp" >
+      update SPP set TGLVALID=null
+      where UNITKEY=#Unitkey# and NOSPP=#Nospp#
+    </update>
+    <update id="DeleteBySppbaSpp" parameterClass="Spp" >
+      Delete from SPPBA where UNITKEY=#Unitkey# and NOSPP=#Nospp# and NOBA=#Noba#
+    </update>
+    <delete id="DeleteBySpp" parameterMap="delete-param">
+      <generate table="SPP" by="UNITKEY,NOSPP"/>
+    </delete>
+    <delete id="DeleteByNosppgjSpp" parameterMap="delete-param">
+      <generate table="NOSPPGJ" by="UNITKEY,NOSPP"/>
+    </delete>
+    <select id="BaseQuerySpp" parameterClass="Spp" resultMap="return-result">
+      SELECT distinct #AllowSuperUser# as ALLOWSUPERUSER,S.UNITKEY, rtrim(S.KDSTATUS) as KDSTATUS, S.NOSPP, S.TGSPP, S.IDXSKO, S.KETOTOR
+      , S.NOREG, S.NOKONTRAK, S.KEPERLUAN, rtrim(S.KEYBEND) as KEYBEND, S.KDP3, S.KD_BULAN,B.JNS_BEND,
+      S.PENOLAKAN, S.TGLVALID, S.IDXKODE,rtrim(S.IDXTTD) as IDXTTD,SK.TGLSKO,SK.NOSKO,#Kdkegunit# as KDKEGUNIT,
+      DP3.NMP3,K.TGLKON,S.STATUS
+      FROM SPP S
+      LEFT OUTER JOIN SPPDETR D ON S.NOSPP = D.NOSPP and S.UNITKEY = D.UNITKEY
+      LEFT OUTER JOIN SKO SK ON S.IDXSKO = SK.IDXSKO and S.UNITKEY = SK.UNITKEY
+      LEFT OUTER JOIN DAFTPHK3 DP3 ON S.KDP3 = DP3.KDP3
+      LEFT OUTER JOIN BEND B on S.KEYBEND=B.KEYBEND
+      LEFT OUTER JOIN JBEND J ON B.JNS_BEND = J.JNS_BEND
+      LEFT OUTER JOIN KONTRAK K ON S.NOKONTRAK = K.NOKON
+      <!--left join SPPBA sp on sp.NOSPP=s.NOSPP and sp.UNITKEY=s.UNITKEY
+      LEFT OUTER JOIN BERITA BR ON br.NOBA = sp.NOBA-->
+    </select>
+    <select id="QueryByAllSpp" extends="BaseQuerySpp" parameterClass="Spp" resultMap="return-result">
+      where S.UNITKEY=#Unitkey#
+      and S.IDXKODE=#Idxkode# and (#Idxkode# not in ('2') or (#Idxkode#='2' and S.KDSTATUS in ('22','23'))) <!--RH:2009-10-13-->
+      and S.KEYBEND = #Keybend#
+      and case #Parameter.Field#
+      when '1' then S.NOSPP
+      when '2' then convert(char(10), S.TGSPP, 103)
+      when '3' then convert(char(10), S.TGLVALID, 103)
+      when '4' then S.KETOTOR
+      when '5' then S.NOREG
+      when '6' then S.NOKONTRAK
+      when '7' then S.KEPERLUAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by S.NOSPP
+    </select>
+    <select id="QueryBySppblSpp" parameterClass="Spp" resultMap="return-result-ba">
+      SELECT distinct #AllowSuperUser# as ALLOWSUPERUSER,S.UNITKEY, rtrim(S.KDSTATUS) as KDSTATUS, S.NOSPP, S.TGSPP, S.IDXSKO, S.KETOTOR
+      , S.NOREG, S.NOKONTRAK,
+      isnull((S.KEPERLUAN),'') KEPERLUAN
+      , rtrim(S.KEYBEND) as KEYBEND, rtrim(B.JNS_BEND) as JNS_BEND, S.KDP3, S.KD_BULAN,
+      S.PENOLAKAN, S.TGLVALID, S.IDXKODE,rtrim(S.IDXTTD) as IDXTTD,SK.TGLSKO,SK.NOSKO,isnull(D.KDKEGUNIT,#Kdkegunit#) as KDKEGUNIT,
+      DP3.NMP3,K.TGLKON,S.STATUS,BR.NOBA
+      FROM SPP S
+      LEFT OUTER JOIN SPPDETR D ON S.NOSPP = D.NOSPP and S.UNITKEY = D.UNITKEY
+      LEFT OUTER JOIN BEND B on S.KEYBEND=B.KEYBEND
+      LEFT OUTER JOIN DAFTPHK3 DP3 ON S.KDP3 = DP3.KDP3
+      LEFT OUTER JOIN SKO SK ON S.IDXSKO = SK.IDXSKO and S.UNITKEY = SK.UNITKEY
+      LEFT OUTER JOIN KONTRAK K ON S.NOKONTRAK = K.NOKON
+      left join SPPBA sp on sp.NOSPP=s.NOSPP and sp.UNITKEY=s.UNITKEY
+      LEFT OUTER JOIN BERITA BR ON br.NOBA = sp.NOBA
+
+      where S.UNITKEY=#Unitkey# and S.IDXKODE=#Idxkode# and S.KDSTATUS in ('24','25')
+      and (isnull(D.KDKEGUNIT,'')=isnull(#Kdkegunit#,'') or isnull(#Kdkegunit#,'')=''
+      or ((D.KDKEGUNIT is null) and #Kdkegunit# is not null))
+      <!--and D.KDKEGUNIT = #Kdkegunit#-->
+      and S.KEYBEND = #Keybend#
+      and case #Parameter.Field#
+      when '1' then S.NOSPP
+      when '2' then convert(char(10), S.TGSPP, 103)
+      when '3' then convert(char(10), S.TGLVALID, 103)
+      when '4' then S.KETOTOR
+      when '5' then S.NOREG
+      when '6' then S.NOKONTRAK
+      when '7' then S.KEPERLUAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by S.NOSPP
+    </select>
+    <select id="QueryBySppblmultiSpp" parameterClass="Spp" resultMap="return-result-sppmulti">
+      SELECT distinct #AllowSuperUser# as ALLOWSUPERUSER,S.UNITKEY, rtrim(S.KDSTATUS) as KDSTATUS, S.NOSPP, S.TGSPP, S.IDXSKO, S.KETOTOR
+      , S.NOREG, S.NOKONTRAK, S.KEPERLUAN, rtrim(S.KEYBEND) as KEYBEND, S.KDP3, S.KD_BULAN,
+      S.PENOLAKAN, S.TGLVALID, S.IDXKODE,rtrim(S.IDXTTD) as IDXTTD,SK.TGLSKO,SK.NOSKO,
+      DP3.NMP3,K.TGLKON,S.STATUS
+      FROM SPP S
+      LEFT OUTER JOIN DAFTPHK3 DP3 ON S.KDP3 = DP3.KDP3
+      LEFT OUTER JOIN SKO SK ON S.IDXSKO = SK.IDXSKO and S.UNITKEY = SK.UNITKEY
+      LEFT OUTER JOIN KONTRAK K ON S.NOKONTRAK = K.NOKON
+      where S.UNITKEY=#Unitkey# and S.IDXKODE=#Idxkode# and KDSTATUS in ('24')
+      and S.KEYBEND = #Keybend#
+      and case #Parameter.Field#
+      when '1' then S.NOSPP
+      when '2' then convert(char(10), S.TGSPP, 103)
+      when '3' then convert(char(10), S.TGLVALID, 103)
+      when '4' then S.KETOTOR
+      when '5' then S.NOREG
+      when '6' then S.NOKONTRAK
+      when '7' then S.KEPERLUAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by S.NOSPP
+    </select>
+    <select id="QueryBySpp1Spp" extends="BaseQuerySpp" parameterClass="Spp" resultMap="return-result">
+      where S.UNITKEY=#Unitkey# and S.IDXKODE=#Idxkode# and RIGHT(J.JNS_BEND,1) = '1'
+      and (isnull(D.KDKEGUNIT,'')=isnull(#Kdkegunit#,'') or isnull(#Kdkegunit#,'')='' or D.KDKEGUNIT is null)
+      and S.KEYBEND = #Keybend#
+      and case #Parameter.Field#
+      when '1' then S.NOSPP
+      when '2' then convert(char(10), S.TGSPP, 103)
+      when '3' then convert(char(10), S.TGLVALID, 103)
+      when '4' then S.KETOTOR
+      when '5' then S.NOREG
+      when '6' then S.NOKONTRAK
+      when '7' then S.KEPERLUAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by S.NOSPP
+    </select>
+    <select id="QueryBySpp2Spp" extends="BaseQuerySpp" parameterClass="Spp" resultMap="return-result">
+      where S.UNITKEY=#Unitkey# and S.IDXKODE=#Idxkode# and RIGHT(J.JNS_BEND,1) = '2'
+      and (isnull(D.KDKEGUNIT,'')=isnull(#Kdkegunit#,'') or isnull(#Kdkegunit#,'')='' or D.KDKEGUNIT is null)
+      and S.KEYBEND = #Keybend#
+      and case #Parameter.Field#
+      when '1' then S.NOSPP
+      when '2' then convert(char(10), S.TGSPP, 103)
+      when '3' then convert(char(10), S.TGLVALID, 103)
+      when '4' then S.KETOTOR
+      when '5' then S.NOREG
+      when '6' then S.NOKONTRAK
+      when '7' then S.KEPERLUAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by S.NOSPP
+    </select>
+    <select id="QueryBySpp2aSpp" extends="BaseQuerySpp" parameterClass="Spp" resultMap="return-result">
+      where S.UNITKEY=#Unitkey# and S.IDXKODE=#Idxkode# and RIGHT(J.JNS_BEND,1) = '2'
+      and (isnull(D.KDKEGUNIT,'')=isnull(#Kdkegunit#,'') or isnull(#Kdkegunit#,'')='' or D.KDKEGUNIT is null)
+      and S.KDSTATUS not in ('22','23') 
+      and S.KEYBEND = #Keybend#
+      and case #Parameter.Field#
+      when '1' then S.NOSPP
+      when '2' then convert(char(10), S.TGSPP, 103)
+      when '3' then convert(char(10), S.TGLVALID, 103)
+      when '4' then S.KETOTOR
+      when '5' then S.NOREG
+      when '6' then S.NOKONTRAK
+      when '7' then S.KEPERLUAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by S.NOSPP
+    </select>
+    <select id="QueryBySpp3Spp" extends="BaseQuerySpp" parameterClass="Spp" resultMap="return-result">
+      where S.UNITKEY=#Unitkey# and S.IDXKODE=#Idxkode# and RIGHT(J.JNS_BEND,1) = '2'
+      and S.KDSTATUS in ('22','23')
+      and S.KEYBEND = #Keybend#
+      and case #Parameter.Field#
+      when '1' then S.NOSPP
+      when '2' then convert(char(10), S.TGSPP, 103)
+      when '3' then convert(char(10), S.TGLVALID, 103)
+      when '4' then S.KETOTOR
+      when '5' then S.NOREG
+      when '6' then S.NOKONTRAK
+      when '7' then S.KEPERLUAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by S.NOSPP
+    </select>
+    <select id="QueryByIdxskoSpp" extends="BaseQuerySpp" parameterClass="Spp" resultMap="return-result">
+      where S.UNITKEY=#Unitkey# and S.IDXSKO=#Idxsko#
+    </select>
+    <select id="QueryByIdxkodeSpp" extends="BaseQuerySpp" parameterClass="Spp" resultMap="return-result">
+      where S.UNITKEY=#Unitkey# and S.IDXKODE=#Idxkode#
+    </select>
+    <select id="QueryByNoregSpp" parameterClass="Spp" resultMap="return-result-noreg">
+      select top 1 NOREG from SPP S
+      where S.UNITKEY=#Unitkey#
+      order by S.NOREG desc
+    </select>
+    <select id="QueryByNosppSpp" parameterClass="Spp" resultMap="return-result-nospp">
+      select top 1 NOSPP from SPP S
+      where S.UNITKEY=#Unitkey# and S.KEYBEND=#Keybend#
+      order by S.NOSPP desc
+    </select>
+    <select id="QueryByNospp1Spp" extends="BaseQuerySpp" parameterClass="Spp" resultMap="return-result">
+      where S.UNITKEY=#Unitkey# 
+      order by S.NOSPP
+    </select>
+    <select id="QueryByNoregSppr" extends="QueryByNoregSpp" parameterClass="Spp" resultMap="return-result">
+    </select>
+    <select id="QueryByKodeGajiSpp" parameterClass="Spp" resultMap="return-result-kodegaji">
+      select '00' as KODEGAJI,'Manual Entry' as URAIGAJI
+      union
+      select distinct KODEGAJI,URAIGAJI from INTEGRASI_GAJI
+      where KDSKPD=#Kdunit# and KD_BULAN=#Kd_bulan# and NOSPP is null
+    </select>
+    <select id="LoadByPKSpp" extends="BaseQuerySpp" parameterClass="Spp" resultMap="return-result">
+      where S.UNITKEY=#Unitkey# and S.NOSPP=#Nospp# 
+    </select>
+    <select id="LoadBySPPSKPDSpp" parameterClass="Spp" resultMap="return-result-total">
+      select #Unitkey# as UNITKEY,'' as KDKEGUNIT,'' as MTGKEY,'' as KDPER,'' as NMPER,sum(NILAI) as NILAI
+      from dbo.GetSppdet(#Unitkey#,#Kdkegunit#,#Tglsko#,#Nospp#)
+    </select>
+    <select id="LoadBySPPKegSpp" parameterClass="Spp" resultMap="return-result-total">
+      select UNITKEY,KDKEGUNIT,'' as MTGKEY,'' as KDPER,'' as NMPER,sum(NILAI) as NILAI
+      from dbo.GetSppdet(#Unitkey#,#Kdkegunit#,#Tglsko#,#Nospp#)
+      group by UNITKEY,KDKEGUNIT
+    </select>
+    <select id="LoadBySPPRekSpp" parameterClass="Spp" resultMap="return-result-total">
+      select UNITKEY,'' as KDKEGUNIT,MTGKEY,KDPER,NMPER,NILAI
+      from dbo.GetSppdet(#Unitkey#,#Kdkegunit#,#Tglsko#,#Nospp#)
+      where MTGKEY=#Mtgkey#
+    </select>
+    <select id="LoadBySPPRekRSpp" parameterClass="Spp" resultMap="return-result-total">
+      select UNITKEY,KDKEGUNIT,MTGKEY,KDPER,NMPER,NILAI
+      from dbo.GetSppdet(#Unitkey#,#Kdkegunit#,#Tglsko#,#Nospp#)
+      where MTGKEY=#Mtgkey#
+    </select>
+    <!--<select id="QueryBySpptetapSpp" parameterClass="Spp" resultMap="return-result-ppkd">
+      SELECT distinct #AllowSuperUser# as ALLOWSUPERUSER,S.UNITKEY, rtrim(S.KDSTATUS) as KDSTATUS, S.NOSPP, S.TGSPP, S.IDXSKO, S.KETOTOR
+      , S.NOREG, S.NOKONTRAK, S.KEPERLUAN, rtrim(S.KEYBEND) as KEYBEND, S.KDP3, S.KD_BULAN,B.JNS_BEND,
+      S.PENOLAKAN, S.TGLVALID, S.IDXKODE,rtrim(S.IDXTTD) as IDXTTD,SK.TGLSKO,SK.NOSKO,DP3.NMP3,K.TGLKON
+      FROM SPP S
+      LEFT OUTER JOIN SKO SK ON S.IDXSKO = SK.IDXSKO and S.UNITKEY = SK.UNITKEY
+      LEFT OUTER JOIN DAFTPHK3 DP3 ON S.KDP3 = DP3.KDP3
+      LEFT OUTER JOIN BEND B on S.KEYBEND=B.KEYBEND
+      LEFT OUTER JOIN JBEND J ON B.JNS_BEND = J.JNS_BEND
+      LEFT OUTER JOIN KONTRAK K ON S.NOKONTRAK = K.NOKON
+      where S.UNITKEY=#Unitkey# and S.IDXKODE=#Idxkode# and RIGHT(J.JNS_BEND,1) = '2'
+      and S.KDSTATUS in ('22','23')
+      and S.KEYBEND = #Keybend#
+      and case #Parameter.Field#
+      when '1' then S.NOSPP
+      when '2' then convert(char(10), S.TGSPP, 103)
+      when '3' then convert(char(10), S.TGLVALID, 103)
+      when '4' then S.KETOTOR
+      when '5' then S.NOREG
+      when '6' then S.NOKONTRAK
+      when '7' then S.KEPERLUAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by S.NOSPP
+    </select>-->
+    <procedure id="ExecTransferGaji" parameterMap="transfer-gaji-param" timeout="0">
+      WSP_TRANSFERGAJI
+    </procedure>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Spp">
+      <parameter property="Status" column="STATUS"/>
+      <parameter property="Idxkode" column="IDXKODE"/>
+			<parameter property="Idxttd" column="IDXTTD"/>
+      <parameter property="Idxsko" column="IDXSKO"/>
+      <parameter property="Kd_bulan" column="KD_BULAN"/>
+      <parameter property="Kdp3" column="KDP3"/>
+      <parameter property="Kdstatus" column="KDSTATUS"/>
+      <parameter property="Keperluan" column="KEPERLUAN"/>
+      <parameter property="Ketotor" column="KETOTOR"/>
+      <parameter property="Keybend" column="KEYBEND"/>
+      <parameter property="Nokontrak" column="NOKONTRAK"/>
+      <parameter property="Noreg" column="NOREG"/>
+      <parameter property="Penolakan" column="PENOLAKAN"/>
+      <parameter property="Tgspp" column="TGSPP"/>
+	    <parameter property="Unitkey" column="UNITKEY"/>	
+      <parameter property="Nospp" column="NOSPP"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Spp">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Spp">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nospp" column="NOSPP"/>
+    </parameterMap>
+    <parameterMap id="transfer-gaji-param" class="Spp">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Nospp" column="nospp"/>
+      <parameter property="Kd_bulan" column="bulan"/>
+      <parameter property="KodeGaji" column="kodegaji"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

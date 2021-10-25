@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Ujilkp" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<alias>
+		<typeAlias alias="Ujilkp" type="Usadi.Valid49.BO.UjilkpControl" />
+	</alias>
+	<resultMaps>
+		<resultMap id="return-result" class="Ujilkp">
+			<result property="Nodoklkp" column="NODOKLKP"/>
+			<result property="Nip" column="NIP"/>
+			<result property="Nama" column="NAMA"/>
+			<result property="Tglperiksa" column="TGLPERIKSA"/>
+			<result property="Tglditeruskan" column="TGLDITERUSKAN"/>
+			<result property="Uraian" column="URAIAN"/>
+		</resultMap>
+	</resultMaps>
+	<statements>
+		<insert id="InsertUjilkp" parameterMap="insert-param">
+			<generate table="UJILKP"/>
+		</insert>
+		<!--<update id="UpdateByUjilkp" parameterMap="update-param">
+      <generate table="UJILKP" by="NODOKLKP,NIP"/>
+    </update>-->
+		<update id="UpdateByUjilkp" parameterClass="Ujilkp">
+			UPDATE UJILKP
+			SET TGLPERIKSA=#Tglperiksa#,TGLDITERUSKAN=#Tglditeruskan#
+			WHERE NODOKLKP=#Nodoklkp# AND NIP=#Nip#
+		</update>
+		<!--<delete id="DeleteByUjilkp" parameterMap="delete-param">
+      <generate table="UJILKP" by="NODOKLKP,NIP"/>
+    </delete>-->
+		<delete id="DeleteByUjilkp" parameterClass="Ujilkp">
+			DELETE UJILKP
+			WHERE NODOKLKP=#Nodoklkp# AND NIP=#Nip#
+		</delete>
+		<select id="BaseQueryUjilkp" parameterClass="Ujilkp" resultMap="return-result">
+			SELECT U.NODOKLKP,U.NIP,NAMA,TGLPERIKSA,TGLDITERUSKAN,URAIAN
+			FROM UJILKP U LEFT OUTER JOIN DOKLKP D ON U.NODOKLKP=D.NODOKLKP
+			LEFT OUTER JOIN PEGAWAI P ON U.NIP=P.NIP
+		</select>
+		<select id="QueryByAllUjilkp" extends="BaseQueryUjilkp" parameterClass="Ujilkp" resultMap="return-result">
+			where U.NODOKLKP=#Nodoklkp#
+			and case #Parameter.Field#
+			when '1' then U.NIP
+			when '2' then P.NAMA
+			when '3' then convert(char(10), U.TGLPERIKSA, 103)
+			when '4' then convert(char(10), U.TGLDITERUSKAN, 103)
+			end like '%'+ #Parameter.Value# + '%'
+			order by U.NIP,P.NAMA
+		</select>
+		<select id="LoadByPKUjilkp" extends="BaseQueryUjilkp" parameterClass="Ujilkp" resultMap="return-result">
+			where U.NODOKLKP=#Nodoklkp# AND U.NIP=#Nip#
+		</select>
+	</statements>
+	<parameterMaps>
+		<parameterMap id="insert-param" class="Ujilkp">
+			<parameter property="Nodoklkp" column="NODOKLKP"/>
+			<parameter property="Nip" column="NIP"/>
+			<parameter property="Tglperiksa" column="TGLPERIKSA"/>
+			<parameter property="Tglditeruskan" column="TGLDITERUSKAN"/>
+		</parameterMap>
+		<parameterMap id="update-param" class="Ujilkp">
+			<parameter property="Nodoklkp" column="NODOKLKP"/>
+			<parameter property="Nip" column="NIP"/>
+			<parameter property="Tglperiksa" column="TGLPERIKSA"/>
+			<parameter property="Tglditeruskan" column="TGLDITERUSKAN"/>
+		</parameterMap>
+		<parameterMap id="delete-param" class="Ujilkp">
+			<parameter property="Nodoklkp" column="NODOKLKP"/>
+			<parameter property="Nip" column="NIP"/>
+		</parameterMap>
+	</parameterMaps>
+</sqlMap>

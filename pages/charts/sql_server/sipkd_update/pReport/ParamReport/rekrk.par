@@ -1,0 +1,4 @@
+TITLE=Rekening Pembiayaan
+Level=string;Kode Level;4;
+
+@cur_thang varchar(50),@pemda_l varchar(50),@pemda_j varchar(50),@pemda_k varchar(50),@pemda_i varchar(50)

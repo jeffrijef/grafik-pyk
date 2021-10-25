@@ -1,0 +1,27 @@
+﻿/* grid */
+table.paging_gridview { border-collapse: collapse; margin: 0px !important; width: 100%; border: #6593CF 1px solid; }
+.paging_gridview td { font-size: 11px; font-family: Arial; color: #000000; cursor: default; text-align: left; }
+.paging_gridview th { font-size: 11px; font-family: Arial; color:  #484848; cursor: default; text-align: left; }
+table.paging_gridview a { color: #000000; text-decoration: none; }
+table.paging_gridview a:hover { text-decoration: underline; }
+
+/* header */
+tr.paging_gridview_hdr { background-color: #DEECFF; }
+.paging_gridview_hdr th { color: black; font-weight: normal; text-align: left;border-top: solid 1px #6593CF; border-bottom: solid 1px #6593CF; border-left: solid 1px #6593CF; border-right: solid 1px #6593CF; padding-left: 5px; padding-right: 5px; padding-top: 2px; padding-bottom: 2px; }
+.paging_gridview_hdr th a { color: #484848; text-decoration: none; }
+.paging_gridview_hdr th a:hover { color: #484848; text-decoration: none; }
+
+/* item row */
+tr.paging_gridview_itm { background-color: #FFFFFF; }
+.paging_gridview_itm td { padding: 2px 5px; border-right: #FFFFFF 0px solid; border-top: #FFFFFF 1px solid; border-left: #FFFFFF 0px solid; border-bottom: #ADD1FF 1px solid; }
+.paging_gridview_itm td a { text-decoration: underline; }
+
+/* alternating item row */
+tr.paging_gridview_aitm { background-color: #FFFFFF; }
+.paging_gridview_aitm td { padding: 2px 5px; border-right: #FFFFFF 0px solid; border-top: #FFFFFF 1px solid; border-left: #FFFFFF 0px solid; border-bottom: #ADD1FF 1px solid; }
+.paging_gridview_aitm td a { text-decoration: underline; }
+
+/* pager row */
+tr.paging_gridview_pgr { width : 100%; }
+.paging_gridview_pgr td { background-image: url(../Images/bg.gif); background-repeat: repeat-x; height: 23px; padding: 0px; font-size: 10px; font-family: Arial;}
+.paging_gridview_pgr_ddl { font-size: 10px; font-family: Arial; }

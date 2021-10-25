@@ -1,0 +1,4 @@
+TITLE=Laporan Keuangan -  Neraca PPKD
+Level=string;Level Rekening;2;
+Unitkey=string;Key Unit;4;
+Tgl=datetime;Tanggal;4;

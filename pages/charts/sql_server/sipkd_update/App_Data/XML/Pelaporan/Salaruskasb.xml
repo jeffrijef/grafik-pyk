@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Salaruskasb" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <alias>
+      <typeAlias alias="Salaruskasb" type="Usadi.Valid49.BO.SalaruskasbControl" />
+    </alias>
+    <resultMaps>
+      <resultMap id="return-result" class="Salaruskasb">
+        <result property="Kdkhusus" column="KDKHUSUS"/>
+        <result property="Kdper" column="KDPER"/>
+        <result property="Mtglevel" column="MTGLEVEL"/>
+        <result property="Nlakawal" column="NLAKAWAL"/>
+        <result property="Nmper" column="NMPER"/>
+        <result property="Type" column="TYPE"/>
+        <result property="Mtgkey" column="MTGKEY"/>
+      </resultMap>
+    </resultMaps>
+    <statements>
+      <insert id="InsertSalaruskasb" parameterMap="insert-param">
+        <generate table="Matangblak"/>
+      </insert>
+      <update id="UpdateBySalaruskasb" parameterMap="update-param">
+        <generate table="Matangblak" by="MTGKEY"/>
+      </update>
+      <delete id="DeleteBySalaruskasb" parameterMap="delete-param">
+        <generate table="Matangblak" by="MTGKEY"/>
+      </delete>
+      <select id="BaseQuerySalaruskasb" parameterClass="Salaruskasb" resultMap="return-result">
+        select M.KDKHUSUS,M.KDPER,M.MTGLEVEL,M.NLAKAWAL,M.NMPER,M.TYPE,M.MTGKEY
+        from Matangblak M
+      </select>
+      <select id="QueryByAllSalaruskasb" extends="BaseQuerySalaruskasb" parameterClass="Salaruskasb" resultMap="return-result">
+        where
+        case #Parameter.Field#
+          when '1' then M.KDKHUSUS
+          when '2' then M.KDPER
+          when '3' then M.MTGLEVEL
+          when '4' then M.NLAKAWAL
+          when '5' then M.NMPER
+          when '6' then M.TYPE
+          when '7' then M.MTGKEY
+        end like '%'+ #Parameter.Value# + '%' 
+        order by M.KDPER
+      </select>
+      <select id="LoadByPKSalaruskasb" extends="BaseQuerySalaruskasb" parameterClass="Salaruskasb" resultMap="return-result">
+        where M.MTGKEY = #Mtgkey#
+      </select>
+    </statements>
+    <parameterMaps>
+      <parameterMap id="insert-param" class="Salaruskasb">
+        <parameter property="Kdkhusus" column="KDKHUSUS"/>
+        <parameter property="Kdper" column="KDPER"/>
+        <parameter property="Mtglevel" column="MTGLEVEL"/>
+        <parameter property="Nlakawal" column="NLAKAWAL"/>
+        <parameter property="Nmper" column="NMPER"/>
+        <parameter property="Type" column="TYPE"/>
+        <parameter property="Mtgkey" column="MTGKEY"/>
+      </parameterMap>
+      <parameterMap id="update-param" extends="insert-param" class="Salaruskasb">
+      </parameterMap>
+      <parameterMap id="delete-param" class="Salaruskasb">
+        <parameter property="Mtgkey" column="MTGKEY"/>
+      </parameterMap>
+    </parameterMaps>
+</sqlMap>
+

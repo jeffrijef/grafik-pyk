@@ -1,0 +1,10 @@
+TITLE=LPJ UP
+Unitkey=string;Key Unit;4;
+Bend=string; Bendahara;30;
+Jnsbend=string;Jenis Bendahara;4;;-1;2;-1;
+Kdtahap=string;Tahap;4;
+Kdlevel=string;Level;4;
+Awal=datetime;Tanggal terbit SP2D;30;
+Akhir=datetime;Tanggal Akhir SPJ;30;
+Tanggal=datetime;Tanggal Cetak;30;
+Nip=string;Nip;30;

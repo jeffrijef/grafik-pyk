@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="SysObjects" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="SysObjects" type="CoreNET.Common.BO.SysObjects,CoreNET.Common.Lib" />
+  </alias>
+
+  <resultMaps>
+    <resultMap id="result-param" class="SysObjects">
+      <result property="TableName" column="tname"/>
+      <result property="ColumnName" column="colname"/>
+      <result property="TypeName" column="typename"/>
+      <result property="Length" column="length"/>
+      <result property="IsNullable" column="isnullable"/>
+    </resultMap>
+    <resultMap id="result-sp" class="SysObjects">
+      <result property="TableName" column="name"/>
+      <result property="CreateDate" column="crdate"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <select id="LoadByPKSysObjects" parameterClass="SysObjects" resultMap="result-param">
+      select O.name as tname,C.name as colname,T.name as typename,C.length,C.isnullable
+      from sysobjects O
+      left join syscolumns C  on O.id=C.id
+      left join systypes T    on C.xtype=T.xtype
+      where upper(replace(O.name,'_','')) = upper(#TableName#)
+      and   upper(replace(C.name,'_','')) = upper(#ColumnName#)
+      and   T.name in ('char','varchar','nvarchar')
+    </select>
+    <select id="QueryByAllSysObjects" parameterClass="SysObjects" resultMap="result-sp">
+      select name, crdate from sysobjects
+      where xtype='P' and category=0
+      order by name
+    </select>
+  </statements>
+
+  <parameterMaps>
+    <parameterMap id="select-param" class="SysObjects">
+      <parameter property="TableName" column="TableName"/>
+    </parameterMap>
+  </parameterMaps>
+
+</sqlMap>

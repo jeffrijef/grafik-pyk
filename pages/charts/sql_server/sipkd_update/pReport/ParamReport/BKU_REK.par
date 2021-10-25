@@ -1,0 +1,3 @@
+TITLE=BUKU KAS UMUM PER REKENING APLIKASI R6
+Norekb=string;Nomor Rekening;10;
+Tglkas=datetime;Tanggal;30;

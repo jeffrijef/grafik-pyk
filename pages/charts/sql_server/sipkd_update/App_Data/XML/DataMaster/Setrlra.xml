@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Setrlra" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Setrlra" type="Usadi.Valid49.BO.SetrlraControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Setrlra">
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Nlraawal" column="NLRAAWAL"/>
+      <result property="Mtgkeylra" column="MTGKEYLRA"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Kdperlra" column="KDPERLRA"/>
+      <result property="Nmperlra" column="NMPERLRA"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSetrlra" parameterMap="insert-param">
+      <generate table="SETRLRA"/>
+    </insert>
+    <update id="UpdateBySetrlra" parameterMap="update-param">
+      <generate table="SETRLRA" by="MTGKEY"/>
+    </update>
+    <delete id="DeleteBySetrlra" parameterMap="delete-param">
+      <generate table="SETRLRA" by="MTGKEY"/>
+    </delete>
+    <select id="BaseQuerySetrlra" parameterClass="Setrlra" resultMap="return-result">
+      select A.MTGKEY,A.MTGKEYLRA
+      ,rtrim(B.KDPER) as KDPERLRA, rtrim(B.NMPER) as NMPERLRA,B.TYPE,B.MTGKEY as MTGKEYLRA,B.NLRAAWAL
+      ,rtrim(C.KDPER) as KDPER,rtrim(C.NMPER) as NMPER
+      from SETRLRA A
+      left outer join MATANGRLRA B on A.MTGKEYLRA = B.MTGKEY
+      left outer join MATANGR C on A.MTGKEY = C.MTGKEY
+    </select>
+    <select id="QueryByAllSetrlra" extends="BaseQuerySetrlra" parameterClass="Setrlra" resultMap="return-result">
+      where A.MTGKEYLRA = #Mtgkeylra# and
+      case #Parameter.Field#
+      <!--25 - 02 - 2009 : GN-->
+      when '1' then C.KDPER
+      when '2' then C.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+    </select>
+    <select id="LoadByPKSetrlra" extends="BaseQuerySetrlra" parameterClass="Setrlra" resultMap="return-result">
+      where A.MTGKEY=#Mtgkey# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Setrlra">
+      <parameter property="Mtgkeylra" column="MTGKEYLRA"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Setrlra">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Setrlra">
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

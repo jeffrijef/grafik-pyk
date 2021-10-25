@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Setnrcmapping" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <alias>
+      <typeAlias alias="Setnrcmapping" type="Usadi.Valid49.BO.SetnrcmappingControl" />
+    </alias>
+    <resultMaps>
+      <resultMap id="return-result" class="Setnrcmapping">
+        <result property="Kdper" column="KDPER"/>
+        <result property="Nmper" column="NMPER"/>
+        <result property="Mtgkeyaset" column="MTGKEYASET"/>
+        <result property="Mtgkeyhutang" column="MTGKEYHUTANG"/>
+      </resultMap>
+    </resultMaps>
+    <statements>
+      <insert id="InsertSetnrcmapping" parameterMap="insert-param">
+        <generate table="Setnrcmapping"/>
+      </insert>
+      <update id="UpdateBySetnrcmapping" parameterMap="update-param">
+        <generate table="Setnrcmapping" by="MTGKEYASET,MTGKEYHUTANG"/>
+      </update>
+      <delete id="DeleteBySetnrcmapping" parameterMap="delete-param">
+        <generate table="Setnrcmapping" by="MTGKEYASET,MTGKEYHUTANG"/>
+      </delete>
+      <select id="BaseQuerySetnrcmapping" parameterClass="Setnrcmapping" resultMap="return-result">
+        select S.MTGKEYASET,S.MTGKEYHUTANG
+        , rtrim(M.KDPER) as KDPER, rtrim(M.NMPER) as NMPER
+        from SETNRCMAPPING S
+        inner join MATANGNRC M on M.MTGKEY=S.MTGKEYHUTANG
+      </select>
+      <select id="QueryByAllSetnrcmapping" extends="BaseQuerySetnrcmapping" parameterClass="Setnrcmapping" resultMap="return-result">
+        where  S.MTGKEYASET = #Mtgkeyaset# and
+        case #Parameter.Field#
+        when '1' then M.KDPER
+        when '2' then M.NMPER
+        end like '%'+ #Parameter.Value# + '%'
+        order by M.KDPER
+      </select>
+      <select id="LoadByPKSetnrcmapping" extends="BaseQuerySetnrcmapping" parameterClass="Setnrcmapping" resultMap="return-result">
+        where S.MTGKEYASET = #Mtgkeyaset# and S.MTGKEYHUTANG = #Mtgkeyhutang#
+      </select>
+    </statements>
+    <parameterMaps>
+      <parameterMap id="insert-param" class="Setnrcmapping">
+        <parameter property="Mtgkeyaset" column="MTGKEYASET"/>
+        <parameter property="Mtgkeyhutang" column="MTGKEYHUTANG"/>
+      </parameterMap>
+      <parameterMap id="update-param" extends="insert-param" class="Setnrcmapping">
+      </parameterMap>
+      <parameterMap id="delete-param" class="Setnrcmapping">
+        <parameter property="Mtgkeyaset" column="MTGKEYASET"/>
+        <parameter property="Mtgkeyhutang" column="MTGKEYHUTANG"/>
+      </parameterMap>
+    </parameterMaps>
+</sqlMap>
+

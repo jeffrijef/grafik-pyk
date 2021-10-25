@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Kinkeg" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Kinkeg" type="Usadi.Valid49.BO.KinkegControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Kinkeg">
+      <result property="AllowSuperUser" column="ALLOWSUPERUSER"/>
+      <result property="Target" column="TARGET"/>
+      <result property="Tolokur" column="TOLOKUR"/>
+      <result property="Idprgrm" column="IDPRGRM"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Nmprgrm" column="NMPRGRM"/>
+      <result property="Nuprgrm" column="NUPRGRM"/>
+      <result property="Kdjkk" column="KDJKK"/>
+      <result property="Urjkk" column="URJKK"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Kdtahap" column="KDTAHAP"/>
+      <result property="Unitkey" column="UNITKEY"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertKinkeg" parameterMap="insert-param">
+      <generate table="KINKEG"/>
+    </insert>
+    <update id="UpdateByKinkeg" parameterMap="update-param">
+      <generate table="KINKEG" by="KDJKK,KDKEGUNIT,KDTAHAP,UNITKEY"/>
+    </update>
+    <delete id="DeleteByKinkeg" parameterMap="delete-param">
+      <generate table="KINKEG" by="KDJKK,KDKEGUNIT,KDTAHAP,UNITKEY"/>
+    </delete>
+    <select id="BaseQueryKinkeg" parameterClass="Kinkeg" resultMap="return-result">
+      select #AllowSuperUser# as ALLOWSUPERUSER,A.KDJKK,A.KDKEGUNIT,A.KDTAHAP,A.TARGET,A.TOLOKUR,A.UNITKEY
+      , B.IDPRGRM
+      , C.KDUNIT, C.NMUNIT, C.TYPE, D.NMPRGRM, D.NUPRGRM , E.URJKK
+      from KINKEG A
+      LEFT OUTER JOIN MKEGIATAN B ON A.KDKEGUNIT=B.KDKEGUNIT
+      LEFT OUTER JOIN DAFTUNIT C ON A.UNITKEY=C.UNITKEY
+      LEFT OUTER JOIN MPGRM D ON B.IDPRGRM=D.IDPRGRM
+      LEFT OUTER JOIN JKINKEG E ON A.KDJKK=E.KDJKK
+    </select>
+    <select id="QueryByAllKinkeg" extends="BaseQueryKinkeg" parameterClass="Kinkeg" resultMap="return-result">
+			where A.KDKEGUNIT=#Kdkegunit# and A.KDTAHAP=#Kdtahap# and A.UNITKEY=#Unitkey#
+			and case #Parameter.Field#
+				when '1' then E.URJKK
+				when '2' then A.TOLOKUR
+				when '3' then A.TARGET
+			end like '%'+ #Parameter.Value# + '%'
+		</select>
+    <select id="LoadByPKKinkeg" extends="BaseQueryKinkeg" parameterClass="Kinkeg" resultMap="return-result">
+      where A.KDJKK=#Kdjkk# and A.KDKEGUNIT=#Kdkegunit# and A.KDTAHAP=#Kdtahap# and A.UNITKEY=#Unitkey# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Kinkeg">
+      <parameter property="Target" column="TARGET"/>
+      <parameter property="Tolokur" column="TOLOKUR"/>
+      <parameter property="Kdjkk" column="KDJKK"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Kinkeg">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Kinkeg">
+      <parameter property="Kdjkk" column="KDJKK"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

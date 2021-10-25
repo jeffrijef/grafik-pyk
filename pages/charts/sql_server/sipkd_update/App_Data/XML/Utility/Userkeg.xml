@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Userkeg" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Userkeg" type="Usadi.Valid49.BO.UserkegControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Userkeg">
+      <result property="Type" column="TYPE"/>
+      <result property="Nama" column="NAMA"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nmkegunit" column="NMKEGUNIT"/>
+      <result property="Nukeg" column="NUKEG"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Userid" column="USERID"/>
+      <result property="Unituserid" column="UNITUSERID"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertUserkeg" parameterMap="insert-param">
+      <generate table="USERKEG"/>
+    </insert>
+    <update id="UpdateByUserkeg" parameterMap="update-param">
+      <generate table="USERKEG" by="KDKEGUNIT,UNITUSERID,USERID"/>
+    </update>
+    <delete id="DeleteByUserkeg" parameterMap="delete-param">
+      <generate table="USERKEG" by="KDKEGUNIT,UNITUSERID,USERID"/>
+    </delete>
+    <select id="BaseQueryUserkeg" parameterClass="Userkeg" resultMap="return-result">
+      select A.USERID,A.KDKEGUNIT,W.NAMA,A.UNITUSERID,W.UNITKEY,
+      E.NMKEGUNIT, rtrim(P.NUPRGRM)+rtrim(E.NUKEG) as NUKEG,'D' as TYPE
+      from USERKEG A
+      left outer join MKEGIATAN E on A.KDKEGUNIT = E.KDKEGUNIT
+      left outer join MPGRM P on P.IDPRGRM = E.IDPRGRM
+      left outer join WEBUSER W on W.USERID=A.USERID
+    </select>
+    <select id="QueryByAllUserkeg" extends="BaseQueryUserkeg" parameterClass="Userkeg" resultMap="return-result">
+      where A.USERID=#Userid# and A.UNITUSERID=#Unitkey# and
+      case #Parameter.Field#
+      when '1' then A.USERID
+      end like '%'+ #Parameter.Value# + '%'
+      order by E.NUKEG
+    </select>
+    <select id="LoadByPKUserkeg" extends="BaseQueryUserkeg" parameterClass="Userkeg" resultMap="return-result">
+      where A.USERID=#Userid#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Userkeg">
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Unituserid" column="UNITUSERID"/>
+      <parameter property="Userid" column="USERID"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Userkeg">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Userkeg">
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Unituserid" column="UNITUSERID"/>
+      <parameter property="Userid" column="USERID"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Rekakas" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Rekakas" type="Usadi.Valid49.BO.RekakasControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Rekakas">
+      <result property="Labelkas" column="LABELKAS"/>
+      <result property="Nmakas" column="NMAKAS"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Kdakas" column="KDAKAS"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertRekakas" parameterMap="insert-param">
+      <generate table="REKAKAS"/>
+    </insert>
+    <update id="UpdateByRekakas" parameterMap="update-param">
+      <generate table="REKAKAS" by="MTGKEY,KDAKAS"/>
+    </update>
+    <delete id="DeleteByRekakas" parameterMap="delete-param">
+      <generate table="REKAKAS" by="MTGKEY,KDAKAS"/>
+    </delete>
+    <select id="BaseQueryRekakas" parameterClass="Rekakas" resultMap="return-result">
+      select A.KDAKAS,A.MTGKEY
+      ,B.LABELKAS,B.NMAKAS
+      ,C.KDPER,C.NMPER
+      from REKAKAS A
+      left outer join JAKAS B on A.KDAKAS = B.KDAKAS
+      left outer join MATANGNRC C on A.MTGKEY = C.MTGKEY
+    </select>
+    <select id="QueryByAllRekakas" extends="BaseQueryRekakas" parameterClass="Rekakas" resultMap="return-result">
+			where A.KDAKAS=#Kdakas#
+			and case #Parameter.Field#
+			when '1' then A.KDAKAS
+			when '2' then A.MTGKEY
+			end like '%'+ #Parameter.Value# + '%'
+			Order by A.KDAKAS
+		</select>
+    <select id="LoadByPKRekakas" extends="BaseQueryRekakas" parameterClass="Rekakas" resultMap="return-result">
+      where A.MTGKEY=#Mtgkey# and A.KDAKAS=#Kdakas# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Rekakas">
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Kdakas" column="KDAKAS"/>
+    </parameterMap>
+			<parameterMap id="update-param" extends="insert-param" class="Rekakas">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Rekakas">
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Kdakas" column="KDAKAS"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

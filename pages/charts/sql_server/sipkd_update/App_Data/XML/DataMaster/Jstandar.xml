@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Jstandar" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Jstandar" type="Usadi.Valid49.BO.JstandarControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Jstandar">
+      <result property="Ket" column="KET"/>
+      <result property="Nmjnsstd" column="NMJNSSTD"/>
+      <result property="Kdjnsstd" column="KDJNSSTD"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertJstandar" parameterMap="insert-param">
+      <generate table="JSTANDAR"/>
+    </insert>
+    <update id="UpdateByJstandar" parameterMap="update-param">
+      <generate table="JSTANDAR" by="KDJNSSTD"/>
+    </update>
+    <delete id="DeleteByJstandar" parameterMap="delete-param">
+      <generate table="JSTANDAR" by="KDJNSSTD"/>
+    </delete>
+    <select id="BaseQueryJstandar" parameterClass="Jstandar" resultMap="return-result">
+      select A.KDJNSSTD,A.KET,A.NMJNSSTD
+      from JSTANDAR A
+    </select>
+    <select id="QueryByAllJstandar" extends="BaseQueryJstandar" parameterClass="Jstandar" resultMap="return-result">
+			where
+			case #Parameter.Field#
+			when '1' then A.KDJNSSTD
+			when '2' then A.KET
+			when '3' then A.NMJNSSTD
+			end like '%'+ #Parameter.Value# + '%'
+			Order by A.KDJNSSTD
+		</select>
+    <select id="LoadByPKJstandar" extends="BaseQueryJstandar" parameterClass="Jstandar" resultMap="return-result">
+      where A.KDJNSSTD=#Kdjnsstd# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Jstandar">
+      <parameter property="Ket" column="KET"/>
+      <parameter property="Nmjnsstd" column="NMJNSSTD"/>
+      <parameter property="Kdjnsstd" column="KDJNSSTD"/>
+    </parameterMap>
+			<parameterMap id="update-param" extends="insert-param" class="Jstandar">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Jstandar">
+      <parameter property="Kdjnsstd" column="KDJNSSTD"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

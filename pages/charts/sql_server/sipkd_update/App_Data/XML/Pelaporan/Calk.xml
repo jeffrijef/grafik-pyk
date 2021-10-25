@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Calk" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Calk" type="Usadi.Valid49.BO.CalkControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Calk">
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Debet" column="DEBET"/>
+      <result property="Kredit" column="KREDIT"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Unitkey" column="UNITKEY"/>      
+    </resultMap>
+  </resultMaps>
+  <statements>
+    
+    
+    <procedure id="ExecCalk" parameterMap="transfer-param-calk" timeout="0" resultMap="return-result">
+      WSP_CALK
+    </procedure>
+    
+  </statements>
+  <parameterMaps>        
+    <parameterMap id="transfer-param-calk" class="Calk">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Tgl" column="tgl"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

@@ -1,0 +1,6 @@
+TITLE=SPD Belanja Tidak Langsung
+Idxkode=string;Key Unit;4;;-1;
+Unitkey=string;Key Unit;4;;;;-1
+Idxsko=string;Index SKO;4;
+Bend=string;Bendahara;30;
+Kdtahap=string;Kode Tahap;4;

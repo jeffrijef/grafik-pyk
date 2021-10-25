@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Raskdetd" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Raskdetd" type="Usadi.Valid49.BO.RaskdetdControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Raskdetd">
+      <result property="Nilai" column="NILAI"/>
+      <result property="Ekspresi" column="EKSPRESI"/>
+      <result property="Inclsubtotal" column="INCLSUBTOTAL"/>
+      <result property="Jumbyek" column="JUMBYEK"/>
+      <result property="Kdjabar" column="KDJABAR"/>
+      <result property="Idstdharga" column="IDSTDHARGA"/>
+      <result property="Satuan" column="SATUAN"/>
+      <result property="Hrgsat" column="HRGSAT"/>
+      <result property="Uraian" column="URAIAN"/>
+      <result property="Nmstd" column="NMSTD"/>
+      <result property="Subtotal" column="SUBTOTAL"/>
+      <result property="Tarif" column="TARIF"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Kdnilai" column="KDNILAI"/>
+      <result property="Kdtahap" column="KDTAHAP"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Unitkey" column="UNITKEY"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertRaskdetd" parameterMap="insert-param">
+      <generate table="RASKDETD"/>
+    </insert>
+    <update id="UpdateByRaskdetd" parameterMap="update-param">
+      <generate table="RASKDETD" by="KDNILAI,KDTAHAP,MTGKEY,UNITKEY"/>
+    </update>
+    <update id="UpdateByHeaderRaskdetd" parameterClass="Raskdetd">
+      <![CDATA[
+      update RASKDETD
+      set JUMBYEK = 0, SUBTOTAL =  (select sum(isnull(SUBTOTAL,0)) as SUBTOTAL
+      from RASKDETD
+      where UNITKEY = #Unitkey# and KDTAHAP = #Kdtahap#
+      and MTGKEY = #Mtgkey#
+      and KDJABAR like ltrim(rtrim(#Kdjabar#))+'%' and KDJABAR <> #Kdjabar# 
+      and type='D'
+      group by UNITKEY,MTGKEY,KDTAHAP)
+      where UNITKEY = #Unitkey# and KDTAHAP = #Kdtahap#
+      and MTGKEY = #Mtgkey# and KDNILAI=#Kdnilai#
+      ]]>
+    </update>
+    <delete id="DeleteByRaskdetd" parameterMap="delete-param">
+      <generate table="RASKDETD" by="KDNILAI,KDTAHAP,MTGKEY,UNITKEY"/>
+    </delete>
+    <select id="BaseQueryRaskdetd" parameterClass="Raskdetd" resultMap="return-result">
+      select A.EKSPRESI,A.INCLSUBTOTAL,A.JUMBYEK,A.KDJABAR,A.IDSTDHARGA,A.KDNILAI,A.KDTAHAP,A.MTGKEY,A.SATUAN,A.SUBTOTAL,A.TARIF,rtrim(A.TYPE)  as TYPE,A.UNITKEY
+      ,B.NILAI,A.URAIAN,C.NMSTD,rtrim(C.HRGSTD)+'/'+rtrim(C.SATUAN) as HRGSAT
+      from RASKDETD A
+      left outer join RASKD B on A.MTGKEY = B.MTGKEY AND A.UNITKEY = B.UNITKEY AND A.KDTAHAP = B.KDTAHAP
+      left outer join STDHARGA C on A.IDSTDHARGA = C.IDSTDHARGA
+    </select>
+    <select id="QueryByAllRaskdetd" extends="BaseQueryRaskdetd" parameterClass="Raskdetd" resultMap="return-result">
+      where A.UNITKEY=#Unitkey#  and A.MTGKEY=#Mtgkey# and A.KDTAHAP = #Kdtahap#
+      and case #Parameter.Field#
+      when '1' then A.KDJABAR
+      when '2' then A.URAIAN
+      when '3' then A.EKSPRESI
+      when '4' then A.SATUAN
+      when '5' then convert(char(32), A.TARIF)
+      when '6' then convert(char(32), A.SUBTOTAL)
+      when '7' then rtrim(A.TYPE)
+      when '8' then convert(char(32), len(rtrim(A.KDJABAR)))
+      end like #Parameter.Value# + '%'
+      order by A.KDJABAR
+    </select>
+    <select id="QueryByKdjabarRaskdetd" extends="BaseQueryRaskdetd" parameterClass="Raskdetd" resultMap="return-result">
+      where A.KDJABAR=#Kdjabar# and A.KDTAHAP=#Kdtahap# and A.MTGKEY=#Mtgkey# and A.UNITKEY=#Unitkey#
+    </select>
+    <select id="LoadByPKRaskdetd" extends="BaseQueryRaskdetd" parameterClass="Raskdetd" resultMap="return-result">
+      where A.KDNILAI=#Kdnilai# and A.KDTAHAP=#Kdtahap# and A.MTGKEY=#Mtgkey# and A.UNITKEY=#Unitkey# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Raskdetd">
+      <parameter property="Ekspresi" column="EKSPRESI"/>
+      <parameter property="Inclsubtotal" column="INCLSUBTOTAL"/>
+      <parameter property="Jumbyek" column="JUMBYEK"/>
+      <parameter property="Kdjabar" column="KDJABAR"/>
+      <parameter property="Idstdharga" column="IDSTDHARGA"/>
+      <parameter property="Satuan" column="SATUAN"/>
+      <parameter property="Subtotal" column="SUBTOTAL"/>
+      <parameter property="Tarif" column="TARIF"/>
+      <parameter property="Type" column="TYPE"/>
+      <parameter property="Uraian" column="URAIAN"/>
+      <parameter property="Kdnilai" column="KDNILAI"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Raskdetd">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Raskdetd">
+      <parameter property="Kdnilai" column="KDNILAI"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

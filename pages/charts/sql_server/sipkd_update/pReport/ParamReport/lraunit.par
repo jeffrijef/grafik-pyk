@@ -1,0 +1,6 @@
+TITLE= LRA SKPD
+Unitkey=string;Key Unit;4;
+Level=string;Kode Level;4;
+Tahap=string;Tahapan;4;
+Periode=string;Periode;4;
+Hal=string;Halaman;4;

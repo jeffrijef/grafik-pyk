@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Tbpdettkeg" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Tbpdettkeg" type="Usadi.Valid49.BO.TbpdettkegControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Tbpdettkeg">
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Nukeg" column="NUKEG"/>
+      <result property="Nmkegunit" column="NMKEGUNIT"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Keybend" column="KEYBEND"/>
+      <result property="Nojetra" column="NOJETRA"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Notbp" column="NOTBP"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertTbpdettkeg" parameterMap="insert-param">
+      <generate table="TBPDETTKEG"/>
+    </insert>
+    <update id="UpdateByTbpdettkeg" parameterMap="update-param">
+      <generate table="TBPDETTKEG" by="KEYBEND,NOJETRA,UNITKEY,KDKEGUNIT,NOTBP"/>
+    </update>
+    <delete id="DeleteByTbpdettkeg" parameterMap="delete-param">
+      <generate table="TBPDETTKEG" by="KEYBEND,NOJETRA,UNITKEY,KDKEGUNIT,NOTBP"/>
+    </delete>
+    <delete id="DeleteByAllTbpdettkeg" parameterClass="Tbpdettkeg" >
+      delete from TBPDETTKEG
+      where KEYBEND=#Keybend# and NOJETRA=#Nojetra# and UNITKEY=#Unitkey# and NOTBP=#Notbp#
+    </delete>
+    <select id="BaseQueryTbpdettkeg" parameterClass="Tbpdettkeg" resultMap="return-result">
+      select rtrim(A.KEYBEND) as KEYBEND,A.NILAI,A.NOJETRA,A.NOTBP,A.UNITKEY
+      ,A.KDKEGUNIT,E.NUKEG,E.NMKEGUNIT
+      from TBPDETTKEG A
+      left outer join MKEGIATAN E on A.KDKEGUNIT = E.KDKEGUNIT
+    </select>
+    <select id="QueryByAllTbpdettkeg" extends="BaseQueryTbpdettkeg" parameterClass="Tbpdettkeg" resultMap="return-result">
+      where A.UNITKEY =#Unitkey# and A.NOTBP=#Notbp# and A.KEYBEND=#Keybend#
+      and case #Parameter.Field#
+      when '1' then E.NUKEG
+      when '2' then E.NMKEGUNIT
+      end like '%'+ #Parameter.Value# + '%'
+      ORDER BY E.NUKEG
+    </select>
+    <select id="QueryByTotalTbpdettkeg" extends="BaseQueryTbpdettkeg" parameterClass="Tbpdettkeg" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOTBP=#Notbp# and A.NOJETRA=#Nojetra#
+    </select>
+    <select id="LoadByPKTbpdettkeg" extends="BaseQueryTbpdettkeg" parameterClass="Tbpdettkeg" resultMap="return-result">
+      where A.KEYBEND=#Keybend# and A.NOJETRA=#Nojetra# and A.UNITKEY=#Unitkey# and A.NOTBP=#Notbp# and A.KDKEGUNIT=#Kdkegunit#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Tbpdettkeg">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Keybend" column="KEYBEND"/>
+      <parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Notbp" column="NOTBP"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Tbpdettkeg">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Tbpdettkeg">
+      <parameter property="Keybend" column="KEYBEND"/>
+      <parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Notbp" column="NOTBP"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

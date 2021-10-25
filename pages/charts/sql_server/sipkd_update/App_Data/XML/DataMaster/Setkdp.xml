@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Setkdp" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <alias>
+      <typeAlias alias="Setkdp" type="Usadi.Valid49.BO.SetkdpControl" />
+    </alias>
+    <resultMaps>
+      <resultMap id="return-result" class="Setkdp">
+        <result property="Kdper" column="KDPER"/>
+        <result property="Nmper" column="NMPER"/>
+        <result property="Mtgkeykdp" column="MTGKEYKDP"/>
+        <result property="Mtgkeybm" column="MTGKEYBM"/>
+      </resultMap>
+    </resultMaps>
+    <statements>
+      <insert id="InsertSetkdp" parameterMap="insert-param">
+        <generate table="Setkdp"/>
+      </insert>
+      <update id="UpdateBySetkdp" parameterMap="update-param">
+        <generate table="Setkdp" by="MTGKEYKDP,MTGKEYBM"/>
+      </update>
+      <delete id="DeleteBySetkdp" parameterMap="delete-param">
+        <generate table="Setkdp" by="MTGKEYKDP,MTGKEYBM"/>
+      </delete>
+      <select id="BaseQuerySetkdp" parameterClass="Setkdp" resultMap="return-result">
+        select S.MTGKEYKDP,S.MTGKEYBM
+        , rtrim(M.KDPER) as KDPER, rtrim(M.NMPER) as NMPER
+        from Setkdp S
+        inner join MATANGR M on M.MTGKEY=S.MTGKEYBM
+      </select>
+      <select id="QueryByAllSetkdp" extends="BaseQuerySetkdp" parameterClass="Setkdp" resultMap="return-result">
+        where  S.MTGKEYKDP = #Mtgkeykdp# and
+        case #Parameter.Field#
+        when '1' then M.KDPER
+        when '2' then M.NMPER
+        end like '%'+ #Parameter.Value# + '%'
+        order by M.KDPER
+      </select>
+      <select id="LoadByPKSetkdp" extends="BaseQuerySetkdp" parameterClass="Setkdp" resultMap="return-result">
+        where S.MTGKEYKDP = #Mtgkeykdp# and S.MTGKEYBM = #Mtgkeybm#
+      </select>
+    </statements>
+    <parameterMaps>
+      <parameterMap id="insert-param" class="Setkdp">
+        <parameter property="Mtgkeykdp" column="MTGKEYKDP"/>
+        <parameter property="Mtgkeybm" column="MTGKEYBM"/>
+      </parameterMap>
+      <parameterMap id="update-param" extends="insert-param" class="Setkdp">
+      </parameterMap>
+      <parameterMap id="delete-param" class="Setkdp">
+        <parameter property="Mtgkeykdp" column="MTGKEYKDP"/>
+        <parameter property="Mtgkeybm" column="MTGKEYBM"/>
+      </parameterMap>
+    </parameterMaps>
+</sqlMap>
+

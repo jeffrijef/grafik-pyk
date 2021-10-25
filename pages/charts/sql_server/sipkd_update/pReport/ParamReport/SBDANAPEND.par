@@ -1,0 +1,5 @@
+TITLE=Realisasi Pendapatan Transfer
+Level=string;Kode Level;4;
+Tahap=string;Tahap;4;
+Unitkey=string;Unit;4;
+Tanggal=datetime;Tanggal;30;

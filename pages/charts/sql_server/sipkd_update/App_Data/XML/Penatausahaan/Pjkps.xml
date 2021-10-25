@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Pjkps" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Pjkps" type="Usadi.Valid49.BO.PjkpsControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Pjkps">
+      <result property="Nilai" column="NILAI"/>
+      <result property="Uraian" column="URAIAN"/>
+      <result property="Tglbkpajak" column="TGLBKPAJAK"/>
+      <result property="Nosetor" column="NOSETOR"/>
+      <result property="Nopungut" column="NOPUNGUT"/>
+      <result property="Unitkey" column="UNITKEY"/>
+    </resultMap>
+    <!--<resultMap id="return-result2" class="Pjkps">
+      <result property="Uraibpk" column="URAIBPK"/>
+      <result property="Tglbpk" column="TGLBPK"/>
+      <result property="Nospj" column="NOSPJ"/>
+      <result property="Nobpk" column="NOBPK"/>
+      <result property="Unitkey" column="UNITKEY"/>
+    </resultMap>-->
+  </resultMaps>
+  <statements>
+    <insert id="InsertPjkps" parameterMap="insert-param">
+      <generate table="Pjkps"/>
+    </insert>
+    <statement id="InsertSetorPjkps" parameterClass="Pjkps">
+      delete BKPAJAKDET where UNITKEY=#Unitkey# and NOBKPAJAK=#Nosetor#
+      insert into BKPAJAKDET(UNITKEY,NOBKPAJAK,PJKKEY,NILAI)
+      select UNITKEY,#Nosetor#,PJKKEY,SUM(NILAI)NILAI  from BKPAJAKDET where UNITKEY=#Unitkey# and
+      NOBKPAJAK in (select NOPUNGUT from PJKPS where nosetor=#Nosetor#)
+      group by UNITKEY,PJKKEY
+    </statement>
+    <update id="UpdateByPjkps" parameterMap="update-param">
+      <generate table="Pjkps" by="UNITKEY,NOPUNGUT,NOSETOR"/>
+    </update>
+    <delete id="DeleteByPjkps" parameterMap="delete-param">
+      <generate table="Pjkps" by="UNITKEY,NOPUNGUT,NOSETOR"/>
+    </delete>
+    <statement id="DeleteBySetorPjkps" parameterClass="Pjkps">
+      begin transaction
+      delete from BKPAJAKDET where UNITKEY=#Unitkey# and NOBKPAJAK=#Nosetor#
+      commit
+    </statement>
+    <select id="BaseQueryPjkps" parameterClass="Pjkps" resultMap="return-result">
+      select A.NOPUNGUT,A.NOSETOR,A.UNITKEY,B.TGLBKPAJAK,B.URAIAN
+      ,NILAI =
+      isnull((select sum(isnull(NILAI,0)) from BKPAJAKDET C where C.UNITKEY=A.UNITKEY and C.NOBKPAJAK=A.NOPUNGUT),0)
+      from PJKPS A
+      left outer join BKPAJAK B on A.UNITKEY=B.UNITKEY and A.NOPUNGUT=B.NOBKPAJAK
+    </select>
+    <select id="QueryByAllPjkps" extends="BaseQueryPjkps" parameterClass="Pjkps" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSETOR=#Nosetor#
+      <!--and case #Parameter.Field#
+      when '1' then A.NOPUNGUT
+      when '2' then convert(char(10), B.TGLBKPAJAK, 103)
+      when '3' then B.URAIAN
+      end like '%'+ #Parameter.Value# + '%'-->
+      order by A.NOPUNGUT
+    </select>
+    <select id="LoadByPKPjkps" extends="BaseQueryPjkps" parameterClass="Pjkps" resultMap="return-result">
+      where A.NOPUNGUT=#Nopungut# and A.UNITKEY=#Unitkey#
+    </select>
+    <!--<select id="QueryByNobpkPjkps" parameterClass="Pjkps" resultMap="return-result2">
+      select A.NOBPK,A.NOSPJ,A.UNITKEY,B.TGLBPK,B.URAIBPK
+      from Pjkps A
+      left outer join BPK B on A.UNITKEY=B.UNITKEY and A.NOBPK=B.NOBPK
+      where A.UNITKEY=#Unitkey# and A.NOBPK=#Nobpk#
+    </select>-->
+    <procedure id="ExecTransferPjkps" parameterMap="transfer-param">
+      WSP_TRANSFER_PJKPS
+    </procedure>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Pjkps">
+      <parameter property="Nosetor" column="NOSETOR"/>
+      <parameter property="Nopungut" column="NOPUNGUT"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Pjkps">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Pjkps">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nopungut" column="NOPUNGUT"/>
+      <parameter property="Nosetor" column="NOSETOR"/>
+    </parameterMap>
+    <parameterMap id="transfer-param" class="Pjkps">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Nopungut" column="nopungut"/>
+      <parameter property="Nosetor" column="nosetor"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

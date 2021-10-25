@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Sifatkeg" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Sifatkeg" type="Usadi.Valid49.BO.SifatkegControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Sifatkeg">
+      <result property="Kdsifat" column="KDSIFAT"/>
+      <result property="Nmsifat" column="NMSIFAT"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <insert id="InsertSifatkeg" parameterMap="insert-param" >
+      <generate table="SIFATKEG"/>
+    </insert>
+    <update id="UpdateBySifatkeg" parameterMap="update-param" >
+      <generate table="SIFATKEG" by="KDSIFAT"/>
+    </update>
+    <delete id="DeleteBySifatkeg" parameterMap="delete-param" >
+      <generate table="SIFATKEG" by="KDSIFAT"/>
+    </delete>
+    <select id="QueryByAllSifatkeg" parameterClass="Sifatkeg" resultMap="return-result">
+      select * from SIFATKEG
+
+      order by Kdsifat  
+  
+  </select>
+    <select id="LoadByPKSifatkeg" parameterClass="Sifatkeg"  resultMap="return-result" >
+      select * from SIFATKEG
+      where KDSIFAT=#Kdsifat#
+    </select>
+  </statements>
+
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Sifatkeg">
+      <parameter property="Nmsifat" column="NMSIFAT"/>
+      <parameter property="Kdsifat" column="KDSIFAT"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Sifatkeg">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Sifatkeg">
+      <parameter property="Kdsifat" column="KDSIFAT"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>
+

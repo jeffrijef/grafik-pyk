@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Setuprlo" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Setuprlo" type="Usadi.Valid49.BO.SetuprloControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Setuprlo">
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Type" column="TYPE"/>
+      <!--<result property="Nlraawal" column="NLRAAWAL"/>-->
+      <result property="Kdperlra" column="KDPERLRA"/>
+      <result property="Nmperlra" column="NMPERLRA"/>
+      <result property="Mtgkeylra" column="MTGKEYLRA"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSetuprlo" parameterMap="insert-param">
+      <generate table="SETUPRLO"/>
+    </insert>
+    <update id="UpdateBySetuprlo" parameterMap="update-param">
+      <generate table="SETUPRLO" by="MTGKEYLRA,MTGKEY"/>
+    </update>
+    <delete id="DeleteBySetuprlo" parameterMap="delete-param">
+      <generate table="SETUPRLO" by="MTGKEYLRA,MTGKEY"/>
+    </delete>
+    <statement id="DeleteByDelSetuprlo" parameterClass="Setuprlo">
+      delete SETUPRLO where MTGKEY = #Mtgkey# AND MTGKEYLRA=#Mtgkeylra#
+    </statement>
+    <select id="BaseQuerySetuprlo" parameterClass="Setuprlo" resultMap="return-result">
+      select A.MTGKEY,A.MTGKEYLRA
+      ,rtrim(B.KDPER) as KDPERLRA, rtrim(B.NMPER) as NMPERLRA,B.TYPE,B.MTGKEY as MTGKEYLRA
+      ,rtrim(C.KDPER) as KDPER,rtrim(C.NMPER) as NMPER
+      from SETUPRLO A
+      left outer join MATANGR B on A.MTGKEYLRA = B.MTGKEY
+      left outer join MATANGR C on A.MTGKEY = C.MTGKEY
+    </select>
+    <select id="QueryByAllSetuprlo" extends="BaseQuerySetuprlo" parameterClass="Setuprlo" resultMap="return-result">
+      where A.MTGKEYLRA = #Mtgkeylra# and
+      case #Parameter.Field#
+      <!--25 - 02 - 2009  GN-->
+      when '1' then C.KDPER
+      when '2' then C.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+    </select>
+    <select id="LoadByPKSetuprlo" extends="BaseQuerySetuprlo" parameterClass="Setuprlo" resultMap="return-result">
+      where A.MTGKEYLRA=#Mtgkeylra# and A.MTGKEY=#Mtgkey#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Setuprlo">
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Mtgkeylra" column="MTGKEYLRA"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Setuprlo">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Setuprlo">
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Mtgkeylra" column="MTGKEYLRA"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

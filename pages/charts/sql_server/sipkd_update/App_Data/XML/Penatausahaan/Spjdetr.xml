@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Spjdetr" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Spjdetr" type="Usadi.Valid49.BO.SpjdetrControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Spjdetr">
+      <result property="Nukeg" column="NUKEG"/>
+      <result property="Nmkegunit" column="NMKEGUNIT"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Nojetra" column="NOJETRA"/>
+      <result property="Nospj" column="NOSPJ"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Kddana" column="KDDANA"/>
+      <result property="Idxkode" column="IDXKODE"/>
+      <result property="Kdpers" column="KDPERS"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Nmdana" column="NMDANA"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+    </resultMap>
+    <resultMap id="return-result-tree" class="Spjdetr">
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nospj" column="NOSPJ"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Type" column="TYPE"/>
+    </resultMap>
+    <resultMap id="return-result-total" class="Spjdetr">
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Nilai" column="NILAI"/>
+    </resultMap>
+    <resultMap id="return-result-dk" class="Spjdetr">
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Nilnol" column="NILNOL"/>
+      <result property="Nilaik" column="NILAIK"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSpjdetr" parameterMap="insert-param">
+      <generate table="SPJDETR"/>
+    </insert>
+    <update id="UpdateBySpjdetr" parameterMap="update-param">
+      <generate table="SPJDETR" by="NOJETRA,UNITKEY,NOSPJ,KDKEGUNIT,MTGKEY"/>
+    </update>
+    <delete id="DeleteBySpjdetr" parameterMap="delete-param">
+      <generate table="SPJDETR" by="NOJETRA,UNITKEY,NOSPJ,KDKEGUNIT,MTGKEY"/>
+    </delete>
+    <delete id="DeleteByAllSpjdetr" parameterClass="Spjdetr">
+      delete from SPJDETR
+      where UNITKEY=#Unitkey# and NOSPJ=#Nospj# and KDKEGUNIT=#Kdkegunit# 
+    </delete>
+    <select id="BaseQuerySpjdetr" parameterClass="Spjdetr" resultMap="return-result">
+      select A.MTGKEY,A.NILAI,A.NOJETRA,A.NOSPJ,A.UNITKEY,rtrim(A.KDDANA) as KDDANA,A.KDKEGUNIT
+      ,B.IDXKODE,rtrim(C.KDPER) as KDPER, rtrim(C.NMPER) as NMPER
+      ,E.NMDANA,D.KDPERS,'' as NUKEG,'' as NMKEGUNIT
+      <!--,rtrim(MK.NUKEG) as NUKEG,rtrim(MK.NMKEGUNIT) as NMKEGUNIT-->
+      from SPJDETR A
+      left outer join PSPJ B on A.NOSPJ = B.NOSPJ and A.UNITKEY = B.UNITKEY
+      left outer join MATANGR C on A.MTGKEY = C.MTGKEY
+      left outer join JTRNLKAS D on A.NOJETRA = D.NOJETRA
+      left outer join JDANA E on A.KDDANA = E.KDDANA
+      <!--left outer join MKEGIATAN MK on A.KDKEGUNIT= MK.KDKEGUNIT-->
+    </select>
+    <select id="QueryByAllSpjdetr" extends="BaseQuerySpjdetr" parameterClass="Spjdetr" resultMap="return-result">
+			where (B.UNITKEY=#Unitkey# OR B.UNITKEY IN(SELECT UNITKEYUK FROM DAFTUNITUK WHERE UNITKEYSKPD=#Unitkey#)) and B.NOSPJ=#Nospj# and A.KDKEGUNIT=#Kdkegunit# and A.NOJETRA=#Nojetra#
+			and case #Parameter.Field#
+			when '1' then C.KDPER
+			when '2' then C.NMPER
+			end like '%'+ #Parameter.Value# + '%'
+			order by C.KDPER
+		</select>
+    <select id="QueryByDetjknSpjdetr" extends="BaseQuerySpjdetr" parameterClass="Spjdetr" resultMap="return-result">
+      where B.UNITKEY=#Unitkey# and B.NOSPJ=#Nospj#
+      and case #Parameter.Field#
+      when '1' then C.KDPER
+      when '2' then C.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by C.KDPER
+    </select>
+    <select id="QueryByDetsp2bSpjdetr" extends="BaseQuerySpjdetr" parameterClass="Spjdetr" resultMap="return-result">
+      where B.NOSPJ IN (SELECT NOSPJ FROM SP3BDET WHERE NOSP3B IN (SELECT NOSP3B FROM SP2BDET))
+      and case #Parameter.Field#
+      when '1' then C.KDPER
+      when '2' then C.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by C.KDPER
+    </select>
+    <select id="QueryByDetjurSpjdetr" parameterClass="Spjdetr" resultMap="return-result-dk">
+      <!--select  KDPER,NMPER,NILAI,NILAIK,NILNOL,'' as KDKEGUNIT from JURNAL-->
+      select  KDPER,NMPER,NILAI,NILAIK,NILNOL,KDKEGUNIT FROM(
+      select KDPERD KDPER,NMPERD NMPER,NILAID NILAI,#Nilnol# NILAIK,#Nilnol# NILNOL,KDKEG KDKEGUNIT FROM JURNAL WHERE UNITKEY=#Unitkey# and NOBUKTI=#Nospj# and jurnal=#Kjenis# and kdkeg=#Kdkegunit#
+      union all
+      select KDPERK KDPER,NMPERK NMPER,#Nilnol# NILAI,sum(NILAIK) NILAIK,#Nilnol# NILNOL,KDKEG KDKEGUNIT FROM JURNAL where UNITKEY=#Unitkey# and NOBUKTI=#Nospj# and jurnal=#Kjenis# and kdkeg=#Kdkegunit#
+      group by kdperk,nmperk,kdkeg
+      )k
+      order by NILAI desc,KDPER
+    </select>
+    <select id="QueryByFilterSpjdetr" parameterClass="Spjdetr" resultMap="return-result-tree">
+      select distinct UNITKEY,MTGKEY as KDKEGUNIT,KDPER,NMPER,NILAI,TYPE,#Nospj# as NOSPJ from (
+      <!--select P.UNITKEY,UN.UNITKEY as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2'))) as KDPER, isnull(UR.NMUNIT,'NON URUSAN') as NMPER,'H' as TYPE,
+      NILAI=(select sum(S1.NILAI)
+      from SPJDETR S1
+      inner join KEGUNIT K1 on S1.UNITKEY=K1.UNITKEY and S1.KDKEGUNIT=K1.KDKEGUNIT
+      inner join PGRMUNIT P1 on K1.UNITKEY=P1.UNITKEY and K1.IDPRGRM=P1.IDPRGRM and K1.KDTAHAP=P1.KDTAHAP
+      left outer join MPGRM MP1 on P1.IDPRGRM=MP1.IDPRGRM
+      left outer join DAFTUNIT UR1 on UR1.UNITKEY=MP1.UNITKEY
+      where S1.UNITKEY=#Unitkey# and S1.NOSPJ=#Nospj#
+      and isnull(UR1.UNITKEY,'')=isnull(UR.UNITKEY,'')
+      group by UR1.UNITKEY
+      )
+      from PGRMUNIT P left outer join MPGRM MP on P.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on P.UNITKEY = UN.UNITKEY
+      where P.UNITKEY =#Unitkey# and
+      P.IDPRGRM in
+      (select IDPRGRM from KEGUNIT where UNITKEY=#Unitkey# and
+      KDKEGUNIT in (select KDKEGUNIT from SPJDETR where UNITKEY=#Unitkey# and NOSPJ=#Nospj#))
+      union
+      select P.UNITKEY,P.IDPRGRM as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM) as KDPER, MP.NMPRGRM as NMPER,'H' as TYPE,
+      NILAI=(select sum(S1.NILAI)
+      from SPJDETR S1
+      inner join KEGUNIT K1 on S1.UNITKEY=K1.UNITKEY and S1.KDKEGUNIT=K1.KDKEGUNIT
+      inner join PGRMUNIT P1 on K1.UNITKEY=P1.UNITKEY and K1.IDPRGRM=P1.IDPRGRM and K1.KDTAHAP=P1.KDTAHAP
+      where S1.UNITKEY=#Unitkey# and S1.NOSPJ=#Nospj#
+      and P1.IDPRGRM=P.IDPRGRM
+      group by P1.UNITKEY,P1.IDPRGRM
+      )
+      from PGRMUNIT P left outer join MPGRM MP on P.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on P.UNITKEY = UN.UNITKEY
+      where P.UNITKEY =#Unitkey# and
+      P.IDPRGRM in
+      (select IDPRGRM from KEGUNIT where UNITKEY=#Unitkey# and
+      KDKEGUNIT in (select KDKEGUNIT from SPJDETR where UNITKEY=#Unitkey# and NOSPJ=#Nospj#))
+      union-->
+      SELECT UNITKEY,MTGKEY,KDPER,NMPER,[TYPE],NILAI,KDKEGUNIT FROM
+      (
+      select K.UNITKEY,K.KDKEGUNIT,K.KDKEGUNIT as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM)+rtrim(MK.NUKEG) as KDPER, MK.NMKEGUNIT as NMPER,'D' as TYPE,
+      NILAI=
+      (
+      select sum(NILAI) from SPJDETR where (UNITKEY= #Unitkey# OR UNITKEY IN (SELECT UNITKEYUK FROM DAFTUNITUK WHERE UNITKEYSKPD=#Unitkey#)) and NOSPJ= #Nospj#  and KDKEGUNIT=K.KDKEGUNIT
+      )
+      from KEGUNIT K
+      left outer join MKEGIATAN MK on MK.KDKEGUNIT=K.KDKEGUNIT
+      left outer join MPGRM MP on MK.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on K.UNITKEY = UN.UNITKEY
+      UNION ALL
+      SELECT UNITKEY,'00'KDKEGUNIT,'00'MTGKEY,'00'KDPER,'SPJ BTL'NMPER,'D'[TYPE],SUM(NILAI) NILAI FROM SPJDETRTL WHERE UNITKEY= #Unitkey#  and NOSPJ= #Nospj#
+      GROUP BY UNITKEY
+      )K
+
+
+      where K.UNITKEY =#Unitkey# and K.KDKEGUNIT
+      in (
+      select KDKEGUNIT from SPJDETR where (UNITKEY=#Unitkey# OR UNITKEY IN (SELECT UNITKEYUK FROM DAFTUNITUK WHERE UNITKEYSKPD=#Unitkey#)) and NOSPJ=#Nospj#
+      UNION ALL
+      select '00' KDKEGUNIT from SPJDETRTL where UNITKEY= @param1  and NOSPJ= @param0
+      )
+      )A
+      where UNITKEY =#Unitkey#
+      and case #Parameter.Field#
+      when '1' then KDPER
+      when '2' then NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by KDPER
+    </select>
+    <select id="LoadByTotalRekSpjdetr" parameterClass="Spjdetr" resultMap="return-result-total">
+      <![CDATA[
+      select B.KDPER, B.NMPER, B.MTGKEY, sum(case A.NOJETRA when '41' then A.NILAI else -A.NILAI end) AS NILAI
+      from SPJDETR A
+      left join PSPJ S ON A.UNITKEY = S.UNITKEY AND A.NOSPJ = S.NOSPJ
+      left join MATANGR B on A.MTGKEY = B.MTGKEY
+      where A.UNITKEY=#Unitkey# and A.MTGKEY=#Mtgkey# and A.KDKEGUNIT=#Kdkegunit#
+      and S.TGLSPJ <= #Tglspj# and S.Nospj <> #Nospj# and S.TGLSAH is not NULL
+      group BY B.KDPER, B.NMPER, B.MTGKEY
+      ]]>
+    </select>
+    <select id="LoadByPKSpjdetr" extends="BaseQuerySpjdetr" parameterClass="Spjdetr" resultMap="return-result">
+			where A.UNITKEY=#Unitkey# and A.NOSPJ=#Nospj# and A.KDKEGUNIT=#Kdkegunit# and A.MTGKEY=#Mtgkey# and A.NOJETRA=#Nojetra#
+		</select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Spjdetr">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nospj" column="NOSPJ"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" class="Spjdetr">
+      <parameter property="Kddana" column="KDDANA"/>
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nospj" column="NOSPJ"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Spjdetr">
+			<parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nospj" column="NOSPJ"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

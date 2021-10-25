@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Skppkddet" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Skppkddet" type="Usadi.Valid49.BO.SkppkddetControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Skppkddet">
+	  <result property="Unitkey" column="UNITKEY"/>
+	  <result property="Nosk" column="NOSK"/>
+	  <result property="Tglsk" column="TGLSK"/>      
+    <result property="Mtgkey" column="MTGKEY"/>
+    <result property="Kdper" column="KDPER"/>
+    <result property="Nmper" column="NMPER"/>
+    <result property="Nilai" column="NILAI"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSkppkddet" parameterMap="insert-param">
+      <generate table="SKPPKDDET"/>
+    </insert>
+    <update id="UpdateBySkppkddet" parameterMap="update-param">
+      <generate table="SKPPKDDET" by="UNITKEY,NOSK,MTGKEY"/>
+    </update>
+    <delete id="DeleteBySkppkddet" parameterMap="delete-param">
+      <generate table="SKPPKDDET" by="UNITKEY,NOSK,MTGKEY"/>
+    </delete>
+    <select id="BaseQuerySkppkddet" parameterClass="Skppkddet" resultMap="return-result">
+      SELECT A.* , M.KDPER, M.NMPER, S.TGLSK
+      FROM SKPPKDDET A
+      LEFT OUTER JOIN SKPPKD S ON A.NOSK = S.NOSK and A.UNITKEY = S.UNITKEY
+      LEFT OUTER JOIN MATANGR M ON A.MTGKEY=M.MTGKEY
+    </select>
+    <select id="QueryByAllSkppkddet" extends="BaseQuerySkppkddet" parameterClass="Skppkddet" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSK=#Nosk#
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryByTotalSkppkddet" extends="BaseQuerySkppkddet" parameterClass="Skppkddet" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSK=#Nosk# 
+    </select>
+    <procedure id="ExecValidateSkppkdRekDpa" parameterMap="validate-rek-param">
+      WSP_VALIDATIONSKPPKD_REK
+    </procedure>
+    <select id="LoadByPKSkppkddet" extends="BaseQuerySkppkddet" parameterClass="Skppkddet" resultMap="return-result">
+			where A.UNITKEY=#Unitkey# and A.NOSK=#Nosk# and A.MTGKEY=#Mtgkey#
+		</select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Skppkddet">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nosk" column="NOSK"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" class="Skppkddet">
+			<parameter property="Nilai" column="NILAI"/>
+			<parameter property="Unitkey" column="UNITKEY"/>
+			<parameter property="Nosk" column="NOSK"/>
+			<parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Skppkddet">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nosk" column="NOSK"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+    <parameterMap id="validate-rek-param" class="Skppkddet">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Kdper" column="kdper"/>
+      <parameter property="Kdtahap" column="kdtahap"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

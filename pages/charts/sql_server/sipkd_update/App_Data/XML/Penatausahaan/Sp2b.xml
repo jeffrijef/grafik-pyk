@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Sp2b" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <alias>
+      <typeAlias alias="Sp2b" type="Usadi.Valid49.BO.Sp2bControl" />
+    </alias>
+    <resultMaps>
+      <resultMap id="return-result" class="Sp2b">
+        <result property="Tglsp2b" column="TGLSP2B"/>
+        <result property="Tglvalid" column="TGLVALID"/>
+        <result property="Uraisp2b" column="URAISP2B"/>
+        <result property="Unitkey" column="UNITKEY"/>
+        <result property="Nosp2b" column="NOSP2B"/>
+      </resultMap>
+      <resultMap id="return-result-i" extends="return-result" class="Sp2b">
+        <result property="Tgl_valid" column="TGL_VALID"/>
+      </resultMap>
+    </resultMaps>
+    <statements>
+      <insert id="InsertSp2b" parameterMap="insert-param">
+        <generate table="Sp2b"/>
+      </insert>
+      <update id="UpdateBySp2b" parameterMap="update-param">
+        <generate table="Sp2b" by="UNITKEY,NOSP2B"/>
+      </update>
+      <update id="UpdateBySahSp2b" parameterClass="Sp2b">
+        update SP2B set TGLVALID=#Tglvalid#
+        where NOSP2B=#Nosp2b#
+      </update>
+      <update id="UpdateByValidSp2b" parameterClass="Sp2b">
+        update JURNAL set TGL_VALID=#Tgl_valid#
+        where NOBUKTI=#Nosp2b# and UNITKEY=#Unitkey#
+      </update>
+      <delete id="DeleteBySp2b" parameterMap="delete-param">
+        <generate table="Sp2b" by="UNITKEY,NOSP2B"/>
+      </delete>
+      <update id="UpdateByDraftSp2b" parameterClass="Sp2b" >
+        update SP2B set TGLVALID=null
+        where UNITKEY=#Unitkey# and NOSP2B=#Nosp2b#
+      </update>
+      <update id="UpdateByDrafvalidSp2b" parameterClass="Sp2b" >
+        update JURNAL set TGL_VALID=null
+        where NOBUKTI=#Nosp2b# and UNITKEY=#Unitkey#
+      </update>
+      <select id="BaseQuerySp2b" parameterClass="Sp2b" resultMap="return-result">
+        select S.TGLSP2B,S.TGLVALID,S.URAISP2B,S.UNITKEY,S.NOSP2B
+        from SP2B S
+      </select>
+      <!--<select id="QueryByJurSp2b" extends="BaseQuerySp2b" parameterClass="Sp2b" resultMap="return-result">
+        where S.TGLVALID != NULL and
+        case #Parameter.Field#
+        when '1' then S.TGLSP2B
+        when '2' then S.TGLVALID
+        when '3' then S.URAISP2B
+        when '4' then S.UNITKEY
+        when '5' then S.NOSP2B
+        end like '%'+ #Parameter.Value# + '%'
+        order by S.NOSP2B
+      </select>-->
+      <select id="QueryByJurSp2b" parameterClass="Sp2b" resultMap="return-result-i">
+        select distinct S.TGLSP2B,S.TGLVALID,S.URAISP2B,S.UNITKEY,S.NOSP2B,j.TGL_VALID
+        from SP2B S
+        INNER JOIN jurnal j ON  j.nobukti=s.NOSP2B <!--j.UNITKEY = S.UNITKEY AND-->
+        <!--where S.UNITKEY=#Unitkey#-->
+      </select>
+      <select id="QueryByAllSp2b" extends="BaseQuerySp2b" parameterClass="Sp2b" resultMap="return-result">
+        where S.UNITKEY=#Unitkey# and
+        case #Parameter.Field#
+        when '1' then S.TGLSP2B
+        when '2' then S.TGLVALID
+        when '3' then S.URAISP2B
+        when '4' then S.UNITKEY
+        when '5' then S.NOSP2B
+        end like '%'+ #Parameter.Value# + '%'
+        order by S.NOSP2B
+      </select>
+      <select id="LoadByPKSp2b" extends="BaseQuerySp2b" parameterClass="Sp2b" resultMap="return-result">
+        where S.UNITKEY = #Unitkey# and S.NOSP2B = #Nosp2b#
+      </select>
+    </statements>
+    <parameterMaps>
+      <parameterMap id="insert-param" class="Sp2b">
+        <parameter property="Tglsp2b" column="TGLSP2B"/>
+        <parameter property="Uraisp2b" column="URAISP2B"/>
+        <parameter property="Unitkey" column="UNITKEY"/>
+        <parameter property="Nosp2b" column="NOSP2B"/>
+      </parameterMap>
+      <parameterMap id="update-param" extends="insert-param" class="Sp2b">
+      </parameterMap>
+      <parameterMap id="delete-param" class="Sp2b">
+        <parameter property="Unitkey" column="UNITKEY"/>
+        <parameter property="Nosp2b" column="NOSP2B"/>
+      </parameterMap>
+    </parameterMaps>
+</sqlMap>
+

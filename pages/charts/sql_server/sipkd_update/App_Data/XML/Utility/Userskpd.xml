@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Userskpd" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Userskpd" type="Usadi.Valid49.BO.UserskpdControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Userskpd">
+      <result property="Nama" column="NAMA"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Userid" column="USERID"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertUserskpd" parameterMap="insert-param">
+      <generate table="USERSKPD"/>
+    </insert>
+    <update id="UpdateByUserskpd" parameterMap="update-param">
+      <generate table="USERSKPD" by="UNITKEY,USERID"/>
+    </update>
+    <delete id="DeleteByUserskpd" parameterMap="delete-param">
+      <generate table="USERSKPD" by="UNITKEY,USERID"/>
+    </delete>
+    <select id="BaseQueryUserskpd" parameterClass="Userskpd" resultMap="return-result">
+      select A.USERID,A.UNITKEY,W.NAMA,
+      rtrim(isnull(U.KDUNIT,'')) as KDUNIT,rtrim(isnull(U.NMUNIT,'')) as NMUNIT
+      from USERSKPD A
+      left outer join DAFTUNIT U on U.UNITKEY=A.UNITKEY
+      left outer join WEBUSER W on W.USERID=A.USERID
+    </select>
+    <select id="QueryByAllUserskpd" extends="BaseQueryUserskpd" parameterClass="Userskpd" resultMap="return-result">
+      where A.USERID=#Userid# 
+			and case #Parameter.Field#
+			when '1' then U.KDUNIT
+			when '2' then U.NMUNIT
+			end like '%'+ #Parameter.Value# + '%'
+			order by U.KDUNIT
+		</select>
+    <select id="LoadByPKUserskpd" extends="BaseQueryUserskpd" parameterClass="Userskpd" resultMap="return-result">
+      where A.USERID=#Userid#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Userskpd">
+      <parameter property="Parameter.Key" column="UNITKEY"/>
+      <parameter property="Userid" column="USERID"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Userskpd">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Userskpd">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Userid" column="USERID"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

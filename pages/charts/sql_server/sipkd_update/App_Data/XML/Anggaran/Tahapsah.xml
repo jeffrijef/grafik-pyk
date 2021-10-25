@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Tahapsah" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Tahapsah" type="Usadi.Valid49.BO.TahapsahControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Tahapsah">
+      <result property="Ket" column="KET"/>
+      <result property="Nmdoksah" column="NMDOKSAH"/>
+      <result property="Uraian" column="URAIAN"/>
+      <result property="Nosah" column="NOSAH"/>
+      <result property="Tglsah" column="TGLSAH"/>
+      <result property="Kdtahap" column="KDTAHAP"/>
+      <result property="Kddoksah" column="KDDOKSAH"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertTahapsah" parameterMap="insert-param">
+      <generate table="TAHAPSAH"/>
+    </insert>
+    <update id="UpdateByTahapsah" parameterMap="update-param">
+      <generate table="TAHAPSAH" by="KDTAHAP,KDDOKSAH"/>
+    </update>
+    <delete id="DeleteByTahapsah" parameterMap="delete-param">
+      <generate table="TAHAPSAH" by="KDTAHAP,KDDOKSAH"/>
+    </delete>
+    <select id="BaseQueryTahapsah" parameterClass="Tahapsah" resultMap="return-result">
+      select A.KDDOKSAH,A.KDTAHAP,A.NOSAH,A.TGLSAH
+      ,B.KET, B.NMDOKSAH
+      ,C.URAIAN
+      from TAHAPSAH A
+      left outer join DOKSAH B on A.KDDOKSAH = B.KDDOKSAH
+      left outer join TAHAP C on A.KDTAHAP = C.KDTAHAP
+    </select>
+    <select id="QueryByAllTahapsah" extends="BaseQueryTahapsah" parameterClass="Tahapsah" resultMap="return-result">
+      where ((A.KDTAHAP='1' and #Kdtahap# in ('1','2')) or (A.KDTAHAP='3' and #Kdtahap# in ('3','4')))
+      and case #Parameter.Field#
+      when '1' then A.KDTAHAP
+      when '2' then A.KDDOKSAH
+      when '3' then A.NOSAH
+      when '4' then convert(char(10), A.TGLSAH, 103)
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.KDDOKSAH
+    </select>
+    <select id="LoadByPKTahapsah" extends="BaseQueryTahapsah" parameterClass="Tahapsah" resultMap="return-result">
+      where A.KDTAHAP=#Kdtahap# and A.KDDOKSAH=#Kddoksah# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Tahapsah">
+      <parameter property="Nosah" column="NOSAH"/>
+      <parameter property="Tglsah" column="TGLSAH"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Kddoksah" column="KDDOKSAH"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Tahapsah">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Tahapsah">
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Kddoksah" column="KDDOKSAH"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

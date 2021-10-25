@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Pgrmn" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Pgrmn" type="Usadi.Valid49.BO.PgrmnControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Pgrmn">
+      <result property="Kdtahun" column="KDTAHUN"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Idprgrmn" column="IDPRGRMN"/>
+      <result property="Idprgrms" column="IDPRGRMS"/>
+      <result property="Uruskey" column="URUSKEY"/>
+      <result property="Sasaran" column="SASARAN"/>
+      <result property="Keterangan" column="KETERANGAN"/>
+      <result property="Statustr" column="STATUSTR"/>
+      <result property="Statusvd" column="STATUSVD"/>
+      <result property="Noprgrmn" column="NOPRGRMN"/>
+      <result property="Nmprgrmn" column="NMPRGRMN"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Kdurus" column="KDURUS"/>
+      <result property="Nmurus" column="NMURUS"/>
+      <result property="Noprgrms" column="NOPRGRMS"/>
+      <result property="Nmprgrms" column="NMPRGRMS"/>
+      <result property="Nmtahun" column="NMTAHUN"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="IDPRGRMN"/>
+      <result property="Field" column="NOPRGRMN"/>
+      <result property="Value" column="NMPRGRMN"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <insert id="InsertPgrmn" parameterMap="insert-param" >
+      <generate table="PGRMN"/>
+    </insert>
+    <update id="UpdateByPgrmn" parameterMap="update-param" >
+      <generate table="PGRMN" by="KDTAHUN,UNITKEY,IDPRGRMN"/>
+    </update>
+    <delete id="DeleteByPgrmn" parameterMap="delete-param" >
+      <generate table="PGRMN" by="KDTAHUN,UNITKEY,IDPRGRMN"/>
+    </delete>
+    <select id="BaseQueryPgrmn" parameterClass="Pgrmn" resultMap="return-result">
+      select     PN.KDTAHUN, PN.UNITKEY, PN.IDPRGRMN, PN.IDPRGRMS, PN.URUSKEY, PN.SASARAN, PN.KETERANGAN, PN.STATUSTR, PN.STATUSVD,
+      PN.NOPRGRMN, PN.NMPRGRMN, UN.KDUNIT, UN.NMUNIT, UR.KDUNIT AS KDURUS, UR.NMUNIT AS NMURUS, PS.NOPRGRMS,
+      PS.NMPRGRMS, TN.NMTAHUN
+      from PGRMN PN
+      left outer join DAFTUNIT UN on PN.UNITKEY = UN.UNITKEY
+      left outer join DAFTUNIT UR ON PN.URUSKEY = UR.UNITKEY
+      left outer join PGRMS PS ON PN.IDPRGRMS = PS.IDPRGRMS
+      left outer join JTAHUN TN on PN.KDTAHUN = TN.KDTAHUN
+    </select>
+    <select id="QueryByAllPgrmn" extends="BaseQueryPgrmn" parameterClass="Pgrmn" resultMap="return-result">
+      where
+      PN.UNITKEY=#Unitkey#
+      and PN.KDTAHUN = #Kdtahun#
+      and case #Parameter.Field #
+      when '1' then PN.NOPRGRMN
+      when '2' then PN.NMPRGRMN
+      end like '%'+#Parameter.Value#+'%'
+      order by PN.NOPRGRMN
+    </select>
+    <select id="QueryByBijakpgrmunitnPgrmn" extends="BaseQueryPgrmn" parameterclass="Usadi.Valid49.BO.BijakpgrmunitnControl, Usadi.Valid49" resultMap="return-lookup">
+      where PN.UNITKEY=#Unitkey#
+      and PN.KDTAHUN = #Kdtahun#
+      and PN.IDPRGRMN not in (select IDPRGRMN from BIJAKPGRMUNITN where UNITKEY = #Unitkey# and KDTAHUN= #Kdtahun#)
+      and
+      case #Parameter.Field#
+      when '1' then PN.NOPRGRMN
+      when '2' then PN.NMPRGRMN
+      end like '%'+#Parameter.Value#+'%'
+      order by PN.NOPRGRMN
+    </select>
+    <select id="LoadByPKPgrmn" extends="BaseQueryPgrmn" parameterClass="Pgrmn"  resultMap="return-result" >
+      where PN.KDTAHUN=#Kdtahun# and PN.UNITKEY=#Unitkey# and PN.IDPRGRMN=#Idprgrmn#
+    </select>
+  </statements>
+
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Pgrmn">
+      <parameter property="Idprgrms" column="IDPRGRMS"/>
+      <parameter property="Uruskey" column="URUSKEY"/>
+      <parameter property="Sasaran" column="SASARAN"/>
+      <parameter property="Keterangan" column="KETERANGAN"/>
+      <parameter property="Statustr" column="STATUSTR"/>
+      <parameter property="Statusvd" column="STATUSVD"/>
+      <parameter property="Noprgrmn" column="NOPRGRMN"/>
+      <parameter property="Nmprgrmn" column="NMPRGRMN"/>
+      <parameter property="Kdtahun" column="KDTAHUN"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Idprgrmn" column="IDPRGRMN"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Pgrmn">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Pgrmn">
+      <parameter property="Kdtahun" column="KDTAHUN"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Idprgrmn" column="IDPRGRMN"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>
+

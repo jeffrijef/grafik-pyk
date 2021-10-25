@@ -1,0 +1,6 @@
+TITLE=Lampiran Belanja Tidak Langsung
+Unitkey=string;Key Unit;4;
+Idxsko=string;Index SKO;4;
+Kdlevel=string;Key Unit;4;
+Kdtahap=string;Tahap;4;;-1;2
+Kddok=string;Khusus;4;;-1;03.303

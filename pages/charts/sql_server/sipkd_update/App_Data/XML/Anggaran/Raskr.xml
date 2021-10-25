@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Raskr" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Raskr" type="Usadi.Valid49.BO.RaskrControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Raskr">
+      <result property="Totbln" column="TOTBLN"/>
+      <result property="Totdet" column="TOTDET"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Uraian" column="URAIAN"/>
+      <result property="Mtglevel" column="MTGLEVEL"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Idprgrm" column="IDPRGRM"/>
+      <result property="Nmkegunit" column="NMKEGUNIT"/>
+      <result property="Nukeg" column="NUKEG"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Kdtahap" column="KDTAHAP"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Unitkey" column="UNITKEY"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="MTGKEY"/>
+      <result property="Field" column="KDPER"/>
+      <result property="Value" column="NMPER"/>
+    </resultMap>
+    <resultMap id="return-lookup-raskr" class="Raskr">
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Type" column="TYPE"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertRaskr" parameterMap="insert-param">
+      <generate table="RASKR"/>
+    </insert>
+    <insert id="InsertBulanRaskr" parameterClass="Raskr">
+      insert into RASKBLNR ( UNITKEY, MTGKEY,KDKEGUNIT,KDTAHAP, KD_BULAN, NILAI)
+      select #Unitkey#,#Mtgkey#,#Kdkegunit#,#Kdtahap#,KD_BULAN,0
+      from BULAN
+    </insert>
+    <update id="UpdateByRaskr" parameterMap="update-param">
+      <generate table="RASKR" by="KDKEGUNIT,KDTAHAP,MTGKEY,UNITKEY"/>
+    </update>
+    <delete id="DeleteByRaskr" parameterMap="delete-param">
+      <generate table="RASKR" by="KDKEGUNIT,KDTAHAP,MTGKEY,UNITKEY"/>
+    </delete>
+    <select id="BaseQueryRaskr" parameterClass="Raskr" resultMap="return-result">
+      select A.KDKEGUNIT,A.KDTAHAP,A.MTGKEY,A.NILAI,A.UNITKEY
+      , B.KDUNIT, B.NMUNIT
+      , C.URAIAN
+      , D.KDPER, D.MTGLEVEL, D.NMPER
+      , E.IDPRGRM, E.NMKEGUNIT, E.NUKEG,
+      Totdet=ISNULL((select sum(SUBTOTAL) from raskdetr r where r.mtgkey=a.MTGKEY and r.UNITKEY=a.UNITKEY
+      and r.KDKEGUNIT=a.KDKEGUNIT and r.KDTAHAP=a.KDTAHAP and r.TYPE='D'),0),
+      Totbln=ISNULL((select sum(NILAI) from raskblnr r where r.mtgkey=a.MTGKEY and r.UNITKEY=a.UNITKEY
+      and r.KDKEGUNIT=a.KDKEGUNIT and r.KDTAHAP=a.KDTAHAP),0)
+      from RASKR A
+      left outer join DAFTUNIT B on A.UNITKEY = B.UNITKEY
+      left outer join TAHAP C on A.KDTAHAP = C.KDTAHAP
+      left outer join MATANGR D on A.MTGKEY = D.MTGKEY
+      left outer join MKEGIATAN E on A.KDKEGUNIT = E.KDKEGUNIT
+    </select>
+    <select id="QueryByAllRaskr" extends="BaseQueryRaskr" parameterClass="Raskr" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.KDTAHAP=#Kdtahap# and A.KDKEGUNIT=#Kdkegunit#
+      and case #Parameter.Field#
+      when '1' then D.KDPER
+      when '2' then D.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by D.KDPER
+    </select>
+    <select id="BaseQueryByRekRaskr" parameterClass="Raskr" resultMap="return-lookup">
+      select * from (
+      <!--select UNITKEY,UNITKEY as MTGKEY,KDUNIT as KDPER,NMUNIT as NMPER
+      from DAFTUNIT
+      where KDUNIT in (select left(KDUNIT,2) from DAFTUNIT where UNITKEY in (select URUSKEY from URUSANUNIT where UNITKEY=#Unitkey#))
+      union
+      select UNITKEY,UNITKEY as MTGKEY,KDUNIT as KDPER,NMUNIT as NMPER
+      from DAFTUNIT
+      where UNITKEY in (select URUSKEY from URUSANUNIT where UNITKEY=#Unitkey#)
+      union-->
+      select UNITKEY,UNITKEY as MTGKEY,KDUNIT as KDPER,NMUNIT as NMPER
+      from DAFTUNIT
+      where UNITKEY =#Unitkey#
+      union
+      <!--select P.UNITKEY,UR.UNITKEY as MTGKEY, rtrim(UN.KDUNIT)+rtrim(UR.KDUNIT) as KDPER, UR.NMUNIT as NMPER
+      from PGRMUNIT P left outer join MPGRM MP on P.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on UR.KDUNIT in (select left(KDUNIT,2) from DAFTUNIT where UNITKEY in (select URUSKEY from URUSANUNIT where UNITKEY=#Unitkey#))
+      left outer join DAFTUNIT UN on P.UNITKEY = UN.UNITKEY
+      where P.UNITKEY =#Unitkey#
+      union-->
+      select P.UNITKEY,UR.UNITKEY as MTGKEY, rtrim(UN.KDUNIT)+rtrim(UR.KDUNIT) as KDPER, UR.NMUNIT as NMPER
+      from PGRMUNIT P left outer join MPGRM MP on P.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on P.UNITKEY = UN.UNITKEY
+      where P.UNITKEY =#Unitkey#
+      union
+      select P.UNITKEY,P.IDPRGRM as MTGKEY, rtrim(UN.KDUNIT)+rtrim(UR.KDUNIT)+rtrim(MP.NUPRGRM) as KDPER, MP.NMPRGRM as NMPER
+      from PGRMUNIT P left outer join MPGRM MP on P.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on P.UNITKEY = UN.UNITKEY
+      where P.UNITKEY =#Unitkey#
+      union
+      select K.UNITKEY,K.KDKEGUNIT as MTGKEY, rtrim(UN.KDUNIT)+rtrim(UR.KDUNIT)+rtrim(MP.NUPRGRM)+rtrim(MK.NUKEG) as KDPER, MK.NMKEGUNIT as NMPER
+      from KEGUNIT K
+      left outer join MKEGIATAN MK on MK.KDKEGUNIT=K.KDKEGUNIT
+      left outer join MPGRM MP on MK.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on K.UNITKEY = UN.UNITKEY
+      where K.UNITKEY =#Unitkey#
+      union
+      select D.UNITKEY,rtrim(D.KDKEGUNIT)+'-'+ rtrim(D.MTGKEY) as MTGKEY, rtrim(UN.KDUNIT)+rtrim(UR.KDUNIT)+rtrim(MP.NUPRGRM)+rtrim(MK.NUKEG)+rtrim(M.KDPER) as KDPER, M.NMPER
+      from RASKR D
+      left outer join KEGUNIT K on D.KDKEGUNIT=K.KDKEGUNIT
+      left outer join MKEGIATAN MK on MK.KDKEGUNIT=K.KDKEGUNIT
+      left outer join MPGRM MP on MK.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on K.UNITKEY = UN.UNITKEY
+      left outer join MATANGR M on D.MTGKEY=M.MTGKEY
+      where K.UNITKEY =#Unitkey#
+      )A
+      where MTGKEY not in (select MTGKEY from DASKR S where S.UNITKEY=#Unitkey#)
+      order by KDPER
+    </select>
+    <select id="QueryByDaskrRaskr" extends="BaseQueryByRekRaskr" parameterclass="Usadi.Valid49.BO.DaskrControl" resultMap="return-lookup">
+    </select>
+    <select id="QueryByLookupRKARaskr" parameterClass="Raskr" resultMap="return-lookup-raskr">
+      select M.MTGKEY, rtrim(M.MTGLEVEL) as MTGLEVEL, M.KDPER, M.NMPER,rtrim(M.KDKHUSUS) as KDKHUSUS, rtrim(M.TYPE) as TYPE
+      from MATANGR M
+      where (M.KDPER='5.' or Left(M.KDPER,3)='5.2')
+      and MTGKEY in (select MTGKEY from RASKR where UNITKEY=#Unitkey# and KDTAHAP=#Kdtahap# and KDKEGUNIT=#Kdkegunit#)
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="LoadByPKRaskr" extends="BaseQueryRaskr" parameterClass="Raskr" resultMap="return-result">
+      where A.KDKEGUNIT=#Kdkegunit# and A.KDTAHAP=#Kdtahap# and A.MTGKEY=#Mtgkey# and A.UNITKEY=#Unitkey# 
+    </select>
+    <procedure id="ExecValidateRaskRFromSPD" parameterMap="select-param">
+      WSP_VALIDATERASKFROMSPD
+    </procedure>  
+    <procedure id="ExecValidatePaguSkpdRask" parameterMap="pagu-param0">
+      WSP_VALIDATION_PAGUSKPD_RASK
+    </procedure>
+    <procedure id="ExecValidateRaskRBySP2D" parameterMap="select-param">
+		  WSP_VALIDATERKABYSP2D
+	  </procedure>
+    <procedure id="ExecUpRASKR" parameterMap="select-param-Up">
+      USD_UpRASKR
+    </procedure>
+    <procedure id="ExecVALIDATIONRKAREALIASASI_REK" parameterMap="validate-rka-param">
+      WSP_VALIDATIONRKAREALIASASI_REK
+    </procedure>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Raskr">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+   <parameterMap id="update-param" class="Raskr">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Raskr">
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="select-param" class="Raskr">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Kdkegunit" column="kdkegunit"/>
+      <parameter property="Mtgkey" column="mtgkey"/>
+      <parameter property="Idxkode" column="idxkode"/>
+    </parameterMap>
+    <parameterMap id="select-param-Up" class="Raskr">
+      <parameter property="Kdtahap" column="kdtahap"/>
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Kdkegunit" column="kdkegunit"/>
+      <parameter property="Mtgkey" column="mtgkey"/>
+      <parameter property="Nilai" column="nilrka"/>
+      <parameter property="Malokas" column="malokas"/>
+    </parameterMap>
+    <parameterMap id="pagu-param0" class="Raskr">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Kdtahap" column="kdtahap"/>
+    </parameterMap>
+    <parameterMap id="validate-rka-param" class="Raskr">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Kdper" column="kdper"/>
+      <parameter property="Kdkegunit" column="kdkegunit"/>
+      <parameter property="Kdtahap" column="kdtahap"/>
+    </parameterMap>
+
+  </parameterMaps>
+</sqlMap>

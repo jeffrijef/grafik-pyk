@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Bijakpgrmunitn" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Bijakpgrmunitn" type="Usadi.Valid49.BO.BijakpgrmunitnControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Bijakpgrmunitn">
+      <result property="Kdtahun" column="KDTAHUN"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Idprgrmn" column="IDPRGRMN"/>
+      <result property="Idbijakan" column="IDBIJAKAN"/>
+      <result property="Nmtahun" column="NMTAHUN"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Nobijakan" column="NOBIJAKAN"/>
+      <result property="Nmbijakan" column="NMBIJAKAN"/>
+      <result property="Noprgrmn" column="NOPRGRMN"/>
+      <result property="Nmprgrmn" column="NMPRGRMN"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <insert id="InsertBijakpgrmunitn" parameterMap="insert-param" >
+      <generate table="BIJAKPGRMUNITN"/>
+    </insert>
+    <update id="UpdateByBijakpgrmunitn" parameterMap="update-param" >
+      <generate table="BIJAKPGRMUNITN" by="KDTAHUN,UNITKEY,IDPRGRMN,IDBIJAKAN"/>
+    </update>
+    <delete id="DeleteByBijakpgrmunitn" parameterMap="delete-param" >
+      <generate table="BIJAKPGRMUNITN" by="KDTAHUN,UNITKEY,IDPRGRMN,IDBIJAKAN"/>
+    </delete>
+    <select id="BaseQueryBijakpgrmunitn" parameterClass="Bijakpgrmunitn" resultMap="return-result">
+      select BPN.UNITKEY, BPN.IDPRGRMN, BPN.IDBIJAKAN, BPN.KDTAHUN, 
+      UN.KDUNIT, UN.NMUNIT, B.NOBIJAKAN, B.NMBIJAKAN, 
+      PN.NOPRGRMN, PN.NMPRGRMN, TN.NMTAHUN
+      from BIJAKPGRMUNITN BPN
+      left outer join DAFTUNIT UN on BPN.UNITKEY = UN.UNITKEY
+      left outer join KEBIJAKAN B on BPN.IDBIJAKAN = B.IDBIJAKAN
+      left outer join PGRMN PN on BPN.UNITKEY = PN.UNITKEY and BPN.IDPRGRMN = PN.IDPRGRMN and BPN.KDTAHUN = PN.KDTAHUN
+      left outer join JTAHUN TN on BPN.KDTAHUN = BPN.KDTAHUN and TN.KDTAHUN = PN.KDTAHUN
+    </select>
+    <select id="QueryByAllBijakpgrmunitn" extends="BaseQueryBijakpgrmunitn" parameterClass="Bijakpgrmunitn" resultMap="return-result">
+      where
+      BPN.KDTAHUN=#Kdtahun# AND BPN.UNITKEY=#Unitkey#
+      AND BPN.IDBIJAKAN=#Idbijakan#
+      and case #Parameter.Field #
+      when '1' then PN.NOPRGRMN
+      when '2' then PN.NMPRGRMN
+      end like '%'+#Parameter.Value#+'%'
+      order by PN.NOPRGRMN
+    </select>
+    <select id="LoadByPKBijakpgrmunitn" parameterClass="Bijakpgrmunitn"  resultMap="return-result" >
+      select * from BIJAKPGRMUNITN
+      where KDTAHUN=#Kdtahun# AND UNITKEY=#Unitkey# AND IDPRGRMN=#Idprgrmn# AND IDBIJAKAN=#Idbijakan#
+    </select>
+  </statements>
+
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Bijakpgrmunitn">
+      <parameter property="Kdtahun" column="KDTAHUN"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Parameter.Key" column="IDPRGRMN"/>
+      <parameter property="Idbijakan" column="IDBIJAKAN"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Bijakpgrmunitn">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Bijakpgrmunitn">
+      <parameter property="Kdtahun" column="KDTAHUN"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Idprgrmn" column="IDPRGRMN"/>
+      <parameter property="Idbijakan" column="IDBIJAKAN"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>
+

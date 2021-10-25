@@ -1,0 +1,6 @@
+TITLE=S P D - REVISI
+Unitkey=string;Key Unit;4;
+Idxsko=string;Index SKO;4;
+Bend=string;Bendahara;30;
+Kdtahap=string;Tahap;4;;-1;2
+Kddok=string;Khusus;4;;-1;03.303

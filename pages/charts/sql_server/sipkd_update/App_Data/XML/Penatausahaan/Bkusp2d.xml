@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Bkusp2d" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Bkusp2d" type="Usadi.Valid49.BO.Bkusp2dControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result-last" class="Bkusp2d">
+      <result property="Nobkuskpd" column="NOBKUSKPD"/>
+    </resultMap>
+    <resultMap id="return-result" class="Bkusp2d">
+      <result property="AllowSuperUser" column="ALLOWSUPERUSER"/>
+      <result property="Idxkode" column="IDXKODE"/>
+      <result property="Idxttd" column="IDXTTD"/>
+      <result property="Keybend" column="KEYBEND"/>
+      <result property="Nobukti" column="NOSP2D"/>
+      <result property="Tglbukti" column="TGLSP2D"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Tglbkuskpd" column="TGLBKUSKPD"/>
+      <result property="Uraian" column="URAIAN"/>
+      <result property="Nobkuskpd" column="NOBKUSKPD"/>
+    </resultMap>
+    <resultMap id="return-result-bkubend" class="Usadi.Valid49.BO.BkupengeluaranControl">
+      <result property="AllowSuperUser" column="ALLOWSUPERUSER"/>
+      <result property="Kdstatus" column="KDSTATUS"/>
+      <result property="Idxkode" column="IDXKODE"/>
+      <result property="Idxttd" column="IDXTTD"/>
+      <result property="Nobukti" column="NOBUKTI"/>
+      <result property="Jenis" column="JENIS"/>
+      <result property="Tglbukti" column="TGLBUKTI"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Uraian" column="URAIAN"/>
+      <result property="Keybend" column="KEYBEND"/>
+      <result property="Tglbkuskpd" column="TGLBKUSKPD"/>
+      <result property="Nobkuskpd" column="NOBKUSKPD"/>
+    </resultMap>
+    <resultMap id="return-result-bkujur" class="Usadi.Valid49.BO.BkujurpengeluaranControl">
+      <result property="AllowSuperUser" column="ALLOWSUPERUSER"/>
+      <result property="Hal" column="HAL"/>
+      <result property="Idxkode" column="IDXKODE"/>
+      <result property="Kdstatus" column="KDSTATUS"/>
+      <result property="Lblstatus" column="LBLSTATUS"/>
+      <result property="Idxttd" column="IDXTTD"/>
+      <result property="Nobukti" column="NOBUKTI"/>
+      <result property="Jenis" column="JENIS"/>
+      <result property="Tglbukti" column="TGLBUKTI"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Uraian" column="URAIAN"/>
+      <result property="Keybend" column="KEYBEND"/>
+      <result property="Tglbkuskpd" column="TGLBKUSKPD"/>
+      <result property="Nobkuskpd" column="NOBKUSKPD"/>
+    </resultMap>
+
+    <resultMap id="return-result-wspi" class="Usadi.Valid49.BO.BkupengeluaranControl">
+      <result property="AllowSuperUser" column="ALLOWSUPERUSER"/>
+      <result property="Hal" column="HAL"/>
+      <result property="Nmr" column="NMR"/>
+      <result property="Kode" column="KODE"/>
+      <result property="Afektasi" column="AFEKTASI"/>
+      <result property="Potongan" column="POTONGAN"/>
+      <result property="Dibayar" column="DIBAYAR"/>
+      <result property="Tgl1" column="TGL1"/>
+      <result property="Tgl2" column="TGL2"/>
+      <result property="Kdstatus" column="KDSTATUS"/>
+      <result property="Idxkode" column="IDXKODE"/>
+      <result property="Idxttd" column="IDXTTD"/>
+      <result property="Nobukti" column="NOBUKTI"/>
+      <result property="Jenis" column="JENIS"/>
+      <result property="Tglbukti" column="TGLBUKTI"/>
+      <result property="Tglkas" column="TGLKAS"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Uraian" column="URAIAN"/>
+      <result property="Keybend" column="KEYBEND"/>
+      <result property="Tglbkuskpd" column="TGLBKUSKPD"/>
+      <result property="Nobkuskpd" column="NOBKUSKPD"/>
+    </resultMap>
+
+  </resultMaps>
+  <statements>
+    <insert id="InsertBkusp2d" parameterMap="insert-param">
+      <generate table="BKUSP2D"/>
+    </insert>
+    <update id="UpdateByBkusp2d" parameterMap="update-param">
+      <generate table="BKUSP2D" by="UNITKEY,NOBKUSKPD"/>
+    </update>
+    <update id="UpdateByTglvalidBkusp2d" parameterClass="Bkusp2d">
+      update BKUSP2D set TGLVALID=#Tglvalid#
+      where UNITKEY=#Unitkey# and NOBKUSKPD=#Nobkuskpd#
+    </update>
+    <update id="UpdateByDraftBkusp2d" parameterClass="Bkusp2d" >
+      update BKUSP2D set TGLVALID=null
+      where UNITKEY=#Unitkey# and NOBKUSKPD=#Nobkuskpd#
+    </update>
+    <update id="UpdateByTglvalidjurBkusp2d" parameterClass="Bkusp2d">
+      update BKUK set TGLVALID=#Tglvalid#
+      where NOSP2D=#Nobukti#
+    </update>
+    <update id="UpdateByDraftjurBkusp2d" parameterClass="Bkusp2d" >
+      update BKUK set TGLVALID=null
+      where  NOSP2D=#Nobukti#
+    </update>
+    <delete id="DeleteByBkusp2d" parameterMap="delete-param">
+      <generate table="BKUSP2D" by="UNITKEY,NOBKUSKPD"/>
+    </delete>
+
+    <procedure id="ExecViewBkupengeluaran" parameterMap="select-param0" timeout="0" resultMap="return-result-wspi">
+      WSPI_BKUPENGELUARAN
+    </procedure>
+    <!--<procedure id="ExecViewBkupengeluaranTgl" parameterMap="select-param" timeout="0" resultMap="return-result-wspi">
+      WSPI_BKUPENGELUARAN_TGL
+    </procedure>-->
+    <procedure id="ExecJurnalBkupengeluaran" parameterMap="select-param" timeout="0" resultMap="return-result-wspi">
+      WSPI_JURBKUPENGELUARAN
+    </procedure>
+    <procedure id="ExecJurpengembalian" parameterMap="select-param" timeout="0" resultMap="return-result-wspi">
+      WSPI_JURPENGEMBALIAN
+    </procedure>
+    <!--<procedure id="ExecJurnalBkupengeluaranlo" parameterMap="select-param" timeout="0" resultMap="return-result-wspi">
+      WSPI_JURBKUPENGELUARANLO
+    </procedure>-->
+    <!--<procedure id="ExecJurnalBkupengeluaranTgl" parameterMap="select-param" timeout="0" resultMap="return-result-wspi">
+      WSPI_JURBKUPENGELUARAN_TGL
+    </procedure>-->
+
+    <select id="BaseQueryBkusp2d" parameterClass="Bkusp2d" resultMap="return-result">
+      select #AllowSuperUser# as ALLOWSUPERUSER,rtrim(A.IDXTTD) as IDXTTD,rtrim(A.KEYBEND) as KEYBEND,A.NOBKUSKPD,A.NOSP2D,A.TGLBKUSKPD,A.TGLVALID,A.UNITKEY,A.URAIAN
+      ,B.TGLSP2D,B.IDXKODE
+      from BKUSP2D A
+      Left outer Join SP2D B on A.NOSP2D = B.NOSP2D and A.UNITKEY=B.UNITKEY
+    </select>
+    <select id="QueryByLastBkusp2d" parameterClass="Bkusp2d" resultMap="return-result-last">
+      select top 1 A.NOBKUSKPD from
+      (
+      select A.NOBKUSKPD from BKUSP2D A where A.UNITKEY=#Unitkey# and (A.KEYBEND = #Keybend# or #Keybend#='')
+      union
+      select A.NOBKUSKPD from BKUBPK A where A.UNITKEY=#Unitkey# and (A.KEYBEND = #Keybend# or #Keybend#='')
+      union
+      select A.NOBKUSKPD from BKUPANJAR A where A.UNITKEY=#Unitkey# and (A.KEYBEND = #Keybend# or #Keybend#='')
+      union
+      select A.NOBKUSKPD from BKUPAJAK A where A.UNITKEY=#Unitkey# and (A.KEYBEND = #Keybend# or #Keybend#='')
+      union
+      select A.NOBKUSKPD from BKUBANK A where A.UNITKEY=#Unitkey# and (A.KEYBEND = #Keybend# or #Keybend#='')
+      union
+      select A.NOBKUSKPD from BKUTBP A where A.UNITKEY=#Unitkey# and (A.KEYBEND = #Keybend# or #Keybend#='')
+      union
+      select A.NOBKUSKPD from BKUSTS A where A.UNITKEY=#Unitkey# and (A.KEYBEND = #Keybend# or #Keybend#='')
+      )A
+      order by A.NOBKUSKPD desc
+    </select>
+    <select id="QueryByAllBkusp2d" extends="BaseQueryBkusp2d" parameterClass="Bkusp2d" resultMap="return-result">
+      where A.UNITKEY=#Unitkey#
+      and (A.KEYBEND = #Keybend# or #Keybend#='')
+      and A.KEYBEND = #Keybend#
+      and case #Parameter.Field#
+      when '1' then A.NOSP2D
+      when '2' then A.NOSP2D
+      when '3' then convert(char(10), A.TGLBKUSKPD, 103)
+      when '4' then convert(char(10), A.TGLVALID, 103)
+      when '5' then A.URAIAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOBKUSKPD
+    </select>
+    <select id="QueryByNosp2dBkusp2d" extends="BaseQueryBkusp2d" parameterClass="Bkusp2d" resultMap="return-result">
+      where A.UNITKEY=#Unitkey#
+      and A.NOSP2D=#Nobukti#
+    </select>
+   
+    <select id="BaseQueryBkupengeluaran" parameterClass="Bkusp2d" resultMap="return-result-bkubend">
+      select * from (
+      select #AllowSuperUser# as ALLOWSUPERUSER,rtrim(A.IDXTTD) as IDXTTD,rtrim(A.KEYBEND) as KEYBEND,A.NOBKUSKPD,A.NOSP2D as NOBUKTI,A.TGLBKUSKPD,
+      A.TGLVALID,A.UNITKEY,A.URAIAN,B.TGLSP2D as TGLBUKTI, 'SP2D' as JENIS,B.IDXKODE,B.KDSTATUS
+      from BKUSP2D A
+      left outer Join SP2D B on A.NOSP2D = B.NOSP2D and A.UNITKEY=B.UNITKEY
+      left outer Join BEND C on B.KEYBEND = C.KEYBEND and B.UNITKEY=C.UNITKEY
+      where A.UNITKEY=#Unitkey# and rtrim(B.KDSTATUS)+'-'+cast(B.IDXKODE as char(1))+'-'+right(rtrim(C.JNS_BEND),1) in ('21-6-2',   '21-3-2','22-3-2','23-3-2','24-3-2',   '24-4-2',  '21-2-2','22-2-2','23-2-2','24-2-2',   '24-5-2')
+      and (A.KEYBEND = #Keybend# or #Keybend#='')
+      union
+      select #AllowSuperUser# as ALLOWSUPERUSER,rtrim(A.IDXTTD) as IDXTTD,rtrim(A.KEYBEND) as KEYBEND,A.NOBKUSKPD,A.NOBPK as NOBUKTI,A.TGLBKUSKPD,
+      A.TGLVALID,A.UNITKEY,A.URAIAN,B.TGLBPK as TGLBUKTI, 'BPK' as JENIS,B.IDXKODE,B.KDSTATUS
+      from BKUBPK A
+      left outer Join BPK B on A.NOBPK = B.NOBPK and A.UNITKEY=B.UNITKEY
+      left outer Join BEND C on B.KEYBEND = C.KEYBEND and B.UNITKEY=C.UNITKEY
+      where A.UNITKEY=#Unitkey# and rtrim(B.KDSTATUS)+'-'+cast(B.IDXKODE as char(1))+'-'+right(rtrim(C.JNS_BEND),1) in ('21-3-2','22-3-2','23-3-2',   '21-2-2','22-2-2','23-2-2')
+      and (A.KEYBEND = #Keybend# or #Keybend#='')
+      union
+      select #AllowSuperUser# as ALLOWSUPERUSER,rtrim(A.IDXTTD) as IDXTTD,rtrim(A.KEYBEND) as KEYBEND,A.NOBKUSKPD,A.NOPANJAR as NOBUKTI,A.TGLBKUSKPD,
+      A.TGLVALID,A.UNITKEY,A.URAIAN,B.TGLPANJAR as TGLBUKTI, 'Panjar' as JENIS,B.IDXKODE,B.KDSTATUS
+      from BKUPANJAR A
+      left outer Join PANJAR B on A.NOPANJAR = B.NOPANJAR and A.UNITKEY=B.UNITKEY
+      left outer Join BEND C on B.KEYBEND = C.KEYBEND and B.UNITKEY=C.UNITKEY
+      where A.UNITKEY=#Unitkey# and rtrim(B.KDSTATUS) in ('31','32')
+      and (A.KEYBEND = #Keybend# or #Keybend#='')
+      union
+      select #AllowSuperUser# as ALLOWSUPERUSER,rtrim(A.IDXTTD) as IDXTTD,rtrim(A.KEYBEND) as KEYBEND,A.NOBKUSKPD,A.NOBKPAJAK as NOBUKTI,A.TGLBKUSKPD,
+      A.TGLVALID,A.UNITKEY,A.URAIAN,B.TGLBKPAJAK as TGLBUKTI, 'Pajak' as JENIS,0 as IDXKODE,B.KDSTATUS
+      from BKUPAJAK A
+      left outer Join BKPAJAK B on A.NOBKPAJAK = B.NOBKPAJAK and A.UNITKEY=B.UNITKEY
+      left outer Join BEND C on B.KEYBEND = C.KEYBEND and B.UNITKEY=C.UNITKEY
+      where A.UNITKEY=#Unitkey# and rtrim(B.KDSTATUS) in ('35','36')
+      and (A.KEYBEND = #Keybend# or #Keybend#='')
+      union
+      select #AllowSuperUser# as ALLOWSUPERUSER,rtrim(A.IDXTTD) as IDXTTD,rtrim(A.KEYBEND) as KEYBEND,A.NOBKUSKPD,A.NOBUKU as NOBUKTI,A.TGLBKUSKPD,
+      A.TGLVALID,A.UNITKEY,A.URAIAN,B.TGLBUKU as TGLBUKTI, 'Bank' as JENIS,0 as IDXKODE,B.KDSTATUS
+      from BKUBANK A
+      left outer Join BKBANK B on A.NOBUKU = B.NOBUKU and A.UNITKEY=B.UNITKEY
+      left outer Join BEND C on B.KEYBEND1 = C.KEYBEND and B.UNITKEY=C.UNITKEY
+      where A.UNITKEY=#Unitkey# and rtrim(B.KDSTATUS) in ('33','34')
+      and (A.KEYBEND = #Keybend# or #Keybend#='')
+      union
+      select #AllowSuperUser# as ALLOWSUPERUSER,rtrim(A.IDXTTD) as IDXTTD,rtrim(A.KEYBEND) as KEYBEND,A.NOBKUSKPD,A.NOTBP as NOBUKTI,A.TGLBKUSKPD,
+      A.TGLVALID,A.UNITKEY,A.URAIAN,B.TGLTBP as TGLBUKTI, 'TBP' as JENIS,B.IDXKODE,B.KDSTATUS
+      from BKUTBP A
+      left outer Join TBP B on A.NOTBP = B.NOTBP and A.UNITKEY=B.UNITKEY
+      left outer Join BEND C on B.KEYBEND1 = C.KEYBEND and B.UNITKEY=C.UNITKEY
+      where A.UNITKEY=#Unitkey# and rtrim(B.KDSTATUS)+'-'+cast(B.IDXKODE as char(1))+'-'+right(rtrim(C.JNS_BEND),1) in ('12-3-2','12-4-2','12-2-2','12-5-2')
+      and (A.KEYBEND = #Keybend# or #Keybend#='')
+      union
+      select #AllowSuperUser# as ALLOWSUPERUSER,rtrim(A.IDXTTD) as IDXTTD,rtrim(A.KEYBEND) as KEYBEND,A.NOBKUSKPD,A.NOTBP as NOBUKTI,A.TGLBKUSKPD,
+      A.TGLVALID,A.UNITKEY,A.URAIAN,B.TGLTBP as TGLBUKTI, 'UP' as JENIS,B.IDXKODE,B.KDSTATUS
+      from BKUTBP A
+      left outer Join TBP B on A.NOTBP = B.NOTBP and A.UNITKEY=B.UNITKEY
+      left outer Join BEND C on B.KEYBEND1 = C.KEYBEND and B.UNITKEY=C.UNITKEY
+      where A.UNITKEY=#Unitkey# and rtrim(B.KDSTATUS)+'-'+cast(B.IDXKODE as char(1))+'-'+right(rtrim(C.JNS_BEND),1) in ('14-0-2')
+      and (A.KEYBEND = #Keybend# or #Keybend#='')
+      union
+      select #AllowSuperUser# as ALLOWSUPERUSER,rtrim(A.IDXTTD) as IDXTTD,rtrim(A.KEYBEND) as KEYBEND,A.NOBKUSKPD,A.NOSTS as NOBUKTI,A.TGLBKUSKPD,
+      A.TGLVALID,A.UNITKEY,A.URAIAN,B.TGLSTS as TGLBUKTI, 'STS' as JENIS,B.IDXKODE,B.KDSTATUS
+      from BKUSTS A
+      left outer Join STS B on A.NOSTS = B.NOSTS and A.UNITKEY=B.UNITKEY
+      left outer Join BEND C on B.KEYBEND1 = C.KEYBEND and B.UNITKEY=C.UNITKEY
+      where A.UNITKEY=#Unitkey# and rtrim(B.KDSTATUS)+'-'+cast(B.IDXKODE as char(1))+'-'+right(rtrim(C.JNS_BEND),1) in ('13-1-2','12-3-2','13-3-2','12-4-2','13-4-2','12-2-2','13-2-2','12-5-2','10-2-2','13-6-2')
+      and (A.KEYBEND = #Keybend# or #Keybend#='')
+      )A
+    </select>
+    <select id="QueryByAllBkupengeluaran" extends="BaseQueryBkupengeluaran" parameterClass="Bkusp2d" resultMap="return-result-bkubend">
+      where JENIS in ('SP2D','BPK','Panjar','Pajak','Bank','STS','UP','TBP')
+      and (A.KEYBEND = #Keybend# or #Keybend#='')
+      and A.KEYBEND = #Keybend#
+      and case #Parameter.Field#
+      when '1' then A.NOBKUSKPD
+      when '2' then A.NOBUKTI
+      when '3' then convert(char(10), A.TGLBKUSKPD, 103)
+      when '4' then convert(char(10), A.TGLVALID, 103)
+      when '5' then A.URAIAN
+      end like '%'+#Parameter.Value#+'%'
+      order by NOBKUSKPD
+    </select>
+    <select id="QueryByNourutBkusp2d" extends="QueryByAllBkupengeluaran" parameterClass="Bkusp2d" resultMap="return-result-bkubend">
+    </select>
+    <select id="QueryByJurnalBkupengeluaran" extends="BaseQueryBkupengeluaran" parameterClass="Bkusp2d" resultMap="return-result-bkubend">
+      where JENIS in ('SP2D','STS')
+      and A.KEYBEND = #Keybend#
+      and case #Parameter.Field#
+      when '1' then A.NOBKUSKPD
+      when '2' then convert(char(10), A.TGLBKUSKPD, 103)
+      when '3' then A.NOBUKTI
+      when '4' then convert(char(10), A.TGLBUKTI, 103)
+      end like '%'+#Parameter.Value#+'%'
+      order by NOBKUSKPD
+    </select>
+    <!--<select id="QueryByAllBkujurpengeluaran" parameterClass="Bkusts" resultMap="return-result-bkujur">
+      select rtrim(A.IDXTTD) as IDXTTD,rtrim(A.KEYBEND) as KEYBEND,A.NOBKUSKPD,A.NOSP2D as NOBUKTI,A.TGLBKUSKPD,A.TGLVALID,A.UNITKEY,A.URAIAN
+      ,B.TGLSP2D as TGLBUKTI,rtrim(B.KDSTATUS) as KDSTATUS,'SP2D' as JENIS,D.LBLSTATUS,B.IDXKODE
+      from BKUSP2D A
+      Left outer Join SP2D B on A.NOSP2D = B.NOSP2D and A.UNITKEY=B.UNITKEY
+      left outer join STATTRS D on B.KDSTATUS = D.KDSTATUS
+      where A.UNITKEY=#Unitkey# and A.TGLVALID is not null
+      and case #Parameter.Field#
+      when '1' then A.NOBKUSKPD
+      when '2' then convert(char(10), A.TGLBKUSKPD, 103)
+      when '3' then A.NOSP2D
+      when '4' then convert(char(10), A.TGLSP2D, 103)
+      end like '%'+#Parameter.Value#+'%'
+      order by A.NOBKUSKPD
+    </select>-->
+    <select id="LoadByPKBkusp2d" extends="BaseQueryBkusp2d" parameterClass="Bkusp2d" resultMap="return-result">
+      where A.NOBKUSKPD=#Nobkuskpd#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Bkusp2d">
+      <!--<parameter property="Idxttd" column="IDXTTD"/>-->
+      <parameter property="Keybend" column="KEYBEND"/>
+      <parameter property="Nobukti" column="NOSP2D"/>
+      <parameter property="Tglbkuskpd" column="TGLBKUSKPD"/>
+      <parameter property="Uraian" column="URAIAN"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nobkuskpd" column="NOBKUSKPD"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Bkusp2d">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Bkusp2d">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nobkuskpd" column="NOBKUSKPD"/>
+    </parameterMap>
+    <parameterMap id="select-param0" class="Bkusp2d">
+      <parameter property="AllowSuperUser" column="allowsuperuser"/>
+      <parameter property="Kode" column="kode"/>
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Keybend" column="keybend"/>
+      <parameter property="Tgl1" column="tgl1"/>
+      <parameter property="Tgl2" column="tgl2"/>
+      <parameter property="Parameter.Field" column="field"/>
+      <parameter property="Parameter.Value" column="value"/>
+      <parameter property="Hal" column="hal"/>
+      <parameter property="Flgtgl" column="flgtgl"/>
+      <parameter property="Jmlhal" column="jmlhal"/>
+    </parameterMap>
+    <parameterMap id="select-param" class="Bkusp2d">
+      <parameter property="AllowSuperUser" column="allowsuperuser"/>
+      <parameter property="Kode" column="kode"/>
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Keybend" column="keybend"/>
+      <parameter property="Tgl1" column="tgl1"/>
+      <parameter property="Tgl2" column="tgl2"/>
+      <parameter property="Parameter.Field" column="field"/>
+      <parameter property="Parameter.Value" column="value"/>
+      <parameter property="Hal" column="hal"/>
+      <parameter property="Flgtgl" column="flgtgl"/>
+      <parameter property="Jmlhal" column="jmlhal"/>
+      <parameter property="Jur" column="jur"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

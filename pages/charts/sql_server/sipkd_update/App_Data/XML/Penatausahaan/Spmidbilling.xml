@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Spmidbilling" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Spmidbilling" type="Usadi.Valid49.BO.SpmidbillingControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Spmidbilling">
+      <result property="Idbilling" column="IDBILLING"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Jenis" column="JENIS"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nospm" column="NOSPM"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Keperluan" column="KEPERLUAN"/>
+      <result property="Kdakun" column="KDAKUN"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <update id="UpdateBySpmidbilling" parameterMap="update-param">
+      <generate table="Spmidbilling" by="UNITKEY,NOSPM,KDPER"/>
+    </update>
+    <select id="BaseQuerySpmidbilling" parameterClass="Spmidbilling" resultMap="return-result">
+      select isnull(S.IDBILLING,'') as IDBILLING,S.NILAI,S.JENIS,S.NMPER,S.UNITKEY,S.NOSPM,S.KDPER, a.KEPERLUAN, isnull (j.KDAKUN,m.KDAKUN) AS KDAKUN
+      from SPMIDBILLING S
+      LEFT JOIN ANTARBYR a ON s.NOSPM = a.NOSPM
+      LEFT JOIN JPAJAK j ON j.KDPER = s.KDPER
+      LEFT JOIN MATANGB m ON m.KDPER = S.KDPER
+      LEFT JOIN SP2D s1 ON a.NOSPM = s1.NOSPM
+      LEFT JOIN BKUK b ON s1.NOSP2D = b.NOSP2D
+    </select>
+    <select id="QueryByAllSpmidbilling" extends="BaseQuerySpmidbilling" parameterClass="Spmidbilling" resultMap="return-result">
+      where S.UNITKEY = #Unitkey# AND b.NOSP2D IS NULL AND
+      case #Parameter.Field#
+      when '1' then S.NOSPM
+      end like '%'+ #Parameter.Value# + '%'
+      order by S.NOSPM
+    </select>
+    <select id="LoadByPKSpmidbilling" extends="BaseQuerySpmidbilling" parameterClass="Spmidbilling" resultMap="return-result">
+      <!--where S.UNITKEY = #Unitkey# and S.NOSPM = #Nospm# and S.KDPER = #Kdper#-->
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="update-param" class="Spmidbilling">
+      <parameter property="Idbilling" column="IDBILLING"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nospm" column="NOSPM"/>
+      <parameter property="Kdper" column="KDPER"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>
+

@@ -1,0 +1,6 @@
+TITLE=RKA-SPKD 3.1
+Unitkey=string;Key Unit;4;
+Kdtahap=string;Tahap;4;
+Tanggal=datetime;Tanggal;30;
+Hal=string;Halaman;4;
+Kdkhusus=string;-;4;;-1;1

@@ -1,0 +1,5 @@
+TITLE= RINCIAN BELANJA PEGAWAI TIDAK LANGSUNG
+Kdtahap=string;Tahap;4;
+Kdlevel=string;Level Rekening;5;
+Hal=string;Halaman;4;
+Tgl=datetime;Tanggal Cetak;30;

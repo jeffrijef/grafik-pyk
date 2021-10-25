@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Jbelanja" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Jbelanja" type="Usadi.Valid49.BO.JbelanjaControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Jbelanja">
+      <result property="Kdrek" column="KDREK"/>
+      <result property="Nmrek" column="NMREK"/>
+      <result property="Type" column="TYPE"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="KDREK"/>
+      <result property="Field" column="KDREK"/>
+      <result property="Value" column="NMREK"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <insert id="InsertJbelanja" parameterMap="insert-param" >
+      <generate table="JBELANJA"/>
+    </insert>
+    <update id="UpdateByJbelanja" parameterMap="update-param" >
+      <generate table="JBELANJA" by="KDREK"/>
+    </update>
+    <delete id="DeleteByJbelanja" parameterMap="delete-param" >
+      <generate table="JBELANJA" by="KDREK"/>
+    </delete>
+    <select id="BaseQueryJbelanja" parameterClass="Jbelanja" resultMap="return-result">
+      select * from JBELANJA
+    </select>
+    <select id="QueryByAllJbelanja" extends="BaseQueryJbelanja" parameterClass="Jbelanja" resultMap="return-result">
+      order by KDREK
+    </select>
+    <select id="QueryByRenjartldetJbelanja" extends="BaseQueryJbelanja" parameterclass="Usadi.Valid49.BO.RenjartldetControl, Usadi.Valid49" resultMap="return-lookup">
+      where
+      TYPE='D' and left(KDREK,3)='5.1'
+      and KDREK not in (select KDREK from Renjartldet where UNITKEY=#Unitkey# and KDTAHUN=#Kdtahun#)
+      order by KDREK
+    </select>
+    <select id="QueryByRenjardetJbelanja" extends="BaseQueryJbelanja" parameterclass="Usadi.Valid49.BO.RenjardetControl, Usadi.Valid49" resultMap="return-lookup">
+      where
+      TYPE='D' and left(KDREK,3)='5.2'
+      and KDREK not in (select KDREK from Renjardet where UNITKEY=#Unitkey# and KDTAHUN=#Kdtahun# and KDKEGN=#Kdkegn#)
+      order by KDREK
+    </select>
+    <select id="LoadByPKJbelanja" parameterClass="Jbelanja"  resultMap="return-result" >
+      select * from JBELANJA
+      where KDREK=#Kdrek#
+    </select>
+  </statements>
+
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Jbelanja">
+      <parameter property="Nmrek" column="NMREK"/>
+      <parameter property="Type" column="TYPE"/>
+      <parameter property="Kdrek" column="KDREK"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Jbelanja">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Jbelanja">
+      <parameter property="Kdrek" column="KDREK"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>
+

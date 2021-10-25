@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Kpa" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Kpa" type="Usadi.Valid49.BO.KpaControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Kpa">
+      <result property="Nip" column="NIP"/>
+      <result property="Nama" column="NAMA"/>
+      <result property="Jabatan" column="JABATAN"/>
+      <result property="Kdunituk" column="KDUNIT"/>
+      <result property="Nmunituk" column="NMUNIT"/>
+      <result property="Unitkeyuk" column="UNITKEY"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertKpa" parameterMap="insert-param">
+      <generate table="KPA"/>
+    </insert>
+    <update id="UpdateByKpa" parameterMap="update-param">
+      <generate table="KPA" by="UNITKEY,NIP"/>
+    </update>
+    <delete id="DeleteByKpa" parameterMap="delete-param">
+      <generate table="KPA" by="UNITKEY,NIP"/>
+    </delete>
+    <select id="BaseQueryKpa" parameterClass="Kpa" resultMap="return-result">
+      select A.JABATAN,A.NIP,A.UNITKEY
+      ,rtrim(U.KDUNIT) as KDUNIT, rtrim(U.NMUNIT) as NMUNIT
+      ,P.NAMA
+      from KPA A   
+      left outer join DAFTUNIT U on A.UNITKEY=U.UNITKEY
+      left outer join PEGAWAI P on A.NIP=P.NIP
+
+    </select>
+    <select id="QueryByAllKpa" extends="BaseQueryKpa" parameterClass="Kpa" resultMap="return-result">
+      where left(U.KDUNIT,len(#Kdunit#))=#Kdunit#
+      and case #Parameter.Field#
+      when '1' then U.KDUNIT
+      when '2' then U.NMUNIT
+      when '3' then A.NIP
+      when '4' then P.NAMA
+      when '5' then A.JABATAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by U.KDUNIT
+    </select>
+    <select id="LoadByPKKpa" extends="BaseQueryKpa" parameterClass="Kpa" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NIP = #Nip#
+    </select>
+    <select id="LoadByNipKpa" extends="BaseQueryKpa" parameterClass="Kpa" resultMap="return-result">
+      where A.NIP = #Nip#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Kpa">
+      <parameter property="Jabatan" column="JABATAN"/>
+      <parameter property="Unitkeyuk" column="UNITKEY"/>
+      <parameter property="Nip" column="NIP"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Kpa">
+      </parameterMap>
+    <parameterMap id="delete-param" class="Kpa">
+      <parameter property="Unitkeyuk" column="UNITKEY"/>
+      <parameter property="Nip" column="NIP"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

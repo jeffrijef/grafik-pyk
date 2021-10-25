@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Jbm" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Jbm" type="Usadi.Valid49.BO.JbmControl, Usadi.Valid49" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Jbm">
+      <result property="Nmbm" column="NMBM"/>
+      <result property="Kdbm" column="KDBM"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertJbm" parameterMap="insert-param">
+      <generate table="JBM"/>
+    </insert>
+    <update id="UpdateByJbm" parameterMap="update-param">
+      <generate table="JBM" by="KDBM"/>
+    </update>
+    <delete id="DeleteByJbm" parameterMap="delete-param">
+      <generate table="JBM" by="KDBM"/>
+    </delete>
+    <select id="BaseQueryJbm" parameterClass="Jbm" resultMap="return-result">
+      select A.KDBM,A.NMBM
+      from JBM A
+    </select>
+    <select id="QueryByAllJbm" extends="BaseQueryJbm" parameterClass="Jbm" resultMap="return-result">
+			where
+			case #Parameter.Field#
+			when '1' then A.KDBM
+			when '2' then A.NMBM
+			end like '%'+ #Parameter.Value# + '%'
+			Order by A.KDBM
+		</select>
+    <select id="QueryByBuktiJbm" extends="BaseQueryJbm" parameterClass="Jbm" resultMap="return-result">
+      where A.KDBM in ('03','11','031','111') <!--LRA,LO-->   <!--,'01','02','04','05','90'-->
+      and case #Parameter.Field#
+      when '1' then A.KDBM
+      when '2' then A.NMBM
+      end like '%'+ #Parameter.Value# + '%'
+      Order by A.KDBM
+    </select>
+    <select id="QueryByElimJbm" extends="BaseQueryJbm" parameterClass="Jbm" resultMap="return-result">
+      where A.KDBM in ('98') and
+      case #Parameter.Field#
+      when '1' then A.KDBM
+      when '2' then A.NMBM
+      end like '%'+ #Parameter.Value# + '%'
+      Order by A.KDBM
+    </select>
+    <select id="QueryByNotElimJbm" extends="BaseQueryJbm" parameterClass="Jbm" resultMap="return-result">
+      where A.KDBM not in ('98') and
+      case #Parameter.Field#
+      when '1' then A.KDBM
+      when '2' then A.NMBM
+      end like '%'+ #Parameter.Value# + '%'
+      Order by A.KDBM
+    </select>
+    <select id="LoadByPKJbm" extends="BaseQueryJbm" parameterClass="Jbm" resultMap="return-result">
+      where A.KDBM=#Kdbm# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Jbm">
+      <parameter property="Nmbm" column="NMBM"/>
+      <parameter property="Kdbm" column="KDBM"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Jbm">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Jbm">
+      <parameter property="Kdbm" column="KDBM"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

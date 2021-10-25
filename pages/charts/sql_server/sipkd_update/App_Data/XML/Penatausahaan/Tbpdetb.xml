@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Tbpdetb" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Tbpdetb" type="Usadi.Valid49.BO.TbpdetbControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Tbpdetb">
+      <result property="Idxkode" column="IDXKODE"/>
+      <result property="Kdpers" column="KDPERS"/>
+      <result property="Nojetra" column="NOJETRA"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Notbp" column="NOTBP"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertTbpdetb" parameterMap="insert-param">
+      <generate table="TBPDETB"/>
+    </insert>
+    <update id="UpdateByTbpdetb" parameterMap="update-param">
+      <generate table="TBPDETB" by="NOJETRA,UNITKEY,NOTBP,MTGKEY"/>
+    </update>
+    <delete id="DeleteByTbpdetb" parameterMap="delete-param">
+      <generate table="TBPDETB" by="NOJETRA,UNITKEY,NOTBP,MTGKEY"/>
+    </delete>
+    <select id="BaseQueryTbpdetb" parameterClass="Tbpdetb" resultMap="return-result">
+			select A.MTGKEY,A.NILAI,A.NOJETRA,A.NOTBP,A.UNITKEY
+			,B.IDXKODE
+			,rtrim(C.KDPER) as KDPER, rtrim(C.NMPER) as NMPER, C.TYPE
+			,D.KDPERS
+			from TBPDETB A
+			left outer join TBP B on A.NOTBP = B.NOTBP and A.UNITKEY = B.UNITKEY
+			left outer join MATANGB C on A.MTGKEY = C.MTGKEY
+			left outer join JTRNLKAS D on A.NOJETRA = D.NOJETRA
+		</select>
+    <select id="QueryByAllTbpdetb" extends="BaseQueryTbpdetb" parameterClass="Tbpdetb" resultMap="return-result">
+			where A.UNITKEY=#Unitkey# and A.NOTBP=#Notbp# and A.NOJETRA=#Nojetra#
+			and case #Parameter.Field#
+			when '1' then C.KDPER
+			when '2' then C.NMPER
+			end like '%'+ #Parameter.Value# + '%'
+			order by C.KDPER
+		</select>
+    <select id="QueryByTotalTbpdetb" extends="BaseQueryTbpdetb" parameterClass="Tbpdetb" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOTBP=#Notbp# and A.NOJETRA=#Nojetra#
+    </select>
+    <select id="LoadByPKTbpdetb" extends="BaseQueryTbpdetb" parameterClass="Tbpdetb" resultMap="return-result">
+			where A.UNITKEY=#Unitkey# and A.NOTBP=#Notbp# and A.MTGKEY=#Mtgkey# and A.NOJETRA=#Nojetra#
+		</select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Tbpdetb">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Notbp" column="NOTBP"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Tbpdetb">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Tbpdetb">
+			<parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Notbp" column="NOTBP"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

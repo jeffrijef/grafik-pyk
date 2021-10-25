@@ -1,0 +1,5 @@
+TITLE=Buku Besar - Pendapatan
+Idxkode=string;Index Kode;4;;-1;;-1
+Tgl=datetime;Tanggal;30;
+Tahap=string;Tahap;4;
+Mtgkey=string;Tahap;10;

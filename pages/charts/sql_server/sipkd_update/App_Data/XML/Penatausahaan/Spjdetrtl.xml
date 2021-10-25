@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Spjdetrtl" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Spjdetrtl" type="Usadi.Valid49.BO.SpjdetrtlControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Spjdetrtl">
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Nojetra" column="NOJETRA"/>
+      <result property="Nospj" column="NOSPJ"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Idxkode" column="IDXKODE"/>
+      <result property="Kdpers" column="KDPERS"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Type" column="TYPE"/>
+    </resultMap>
+    <resultMap id="return-result-dk" class="Spjdetrtl">
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Nilnol" column="NILNOL"/>
+      <result property="Nilaik" column="NILAIK"/>
+      <result property="Nilai" column="NILAI"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSpjdetrtl" parameterMap="insert-param">
+      <generate table="SPJDETRTL"/>
+    </insert>
+    <update id="UpdateBySpjdetrtl" parameterMap="update-param">
+      <generate table="SPJDETRTL" by="NOJETRA,MTGKEY,UNITKEY,NOSPJ"/>
+    </update>
+    <delete id="DeleteBySpjdetrtl" parameterMap="delete-param">
+      <generate table="SPJDETRTL" by="NOJETRA,MTGKEY,UNITKEY,NOSPJ"/>
+    </delete>
+    <select id="BaseQuerySpjdetrtl" parameterClass="Spjdetrtl" resultMap="return-result">
+      select A.MTGKEY,A.NILAI,A.NOJETRA,A.NOSPJ,A.UNITKEY
+      ,B.IDXKODE,C.KDPERS,rtrim(D.KDPER) as KDPER, rtrim(D.NMPER) as NMPER,D.TYPE
+      from SPJDETRTL A
+      left outer join PSPJ B on A.NOSPJ = B.NOSPJ and A.UNITKEY = B.UNITKEY
+      left outer join JTRNLKAS C on A.NOJETRA = C.NOJETRA
+      left outer join MATANGR D on A.MTGKEY = D.MTGKEY
+    </select>
+    <select id="QueryByAllSpjdetrtl" extends="BaseQuerySpjdetrtl" parameterClass="Spjdetrtl" resultMap="return-result">
+			where B.UNITKEY=#Unitkey# and B.NOSPJ=#Nospj# and A.NOJETRA=#Nojetra#
+			and case #Parameter.Field#
+			when '1' then D.KDPER
+			when '2' then D.NMPER
+			end like '%'+ #Parameter.Value# + '%'
+			order by D.KDPER
+		</select>
+    <select id="QueryByDetjurSpjdetrtl" parameterClass="Spjdetrtl" resultMap="return-result-dk">
+      select  KDPER,NMPER,NILAI,NILAIK,NILNOL,KDKEGUNIT FROM(
+      select KDPERD KDPER,NMPERD NMPER,NILAID NILAI,#Nilnol# NILAIK,#Nilnol# NILNOL,'' KDKEGUNIT FROM JURNAL WHERE UNITKEY=#Unitkey# and NOBUKTI=#Nospj# and jurnal=#Kjenis#
+      union all
+      select KDPERK KDPER,NMPERK NMPER,#Nilnol# NILAI,sum(NILAIK) NILAIK,#Nilnol# NILNOL,'' KDKEGUNIT FROM JURNAL where UNITKEY=#Unitkey# and NOBUKTI=#Nospj# and jurnal=#Kjenis#
+      group by kdperk,nmperk
+      )k
+      order by NILAI desc,KDPER
+    </select>
+    <select id="LoadByPKSpjdetrtl" extends="BaseQuerySpjdetrtl" parameterClass="Spjdetrtl" resultMap="return-result">
+			where A.UNITKEY=#Unitkey# and A.NOSPJ=#Nospj# and A.MTGKEY=#Mtgkey# and A.NOJETRA=#Nojetra#
+		</select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Spjdetrtl">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nospj" column="NOSPJ"/>
+    </parameterMap>
+    <parameterMap id="update-param" class="Spjdetrtl">
+      <parameter property="Kddana" column="KDDANA"/>
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nospj" column="NOSPJ"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Spjdetrtl">
+      <parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nospj" column="NOSPJ"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

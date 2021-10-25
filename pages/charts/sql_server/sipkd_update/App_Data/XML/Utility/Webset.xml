@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Webset" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<alias>
+		<typeAlias alias="Webset" type="Usadi.Valid49.BO.WebsetControl" />
+	</alias>
+	<resultMaps>
+		<resultMap id="return-result" class="Webset">
+			<result property="Modeentry" column="MODEENTRY"/>
+			<result property="Vallist" column="VALLIST"/>
+			<result property="Valdesc" column="VALDESC"/>
+			<result property="Valset" column="VALSET"/>
+			<result property="Kdset" column="KDSET"/>
+		</resultMap>
+	</resultMaps>
+	<statements>
+		<insert id="InsertWebset" parameterMap="insert-param">
+			<generate table="WEBSET"/>
+		</insert>
+		<update id="UpdateByWebset" parameterMap="update-param">
+			<generate table="WEBSET" by="KDSET"/>
+		</update>
+		<update id="UpdateByPaguWebset" parameterClass="Webset">
+			update WEBSET
+			set VALSET=#Valset#
+			where KDSET=#Kdset#
+		</update>
+		<delete id="DeleteByWebset" parameterMap="delete-param">
+			<generate table="WEBSET" by="KDSET"/>
+		</delete>
+		<select id="BaseQueryWebset" parameterClass="Webset" resultMap="return-result">
+			select A.KDSET,A.VALDESC,A.VALSET,A.MODEENTRY,A.VALLIST
+			from WEBSET A
+		</select>
+		<select id="QueryByAllWebset" extends="BaseQueryWebset" parameterClass="Webset" resultMap="return-result">
+			where
+			case #Parameter.Field#
+			when '1' then A.VALDESC
+			end like '%'+ #Parameter.Value# + '%'
+			order by A.VALDESC
+		</select>
+		<select id="QueryByUtWebset" extends="BaseQueryWebset" parameterClass="Webset" resultMap="return-result">
+			where
+			case #Parameter.Field#
+			when '1' then A.VALDESC
+			end like '%'+ #Parameter.Value# + '%'
+			order by A.VALDESC
+		</select>
+		<select id="QueryByDmWebset" extends="BaseQueryWebset" parameterClass="Webset" resultMap="return-result">
+      where A.KDSET in ('superuser','strictnmpr','stopwords','dlgrpt','frmtskpd','validreceh','ttapd',
+      'treerek','treerka','oprpt','typerpt','validset','frmtkeg','frmtsubkeg','userskpd','phk3skpd','phk3unit')
+      and case #Parameter.Field#
+      when '1' then A.VALDESC
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.VALDESC
+    </select>
+		<select id="QueryByMa1Webset" extends="BaseQueryWebset" parameterClass="Webset" resultMap="return-result">
+      where A.KDSET in ('superuser','malokas','alokas','stdharga','stdhargaz','rptapbd','dlgrpt',
+      'validreceh','treerek','treerka','subunit','ukrtl','ukpendptn','lockkdjbr','oprpt','typerpt','rkalra','validset','nokdp3','setrekkeg',
+      'urailokasi','paguskpd','pagustrict','uptdjbr','sbdnpjbr'<!--,'userkeg'-->) <!--wr 19-10-2010-->
+			and case #Parameter.Field#
+			when '1' then A.VALDESC
+			end like '%'+ #Parameter.Value# + '%'
+			order by A.VALDESC
+		</select>
+		<select id="QueryByMa2Webset" extends="BaseQueryWebset" parameterClass="Webset" resultMap="return-result">
+      where A.KDSET in ('superuser','malokas','alokas','stdharga','stdhargaz','rptapbd','skdpa','treedpa','spd','dlgrpt',
+      'ubahdpa','validreceh','treerek','treerka','subunit','lockkdjbr','frmtspd','trdpaglob','oprpt','typerpt','rkalra',
+      'validset','optdpa','dpastrict','kncrka','paguskpd'<!--,'userskpd','pagustrict'-->)
+			and case #Parameter.Field#
+			when '1' then A.VALDESC
+			end like '%'+ #Parameter.Value# + '%'
+			order by A.VALDESC
+		</select>
+		<select id="QueryByMkWebset" extends="BaseQueryWebset" parameterClass="Webset" resultMap="return-result">
+      where A.KDSET in ('superuser','sp2d','rekup','online','dlgrpt','validspp','validsp2d',
+      'validreceh','rangetgl','treerek','treerka','validbank','validbpk','validtbpt',
+      'validpnjr','tglspp','tglspm','tglsp2d','vldspddpa','tglsts','tgltbp','tglstskbl',
+      'frmtspp','frmtspm','frmtsp2d','frmttbp','frmtsts','frmtsts0','frmtbpk','frmtspj','frmtbksts','frmtbksp2d',
+      'frmtbku','validtgbku','upnx','strictup','prosenup','oprpt','typerpt','filterbku','bkuperrek',
+      'vldkontrak','uraisppup','uraisppgu','uraispptu','uraisp2dup','uraisp2dgu','uraisp2dtu'
+      ,'validset','spjupbend','nobku','nokdp3','sbdana','noreg','sppnonspj','phk3all','userskpd',
+      <!--'userkeg',-->'bendkeg'<!--,'pajakkeg'-->,'editphk3','bendppkd','bppgu','validbtl','nopjk','frmtpjk',
+      'pgrmtu','intaset')<!--,'nodp','phk3skpd','bppgu','spjbku'-->
+      and case #Parameter.Field#
+      when '1' then A.VALDESC
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.VALDESC
+    </select>
+		<select id="QueryByMbWebset" extends="BaseQueryWebset" parameterClass="Webset" resultMap="return-result">
+			where A.KDSET in ('superuser','dlgrpt','online','saldoawal','saldoakhir','lraakhir','silpa','visrptname',
+			'rangetgl','treerek','treerka','oprpt','typerpt','filterbku','validset','progman','userskpd'<!--,'userkeg'-->)
+			and case #Parameter.Field#
+			when '1' then A.VALDESC
+			end like '%'+ #Parameter.Value# + '%'
+			order by A.VALDESC
+		</select>
+		<select id="LoadByPKWebset" extends="BaseQueryWebset" parameterClass="Webset" resultMap="return-result">
+			where A.KDSET=#Kdset#
+		</select>
+	</statements>
+	<parameterMaps>
+		<parameterMap id="insert-param" class="Webset">
+			<parameter property="Modeentry" column="MODEENTRY"/>
+			<parameter property="Vallist" column="VALLIST"/>
+			<parameter property="Valdesc" column="VALDESC"/>
+			<parameter property="Valset" column="VALSET"/>
+			<parameter property="Kdset" column="KDSET"/>
+		</parameterMap>
+		<parameterMap id="update-param" extends="insert-param" class="Webset">
+		</parameterMap>
+		<parameterMap id="delete-param" class="Webset">
+			<parameter property="Kdset" column="KDSET"/>
+		</parameterMap>
+	</parameterMaps>
+</sqlMap>

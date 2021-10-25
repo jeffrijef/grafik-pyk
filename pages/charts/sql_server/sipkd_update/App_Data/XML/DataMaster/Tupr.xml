@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Tupr" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Tupr" type="Usadi.Valid49.BO.TuprControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Tupr">
+      <result property="Kdpers" column="KDPERS"/>
+      <result property="Nmpers" column="NMPERS"/>
+      <result property="Nmtutup" column="NMTUTUP"/>
+      <result property="Notutup" column="NOTUTUP"/>
+      <result property="Uraian" column="URAIAN"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertTupr" parameterMap="insert-param">
+      <generate table="TUPR"/>
+    </insert>
+    <update id="UpdateByTupr" parameterMap="update-param">
+      <generate table="TUPR" by="MTGKEY"/>
+    </update>
+    <delete id="DeleteByTupr" parameterMap="delete-param">
+      <generate table="TUPR" by="MTGKEY"/>
+    </delete>
+    <select id="BaseQueryTupr" parameterClass="Tupr" resultMap="return-result">
+      select A.KDPERS,A.MTGKEY,A.NOTUTUP
+      ,B.NMPERS
+      ,C.NMTUTUP,C.URAIAN
+      ,D.KDPER,D.NMPER,D.TYPE
+      from TUPR A
+      left outer join PERSACC B on A.KDPERS = B.KDPERS
+      left outer join JURTUP C on A.NOTUTUP = C.NOTUTUP
+      left outer join MATANGR D on A.MTGKEY = D.MTGKEY
+    </select>
+    <select id="QueryByAllTupr" extends="BaseQueryTupr" parameterClass="Tupr" resultMap="return-result">
+			where A.NOTUTUP=#Notutup#
+			and case #Parameter.Field#
+			when '1' then D.KDPER
+			when '2' then D.NMPER
+			end like '%'+ #Parameter.Value# + '%'
+			order by D.KDPER
+		</select>
+    <select id="LoadByPKTupr" extends="BaseQueryTupr" parameterClass="Tupr" resultMap="return-result">
+      where A.MTGKEY=#Mtgkey# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Tupr">
+      <parameter property="Kdpers" column="KDPERS"/>
+      <parameter property="Notutup" column="NOTUTUP"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Tupr">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Tupr">
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Beritadetr" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Beritadetr" type="Usadi.Valid49.BO.BeritadetrControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Beritadetr">
+      <result property="Nilai" column="NILAI"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Noba" column="NOBA"/>
+    </resultMap>
+    <resultMap id="return-result-bu" class="Beritadetr">
+      <result property="Mtgkeynrc" column="MTGKEYNRC"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Rekbm" column="REKBM"/>
+      <result property="Reknrc" column="REKNRC"/>
+      <result property="Kdperbm" column="KDPERBM"/>
+      <result property="Nmperbm" column="NMPERBM"/>
+      <result property="Kdpernrc" column="KDPERNRC"/>
+      <result property="Nmpernrc" column="NMPERNRC"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Noba" column="NOBA"/>
+    </resultMap>
+    <!--<resultMap id="return-result-tot" class="Beritadetr">
+      <result property="Tot" column="TOT"/>
+    </resultMap>
+    <resultMap id="return-result-totrek" class="Beritadetr">
+      <result property="Totrek" column="TOTREK"/>
+    </resultMap>-->
+    <resultMap id="return-result-dk" class="Beritadetr">
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Nilnol" column="NILNOL"/>
+      <result property="Nilaik" column="NILAIK"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertBeritadetr" parameterMap="insert-param">
+      <generate table="BERITADETR"/>
+    </insert>
+    <update id="UpdateByBeritadetr" parameterMap="update-param">
+      <generate table="BERITADETR" by="MTGKEY,UNITKEY,NOBA"/>
+    </update>
+    <delete id="DeleteByBeritadetr" parameterMap="delete-param">
+      <generate table="BERITADETR" by="MTGKEY,UNITKEY,NOBA"/>
+    </delete>
+    <!--<delete id="DeleteByDetilBeritadetr" parameterClass="Beritadetr">
+      delete from KONTRAKDETBLNR
+      where UNITKEY=#Unitkey# and NOBA=#Noba# and MTGKEY=#Mtgkey#
+    </delete>-->
+    <!--<delete id="DeleteByAllBeritadetr" parameterClass="Beritadetr">
+      delete BERITADETR where UNITKEY=#Unitkey# and NOBA=#Noba#
+    </delete>-->
+    <select id="BaseQueryBeritadetr" parameterClass="Beritadetr" resultMap="return-result">
+      select A.MTGKEY,M.KDPER,M.NMPER,A.NILAI,A.NOBA,A.UNITKEY,M.TYPE
+      from BERITADETR A
+      left outer join MATANGR M on A.MTGKEY = M.MTGKEY
+    </select>
+    <select id="QueryByAllBeritadetr" extends="BaseQueryBeritadetr" parameterClass="Beritadetr" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOBA=#Noba#
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryByJurnalbastBeritadetr" parameterClass="Beritadetr" resultMap="return-result-dk">
+      select  KDPER,NMPER,NILAI,NILAIK,NILNOL,'' as KDKEGUNIT FROM(
+      select KDPERD KDPER,NMPERD NMPER,NILAID NILAI,#Nilnol# NILAIK,#Nilnol# NILNOL,'' as KDKEGUNIT FROM JURNAL WHERE UNITKEY=#Unitkey# and NOBUKTI=#Nobukti# <!--and jurnal=#Kjenis#-->
+      and (isnull(jurnal,'')=isnull(#Kjenis#,'') or isnull(#Kjenis#,'')='' or ((jurnal is null) and #Kjenis# is not null))
+      union all
+      select KDPERK KDPER,NMPERK NMPER,#Nilnol# NILAI,sum(NILAIK) NILAIK,#Nilnol# NILNOL,'' as KDKEGUNIT FROM JURNAL where UNITKEY=#Unitkey# and NOBUKTI=#Nobukti#
+      and (isnull(jurnal,'')=isnull(#Kjenis#,'') or isnull(#Kjenis#,'')='' or ((jurnal is null) and #Kjenis# is not null))
+      group by kdperk,nmperk
+      )k
+      order by NILAI desc,KDPER
+    </select>
+    <select id="QueryByBuBeritadetr" parameterClass="Beritadetr" resultMap="return-result-bu">
+      select A.NOBA , A.NILAI,M.MTGKEY,A.UNITKEY,M.TYPE,D.KDKEGUNIT,B.MTGKEYNRC
+      ,M.KDPER KDPERBM,M.NMPER NMPERBM, (M.KDPER+'-'+M.NMPER) as REKBM
+      ,M.KDPER KDPERNRC,M.NMPER NMPERNRC, (C.KDPER+'-'+C.NMPER) as REKNRC
+      from BERITADETR A
+      left join BERITA D on A.NOBA = D.NOBA
+      left join MATANGR M on A.MTGKEY = M.MTGKEY
+      left join OTOKOROLARIR B ON B.MTGKEY=A.MTGKEY
+      left join MATANGNRC C ON C.MTGKEY=B.MTGKEYNRC
+      where A.UNITKEY=#Unitkey# and LEFT(M.KDPER,6) in ('5.2.3.')
+    </select>
+    <select id="LoadByPKBeritadetr" extends="BaseQueryBeritadetr" parameterClass="Beritadetr" resultMap="return-result">
+      where A.MTGKEY=#Mtgkey# and A.UNITKEY=#Unitkey# and A.NOBA=#Noba# 
+    </select>
+    <!--<select id="LoadByTotBeritadetr" parameterClass="Beritadetr" resultMap="return-result-tot">
+      --><!--select sum(nilai) Tot from kontrak A where A.UNITKEY=#Unitkey# and A.NOKON=#Nokon#--><!--
+      exec WSP_VALIDATION_BRT_KONTRAK #Unitkey#,#Nokon#,#Kdtahap#,#Mtgkey#
+    </select>
+    <select id="LoadByTotrekBeritadetr" parameterClass="Beritadetr" resultMap="return-result-totrek">
+      exec WSP_VALIDATION_BRT_DPA #Unitkey#,#Nokon#,#Kdtahap#,#Mtgkey#
+    </select>-->
+    <procedure id="ExecValBRT_DPA" parameterMap="update-dpa" >
+      WSP_VALIDATION_BRT_DPA
+    </procedure>
+    <procedure id="ExecValBRT_KONTRAK" parameterMap="update-kontrak" >
+      WSP_VALIDATION_BRT_KONTRAK
+    </procedure>
+    <procedure id="ExecValBRTBM_KONTRAK" parameterMap="update-kontrak" >
+      WSP_VALIDATION_BRTBM_KONTRAK
+    </procedure>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Beritadetr">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Noba" column="NOBA"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Beritadetr">
+    </parameterMap>
+    <parameterMap id="update-dpa" class="Beritadetr">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Nokon" column="nokon"/>
+      <parameter property="Kdtahap" column="kdtahap"/>
+      <parameter property="Mtgkey" column="mtgkey"/>
+    </parameterMap>
+    <parameterMap id="update-kontrak" class="Beritadetr">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Nokon" column="nokon"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Beritadetr">
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Noba" column="NOBA"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

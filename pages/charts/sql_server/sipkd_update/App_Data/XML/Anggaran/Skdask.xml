@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Skdask" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Skdask" type="Usadi.Valid49.BO.SkdaskControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Skdask">
+      <result property="AllowSuperUser" column="ALLOWSUPERUSER"/>
+      <result property="Kode" column="KODE"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Kdtahap" column="KDTAHAP"/>
+      <result property="Uraitahap" column="URAITAHAP"/>
+      <result property="Idxkode" column="IDXKODE"/>
+      <result property="Idxttd1" column="IDXTTD1"/>
+      <result property="Idxttd2" column="IDXTTD2"/>
+      <result property="Ketdask" column="KETDASK"/>
+      <result property="Nodask" column="NODASK"/>
+      <result property="Nosah" column="NOSAH"/>
+      <result property="Tgldask" column="TGLDASK"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Idxdask" column="IDXDASK"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSkdask" parameterMap="insert-param">
+      <generate table="SKDASK"/>
+    </insert>
+    <update id="UpdateBySkdask" parameterMap="update-param">
+      <generate table="SKDASK" by="UNITKEY,IDXDASK"/>
+    </update>
+    <update id="UpdateBySahSkdask" parameterClass="Skdask">
+      update SKDASK set TGLVALID=#Tglvalid#
+      where UNITKEY=#Unitkey# and IDXDASK=#Idxdask#
+    </update>
+    <update id="UpdateByDraftSkdask" parameterClass="Skdask" >
+      update SKDASK set TGLVALID=null
+      where UNITKEY=#Unitkey# and IDXDASK=#Idxdask#
+    </update>
+    <delete id="DeleteBySkdask" parameterMap="delete-param">
+      <generate table="SKDASK" by="UNITKEY,IDXDASK"/>
+    </delete>
+    <procedure id="ExecDeleteDPA" parameterMap="delete-param">
+      WSP_DELDPA
+    </procedure>
+    <select id="BaseQuerySkdask" parameterClass="Skdask" resultMap="return-result">
+      select distinct #AllowSuperUser# as ALLOWSUPERUSER,S.IDXDASK,S.IDXKODE,S.IDXTTD1,S.IDXTTD2,S.KDTAHAP,S.KETDASK,S.NODASK,S.NOSAH,
+      S.TGLDASK,S.TGLVALID,rtrim(S.UNITKEY) as UNITKEY
+      , T.URAIAN as URAITAHAP,#Kdkegunit# as KDKEGUNIT
+      ,replace(right(S.NODASK,4),'.','') as KODE
+      from SKDASK S
+      left outer join TAHAP T on S.KDTAHAP=T.KDTAHAP
+    </select>
+    <select id="QueryByAllSkdask" extends="BaseQuerySkdask" parameterClass="Skdask" resultMap="return-result">
+      where S.UNITKEY=#Unitkey# and S.IDXKODE=#Idxkode# 
+      and (S.KDTAHAP=#Kdtahap#)
+      and case #Parameter.Field#
+      when '1' then S.NOSAH
+      when '2' then S.NODASK
+      when '3' then S.KETDASK
+      end like '%'+ #Parameter.Value# + '%'
+      order by S.NODASK
+    </select>
+    <select id="QueryByKegSkdask" parameterClass="Skdask" resultMap="return-result">
+      select distinct S.IDXDASK,#Idxkode# as IDXKODE,S.IDXTTD1,S.IDXTTD2,S.KDTAHAP,S.KETDASK,S.NODASK,S.NOSAH,
+      S.TGLDASK,S.TGLVALID,rtrim(S.UNITKEY) as UNITKEY
+      , T.URAIAN as URAITAHAP,isnull(D.KDKEGUNIT,#Kdkegunit#) as KDKEGUNIT
+      , #AllowSuperUser# as ALLOWSUPERUSER,replace(right(S.NODASK,4),'.','') as KODE
+      from SKDASK S
+      left outer join TAHAP T on S.KDTAHAP=T.KDTAHAP
+      left outer join DASKR D on S.UNITKEY=D.UNITKEY and S.IDXDASK=D.IDXDASK
+      where S.UNITKEY=#Unitkey# and S.IDXKODE=#Idxkode#
+      and (S.KDTAHAP=#Kdtahap#)
+      and (isnull(D.KDKEGUNIT,'')=isnull(#Kdkegunit#,'') or isnull(#Kdkegunit#,'')=''
+      or ((D.KDKEGUNIT is null) and #Kdkegunit# is not null)
+      <!--or (D.KDKEGUNIT is null)) klo dibuka ketika ada keg baru nomor sk dpa nya langsung muncul-->
+      <!--biar yg ga ada rincian muncul setiap keg-->
+      )
+      and case #Parameter.Field#
+      when '1' then S.NOSAH
+      when '2' then S.NODASK
+      when '3' then S.KETDASK
+      end like '%'+ #Parameter.Value# + '%'
+      order by S.NODASK
+    </select>
+    <select id="QueryByNodaskSkdask" extends="BaseQuerySkdask" parameterClass="Skdask" resultMap="return-result">
+      where 
+			<!--S.UNITKEY=#Unitkey# and-->
+			S.KDTAHAP=#Kdtahap# and S.NODASK=#Nodask#
+    </select>
+    <select id="LoadByPKSkdask" extends="BaseQuerySkdask" parameterClass="Skdask" resultMap="return-result">
+      where S.UNITKEY=#Unitkey# and S.IDXDASK=#Idxdask#
+    </select>
+    <select id="LoadByPKKegSkdask" extends="BaseQuerySkdask" parameterClass="Skdask" resultMap="return-result">
+      where S.UNITKEY=#Unitkey# and S.IDXKODE=#Idxkode#
+      and S.KDTAHAP=#Kdtahap#
+      and S.IDXDASK in (select IDXDASK from DASKR where UNITKEY=#Unitkey# and KDKEGUNIT=#Kdkegunit#)
+    </select>
+    <select id="LoadByIdxkodeSkdask" extends="BaseQuerySkdask" parameterClass="Skdask" resultMap="return-result">
+      where S.UNITKEY=#Unitkey# and S.IDXKODE=#Idxkode# and S.KDTAHAP=#Kdtahap# 
+    </select>
+		<procedure id="ExecTransferRKADkeDPA" parameterMap="transfer-param">
+			WSP_DPADTRANSFER
+		</procedure>
+		<procedure id="ExecTransferRKABkeDPA" parameterMap="transfer-paramb">
+			WSP_DPABTRANSFER
+		</procedure>
+		<procedure id="ExecTransferRKARkeDPA" parameterMap="transfer-param">
+			WSP_DPARTRANSFER
+		</procedure>
+		<procedure id="ExecTransferRKARTLkeDPA" parameterMap="transfer-param">
+			WSP_DPARTLTRANSFER
+		</procedure>
+    <procedure id="ExecTransferRKARKegDPA" parameterMap="transfer-param-keg">
+      WSP_DPAKEGTRANSFER
+    </procedure>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Skdask">
+      <parameter property="Idxkode" column="IDXKODE"/>
+      <parameter property="Idxttd1" column="IDXTTD1"/>
+      <parameter property="Idxttd2" column="IDXTTD2"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Ketdask" column="KETDASK"/>
+      <parameter property="Nodask" column="NODASK"/>
+      <parameter property="Nosah" column="NOSAH"/>
+      <parameter property="Tgldask" column="TGLDASK"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Idxdask" column="IDXDASK"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Skdask">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Skdask">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Idxdask" column="IDXDASK"/>
+    </parameterMap>
+		<parameterMap id="transfer-param" class="Skdask">			
+			<parameter property="Kdtahap" column="kdtahap"/>
+			<parameter property="Unitkey" column="unitkey"/>			
+			<parameter property="Idxdask" column="idxdask"/>
+			<parameter property="Kdkegunit" column="kdkegunit"/>						
+			<parameter property="Keyword" column="keyword"/>
+			<parameter property="Nodask" column="nodask"/>			
+		</parameterMap>
+    <parameterMap id="transfer-paramb" class="Skdask">
+      <parameter property="Kdtahap" column="kdtahap"/>
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Idxdask" column="idxdask"/>
+      <parameter property="Kdkegunit" column="kdkegunit"/>
+      <parameter property="Keyword" column="keyword"/>
+      <parameter property="Nodask" column="nodask"/>
+      <parameter property="Kode" column="kode"/>
+    </parameterMap>
+    <parameterMap id="transfer-param-keg" class="Skdask">
+      <parameter property="Kdtahap" column="kdtahap"/>
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Idxdask" column="idxdask"/>
+      <parameter property="Kdkegunit" column="kdkegunit"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

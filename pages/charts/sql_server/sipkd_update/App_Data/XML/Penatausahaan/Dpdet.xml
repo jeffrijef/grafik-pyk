@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Dpdet" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Dpdet" type="Usadi.Valid49.BO.DpdetControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Dpdet">
+      <result property="Idxkode" column="IDXKODE"/>
+      <result property="Idxsko" column="IDXSKO"/>
+      <result property="Idxttd" column="IDXTTD"/>
+      <result property="Kdp3" column="KDP3"/>
+      <result property="Kdstatus" column="KDSTATUS"/>
+      <result property="Keperluan" column="KEPERLUAN"/>
+      <result property="Ketotor" column="KETOTOR"/>
+      <result property="Keybend" column="KEYBEND"/>
+      <result property="Nokontrak" column="NOKONTRAK"/>
+      <result property="Noreg" column="NOREG"/>
+      <result property="Nospm" column="NOSPM"/>
+      <result property="Penolakan" column="PENOLAKAN"/>
+      <result property="Tglsp2d" column="TGLSP2D"/>
+      <result property="Tglspm" column="TGLSPM"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Berita" column="BERITA"/>
+      <result property="Tgldp" column="TGLDP"/>
+      <result property="Uraidp" column="URAIDP"/>
+      <result property="Nodp" column="NODP"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nosp2d" column="NOSP2D"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertDpdet" parameterMap="insert-param">
+      <generate table="DPDET"/>
+    </insert>
+    <update id="UpdateByDpdet" parameterMap="update-param">
+      <generate table="DPDET" by="NODP,UNITKEY,NOSP2D"/>
+    </update>
+    <delete id="DeleteByDpdet" parameterMap="delete-param">
+      <generate table="DPDET" by="NODP,UNITKEY,NOSP2D"/>
+    </delete>
+    <select id="BaseQueryDpdet" parameterClass="Dpdet" resultMap="return-result">
+      select A.NODP,A.NOSP2D,A.UNITKEY,A.URAIDP
+      ,B.IDXKODE,B.IDXSKO,rtrim(B.IDXTTD) as IDXTTD,B.KDP3,rtrim(B.KDSTATUS) as KDSTATUS,B. KEPERLUAN,B.KETOTOR,rtrim(B.KEYBEND) as KEYBEND,B.NOKONTRAK,B.NOREG,B.NOSPM,B.PENOLAKAN,B.TGLSP2D,B.TGLSPM
+      ,C.TGLVALID, C.BERITA, C.TGLDP
+      from DPDET A
+      left outer join SP2D B on A.NOSP2D = B.NOSP2D and A.UNITKEY=B.UNITKEY
+      left outer join DP C on A.NODP = C.NODP
+    </select>
+    <select id="QueryByAllDpdet" extends="BaseQueryDpdet" parameterClass="Dpdet" resultMap="return-result">
+      where A.NODP=#Nodp#
+      and case #Parameter.Field#
+      when '1' then A.NOSP2D
+      when '2' then A.UNITKEY
+      when '3' then A.NODP
+      when '4' then A.URAIDP
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOSP2D
+    </select>
+    <select id="LoadByPKDpdet" extends="BaseQueryDpdet" parameterClass="Dpdet" resultMap="return-result">
+      where A.NODP=#Nodp# and A.UNITKEY=#Unitkey# and A.NOSP2D=#Nosp2d# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Dpdet">
+      <parameter property="Uraidp" column="URAIDP"/>
+      <parameter property="Nodp" column="NODP"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nosp2d" column="NOSP2D"/>
+    </parameterMap>
+    <parameterMap id="update-param" class="Dpdet">
+      <parameter property="Uraidp" column="URAIDP"/>
+      <parameter property="Nodp" column="NODP"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nosp2d" column="NOSP2D"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Dpdet">
+      <parameter property="Nodp" column="NODP"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nosp2d" column="NOSP2D"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

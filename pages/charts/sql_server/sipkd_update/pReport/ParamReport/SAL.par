@@ -1,0 +1,5 @@
+TITLE=LAPORAN PERUBAHAN SALDO PERUBAHAN ANGGARAN LEBIH
+Level=string;Level Rekening;2;
+Tahap=string;Tahap;4;
+Tgl=datetime;Tanggal;4;
+

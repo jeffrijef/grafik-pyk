@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Rkmdett" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Rkmdett" type="Usadi.Valid49.BO.RkmdettControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Rkmdett">
+      <result property="Nilai" column="NILAI"/>
+      <result property="Nobbantu" column="NOBBANTU"/>
+      <result property="Nojetra" column="NOJETRA"/>
+      <result property="Nosts" column="NOSTS"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Tglsts" column="TGLSTS"/>
+      <result property="Uraian" column="URAIAN"/>
+      <result property="Nmbkas" column="NMBKAS"/>
+      <result property="Norekb" column="NOREKB"/>
+      <result property="Kdpers" column="KDPERS"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertRkmdett" parameterMap="insert-param">
+      <generate table="RKMDETT"/>
+    </insert>
+    <update id="UpdateByRkmdett" parameterMap="update-param">
+      <generate table="RKMDETT" by="NOBBANTU,NOJETRA,UNITKEY,NOSTS"/>
+    </update>
+    <delete id="DeleteByRkmdett" parameterMap="delete-param">
+      <generate table="RKMDETT" by="NOBBANTU,NOJETRA,UNITKEY,NOSTS"/>
+    </delete>
+    <select id="BaseQueryRkmdett" parameterClass="Rkmdett" resultMap="return-result">
+      select A.NILAI,A.NOBBANTU,A.NOJETRA,A.NOSTS,A.UNITKEY
+      ,B.TGLSTS,B.URAIAN
+      ,C.NMBKAS,C.NOREKB
+      ,D.KDPERS
+      from RKMDETT A
+      left outer join STS B on A.NOSTS = B.NOSTS and A.UNITKEY = B.UNITKEY
+      left outer join BKBKAS C on A.NOBBANTU = C.NOBBANTU
+      left outer join JTRNLKAS D on A.NOJETRA = D.NOJETRA
+    </select>
+    <select id="QueryByAllRkmdett" extends="BaseQueryRkmdett" parameterClass="Rkmdett" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSTS=#Nosts#
+      and case #Parameter.Field#
+      when '1' then A.NOBBANTU
+      when '2' then A.NOSTS
+      when '3' then A.UNITKEY
+      when '4' then A.NOJETRA
+      when '5' then convert(char(10), A.NILAI)
+      end like '%'+ #Parameter.Value# + '%'
+    </select>
+    <select id="QueryByTotalRkmdett" extends="BaseQueryRkmdett" parameterClass="Rkmdett" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSTS=#Nosts# and A.NOJETRA=#Nojetra#
+    </select>
+    <select id="LoadByPKRkmdett" extends="BaseQueryRkmdett" parameterClass="Rkmdett" resultMap="return-result">
+			where A.UNITKEY=#Unitkey# and A.NOSTS=#Nosts# and A.NOBBANTU=#Nobbantu# and A.NOJETRA=#Nojetra#
+		</select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Rkmdett">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Parameter.Key" column="NOBBANTU"/>
+      <parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nosts" column="NOSTS"/>
+    </parameterMap>
+    <parameterMap id="update-param" class="Rkmdett">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Nobbantu" column="NOBBANTU"/>
+      <parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nosts" column="NOSTS"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Rkmdett">
+			<parameter property="Nobbantu" column="NOBBANTU"/>
+			<parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nosts" column="NOSTS"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

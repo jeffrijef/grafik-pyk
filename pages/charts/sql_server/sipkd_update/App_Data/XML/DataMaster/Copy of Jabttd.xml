@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Jabttd" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Jabttd" type="Usadi.Valid49.BO.JabttdControl, Usadi.Valid49"/>
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Jabttd">
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Nmdok" column="NMDOK"/>
+      <result property="Kddok" column="KDDOK"/>
+      <result property="Nip" column="NIP"/>
+      <result property="Jabatan" column="JABATAN"/>
+      <result property="Nama" column="NAMA"/>
+      <result property="Nipnama" column="NIPNAMA"/>
+      <result property="Jabatan" column="JABATAN"/>
+      <result property="Noskpttd" column="NOSKPTTD"/>
+      <result property="Noskstopttd" column="NOSKSTOPTTD"/>
+      <result property="Tglskpttd" column="TGLSKPTTD"/>
+      <result property="Tglskstopttd" column="TGLSKSTOPTTD"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Idxttd" column="IDXTTD"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertJabttd" parameterMap="insert-param">
+      <generate table="JABTTD"/>
+    </insert>
+    <update id="UpdateByJabttd" parameterMap="update-param">
+      <generate table="JABTTD" by="IDXTTD"/>
+    </update>
+    <delete id="DeleteByJabttd" parameterMap="delete-param">
+      <generate table="JABTTD" by="IDXTTD"/>
+    </delete>
+    <select id="BaseQueryJabttd" parameterClass="Jabttd" resultMap="return-result">
+      select rtrim(J.IDXTTD) as IDXTTD, J.UNITKEY, J.KDDOK, J.NIP,J.JABATAN, J.NOSKPTTD, J.TGLSKPTTD, J.NOSKSTOPTTD, J.TGLSKSTOPTTD,
+      rtrim(U.KDUNIT) as KDUNIT, rtrim(U.NMUNIT) as NMUNIT,D.NMDOK
+      ,P.NAMA,(rtrim(J.NIP)+' - '+ rtrim(P.NAMA)) as NIPNAMA, P.JABATAN
+      from JABTTD J
+      left outer join DAFTDOK D on J.KDDOK=D.KDDOK
+      left outer join DAFTUNIT U on J.UNITKEY=U.UNITKEY
+      left outer join PEGAWAI P on J.NIP=P.NIP
+    </select>
+    <select id="QueryByAllJabttd" extends="BaseQueryJabttd" parameterClass="Jabttd" resultMap="return-result">
+			where J.UNITKEY=#Unitkey# and (J.KDDOK=#Kddok# or #Kddok#='')
+			and case #Parameter.Field#
+			when '1' then P.NIP
+			when '2' then P.NAMA
+			when '3' then J.JABATAN
+			end like '%'+ #Parameter.Value# + '%'
+			order by P.NIP
+		</select>
+    <select id="QueryByKddokJabttd" extends="BaseQueryJabttd" parameterClass="Jabttd" resultMap="return-result">
+      where (J.KDDOK=#Kddok# or #Kddok#='')
+      and case #Parameter.Field#
+      when '1' then D.NMDOK
+      when '2' then P.JABATAN
+      when '3' then P.NIP
+      when '4' then P.NAMA
+      when '5' then U.KDUNIT
+      end like '%'+ #Parameter.Value# + '%'
+      order by P.NIP
+    </select>
+    <select id="QueryByListJabttd" extends="BaseQueryJabttd" parameterClass="Jabttd" resultMap="return-result">
+      where (J.KDDOK=#Kddok# or #Kddok#='') 
+      order by P.NIP
+    </select>
+    <select id="QueryByKddoklistJabttd" extends="BaseQueryJabttd" parameterClass="Jabttd" resultMap="return-result">
+      where (J.KDDOK=#Kddok# or #Kddok#='') and J.UNITKEY=#Unitkey#
+      order by P.NIP
+    </select>
+    <select id="LoadByPKJabttd" extends="BaseQueryJabttd" parameterClass="Jabttd" resultMap="return-result">
+      where J.IDXTTD=#Idxttd#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Jabttd">
+      <parameter property="Kddok" column="KDDOK"/>
+      <parameter property="Nip" column="NIP"/>
+      <parameter property="Jabatan" column="JABATAN"/>
+      <parameter property="Noskpttd" column="NOSKPTTD"/>
+      <parameter property="Noskstopttd" column="NOSKSTOPTTD"/>
+      <!--<parameter property="Tglskpttd" column="TGLSKPTTD"/>-->
+      <!--<parameter property="Tglskstopttd" column="TGLSKSTOPTTD"/>-->
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Idxttd" column="IDXTTD"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Jabttd">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Jabttd">
+      <parameter property="Idxttd" column="IDXTTD"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

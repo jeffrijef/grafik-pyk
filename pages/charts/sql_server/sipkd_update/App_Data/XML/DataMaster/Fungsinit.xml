@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Fungsinit" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Fungsinit" type="Usadi.Valid49.BO.FungsinitControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Fungsinit">
+      <result property="Nmurus" column="NMUNIT"/>
+      <result property="Kdurus" column="KDUNIT"/>
+      <result property="Kdfung" column="KDFUNG"/>
+      <result property="Nmfung" column="NMFUNG"/>
+      <result property="Idfung" column="IDFUNG"/>
+      <result property="Uruskey" column="UNITKEY"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertFungsinit" parameterMap="insert-param">
+      <generate table="FUNGSINIT"/>
+    </insert>
+    <update id="UpdateByFungsinit" parameterMap="update-param">
+      <generate table="FUNGSINIT" by="UNITKEY"/>
+    </update>
+    <delete id="DeleteByFungsinit" parameterMap="delete-param">
+      <generate table="FUNGSINIT" by="UNITKEY"/>
+    </delete>
+    <select id="BaseQueryFungsinit" parameterClass="Fungsinit" resultMap="return-result">
+      select FU.*,F.KDFUNG,F.NMFUNG, UR.KDUNIT, UR.NMUNIT
+      from FUNGSINIT FU 
+      LEFT OUTER JOIN FUNGSI F ON FU.IDFUNG=F.IDFUNG
+      LEFT OUTER JOIN DAFTUNIT UR ON FU.UNITKEY = UR.UNITKEY
+    </select>
+    <select id="QueryByAllFungsinit" extends="BaseQueryFungsinit" parameterClass="Fungsinit" resultMap="return-result">
+      where FU.IDFUNG=#Idfung#
+      and case #Parameter.Field#
+      when '1' then UR.KDUNIT
+      when '2' then UR.NMUNIT
+      end like '%'+ #Parameter.Value# + '%'
+      order by UR.KDUNIT
+    </select>
+    <select id="LoadByPKFungsinit" extends="BaseQueryFungsinit" parameterClass="Fungsinit" resultMap="return-result">
+      where FU.UNITKEY=#Uruskey#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Fungsinit">
+      <parameter property="Idfung" column="IDFUNG"/>
+      <parameter property="Parameter.Key" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Fungsinit">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Fungsinit">
+      <parameter property="Uruskey" column="UNITKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

@@ -1,0 +1,4 @@
+TITLE=Buku Penerimaan/Penyetoran
+Unitkey=string;Key Unit;4;
+Keybend=string;Bendahara;4;
+Bln=string;Bulan;4;

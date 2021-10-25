@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Saldolakr" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Saldolakr" type="Usadi.Valid49.BO.SaldolakrControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Saldolakr">
+      <result property="Kdperiode" column="KDPERIODE"/>
+      <result property="Ket_bulan" column="KET_BULAN"/>
+      <result property="Kdkhusus" column="KDKHUSUS"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Mtglevel" column="MTGLEVEL"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Soakhir" column="SOAKHIR"/>
+      <result property="Kd_bulan" column="KD_BULAN"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSaldolakr" parameterMap="insert-param">
+      <generate table="SALDOLAKR"/>
+    </insert>
+    <update id="UpdateBySaldolakr" parameterMap="update-param">
+      <generate table="SALDOLAKR" by="KD_BULAN,MTGKEY"/>
+    </update>
+    <delete id="DeleteBySaldolakr" parameterMap="delete-param">
+      <generate table="SALDOLAKR" by="KD_BULAN,MTGKEY"/>
+    </delete>
+    <select id="BaseQuerySaldolakr" parameterClass="Saldolakr" resultMap="return-result">
+      select A.KD_BULAN,A.MTGKEY,A.SOAKHIR
+      , 'N/A' as KDPERIODE, 'N/A' as KET_BULAN, 'N/A' as KDKHUSUS, 'N/A' as KDPER, 'N/A' as MTGLEVEL, 'N/A' as NMPER, 'N/A' as TYPE
+      from SALDOLAKR A
+    </select>
+    <select id="QueryByAllSaldolakr" extends="BaseQuerySaldolakr" parameterClass="Saldolakr" resultMap="return-result">
+      where
+      case #Parameter.Field#
+        when '1' then convert(char(10), A.KD_BULAN)
+        when '2' then A.MTGKEY
+        when '3' then convert(char(10), A.SOAKHIR)
+      end like '%'+ #Parameter.Value# + '%' 
+    </select>
+    <select id="LoadByPKSaldolakr" extends="BaseQuerySaldolakr" parameterClass="Saldolakr" resultMap="return-result">
+      where A.KD_BULAN=#Kd_bulan# and A.MTGKEY=#Mtgkey# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Saldolakr">
+      <parameter property="Soakhir" column="SOAKHIR"/>
+      <parameter property="Kd_bulan" column="KD_BULAN"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Saldolakr">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Saldolakr">
+      <parameter property="Kd_bulan" column="KD_BULAN"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

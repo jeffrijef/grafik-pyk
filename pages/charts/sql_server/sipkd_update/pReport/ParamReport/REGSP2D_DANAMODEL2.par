@@ -1,0 +1,4 @@
+TITLE=REGSP2D DANA MODEL2
+Unitkey=string;Key Unit;4;
+Awal=datetime;Tanggal;30;
+Akhir=datetime;Tanggal;30;

@@ -1,0 +1,8 @@
+TITLE=S P P
+Unitkey=string;Key Unit;4;
+
+Idxkode=string;Index Kode;4;
+Jnsbend=String;Pak/Buk Jenis Bukti Jan Lupo Dipiliah;4;;1;24;1;
+Nospp=string;Nomor Unit;50;
+Nip=string;Pimpinan Kegiatan;30;
+

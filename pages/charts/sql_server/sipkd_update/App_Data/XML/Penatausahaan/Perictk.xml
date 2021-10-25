@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Perictk" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Perictk" type="Usadi.Valid49.BO.PerictkControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Perictk">
+      <result property="Nilai" column="NILAI"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Noba" column="NOBA"/>
+    </resultMap>
+    <resultMap id="return-result-dk" class="Perictk">
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Nilnol" column="NILNOL"/>
+      <result property="Nilaik" column="NILAIK"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertPerictk" parameterMap="insert-param">
+      <generate table="PERICTK"/>
+    </insert>
+    <update id="UpdateByPerictk" parameterMap="update-param">
+      <generate table="PERICTK" by="MTGKEY,UNITKEY,NOBA"/>
+    </update>
+    <delete id="DeleteByPerictk" parameterMap="delete-param">
+      <generate table="PERICTK" by="MTGKEY,UNITKEY,NOBA"/>
+    </delete>
+    <!--<delete id="DeleteByPeriPerictk" parameterClass="Perictk">
+      delete PERICTK where UNITKEY=#Unitkey# and NOBA=#Noba# and MTGKEY=#Mtgkey#
+    </delete>
+    <update id="UpdateByPeriBeritadetr" parameterClass="Perictk">
+      insert into PERICTK (MTGKEY,UNITKEY,NOBA,NILAI)
+      VALUES(#Mtgkey#,#Unitkey#, #Noba#,#Nilai#)
+    </update>-->
+    <update id="UpdateByPeribrPerictk" parameterClass="Perictk">
+      insert into BERITADETR (MTGKEY,UNITKEY,NOBA,NILAI)
+      select a.MTGKEY,c.UNITKEY,c.NOBA,c.NILAI from OTOKOROLARIR a
+      inner join MATANGNRC b on a.MTGKEYNRC=b.MTGKEY
+      inner join PERICTK c on a.MTGKEYNRC=b.MTGKEY
+      where KDPER in (select left(KDPER,12) from MATANGNRC where MTGKEY=#Mtgkey#)
+      and c.UNITKEY=#Unitkey# and c.NOBA=#Noba#
+      
+      <!--select distinct b.MTGKEY,a.UNITKEY,a.NOBA,a.NILAI from PERICTK a
+      inner join OTOKOROLARIR b on a.MTGKEY=b.MTGKEYNRC
+      WHERE a.UNITKEY=#Unitkey# and a.NOBA=#Noba# and b.MTGKEY= (select top 1 MTGKEY from OTOKOROLARIR where MTGKEYNRC=#Mtgkey#)-->
+    </update>
+    <!--<update id="UpdateByUPeriBeritadetr" parameterClass="Beritadetr">
+      Update PERICTK SET NILAI=#Nilai# where UNITKEY=#Unitkey# and NOBA=#Noba# and MTGKEY=#Mtgkey#
+    </update>-->
+    <update id="UpdateByUPeribrPerictk" parameterClass="Perictk">
+      Update BERITADETR SET NILAI=isnull((select sum(nilai) from PERICTK
+      where UNITKEY=#Unitkey# and NOBA=#Noba# ),0)<!--and MTGKEY in (select MTGKEYNRC from OTOKOROLARIR where MTGKEY=#Mtgkey#)-->
+      where UNITKEY=#Unitkey# and NOBA=#Noba# and MTGKEY=#Mtgkeyba#
+    </update>
+    <update id="UpdateByBAPerictk" parameterClass="Perictk">
+      delete BERITADETR where UNITKEY=#Unitkey# and NOBA=#Noba# and MTGKEY=#Mtgkey#
+    </update>
+    <!--<delete id="DeleteByDetilBeritadetr" parameterClass="Beritadetr">
+      delete from KONTRAKDETBLNR
+      where UNITKEY=#Unitkey# and NOBA=#Noba# and MTGKEY=#Mtgkey#
+    </delete>-->
+    <!--<delete id="DeleteByAllBeritadetr" parameterClass="Beritadetr">
+      delete BERITADETR where UNITKEY=#Unitkey# and NOBA=#Noba#
+    </delete>-->
+    <select id="BaseQueryPerictk" parameterClass="Perictk" resultMap="return-result">
+      select A.MTGKEY,M.KDPER,M.NMPER,A.NILAI,A.NOBA,A.UNITKEY,M.TYPE
+      from PERICTK A
+      left outer join MATANGNRC M on A.MTGKEY = M.MTGKEY
+    </select>
+    <select id="QueryByAllPerictk" extends="BaseQueryPerictk" parameterClass="Perictk" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOBA=#Noba# <!--and A.MTGKEY in (select MTGKEYNRC from OTOKOROLARIR where MTGKEY =#Mtgkeyba#)-->
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryByBAPerictk" parameterClass="Usadi.Valid49.BO.PerictkControl" resultMap="return-result">
+      select A.MTGKEY,M.KDPER,M.NMPER,A.NILAI,A.NOBA,A.UNITKEY,M.TYPE
+      from BERITADETR A
+      left outer join MATANGR M on A.MTGKEY = M.MTGKEY
+      where A.UNITKEY=#Unitkey# and A.NOBA=#Noba#
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryByNobaPerictk" extends="BaseQueryPerictk" parameterClass="Perictk" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOBA=#Noba# 
+      <!--and A.MTGKEY in (select MTGKEYNRC from OTOKOROLARIR where MTGKEY=#Mtgkey#)-->
+    </select>
+    <select id="LoadByPKPerictk" extends="BaseQueryPerictk" parameterClass="Perictk" resultMap="return-result">
+      where A.MTGKEY=#Mtgkey# and A.UNITKEY=#Unitkey# and A.NOBA=#Noba# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Perictk">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Noba" column="NOBA"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Perictk">
+    </parameterMap>
+    <parameterMap id="update-dpa" class="Perictk">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Nokon" column="nokon"/>
+      <parameter property="Kdtahap" column="kdtahap"/>
+      <parameter property="Mtgkey" column="mtgkey"/>
+    </parameterMap>
+    <parameterMap id="update-kontrak" class="Perictk">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Nokon" column="nokon"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Perictk">
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Noba" column="NOBA"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

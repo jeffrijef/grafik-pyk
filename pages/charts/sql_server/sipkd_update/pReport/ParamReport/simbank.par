@@ -1,0 +1,7 @@
+TITLE=BUKU - SIMPANAN BANK
+Unitkey=string;Key Unit;4;
+Jnsbend=string;Jenis Bendahara;4;;-1;2;-1;
+Keybend=string;Bendahara;4;
+Nip=string;Nip;30;
+Bulan=int;Bulan;10;
+Tgl=datetime;Tanggal;30;

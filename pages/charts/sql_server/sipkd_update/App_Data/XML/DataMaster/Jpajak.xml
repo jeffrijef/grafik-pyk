@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Jpajak" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Jpajak" type="Usadi.Valid49.BO.JpajakControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Jpajak">
+      <result property="Kdpajak" column="KDPAJAK"/>
+      <result property="Nmpajak" column="NMPAJAK"/>
+      <result property="Rumuspjk" column="RUMUSPJK"/>
+      <result property="Pjkkey" column="PJKKEY"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="PJKKEY"/>
+      <result property="Field" column="KDPAJAK"/>
+      <result property="Value" column="NMPAJAK"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertJpajak" parameterMap="insert-param">
+      <generate table="JPAJAK"/>
+    </insert>
+    <update id="UpdateByJpajak" parameterMap="update-param">
+      <generate table="JPAJAK" by="PJKKEY"/>
+    </update>
+    <delete id="DeleteByJpajak" parameterMap="delete-param">
+      <generate table="JPAJAK" by="PJKKEY"/>
+    </delete>
+    <select id="BaseQueryJpajak" parameterClass="Jpajak" resultMap="return-result">
+      SELECT JP.PJKKEY, JP.KDPAJAK, JP.NMPAJAK, JP.RUMUSPJK 
+	    FROM JPAJAK JP
+    </select>
+    <select id="QueryByAllJpajak" extends="BaseQueryJpajak" parameterClass="Jpajak" resultMap="return-result">
+			where
+			case #Parameter.Field#
+			when '1' then JP.KDPAJAK
+			when '2' then JP.NMPAJAK
+			when '3' then JP.PJKKEY
+			when '4' then JP.RUMUSPJK
+			end like '%'+ #Parameter.Value# + '%'
+			Order by JP.KDPAJAK
+		</select>
+    <select id="QueryByKdpajakJpajak" extends="BaseQueryJpajak" parameterClass="Jpajak" resultMap="return-result">
+      where JP.KDPAJAK=#Kdpajak#
+    </select>
+    <select id="QueryBySp2dpjkJpajak" extends="BaseQueryJpajak" parameterclass="Usadi.Valid49.BO.Sp2dpjkControl" resultMap="return-lookup">
+      where JP.PJKKEY not in (select PJKKEY from SP2DPJK where UNITKEY=#Unitkey# and NOSP2D=#Nosp2d#)
+      and case #Parameter.Field#
+      when '1' then JP.KDPAJAK
+      when '2' then JP.NMPAJAK
+      when '3' then JP.PJKKEY
+      when '4' then JP.RUMUSPJK
+      end like #Parameter.Value# + '%'
+      order by JP.KDPAJAK
+    </select>
+    <select id="QueryBySpjdetpJpajak" extends="BaseQueryJpajak" parameterclass="Usadi.Valid49.BO.SpjdetpControl" resultMap="return-lookup">
+      where JP.PJKKEY not in (select PJKKEY from SPJDETP where UNITKEY=#Unitkey# and NOSPJ=#Nospj#)
+      and case #Parameter.Field#
+      when '1' then JP.KDPAJAK
+      when '2' then JP.NMPAJAK
+      when '3' then JP.PJKKEY
+      when '4' then JP.RUMUSPJK
+      end like #Parameter.Value# + '%'
+      order by JP.KDPAJAK
+    </select>
+    <select id="QueryBySpmpjkJpajak" extends="BaseQueryJpajak" parameterclass="Usadi.Valid49.BO.SpmpjkControl" resultMap="return-lookup">
+      where JP.PJKKEY not in (select PJKKEY from SPMPJK where UNITKEY=#Unitkey# and NOSPM=#Nospm#)
+      and case #Parameter.Field#
+      when '1' then JP.KDPAJAK
+      when '2' then JP.NMPAJAK
+      when '3' then JP.PJKKEY
+      when '4' then JP.RUMUSPJK
+      end like #Parameter.Value# + '%'
+      order by JP.KDPAJAK
+    </select>
+    <select id="QueryByBkpajakdetJpajak" extends="BaseQueryJpajak" parameterclass="Usadi.Valid49.BO.BkpajakdetControl" resultMap="return-lookup">
+      where JP.PJKKEY not in (select PJKKEY from BKPAJAKDET where UNITKEY=#Unitkey# and NOBKPAJAK=#Nobkpajak#)
+      and case #Parameter.Field#
+      when '1' then JP.KDPAJAK
+      when '2' then JP.NMPAJAK
+      when '3' then JP.PJKKEY
+      when '4' then JP.RUMUSPJK
+      end like #Parameter.Value# + '%'
+      order by JP.KDPAJAK
+    </select>
+    <select id="LoadByPKJpajak" extends="BaseQueryJpajak" parameterClass="Jpajak" resultMap="return-result">
+      where JP.PJKKEY=#Pjkkey#  
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Jpajak">
+      <parameter property="Kdpajak" column="KDPAJAK"/>
+      <parameter property="Nmpajak" column="NMPAJAK"/>
+      <parameter property="Rumuspjk" column="RUMUSPJK"/>
+      <parameter property="Pjkkey" column="PJKKEY"/>
+    </parameterMap>
+			<parameterMap id="update-param" extends="insert-param" class="Jpajak">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Jpajak">
+      <parameter property="Pjkkey" column="PJKKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

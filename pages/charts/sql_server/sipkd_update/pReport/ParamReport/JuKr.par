@@ -1,0 +1,4 @@
+TITLE=JURNAL PENGELUARAN KAS
+Jkas=string;Jenis Kas;1;
+Tglawal=string;Tanggal Awal;10;
+Tglakhir=string;Tanggal Akhir;10;

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Bkud" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Bkud" type="Usadi.Valid49.BO.BkudControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result-view" class="Bkud">
+      <result property="AllowSuperUser" column="ALLOWSUPERUSER"/>
+      <result property="Idxkode" column="IDXKODE"/>
+      <result property="Position" column="position"/>
+      <result property="Hal" column="HAL"/>
+      <result property="Nmr" column="NMR"/>
+      <result property="Penerimaan" column="PENERIMAAN"/>
+      <result property="Potongan" column="POTONGAN"/>
+      <result property="Diterima" column="DITERIMA"/>
+      <result property="Tgl1" column="TGL1"/>
+      <result property="Tgl2" column="TGL2"/>
+      <result property="Idxttd" column="IDXTTD"/>
+      <result property="Kdbukti" column="KDBUKTI"/>
+      <result property="Kdstatus" column="KDSTATUS"/>
+      <result property="Nmbukti" column="NMBUKTI"/>
+      <result property="Nobbantu" column="NOBBANTU"/>
+      <result property="Nmbkas" column="NMBKAS"/>
+      <result property="Nobukas" column="NOBUKAS"/>
+      <result property="Nobuktikas" column="NOBUKTIKAS"/>
+      <result property="Nosts" column="NOSTS"/>
+      <result property="Tglsts" column="TGLSTS"/>
+      <result property="Tglkas" column="TGLKAS"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Uraian" column="URAIAN"/>
+    </resultMap>
+    <resultMap id="return-result" class="Bkud">
+      <result property="Nobukas" column="NOBUKAS"/>
+    </resultMap>
+    <resultMap id="return-result2" class="Bkud">
+      <result property="Nobukas" column="NOBUKAS"/>
+      <result property="Tglkas" column="TGLKAS"/>
+    </resultMap>
+    <resultMap id="return-result3" class="Bkud">
+      <result property="Hal" column="HAL"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertBkud" parameterMap="insert-param">
+      <generate table="BKUD"/>
+    </insert>
+    <update id="UpdateByBkud" parameterMap="update-param">
+      <generate table="BKUD" by="NOBUKAS"/>
+    </update>
+    <update id="UpdateByTglvalidBkud" parameterClass="Bkud">
+      update BKUD set TGLVALID=#Tglvalid#
+      where UNITKEY=#Unitkey# and NOSTS=#Nosts#
+    </update>
+    <update id="UpdateByDraftBkud" parameterClass="Bkud" >
+      update BKUD set TGLVALID=null
+      where UNITKEY=#Unitkey# and NOSTS=#Nosts#
+    </update>
+    <delete id="DeleteByBkud" parameterMap="delete-param">
+      <generate table="BKUD" by="NOBUKAS"/>
+    </delete>
+    <select id="LoadByNpage1Bkud" parameterClass="Bkud" resultMap="return-result3">
+      SELECT COUNT(*) as HAL FROM BKUD A inner join STS B on A.UNITKEY=B.UNITKEY and A.NOSTS=B.NOSTS
+      where (A.NOBBANTU=#Nobbantu# or isnull(#Nobbantu#,'')='') and B.KDSTATUS not in ('14')
+    </select>
+    <select id="LoadByNpage3Bkud" parameterClass="Bkud" resultMap="return-result3">
+      SELECT COUNT(*) as HAL FROM BKUD A inner join STS B on A.UNITKEY=B.UNITKEY and A.NOSTS=B.NOSTS
+      where (A.NOBBANTU=#Nobbantu# or isnull(#Nobbantu#,'')='') and B.KDSTATUS in ('14')
+    </select>
+    <select id="BaseQueryBkud" parameterClass="Bkud" resultMap="return-result">
+      select #AllowSuperUser# as ALLOWSUPERUSER,rtrim(A.IDXTTD) as IDXTTD,A.KDBUKTI,A.NOBBANTU,A.NOBUKAS,A.NOBUKTIKAS,A.NOSTS,A.TGLKAS,A.TGLVALID,A.UNITKEY,isnull(A.URAIAN,'') as URAIAN
+      ,B.NMBUKTI
+      ,D.IDXKODE,rtrim(D.KDSTATUS) as KDSTATUS,rtrim(D.KEYBEND1) as KEYBEND1,rtrim(D.KEYBEND2) as KEYBEND2,D.TGLSTS,F.NMBKAS
+      from BKUD A
+      left outer join JBKAS B on A.KDBUKTI = B.KDBUKTI
+      left outer join STS D on A.NOSTS = D.NOSTS and A.UNITKEY=D.UNITKEY
+      left outer join BKBKAS F on A.NOBBANTU = F.NOBBANTU
+    </select>
+    <select id="QueryByNobukasBkud" parameterClass="Bkud" resultMap="return-result">
+      select NOBUKAS from
+      (select NOBUKAS from BKUD
+      where NOBBANTU=#Nobbantu# or #Nobbantu#=''
+      union all
+      select NOBUKAS from BKUK
+      where NOBBANTU=#Nobbantu# or #Nobbantu#=''
+      )A
+      order by NOBUKAS
+    </select>
+    <procedure id="ExecWspi_bkud" parameterMap="select-param" timeout="0" resultMap="return-result-view">
+      WSPI_BKUD
+    </procedure>
+    <!--<procedure id="ExecWspi_bkudTgl" parameterMap="select-param" timeout="0" resultMap="return-result-view">
+      WSPI_BKUD_TGL
+    </procedure>-->
+    <select id="QueryByNostsBkud" parameterClass="Bkud" resultMap="return-result">
+      select NOBUKAS from BKUD
+      where UNITKEY=#Unitkey# and NOSTS=#Nosts#
+    </select>
+    <select id="QueryByJurSetorBkud" extends="BaseQueryBkud" parameterClass="Bkud" resultMap="return-result">
+      where <!--A.UNITKEY=#Unitkey# and--> D.IDXKODE not in ('0')
+      and case #Parameter.Field#
+      when '1' then A.NOBUKAS
+      when '2' then convert(char(10), A.TGLKAS, 103)
+      when '3' then A.NOSTS
+      when '4' then A.NOBUKTIKAS
+      when '5' then isnull(A.URAIAN,'')
+      end like '%'+ #Parameter.Value# + '%'
+      Order by A.NOBUKAS
+    </select>
+    <select id="QueryByJurTransferBkud" extends="BaseQueryBkud" parameterClass="Bkud" resultMap="return-result">
+      where <!--A.UNITKEY=#Unitkey# and--> D.IDXKODE in ('0')
+      and case #Parameter.Field#
+      when '1' then A.NOBUKAS
+      when '2' then convert(char(10), A.TGLKAS, 103)
+      when '3' then A.NOSTS
+      when '4' then A.NOBUKTIKAS
+      when '5' then isnull(A.URAIAN,'')
+      end like '%'+ #Parameter.Value# + '%'
+      Order by A.NOBUKAS
+    </select>
+    <select id="LoadByPKBkud" parameterClass="Bkud" resultMap="return-result2">
+      select * from BKUD
+      where UNITKEY=#Unitkey#
+      and NOSTS=#Nosts#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Bkud">
+      <parameter property="Idxttd" column="IDXTTD"/>
+      <parameter property="Kdbukti" column="KDBUKTI"/>
+			<parameter property="Nobbantu" column="NOBBANTU"/>
+      <parameter property="Nobuktikas" column="NOBUKTIKAS"/>
+      <parameter property="Nosts" column="NOSTS"/>
+      <parameter property="Tglkas" column="TGLKAS"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Uraian" column="URAIAN"/>
+      <parameter property="Nobukas" column="NOBUKAS"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Bkud">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Bkud">
+      <parameter property="Nobukas" column="NOBUKAS"/>
+    </parameterMap>
+    <parameterMap id="select-param" class="Bkud">
+      <parameter property="AllowSuperUser" column="allowsuperuser"/>
+      <parameter property="Kode" column="kode"/>
+      <parameter property="Nobbantu" column="nobbantu"/>
+      <parameter property="Tgl1" column="tgl1"/>
+      <parameter property="Tgl2" column="tgl2"/>
+      <parameter property="Parameter.Field" column="field"/>
+      <parameter property="Parameter.Value" column="value"/>
+      <parameter property="Hal" column="hal"/>
+      <parameter property="Position" column="position"/>
+      <parameter property="Flgtgl" column="flgtgl"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

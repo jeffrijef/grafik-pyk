@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Skbend" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Skbend" type="Usadi.Valid49.BO.SkbendControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Skbend">
+      <result property="Notunjuk" column="NOTUNJUK"/>
+      <result property="Tgltunjuk" column="TGLTUNJUK"/>
+      <result property="Uraian" column="URAIAN"/>
+      <result property="Klp_bend" column="KLP_BEND"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSkbend" parameterMap="insert-param">
+      <generate table="SKBEND"/>
+    </insert>
+    <update id="UpdateBySkbend" parameterMap="update-param">
+      <generate table="SKBEND" by="KLP_BEND"/>
+    </update>
+    <delete id="DeleteBySkbend" parameterMap="delete-param">
+      <generate table="SKBEND" by="KLP_BEND"/>
+    </delete>
+    <select id="BaseQuerySkbend" parameterClass="Skbend" resultMap="return-result">
+      SELECT F.KLP_BEND, F.URAIAN, F.NOTUNJUK, F.TGLTUNJUK 
+	    FROM SKBEND F 
+    </select>
+    <select id="QueryByAllSkbend" extends="BaseQuerySkbend" parameterClass="Skbend" resultMap="return-result">
+      where case #Parameter.Field#
+      when '1' then F.KLP_BEND
+      when '2' then F.NOTUNJUK
+      when '3' then convert(char(10), F.TGLTUNJUK , 103)
+      when '4' then F.URAIAN
+      end like '%'+ #Parameter.Value# + '%'
+    </select>
+    <select id="LoadByPKSkbend" extends="BaseQuerySkbend" parameterClass="Skbend" resultMap="return-result">
+      where F.KLP_BEND=#Klp_bend# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Skbend">
+      <parameter property="Notunjuk" column="NOTUNJUK"/>
+      <parameter property="Tgltunjuk" column="TGLTUNJUK"/>
+      <parameter property="Uraian" column="URAIAN"/>
+      <parameter property="Klp_bend" column="KLP_BEND"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Skbend">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Skbend">
+      <parameter property="Klp_bend" column="KLP_BEND"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

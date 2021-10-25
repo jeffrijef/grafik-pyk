@@ -1,0 +1,6 @@
+TITLE=RKA 2.2.1 - PPKD
+Unitkey=string;Key Unit;4;;;;1;
+Kdtahap=string;Tahap;4;
+Tanggal=datetime;Tanggal;30;
+Hal=string;Halaman;4;
+Kdkegunit=string;Kode Kegiatan Unit;4;

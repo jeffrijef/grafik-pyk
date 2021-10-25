@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Jdana" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Jdana" type="Usadi.Valid49.BO.JdanaControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Jdana">
+      <result property="Kddana" column="KDDANA"/>
+      <result property="Nmdana" column="NMDANA"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <insert id="InsertJdana" parameterMap="insert-param" >
+      <generate table="JDANA"/>
+    </insert>
+    <update id="UpdateByJdana" parameterMap="update-param" >
+      <generate table="JDANA" by="KDDANA"/>
+    </update>
+    <delete id="DeleteByJdana" parameterMap="delete-param" >
+      <generate table="JDANA" by="KDDANA"/>
+    </delete>
+    <select id="QueryByAllJdana" parameterClass="Jdana" resultMap="return-result">
+      select * from JDANA
+      order by KDDANA
+    </select>
+    <select id="LoadByPKJdana" parameterClass="Jdana"  resultMap="return-result" >
+      select * from JDANA
+      where KDDANA=#Kddana#
+    </select>
+  </statements>
+
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Jdana">
+      <parameter property="Nmdana" column="NMDANA"/>
+      <parameter property="Kddana" column="KDDANA"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Jdana">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Jdana">
+      <parameter property="Kddana" column="KDDANA"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>
+

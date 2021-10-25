@@ -1,0 +1,6 @@
+TITLE=Rekapitulasi Transaksi Harian Belanja Daerah
+Unitkey=string;Key Unit;4;;-1
+Bln=string;Bulan;4;
+Bend=string; Bendahara;30;;-1
+Tanggal=datetime;Tanggal;10;
+Hal=string;Halaman;10;

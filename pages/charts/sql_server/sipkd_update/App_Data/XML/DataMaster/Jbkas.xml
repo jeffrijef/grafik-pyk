@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Jbkas" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Jbkas" type="Usadi.Valid49.BO.JbkasControl, Usadi.Valid49" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Jbkas">
+      <result property="Nmbukti" column="NMBUKTI"/>
+      <result property="Kdbukti" column="KDBUKTI"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertJbkas" parameterMap="insert-param">
+      <generate table="JBKAS"/>
+    </insert>
+    <update id="UpdateByJbkas" parameterMap="update-param">
+      <generate table="JBKAS" by="KDBUKTI"/>
+    </update>
+    <delete id="DeleteByJbkas" parameterMap="delete-param">
+      <generate table="JBKAS" by="KDBUKTI"/>
+    </delete>
+    <select id="BaseQueryJbkas" parameterClass="Jbkas" resultMap="return-result">
+      select A.KDBUKTI,A.NMBUKTI
+      from JBKAS A
+    </select>
+    <select id="QueryByAllJbkas" extends="BaseQueryJbkas" parameterClass="Jbkas" resultMap="return-result">
+			where
+			case #Parameter.Field#
+			when '1' then A.KDBUKTI
+			when '2' then A.NMBUKTI
+			end like '%'+ #Parameter.Value# + '%'
+			Order by A.KDBUKTI
+		</select>
+    <select id="LoadByPKJbkas" extends="BaseQueryJbkas" parameterClass="Jbkas" resultMap="return-result">
+      where A.KDBUKTI=#Kdbukti# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Jbkas">
+      <parameter property="Nmbukti" column="NMBUKTI"/>
+      <parameter property="Kdbukti" column="KDBUKTI"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Jbkas">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Jbkas">
+      <parameter property="Kdbukti" column="KDBUKTI"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

@@ -1,0 +1,482 @@
+﻿BODY
+{
+  margin: 0px;
+}
+.mainheader
+{
+  background-repeat: no-repeat;
+  background-image: url(../Images/anggaran.jpg);
+  height: 90px;
+  background-color: #c0c8c9;
+}
+.subheader
+{
+  background-image: url(../Images/subheadercolor.gif);
+  height: 30px;
+  font-weight: bold;
+  font-family: 'Trebuchet MS' , Verdana, Arial;
+  vertical-align: text-bottom;
+  text-align: center;
+}
+.mainfooter
+{
+  text-align: center;
+  font-style: italic;
+  color: white;
+  font-size: 10px;
+  background-color: #ff9314;
+}
+.TopMenuOne
+{
+  background-image: url(../Images/face.gif);
+  cursor: default;
+  height: 30px;
+}
+.TopMenu
+{
+  background-image: url(../Images/top_menu.gif);
+  cursor: default;
+  height: 30px;
+}
+.maintopleft
+{
+  background-repeat: no-repeat;
+  background-image: url(../Images/usadi.gif);
+  height: 55px;
+  width: 110px;
+  background-color: #3260e1;
+}
+.mainbodilist
+{
+  text-align: center;
+  vertical-align: top;
+  overflow: hidden;
+  background-color:#daeccd;
+/*background-image: url(../Images/backgroudlist-.gif);*/
+}
+.mainbodidetil
+{
+  text-align: center;
+  vertical-align: top;
+  overflow: auto;
+  background-image: url(../Images/backgroud-.gif);
+}
+.txtmaster
+{
+  border: 1px solid gray;
+  font-size: 12px;
+  font-family: 'Trebuchet MS' , Verdana, Arial;
+  text-align: left;
+  vertical-align: middle;
+  background-image: none;
+  background-color: White;
+  }
+.lblmaster
+{
+  font-size: 12px;
+  font-family: 'Trebuchet MS' , Verdana, Arial;
+  text-align: left;
+  vertical-align: middle;
+  background-image: none;
+  background-color: transparent;
+  border-bottom: gray 1px solid;
+  border-right: gray 1px solid;
+  border-top: gray 1px solid;
+  border-left: gray 1px solid;
+  font-weight: bold;
+  width: 100%;
+}
+.txtmastermulti
+{
+  font-size: 12px;
+  font-family: 'Trebuchet MS' , Verdana, Arial;
+  text-align: left;
+  vertical-align: middle;
+  background-image: none;
+  background-color: White;
+  border-bottom: gray 1px solid;
+  border-right: gray 1px solid;
+  border-top: gray 1px solid;
+  border-left: gray 1px solid;
+  height: 28px;
+}
+
+.txtmasterright
+{
+  font-size: 12px;
+  font-family: 'Trebuchet MS' , Verdana, Arial;
+  text-align: right;
+  height: 13px;
+  vertical-align: middle;
+  background-image: none;
+  background-color: White;
+  border-bottom: gray 1px solid;
+  border-right: gray 1px solid;
+  border-top: gray 1px solid;
+  border-left: gray 1px solid;
+}
+
+.ddlmaster
+{
+  font-size: 11px;
+  font-family: 'Trebuchet MS' , Verdana, Arial;
+  height: 20px;
+  vertical-align: middle;
+  background-image: none;
+  background-color: White;
+  border-bottom: gray 1px solid;
+  border-right: gray 1px solid;
+  border-top: gray 1px solid;
+  border-left: gray 1px solid;
+}
+
+.btnmaster
+{
+  font-size: 11px;
+  font-family: 'Trebuchet MS' , Verdana, Arial;
+  vertical-align: middle;
+}
+.grvmaster
+{
+  font-size: 12px;
+  font-family: 'Trebuchet MS' , Verdana, Arial;
+  text-align: center;
+  width: 100%;
+  border-right: activeborder 1px solid;
+  border-top: activeborder 1px solid;
+  border-left: activeborder 1px solid;
+  border-bottom: activeborder 1px solid;
+}
+.grvtxtmod
+{
+  font-weight: bold;
+  color: black;
+}
+.grvheader
+{
+  background-color : Blue;
+}
+.tblhat
+{
+  font-size: 12px;
+  font-family: 'Trebuchet MS' , Verdana, Arial;
+  vertical-align: top;
+  width: 98%;
+  text-align: center;
+  margin-top: 11px;
+}
+.tblmaster
+{
+  font-size: 12px;
+  font-family: 'Trebuchet MS' , Verdana, Arial;
+  vertical-align: top;
+  width: 98%;
+  text-align: center;
+  border-right: threedlightshadow 1px solid;
+  border-top: threedlightshadow 1px solid;
+  border-left: threedlightshadow 1px solid;
+  border-bottom: threedlightshadow 1px solid;
+  background-color : #f0f0f0;
+}
+.tblmaster500
+{
+  font-size: 12px;
+  font-family: 'Trebuchet MS' , Verdana, Arial;
+  vertical-align: top;
+  width: 500px;
+  text-align: center;
+}
+.tblhat75
+{
+  font-size: 12px;
+  font-family: 'Trebuchet MS' , Verdana, Arial;
+  vertical-align: top;
+  margin-top: 10px;
+  width: 95%;
+  text-align: center;
+}
+.tblmaster75
+{
+  font-size: 12px;
+  font-family: 'Trebuchet MS' , Verdana, Arial;
+  vertical-align: top;
+  width: 95%;
+  text-align: center;
+  border-style: none;
+}
+.tbllogin
+{
+  font-size: 12px;
+  font-family: 'Trebuchet MS' , Verdana, Arial;
+  vertical-align: top;
+  width: 60%;
+  text-align: center;
+  border-top-width: 1px;
+  border-left-width: 1px;
+  border-left-color: activeborder;
+  border-bottom-width: 1px;
+  border-bottom-color: activeborder;
+  border-top-color: activeborder;
+  border-right-width: 1px;
+  border-right-color: activeborder;
+}
+.tblmain
+{
+  font-size: 12px;
+  font-family: 'Trebuchet MS' , Verdana, Arial;
+  vertical-align: top;
+  width: 100%;
+  text-align: center;
+  border-right: activeborder 0px solid;
+  border-top: activeborder 0px solid;
+  border-left: activeborder 0px solid;
+  border-bottom: activeborder 0px solid;
+}
+.tbldetil
+{
+  font-size: 12px;
+  font-family: 'Trebuchet MS' , Verdana, Arial;
+  vertical-align: top;
+  width: 98%;
+  text-align: center;
+  border-right: activeborder 0px solid;
+  border-top: activeborder 0px solid;
+  border-left: activeborder 0px solid;
+  border-bottom: activeborder 0px solid;
+}
+
+
+.tdhat
+{
+  text-align: center;
+  color: white;
+  background-image: url(../Images/centeror.gif);
+  font-family: 'Trebuchet MS' , Verdana, Arial;
+}
+.tdhatleft
+{
+  background-image: url(../Images/centeror.gif);
+}
+.tdhatright
+{
+  background-image: url(../Images/centeror.gif);
+}
+.tdhatdetil
+{
+  font-weight: bold;
+  text-align: center;
+  color: Black;
+  background-image: url(../Images/centerbl.gif);
+  font-family: 'Trebuchet MS' , Verdana, Arial;
+}
+
+.tdhatdetilleft
+{
+  background-image: url(../Images/leftbl.gif);
+}
+
+.tdhatdetilright
+{
+  background-image: url(../Images/rightbl.gif);
+}
+
+.tdlabel
+{
+  text-indent: 10px;
+  vertical-align: middle;
+  text-align: left;
+  width: 25%;
+  padding-bottom: 1px;
+  padding-top: 1px;
+  text-transform: none;
+  background-image: url(../Images/bluelabelcenter.gif);
+  background-repeat: repeat-x;
+}
+.tdlabellist
+{
+  text-indent: 5px;
+  vertical-align: middle;
+  text-align: left;
+  width: 15%;
+  padding-bottom: 1px;
+  padding-top: 1px;
+  background-image: url(../Images/sallabelcenterwidth.gif);
+  background-repeat: no-repeat;
+  border: 0;
+  color:Black;
+}
+.tdlabellist7
+{
+  text-indent: 5px;
+  background-color: #fff7ea;
+  vertical-align: middle;
+  text-align: left;
+  width: 7%;
+  padding-bottom: 1px;
+  padding-top: 1px;
+}
+.tdlabelfind
+{
+  text-indent: 5px;
+  vertical-align: middle;
+  text-align: left;
+  padding-bottom: 1px;
+  padding-top: 1px;
+  background-image: url(../Images/sallabelcenterwidth.gif);
+  background-repeat: no-repeat;
+  width: 15%;
+}
+.tdinput
+{
+  vertical-align: baseline;
+  text-align: left;
+  padding-bottom: 1px;
+  padding-top: 1px;
+  background-color: #dedcdc;
+  vertical-align: middle;
+}
+.tdinput15
+{
+  vertical-align: baseline;
+  text-align: left;
+  padding-bottom: 1px;
+  padding-top: 1px;
+  width: 15%;
+  background-color: #dedcdc;
+}
+.tdsubjudul
+{
+  text-indent: 5px;
+  vertical-align: middle;
+  text-align: left;
+  width: 15%;
+  font-weight: bold;
+  padding-bottom: 1px;
+  padding-top: 1px;
+  background-image: url(../Images/subbl.gif);
+}
+.tdsubjudullist1
+{
+  text-indent: 5px;
+  background-color: Black;
+  vertical-align: middle;
+  text-align: left;
+  width: 15%;
+  font-weight: bold;
+  padding-bottom: 1px;
+  padding-top: 1px;
+}
+.tdsubjudullist
+{
+  text-indent: 5px;
+  vertical-align: middle;
+  text-align: left;
+  width: 15%;
+  font-weight: bold;
+  padding-bottom: 1px;
+  padding-top: 1px;
+  background-image: url(../Images/subor.gif);
+}
+.tdpagebar
+{
+  text-align: center;
+  background-image: url(../Images/subor.gif);
+  font-size: 12px;
+  font-weight:bold;
+  font-family: 'Trebuchet MS' , Verdana, Arial;
+}
+.tdmainleft
+{
+  border-right: buttonshadow 1px solid;
+  vertical-align: top;
+  width: 5%;
+  clip: rect(auto auto auto auto);
+  text-align: center;
+  top: 5px;
+  padding-top: 10px;
+  background-image: url(../Images/leftbatas.gif);
+}
+.tdbacktop
+{
+  border-right: buttonshadow 1px solid;
+  margin-left: 10px;
+}
+.trhide
+{
+  display: none;
+}
+.pnldetil
+{
+  font-size: 11px;
+  font-family: 'Trebuchet MS' , Verdana, Arial;
+  vertical-align: top;
+  text-align: center;
+  border-right: activeborder 0px solid;
+  border-top: activeborder 0px solid;
+  border-left: activeborder 0px solid;
+  border-bottom: activeborder 0px solid;
+}
+
+/*CollapsiblePanel*/
+.collapsePanel
+{
+  background-color: #dcdcdc;
+  overflow: hidden;
+}
+
+.collapsePanelHeader
+{
+  width: 100%;
+  height: 30px;
+  background-image: url(../Images/bg-menu-main.png);
+  background-repeat: repeat-x;
+  color: #FFF;
+  font-weight: bold;
+}
+/*Popup Control*/
+.popupControl
+{
+  background-color: White;
+  position: absolute;
+  visibility: hidden;
+}
+
+
+
+.tdgridheader
+{
+  font-family: #990000;
+  background-color: #ffffcc;
+}
+
+.modalPopup
+{
+  border-width: 3px;
+  border-style: solid;
+  border-color:Silver;
+  padding: 3px;
+  width: 500px;
+  background-image: url(../Images/backgroudlogin.gif);
+}
+.modalPopup2
+{
+  border-width: 3px;
+  border-style: solid;
+  border-color: Gray;
+  padding: 3px;
+  width: 650px;
+  background-image: url(../Images/backgroudlogin.gif);
+}
+.modalPopup75
+{
+  border-width: 3px;
+  border-style: solid;
+  border-color: Gray;
+  padding: 3px;
+  width: 75%;
+  background-image: url(../Images/backgroudlogin.gif);
+}
+.modalBackground
+{
+  background-color: Gray;
+}

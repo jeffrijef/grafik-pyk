@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Bkpajak" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Bkpajak" type="Usadi.Valid49.BO.BkpajakControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Bkpajak">
+      <result property="AllowSuperUser" column="ALLOWSUPERUSER"/>
+      <result property="Ntpn" column="NTPN"/>
+      <result property="Keybend" column="KEYBEND"/>
+      <result property="Idxttd" column="IDXTTD"/>
+      <result property="Kdstatus" column="KDSTATUS"/>
+      <result property="Lblstatus" column="LBLSTATUS"/>
+      <result property="Uraian" column="URAIAN"/>
+      <result property="Tglbkpajak" column="TGLBKPAJAK"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nobkpajak" column="NOBKPAJAK"/>
+    </resultMap>
+    <resultMap id="return-result-bpk" class="Bkpajak">
+      <result property="AllowSuperUser" column="ALLOWSUPERUSER"/>
+      <result property="Ntpn" column="NTPN"/>
+      <result property="Keybend" column="KEYBEND"/>
+      <result property="Idxttd" column="IDXTTD"/>
+      <result property="Kdstatus" column="KDSTATUS"/>
+      <result property="Nobpk" column="NOBPK"/>
+      <result property="Uraian" column="URAIAN"/>
+      <result property="Tglbkpajak" column="TGLBKPAJAK"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nobkpajak" column="NOBKPAJAK"/>
+    </resultMap>
+    <resultMap id="return-result-keg" extends="return-result" class="Bkpajak">
+      <result property="Nmkegunit" column="NMKEGUNIT"/>
+      <result property="Nukeg" column="NUKEG"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="NOBKPAJAK"/>
+      <result property="Field" column="NOBKPAJAK"/>
+      <result property="Value" column="URAIAN"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertBkpajak" parameterMap="insert-param">
+      <generate table="BKPAJAK"/>
+    </insert>
+    <!--<statement id="InsertBPKBkpajak" parameterClass="Bkpajak">
+			insert into BKPAJAK
+			(UNITKEY,NOBKPAJAK,KEYBEND,KDSTATUS,IDXTTD,TGLBKPAJAK,URAIAN,TGLVALID)
+			values (#Unitkey#,#Nobkpajak#,#Keybend#,#Kdstatus#,#Idxttd#,#Tglbkpajak#,#Uraian#,#Tglbkpajak#)
+
+			insert into BKPAJAKKEG
+			(UNITKEY,NOBKPAJAK,KDKEGUNIT)
+			values (#Unitkey#,#Nobkpajak#,#Kdkegunit#)
+		</statement>-->
+    <statement id="InsertBPKBkpajak" parameterClass="Bkpajak">
+      insert into BPKPAJAK
+      (UNITKEY,NOBPK,KDSTATUS,NOBKPAJAK,KDKEGUNIT)
+      values (#Unitkey#,#Nobpk#,#Kdstatus#,#Nobkpajak#,#Kdkegunit#)
+    </statement>
+    <!--<statement id="InsertNOLBPKBkpajak" parameterClass="Bkpajak">
+      insert into BPK....
+      
+      insert into BPKPAJAK
+      (UNITKEY,NOBPK,KDSTATUS,NOBKPAJAK,KDKEGUNIT)
+      values (#Unitkey#,#Nobpk#,#Kdstatus#,#Nobkpajak#,#Kdkegunit#)
+    </statement>-->
+    <statement id="InsertNONBPKBkpajak" parameterClass="Bkpajak">
+      insert into BPKPAJAK (NOBPK,UNITKEY,KDSTATUS,NOBKPAJAK,KDKEGUNIT)
+      select top 1 Rtrim(A.NOBPK)NOBPK,#Unitkey#,#Kdstatus#,#Nobkpajak#,#Kdkegunit# from BPKDETR A
+      inner join BKUBPK B on A.NOBPK=B.NOBPK and A.UNITKEY=B.UNITKEY
+      where A.UNITKEY=#Unitkey# and  A.KDKEGUNIT=#Kdkegunit#
+    </statement>
+    <update id="UpdateByBkpajak" parameterMap="update-param">
+      <generate table="BKPAJAK" by="UNITKEY,NOBKPAJAK"/>
+    </update>
+    <!--<statement id="UpdateByKegBkpajak" parameterClass="Bkpajak">
+			update BKPAJAK
+			set KEYBEND=#Keybend#,KDSTATUS=#Kdstatus#,IDXTTD=#Idxttd#,TGLBKPAJAK=#Tglbkpajak#,
+			URAIAN=#Uraian#,TGLVALID=#Tglvalid#
+			where UNITKEY=#Unitkey# and NOBKPAJAK=#Nobkpajak#
+
+			update BKPAJAKKEG  set KDKEGUNIT=#Kdkegunit#
+			where UNITKEY=#Unitkey# and NOBKPAJAK=#Nobkpajak#
+		</statement>-->
+    <delete id="DeleteByBkpajak" parameterMap="delete-param">
+      <generate table="BKPAJAK" by="UNITKEY,NOBKPAJAK"/>
+    </delete>
+    <statement id="DeleteByPajakbpkBkpajak" parameterClass="Bkpajak">
+      begin transaction
+      delete from BPKPAJAK where UNITKEY=#Unitkey# and NOBKPAJAK=#Nobkpajak#
+      delete from BKPAJAK where UNITKEY=#Unitkey# and NOBKPAJAK=#Nobkpajak#
+      commit
+    </statement>
+    <select id="BaseQueryBkpajak" parameterClass="Bkpajak" resultMap="return-result">
+      select #AllowSuperUser# as ALLOWSUPERUSER,rtrim(A.IDXTTD) as IDXTTD,rtrim(A.KDSTATUS) as KDSTATUS,rtrim(A.KEYBEND) as KEYBEND,
+      A.NOBKPAJAK,A.TGLBKPAJAK,A.TGLVALID,A.UNITKEY,A.URAIAN,S.LBLSTATUS,A.NTPN
+      from BKPAJAK A
+      inner join STATTRS S on A.KDSTATUS=S.KDSTATUS
+    </select>
+    <select id="QueryByAllBkpajak" extends="BaseQueryBkpajak" parameterClass="Bkpajak" resultMap="return-result">
+      where A.UNITKEY=#Unitkey#
+      and A.KEYBEND = #Keybend#
+      and case #Parameter.Field#
+      when '1' then A.NOBKPAJAK
+      when '2' then convert(char(10), A.TGLBKPAJAK, 103)
+      when '3' then S.LBLSTATUS
+      when '4' then A.URAIAN
+      when '5' then convert(char(10), A.TGLVALID, 103)
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOBKPAJAK
+    </select>
+    <select id="QueryByPungutBkpajak" parameterClass="Bkpajak" resultMap="return-result-bpk">
+      select #AllowSuperUser# as ALLOWSUPERUSER,rtrim(A.IDXTTD) as IDXTTD,rtrim(A.KDSTATUS) as KDSTATUS,rtrim(A.KEYBEND) as KEYBEND,
+      A.NOBKPAJAK,A.TGLBKPAJAK,A.TGLVALID,A.UNITKEY,A.URAIAN,C.NOBPK,A.NTPN
+      from BKPAJAK A
+      inner join BPKPAJAK B on b.UNITKEY=a.UNITKEY and b.NOBKPAJAK=a.NOBKPAJAK
+      inner join BPK C on B.UNITKEY=C.UNITKEY and B.NOBPK=C.NOBPK
+      where A.UNITKEY=#Unitkey# and A.KEYBEND = #Keybend# and A.KDSTATUS='35' <!--and B.KDKEGUNIT=#Kdkegunit#-->
+      and (isnull(B.KDKEGUNIT,'')=isnull(#Kdkegunit#,'') or isnull(#Kdkegunit#,'')='')
+      and case #Parameter.Field#
+      when '1' then A.NOBKPAJAK
+      when '2' then convert(char(10), A.TGLBKPAJAK, 103)
+      when '3' then C.NOBPK
+      when '4' then A.URAIAN
+      when '5' then convert(char(10), A.TGLVALID, 103)
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOBKPAJAK
+    </select>
+    <select id="QueryBySetorBkpajak" parameterClass="Bkpajak" resultMap="return-result">
+      select #AllowSuperUser# as ALLOWSUPERUSER,rtrim(A.IDXTTD) as IDXTTD,rtrim(A.KDSTATUS) as KDSTATUS,rtrim(A.KEYBEND) as KEYBEND,
+      A.NOBKPAJAK,A.TGLBKPAJAK,A.TGLVALID,A.UNITKEY,A.URAIAN,S.LBLSTATUS,A.NTPN
+      from BKPAJAK A
+      inner join STATTRS S on A.KDSTATUS=S.KDSTATUS
+      <!--left join PJKPS C on c.UNITKEY = A.UNITKEY and c.NOSETOR=a.NOBKPAJAK
+      left join BPKPAJAK B on b.UNITKEY=C.UNITKEY and C.NOPUNGUT=B.NOBKPAJAK-->
+      where A.UNITKEY=#Unitkey# and A.KEYBEND = #Keybend# and A.KDSTATUS='36'
+      <!--and B.Kdkegunit=#Kdkegunit#-->
+      and case #Parameter.Field#
+      when '1' then A.NOBKPAJAK
+      when '2' then convert(char(10), A.TGLBKPAJAK, 103)
+      when '3' then S.LBLSTATUS
+      when '4' then A.URAIAN
+      when '5' then convert(char(10), A.TGLVALID, 103)
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOBKPAJAK
+    </select>
+    <select id="QueryByPjkpsBkpajak" parameterclass="Bkpajak" resultMap="return-lookup">
+      select #AllowSuperUser# as ALLOWSUPERUSER,rtrim(A.IDXTTD) as IDXTTD,rtrim(A.KDSTATUS) as KDSTATUS,rtrim(A.KEYBEND) as KEYBEND,
+      A.NOBKPAJAK,A.TGLBKPAJAK,A.TGLVALID,A.UNITKEY,A.URAIAN,D.NOBPK,A.NTPN
+      from BKPAJAK A
+      left join PJKPS B on b.UNITKEY=a.UNITKEY and b.NOPUNGUT=a.NOBKPAJAK
+      left join BPKPAJAK C on A.UNITKEY=a.UNITKEY and A.NOBKPAJAK=C.NOBKPAJAK
+      left join BPK D on D.UNITKEY=C.UNITKEY and D.NOBPK=C.NOBPK
+      where A.UNITKEY=#Unitkey# and A.KEYBEND=#Keybend# and A.KDSTATUS='35' <!--and C.KDKEGUNIT=#Kdkegunit#-->
+      and A.NOBKPAJAK not in (select NOPUNGUT from PJKPS where UNITKEY=#Unitkey#)
+      and case #Parameter.Field#
+      when '1' then A.NOBKPAJAK
+      end like #Parameter.Value# + '%'
+      order by A.NOBKPAJAK
+    </select>
+    <select id="QueryByNobkpajakBkpajak" extends="BaseQueryBkpajak" parameterClass="Bkpajak" resultMap="return-result">
+      order by A.NOBKPAJAK
+    </select>
+    <select id="LoadByPKBkpajak" extends="BaseQueryBkpajak" parameterClass="Bkpajak" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOBKPAJAK=#Nobkpajak#
+    </select>
+    <!--<select id="BaseQueryKegBkpajak" parameterClass="Bkpajak" resultMap="return-result">
+      select #AllowSuperUser# as ALLOWSUPERUSER,rtrim(A.IDXTTD) as IDXTTD,rtrim(A.KDSTATUS) as KDSTATUS,
+      rtrim(A.KEYBEND) as KEYBEND,A.NOBKPAJAK,A.TGLBKPAJAK,A.TGLVALID,A.UNITKEY,A.URAIAN,S.LBLSTATUS,
+      B.KDKEGUNIT,MK.NUKEG,MK.NMKEGUNIT
+      from BKPAJAK A
+      inner join STATTRS S on A.KDSTATUS=S.KDSTATUS
+      left outer join BKPAJAKKEG B on A.UNITKEY=B.UNITKEY and A.NOBKPAJAK=B.NOBKPAJAK
+      left outer join MKEGIATAN MK on B.KDKEGUNIT=MK.KDKEGUNIT
+    </select>
+    <select id="QueryByAllKegBkpajak" extends="BaseQueryKegBkpajak" parameterClass="Bkpajak" resultMap="return-result-keg">
+      where A.UNITKEY=#Unitkey#
+      and A.KEYBEND = #Keybend#
+      and case #Parameter.Field#
+      when '1' then A.NOBKPAJAK
+      when '2' then convert(char(10), A.TGLBKPAJAK, 103)
+      when '3' then S.LBLSTATUS
+      when '4' then A.URAIAN
+      when '5' then convert(char(10), A.TGLVALID, 103)
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOBKPAJAK
+    </select>
+    <select id="LoadByPKKegBkpajak" extends="BaseQueryKegBkpajak" parameterClass="Bkpajak" resultMap="return-result-keg">
+      where A.UNITKEY=#Unitkey# and A.NOBKPAJAK=#Nobkpajak#
+    </select>-->
+    <!--<select id="QueryByBkpajakspmBkpajak" extends="BaseQueryKegBkpajak" parameterclass="Usadi.Valid49.BO.BkpajakspmControl" resultMap="return-lookup">
+      where A.UNITKEY=#Unitkey#
+      and B.KDKEGUNIT in (select distinct KDKEGUNIT from SPMDETR where UNITKEY=#Unitkey# and NOSPM=#Nospm#)
+      and A.NOBKPAJAK not in (select NOBKPAJAK from BKPAJAKSPM)
+      and case #Parameter.Field#
+      when '1' then A.NOBKPAJAK
+      when '2' then A.URAIAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOBKPAJAK
+    </select>-->
+    <!--<select id="QueryByBpkpajakBkpajak" extends="BaseQueryBkpajak" parameterclass="Usadi.Valid49.BO.BpkpajakControl" resultMap="return-lookup">
+      where A.UNITKEY=#Unitkey# and A.KEYBEND=#Keybend# and A.KDSTATUS='35' and
+      A.NOBKPAJAK not in (select NOBKPAJAK from BPKPAJAK where UNITKEY=#Unitkey#)
+      and case #Parameter.Field#
+      when '1' then A.NOBKPAJAK
+      end like #Parameter.Value# + '%'
+      order by A.NOBKPAJAK
+    </select>-->
+    <select id="QueryByBpkpajakBkpajak" parameterClass="Usadi.Valid49.BO.BpkpajakControl" resultMap="return-lookup">
+      EXEC  WSP_LOOKUP_BPKPAJAK #AllowSuperUser# ,#Unitkey# ,#Keybend#,#Parameter.Value#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Bkpajak">
+      <parameter property="Ntpn" column="NTPN"/>
+      <parameter property="Idxttd" column="IDXTTD"/>
+      <parameter property="Kdstatus" column="KDSTATUS"/>
+      <parameter property="Keybend" column="KEYBEND"/>
+      <parameter property="Tglbkpajak" column="TGLBKPAJAK"/>
+      <parameter property="Tglvalid" column="TGLVALID"/>
+      <parameter property="Uraian" column="URAIAN"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nobkpajak" column="NOBKPAJAK"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Bkpajak">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Bkpajak">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nobkpajak" column="NOBKPAJAK"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

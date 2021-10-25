@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Daftphk3" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Daftphk3" type="Usadi.Valid49.BO.Daftphk3Control" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Daftphk3">
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Alamat" column="ALAMAT"/>
+      <result property="Jnsusaha" column="JNSUSAHA"/>
+      <result property="Nmbank" column="NMBANK"/>
+      <result property="Nminst" column="NMINST"/>
+      <result property="Nmp3" column="NMP3"/>
+      <result property="Norcp3" column="NORCP3"/>
+      <result property="Npwp" column="NPWP"/>
+      <result property="Telepon" column="TELEPON"/>
+      <result property="Kdp3" column="KDP3"/>
+</resultMap>
+    <resultMap id="return-result-Kdp3" class="Daftphk3">
+      <result property="Kdp3" column="KDP3"/>
+    </resultMap>
+    <resultMap id="return-result-jum" class="Daftphk3">
+      <result property="Jum" column="JUM"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertDaftphk3" parameterMap="insert-param">
+      <generate table="DAFTPHK3"/>
+    </insert>
+    <update id="UpdateByDaftphk3" parameterMap="update-param">
+      <generate table="DAFTPHK3" by="KDP3"/>
+    </update>
+    <delete id="DeleteByDaftphk3" parameterMap="delete-param">
+      <generate table="DAFTPHK3" by="KDP3"/>
+    </delete>
+    <select id="BaseQueryDaftphk3" parameterClass="Daftphk3" resultMap="return-result">
+			select D.ALAMAT,D.JNSUSAHA,D.KDP3,D.NMBANK,D.NMINST,D.NMP3,D.NORCP3,D.NPWP,D.TELEPON,D.UNITKEY
+			from DAFTPHK3 D
+			LEFT JOIN DAFTUNIT d2 ON d2.UNITKEY= d.UNITKEY
+		</select>
+    <select id="QueryByAllDaftphk3" extends="BaseQueryDaftphk3" parameterClass="Daftphk3" resultMap="return-result">
+			where D.UNITKEY ='' OR d.UNITKEY IS NULL and
+			case #Parameter.Field#
+			when '1' then D.KDP3
+			when '2' then D.NMP3
+			when '3' then D.NMINST
+			when '4' then D.TELEPON
+			end like '%'+ #Parameter.Value# + '%'
+			order by D.KDP3
+		</select>
+    <select id="QueryByAllUNITDaftphk3" extends="BaseQueryDaftphk3" parameterClass="Daftphk3" resultMap="return-result">
+      where D.UNITKEY =#Unitkey# and
+      case #Parameter.Field#
+      when '1' then D.KDP3
+      when '2' then D.NMP3
+      when '3' then D.NMINST
+      when '4' then D.TELEPON
+      end like '%'+ #Parameter.Value# + '%'
+      order by D.KDP3
+    </select>
+		<!--<select id="QueryByAllPPKDDaftphk3" extends="BaseQueryDaftphk3" parameterClass="Daftphk3" resultMap="return-result">
+			where D.UNITKEY=#Unitkey# and --><!--isnull(#Unitkey#,'')='' OR --><!--
+			case #Parameter.Field#
+			when '1' then D.KDP3
+			when '2' then D.NMP3
+			when '3' then D.NMINST
+			when '4' then D.TELEPON
+			end like '%'+ #Parameter.Value# + '%'
+			order by D.KDP3
+		</select>-->
+    <!--<select id="QueryByAllIntDaftphk3" extends="BaseQueryDaftphk3" parameterClass="Daftphk3" resultMap="return-result">-->
+      <select id="QueryByAllIntDaftphk3"  parameterClass="Daftphk3" resultMap="return-result-Kdp3">
+      select rtrim(right(KDP3,9)) as KDP3 from DAFTPHK3  where len(kdp3)=10 order by cast(right(KDP3,9) as int)
+      <!--where 
+			case #Parameter.Field#
+			when '1' then D.KDP3
+			when '2' then D.NMP3
+			when '3' then D.NMINST
+			when '4' then D.TELEPON
+			end like '%'+ #Parameter.Value# + '%'
+			order by cast(D.KDP3 as int)-->
+		</select>
+    <select id="LoadByPKDaftphk3" extends="BaseQueryDaftphk3" parameterClass="Daftphk3" resultMap="return-result">
+      where D.KDP3=#Kdp3# 
+    </select>
+    <select id="LoadByJumDaftphk3" parameterClass="Daftphk3" resultMap="return-result-jum">
+      select count(*) as Jum from SP2D where KDP3=#Kdp3#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Daftphk3">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Alamat" column="ALAMAT"/>
+      <parameter property="Jnsusaha" column="JNSUSAHA"/>
+      <parameter property="Nmbank" column="NMBANK"/>
+      <parameter property="Nminst" column="NMINST"/>
+      <parameter property="Nmp3" column="NMP3"/>
+      <parameter property="Norcp3" column="NORCP3"/>
+      <parameter property="Npwp" column="NPWP"/>
+      <parameter property="Telepon" column="TELEPON"/>
+      <parameter property="Kdp3" column="KDP3"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Daftphk3">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Daftphk3">
+      <parameter property="Kdp3" column="KDP3"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

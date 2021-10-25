@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Bubam" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <alias>
+      <typeAlias alias="Bubam" type="Usadi.Valid49.BO.BubamControl" />
+    </alias>
+    <resultMaps>
+      <resultMap id="return-result" class="Bubam">
+        <result property="Tglvalid" column="TGLVALID"/>
+        <result property="Kdkegunit" column="KDKEGUNIT"/>
+        <result property="Noba" column="NOBA"/>
+        <result property="Tglbu" column="TGLBU"/>
+        <result property="Unitkey" column="UNITKEY"/>
+        <result property="Nobu" column="NOBU"/>
+      </resultMap>
+    </resultMaps>
+    <statements>
+      <insert id="InsertBubam" parameterMap="insert-param">
+        <generate table="Bubam"/>
+      </insert>
+      <update id="UpdateByBubam" parameterMap="update-param">
+        <generate table="Bubam" by="UNITKEY,NOBU"/>
+      </update>
+      <delete id="DeleteByBubam" parameterMap="delete-param">
+        <generate table="Bubam" by="UNITKEY,NOBU"/>
+      </delete>
+      <select id="BaseQueryBubam" parameterClass="Bubam" resultMap="return-result">
+        select B.NOBA,B.TGLBU,B.UNITKEY,B.NOBU,B.TGLVALID,A.KDKEGUNIT
+        from BUBAM B
+        LEFT JOIN BERITA A ON A.NOBA=B.NOBA
+      </select>
+      <select id="QueryByAllBubam" extends="BaseQueryBubam" parameterClass="Bubam" resultMap="return-result">
+        where B.UNITKEY=#Unitkey# and A.KDKEGUNIT=#Kdkegunit# and
+        case #Parameter.Field#
+        when '1' then B.NOBU
+        when '2' then B.NOBA
+        end like '%'+ #Parameter.Value# + '%'
+        order by B.NOBU
+      </select>
+      <select id="LoadByPKBubam" extends="BaseQueryBubam" parameterClass="Bubam" resultMap="return-result">
+        where B.UNITKEY = #Unitkey# and B.NOBU = #Nobu#
+      </select>
+    </statements>
+    <parameterMaps>
+      <parameterMap id="insert-param" class="Bubam">
+        <parameter property="Noba" column="NOBA"/>
+        <parameter property="Tglbu" column="TGLBU"/>
+        <parameter property="Unitkey" column="UNITKEY"/>
+        <parameter property="Nobu" column="NOBU"/>
+      </parameterMap>
+      <parameterMap id="update-param" extends="insert-param" class="Bubam">
+      </parameterMap>
+      <parameterMap id="delete-param" class="Bubam">
+        <parameter property="Unitkey" column="UNITKEY"/>
+        <parameter property="Nobu" column="NOBU"/>
+      </parameterMap>
+    </parameterMaps>
+</sqlMap>
+

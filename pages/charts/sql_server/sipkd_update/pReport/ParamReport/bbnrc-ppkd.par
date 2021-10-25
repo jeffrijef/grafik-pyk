@@ -1,0 +1,4 @@
+TITLE=Buku Besar - Neraca PPKD
+Unitkey=string;Key Unit;4;
+Mtgkey=string;Tahap;10;
+Tgl=datetime;Tanggal;30;

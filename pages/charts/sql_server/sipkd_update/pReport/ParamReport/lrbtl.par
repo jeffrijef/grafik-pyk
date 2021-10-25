@@ -1,0 +1,6 @@
+TITLE=LAPORAN REALISASI BELANJA TIDAK LANGSUNG
+Unitkey=string;Key Unit;4;
+Awal=datetime;Tanggal;30;
+Akhir=datetime;Tanggal;30;
+Kdtahap=string;Tahap;10;
+Keybend=string;Bendahara;4;

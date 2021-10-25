@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Mlkpsp2d" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<alias>
+		<typeAlias alias="Mlkpsp2d" type="Usadi.Valid49.BO.Mlkpsp2dControl" />
+	</alias>
+	<resultMaps>
+		<resultMap id="return-result" class="Mlkpsp2d">
+			<result property="Uraian" column="URAIAN"/>
+			<result property="Ket" column="KET"/>
+			<result property="Kdlist" column="KDLIST"/>
+		</resultMap>
+		<resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+			<result property="Key" column="KDLIST"/>
+			<result property="Field" column="KDLIST"/>
+			<result property="Value" column="URAIAN"/>
+		</resultMap>
+	</resultMaps>
+	<statements>
+		<insert id="InsertMlkpsp2d" parameterMap="insert-param">
+			<generate table="MLKPSP2D"/>
+		</insert>
+		<!--<update id="UpdateByMlkpsp2d" parameterMap="update-param">
+      <generate table="MLKPSP2D" by="KDLIST"/>
+    </update>-->
+		<update id="UpdateByMlkpsp2d" parameterClass="Mlkpsp2d">
+			UPDATE MLKPSP2D
+			SET KET=#Ket#,URAIAN=#Uraian#
+			WHERE KDLIST=#Kdlist#
+		</update>
+		<delete id="DeleteByMlkpsp2d" parameterMap="delete-param">
+			<generate table="MLKPSP2D" by="KDLIST"/>
+		</delete>
+		<select id="BaseQueryMlkpsp2d" parameterClass="Mlkpsp2d" resultMap="return-result">
+			SELECT M.KDLIST,M.URAIAN,M.KET FROM MLKPSP2D M
+		</select>
+		<select id="QueryByAllMlkpsp2d" extends="BaseQueryMlkpsp2d" parameterClass="Mlkpsp2d" resultMap="return-result">
+			WHERE
+			case #Parameter.Field#
+			when '1' then M.KDLIST
+			when '2' then M.URAIAN
+			when '3' then M.KET
+			end like '%'+ #Parameter.Value# + '%'
+			order by M.KDLIST
+		</select>
+		<select id="QueryByTrsklpMlkpsp2d"  parameterclass="Usadi.Valid49.BO.TrsklpControl" resultMap="return-lookup">
+			SELECT M.KDLIST,M.KDLIST,M.URAIAN FROM MLKPSP2D M WHERE M.KDLIST NOT IN(SELECT KDLIST FROM TRSKLP WHERE NODOKLKP=#Nodoklkp#)
+			and case #Parameter.Field#
+			when '1' then M.KDLIST
+			when '2' then M.URAIAN
+			when '3' then M.KET
+			end like '%'+ #Parameter.Value# + '%'
+			order by M.KDLIST
+		</select>
+		<select id="LoadByPKMlkpsp2d" extends="BaseQueryMlkpsp2d" parameterClass="Mlkpsp2d" resultMap="return-result">
+			WHERE M.KDLIST=#Kdlist#
+		</select>
+	</statements>
+	<parameterMaps>
+		<parameterMap id="insert-param" class="Mlkpsp2d">
+			<parameter property="Kdlist" column="KDLIST"/>
+			<parameter property="Uraian" column="URAIAN"/>
+			<parameter property="Ket" column="KET"/>
+		</parameterMap>
+		<parameterMap id="update-param" extends="insert-param" class="Mlkpsp2d">
+		</parameterMap>
+		<parameterMap id="delete-param" class="Mlkpsp2d">
+			<parameter property="Kdlist" column="KDLIST"/>
+		</parameterMap>
+	</parameterMaps>
+</sqlMap>

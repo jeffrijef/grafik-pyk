@@ -1,0 +1,8 @@
+TITLE=BUKU PANJAR PERKEGIATAN
+Unitkey=string;Key Unit;4;
+Kdkegunit=string;Kode Kegiatan Unit;4;
+Jnsbend=string;Jenis Bendahara;4;;-1;2;-1;
+Nip=string;Nip;30;
+Keybend=string;Bendahara;4;
+Awal=datetime;Tanggal;30;
+Akhir=datetime;Tanggal;30;

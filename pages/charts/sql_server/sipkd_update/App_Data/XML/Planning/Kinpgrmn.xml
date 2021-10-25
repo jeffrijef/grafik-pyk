@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Kinpgrmn" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Kinpgrmn" type="Usadi.Valid49.BO.KinpgrmnControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Kinpgrmn">
+      <result property="Kdtahun" column="KDTAHUN"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Idprgrms" column="IDPRGRMS"/>
+      <result property="Idprgrmn" column="IDPRGRMN"/>
+      <result property="Kdjkk" column="KDJKK"/>
+      <result property="Tolokukur" column="TOLOKUKUR"/>
+      <result property="Target" column="TARGET"/>
+      <result property="Urjkk" column="URJKK"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Noprgrms" column="NOPRGRMS"/>
+      <result property="Nmprgrms" column="NMPRGRMS"/>
+      <result property="Noprgrmn" column="NOPRGRMN"/>
+      <result property="Nmprgrmn" column="NMPRGRMN"/>
+      <result property="Nmtahun" column="NMTAHUN"/>
+    </resultMap>
+    <resultMap id="return-view" class="Kinpgrmn">
+      <result property="Kdtahun" column="KDTAHUN"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Idprgrms" column="IDPRGRMS"/>
+      <result property="Idprgrmn" column="IDPRGRMN"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Noprgrms" column="NOPRGRMS"/>
+      <result property="Nmprgrms" column="NMPRGRMS"/>
+      <result property="Noprgrmn" column="NOPRGRMN"/>
+      <result property="Nmprgrmn" column="NMPRGRMN"/>
+      <result property="Nmtahun" column="NMTAHUN"/>
+      <result property="Input" column="INPUT"/>
+      <result property="Output" column="OUTPUT"/>
+      <result property="Outcome" column="OUTCOME"/>
+      <result property="Kdjkk" column="KDJKK"/>
+    </resultMap>
+
+  </resultMaps>
+
+  <statements>
+    <insert id="InsertKinpgrmn" parameterMap="insert-param" >
+      <generate table="KINPGRMN"/>
+    </insert>
+    <update id="UpdateByKinpgrmn" parameterMap="update-param" >
+      <generate table="KINPGRMN" by="KDTAHUN,UNITKEY,IDPRGRMN,KDJKK"/>
+    </update>
+    <delete id="DeleteByKinpgrmn" parameterMap="delete-param" >
+      <generate table="KINPGRMN" by="KDTAHUN,UNITKEY,IDPRGRMN"/>
+    </delete>
+    <select id="BaseQueryKinpgrmn" parameterClass="Kinpgrmn" resultMap="return-result">
+      select KPN.KDTAHUN,KPN.UNITKEY, PN.IDPRGRMS, KPN.IDPRGRMN, KPN.KDJKK, KPN.TOLOKUKUR, KPN.TARGET,
+      JI.URJKK, UN.KDUNIT, UN.NMUNIT, PN.NOPRGRMN,PN.NMPRGRMN, PS.NOPRGRMS,PS.NMPRGRMS, TN.NMTAHUN
+      from KINPGRMN KPN
+      left outer join JINDIKATOR JI on KPN.KDJKK = JI.KDJKK
+      left outer join DAFTUNIT UN on KPN.UNITKEY = UN.UNITKEY
+      left outer join PGRMN PN on KPN.UNITKEY = PN.UNITKEY and KPN.IDPRGRMN = PN.IDPRGRMN and KPN.KDTAHUN = PN.KDTAHUN
+      left outer join PGRMS PS on PN.UNITKEY = PS.UNITKEY and PN.IDPRGRMS = PS.IDPRGRMS
+      left outer join JTAHUN TN on KPN.KDTAHUN = TN.KDTAHUN
+    </select>
+    <procedure id="ExecSPViewKinpgrmn" parameterMap="view-param" resultMap="return-view">
+      WSP_KINPGRMN
+    </procedure>
+    <select id="LoadByPKKinpgrmn" extends="BaseQueryKinpgrmn" parameterClass="Kinpgrmn"  resultMap="return-result" >
+      where KPN.KDTAHUN=#Kdtahun# and KPN.UNITKEY=#Unitkey# AND KPN.IDPRGRMN=#Idprgrmn# AND KPN.KDJKK=#Kdjkk#
+    </select>
+  </statements>
+
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Kinpgrmn">
+      <parameter property="Tolokukur" column="TOLOKUKUR"/>
+      <parameter property="Target" column="TARGET"/>
+      <parameter property="Kdtahun" column="KDTAHUN"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Idprgrmn" column="IDPRGRMN"/>
+      <parameter property="Kdjkk" column="KDJKK"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Kinpgrmn">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Kinpgrmn">
+      <parameter property="Kdtahun" column="KDTAHUN"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Idprgrmn" column="IDPRGRMN"/>
+    </parameterMap>
+    <parameterMap id="view-param" class="Kinpgrmn">
+      <parameter property="Kdtahun" column="kdtahun"/>
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Parameter.Field" column="field"/>
+      <parameter property="Parameter.Value" column="value"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>
+

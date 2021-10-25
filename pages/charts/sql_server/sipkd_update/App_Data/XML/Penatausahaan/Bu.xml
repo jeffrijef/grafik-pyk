@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Bu" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Bu" type="Usadi.Valid49.BO.BuControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Bu">
+      <result property="Nmpernrc" column="NMPERNRC"/>
+      <result property="Kdpernrc" column="KDPERNRC"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Nobpk" column="NOBPK"/>
+      <result property="Nobu" column="NOBU"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Mtgkeynrc" column="MTGKEYNRC"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertBu" parameterMap="insert-param">
+      <generate table="Bu"/>
+    </insert>
+    <update id="UpdateByBu" parameterMap="update-param">
+      <generate table="Bu" by="NOBPK,NOBU,MTGKEY,MTGKEYNRC"/>
+    </update>
+    <!--<update id="UpdateByUpbuBu" parameterClass="Bu">
+      update BU set nilai=#Nilai# 
+      where NOBPK=#Nobpk# and NOBU=#Nobu# AND MTGKEY=#Mtgkey# and MTGKEYNRC=#Mtgkeynrc#
+    </update>-->
+    <delete id="DeleteByBu" parameterMap="delete-param">
+      <generate table="Bu" by="NOBPK,NOBU,MTGKEY,MTGKEYNRC"/>
+    </delete>
+    <select id="BaseQueryBu" parameterClass="Bu" resultMap="return-result">
+      select B.NILAI,B.NOBPK,B.NOBU,B.MTGKEYNRC,B.MTGKEY,M.KDPER,M.NMPER,C.KDPER AS KDPERNRC,C.NMPER AS NMPERNRC
+      from BU B
+      left join MATANGR M on B.MTGKEY = M.MTGKEY
+      left join MATANGNRC C on C.MTGKEY = B.MTGKEYNRC
+    </select>
+    <select id="QueryByAllBu" extends="BaseQueryBu" parameterClass="Bu" resultMap="return-result">
+      where B.NOBPK = #Nobpk#
+      and case #Parameter.Field#
+      when '1' then B.NILAI
+      when '2' then B.NOBU
+      when '3' then B.MTGKEYNRC
+      when '4' then B.MTGKEY
+      end like '%'+ #Parameter.Value# + '%'
+      order by B.MTGKEY
+    </select>
+    <select id="LoadByPKBu" extends="BaseQueryBu" parameterClass="Bu" resultMap="return-result">
+      where B.NOBPK = #Nobpk# and B.NOBU = #Nobu# and B.MTGKEYNRC = #Mtgkeynrc# and B.MTGKEY = #Mtgkey#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Bu">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Nobpk" column="NOBPK"/>
+      <parameter property="Nobu" column="NOBU"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Mtgkeynrc" column="MTGKEYNRC"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Bu">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Bu">
+      <parameter property="Nobpk" column="NOBPK"/>
+      <parameter property="Nobu" column="NOBU"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Mtgkeynrc" column="MTGKEYNRC"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>
+

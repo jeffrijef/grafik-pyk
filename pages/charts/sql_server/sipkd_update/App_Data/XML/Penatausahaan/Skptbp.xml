@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Skptbp" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Skptbp" type="Usadi.Valid49.BO.SkptbpControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Skptbp">
+      <result property="Tglskp" column="TGLSKP"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Noskp" column="NOSKP"/>
+      <result property="Idxkode" column="IDXKODE"/>
+      <result property="Tgltbp" column="TGLTBP"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Uraitbp" column="URAITBP"/>
+      <result property="Notbp" column="NOTBP"/>
+      <result property="Unitkey" column="UNITKEY"/>
+    </resultMap>
+    <resultMap id="return-result-i" class="Skptbp">
+      <result property="Noskp" column="NOSKP"/>
+      <result property="Notbp" column="NOTBP"/>
+      <result property="Unitkey" column="UNITKEY"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSkptbp" parameterMap="insert-param">
+      <generate table="SKPTBP"/>
+    </insert>
+    <update id="UpdateBySkptbp" parameterMap="update-param">
+      <generate table="SKPTBP" by="NOTBP,UNITKEY"/>
+    </update>
+    <delete id="DeleteBySkptbp" parameterMap="delete-param">
+      <generate table="SKPTBP" by="NOTBP,UNITKEY"/>
+    </delete>
+    <delete id="DeleteByAllSkptbp" parameterClass="Skptbp" >
+      delete from SKPTBP
+      where UNITKEY=#Unitkey# and NOTBP=#Notbp#
+      <!--and #Notbp# not in (select notbp from tbpdetd where UNITKEY=#Unitkey# and NOTBP=#Notbp#)-->
+    </delete>
+    <select id="BaseQuerySkptbp" parameterClass="Skptbp" resultMap="return-result">
+      select A.NOSKP,A.NOTBP,A.UNITKEY
+      , T.IDXKODE, T.TGLTBP, T.TGLVALID, T.URAITBP,
+      NILAI =
+      isnull((select sum(isnull(NILAI,0)) from TBPDETD C where C.UNITKEY=A.UNITKEY and C.NOTBP=A.NOTBP),0)
+      <!--+isnull((select sum(isnull(NILAI,0)) from TBPDETB C where C.UNITKEY=A.UNITKEY and C.NOTBP=A.NOTBP),0)-->
+      ,S.TGLSKP
+      from SKPTBP A
+      left outer join TBP T on A.UNITKEY=T.UNITKEY and A.NOTBP=T.NOTBP
+      inner join SKP S on S.UNITKEY=T.UNITKEY and A.NOSKP=S.NOSKP
+    </select>
+    <select id="QueryByAllSkptbp" extends="BaseQuerySkptbp" parameterClass="Skptbp" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSKP=#Noskp#
+      and case #Parameter.Field#
+      when '1' then A.NOSKP
+      when '2' then A.NOTBP
+      when '3' then A.UNITKEY
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOTBP
+    </select>
+    <select id="QueryByNoskpSkptbp" parameterClass="Skptbp" resultMap="return-result-i">
+      select A.NOSKP,A.NOTBP,A.UNITKEY
+      from SKPTBP A
+      left outer join TBP T on A.UNITKEY=T.UNITKEY and A.NOTBP=T.NOTBP
+      inner join SKP S on S.UNITKEY=T.UNITKEY and A.NOSKP=S.NOSKP
+      where A.UNITKEY=#Unitkey# and A.NOSKP=#Noskp#
+    </select>    
+    <select id="LoadByPKSkptbp" extends="BaseQuerySkptbp" parameterClass="Skptbp" resultMap="return-result">
+      where A.NOTBP=#Notbp# and A.UNITKEY=#Unitkey# 
+    </select>
+    <procedure id="ExecTransferSKPkeTBP" parameterMap="transfer-param">
+      WSP_TRANSFER_SKPTBP
+    </procedure>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Skptbp">
+      <parameter property="Noskp" column="NOSKP"/>
+      <parameter property="Notbp" column="NOTBP"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Skptbp">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Skptbp">
+      <parameter property="Notbp" column="NOTBP"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="transfer-param" class="Skptbp">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Notbp" column="notbp"/>
+      <parameter property="Noskp" column="noskp"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

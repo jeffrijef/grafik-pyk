@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Beritapot" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <alias>
+      <typeAlias alias="Beritapot" type="Usadi.Valid49.BO.BeritapotControl" />
+    </alias>
+    <resultMaps>
+      <resultMap id="return-result" class="Beritapot">
+        <result property="Kdstatus" column="KDSTATUS"/>
+        <result property="Type" column="TYPE"/>
+        <result property="Nmper" column="NMPER"/>
+        <result property="Kdper" column="KDPER"/>
+        <result property="Nilai" column="NILAI"/>
+        <result property="Mtgkey" column="MTGKEY"/>
+        <result property="Kdkegunit" column="KDKEGUNIT"/>
+        <result property="Unitkey" column="UNITKEY"/>
+        <result property="Noba" column="NOBA"/>
+        <result property="Nojetra" column="NOJETRA"/>
+      </resultMap>
+      <resultMap id="return-result-dk" class="Beritapot">
+        <result property="Kdper" column="KDPER"/>
+        <result property="Nmper" column="NMPER"/>
+        <result property="Nilnol" column="NILNOL"/>
+        <result property="Nilaik" column="NILAIK"/>
+        <result property="Nilai" column="NILAI"/>
+        <result property="Kdkegunit" column="KDKEGUNIT"/>
+      </resultMap>
+    </resultMaps>
+    <statements>
+      <insert id="InsertBeritapot" parameterMap="insert-param">
+        <generate table="Beritapot"/>
+      </insert>
+      <update id="UpdateByBeritapot" parameterMap="update-param">
+        <generate table="Beritapot" by="MTGKEY,KDKEGUNIT,UNITKEY,NOBA,NOJETRA"/>
+      </update>
+      <delete id="DeleteByBeritapot" parameterMap="delete-param">
+        <generate table="Beritapot" by="MTGKEY,KDKEGUNIT,UNITKEY,NOBA,NOJETRA"/>
+      </delete>
+      <select id="BaseQueryBeritapot" parameterClass="Beritapot" resultMap="return-result">
+        select A.NILAI,A.MTGKEY,A.KDKEGUNIT,A.UNITKEY,A.NOBA,A.NOJETRA
+        ,B.KDSTATUS
+        ,rtrim(C.KDPER) as KDPER, rtrim(C.NMPER) as NMPER, C.TYPE
+        from BERITAPOT A
+        left outer join BERITA B on A.NOBA = B.NOBA and A.UNITKEY = B.UNITKEY
+        left outer join MATANGR C on A.MTGKEY = C.MTGKEY
+      </select>
+      <select id="QueryByAllBeritapot" extends="BaseQueryBeritapot" parameterClass="Beritapot" resultMap="return-result">
+        where A.UNITKEY=#Unitkey# and A.NOBA=#Noba#
+        and case #Parameter.Field#
+        when '1' then C.KDPER
+        when '2' then C.NMPER
+        end like '%'+ #Parameter.Value# + '%'
+        order by C.KDPER
+      </select>
+      <select id="QueryByJurnalpotBeritapot" parameterClass="Beritapot" resultMap="return-result-dk">
+        select  KDPER,NMPER,NILAI,NILAIK,NILNOL,'' as KDKEGUNIT FROM(
+        select KDPERD KDPER,NMPERD NMPER,NILAID NILAI,#Nilnol# NILAIK,#Nilnol# NILNOL,'' as KDKEGUNIT FROM JURNAL WHERE UNITKEY=#Unitkey# and NOBUKTI=#Nobukti# and jurnal=#Kjenis#
+        and (isnull(jurnal,'')=isnull(#Kjenis#,'') or isnull(#Kjenis#,'')='' or ((jurnal is null) and #Kjenis# is not null))
+        union all
+        select KDPERK KDPER,NMPERK NMPER,#Nilnol# NILAI,sum(NILAIK) NILAIK,#Nilnol# NILNOL,'' as KDKEGUNIT FROM JURNAL where UNITKEY=#Unitkey# and NOBUKTI=#Nobukti#
+        and (isnull(jurnal,'')=isnull(#Kjenis#,'') or isnull(#Kjenis#,'')='' or ((jurnal is null) and #Kjenis# is not null))
+        group by kdperk,nmperk
+        )k
+        order by NILAI desc,KDPER
+      </select>
+      <procedure id="ExecTransferSp2dpot" parameterMap="transfer-sp2dpot-param" timeout="0">
+        WSP_TRANSFERSP2DPOT
+      </procedure>
+      <select id="LoadByPKBeritapot" extends="BaseQueryBeritapot" parameterClass="Beritapot" resultMap="return-result">
+        where A.MTGKEY = #Mtgkey# and A.KDKEGUNIT = #Kdkegunit# and A.UNITKEY = #Unitkey# and A.NOBA = #Noba# and A.NOJETRA = #Nojetra#
+      </select>
+    </statements>
+    <parameterMaps>
+      <parameterMap id="insert-param" class="Beritapot">
+        <parameter property="Nilai" column="NILAI"/>
+        <parameter property="Mtgkey" column="MTGKEY"/>
+        <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+        <parameter property="Unitkey" column="UNITKEY"/>
+        <parameter property="Noba" column="NOBA"/>
+        <parameter property="Nojetra" column="NOJETRA"/>
+      </parameterMap>
+      <parameterMap id="update-param" extends="insert-param" class="Beritapot">
+      </parameterMap>
+      <parameterMap id="delete-param" class="Beritapot">
+        <parameter property="Mtgkey" column="MTGKEY"/>
+        <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+        <parameter property="Unitkey" column="UNITKEY"/>
+        <parameter property="Noba" column="NOBA"/>
+        <parameter property="Nojetra" column="NOJETRA"/>
+      </parameterMap>
+      <parameterMap id="transfer-sp2dpot-param" class="Beritapot">
+        <parameter property="Unitkey" column="unitkey"/>
+        <parameter property="Nosp2d" column="nosp2d"/>
+        <parameter property="Noba" column="noba"/>
+      </parameterMap>
+    </parameterMaps>
+</sqlMap>
+

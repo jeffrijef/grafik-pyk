@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Bktmem" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Bktmem" type="Usadi.Valid49.BO.BktmemControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Bktmem">
+      <result property="Kdtahap" column="KDTAHAP"/>
+      <result property="Kdbm" column="KDBM"/>
+      <result property="Nmbm" column="NMBM"/>
+      <result property="Kdlevel" column="KDLEVEL"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Idxttd" column="IDXTTD"/>
+      <result property="Nip" column="NIP"/>
+      <result property="Jabatan" column="JABATAN"/>
+      <result property="Referensi" column="REFERENSI"/>
+      <result property="Tglbm" column="TGLBM"/>
+      <result property="Validbm" column="VALIDBM"/>
+      <result property="Uraian" column="URAIAN"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nobm" column="NOBM"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertBktmem" parameterMap="insert-param">
+      <generate table="BKTMEM"/>
+    </insert>
+    <update id="UpdateByBktmem" parameterMap="update-param">
+      <generate table="BKTMEM" by="UNITKEY,NOBM"/>
+    </update>
+    <update id="UpdateByTutupBktmem" parameterClass="Bktmem">
+      update BKTMEM set  KDBM=#Kdbm#,URAIAN=#Uraian#,REFERENSI=#Referensi#,IDXTTD=#Idxttd#,TGLBM=#Tglbm#,VALIDBM=#Validbm#
+      where UNITKEY=#Unitkey# and NOBM=#Nobm#
+    </update>
+    <update id="UpdateByValidbmBktmem" parameterClass="Bktmem">
+      update BKTMEM set VALIDBM=#Validbm#
+      where UNITKEY=#Unitkey# and NOBM=#Nobm#
+    </update>
+    <update id="UpdateByDraftBktmem" parameterClass="Bktmem" >
+      update BKTMEM set VALIDBM=null
+      where UNITKEY=#Unitkey# and NOBM=#Nobm#
+    </update>
+    <delete id="DeleteByBktmem" parameterMap="delete-param">
+      <generate table="BKTMEM" by="UNITKEY,NOBM"/>
+    </delete>
+    <statement id="DeleteByJotoBktmem" parameterClass="Bktmem">
+      DELETE FROM RBMDETN WHERE UNITKEY = #Unitkey# AND NOBM = #Nobm#
+      DELETE FROM RBMDETD WHERE UNITKEY = #Unitkey# AND NOBM = #Nobm#
+      DELETE FROM RBMDETB WHERE UNITKEY = #Unitkey# AND NOBM = #Nobm#
+      DELETE FROM RBMDETR WHERE UNITKEY = #Unitkey# AND NOBM = #Nobm#
+      DELETE FROM RBMDETRTL WHERE UNITKEY = #Unitkey# AND NOBM = #Nobm#
+
+      delete Bktmem WHERE UNITKEY = #Unitkey# AND NOBM = #Nobm#
+    </statement>
+    <select id="BaseQueryBktmem" parameterClass="Bktmem" resultMap="return-result">
+      select rtrim(A.IDXTTD) as IDXTTD,A.KDBM,A.NOBM,A.REFERENSI,A.TGLBM,A.UNITKEY,A.VALIDBM, A.URAIAN
+      ,B.NMBM,C.KDLEVEL,C.KDUNIT,C.NMUNIT,C.TYPE,D.NIP,D.JABATAN,#Kdtahap# KDTAHAP
+      from BKTMEM A
+      left outer join JBM B on A.KDBM = B.KDBM
+      left outer join DAFTUNIT C on A.UNITKEY = C.UNITKEY
+      left outer join JABTTD D on A.IDXTTD = D.IDXTTD
+    </select>
+    <select id="QueryByAllBktmem" extends="BaseQueryBktmem" parameterClass="Bktmem" resultMap="return-result">
+			where A.UNITKEY=#Unitkey#
+			and case #Parameter.Field#
+			when '1' then A.NOBM
+			when '2' then convert(char(10), A.TGLBM, 103)
+			when '3' then B.NMBM
+			when '4' then A.REFERENSI
+			end like '%'+ #Parameter.Value# + '%'
+			Order by A.NOBM
+		</select>
+    <select id="QueryByJangBktmem" extends="BaseQueryBktmem" parameterClass="Bktmem" resultMap="return-result">
+      where A.KDBM in ('13') and
+      A.UNITKEY=#Unitkey#
+      and case #Parameter.Field#
+      when '1' then A.NOBM
+      when '2' then convert(char(10), A.TGLBM, 103)
+      when '3' then B.NMBM
+      when '4' then A.REFERENSI
+      end like '%'+ #Parameter.Value# + '%'
+      Order by A.NOBM
+    </select>
+    <select id="QueryByJtupangBktmem" extends="BaseQueryBktmem" parameterClass="Bktmem" resultMap="return-result">
+      where A.KDBM in ('141') and
+      A.UNITKEY=#Unitkey#
+      and case #Parameter.Field#
+      when '1' then A.NOBM
+      when '2' then convert(char(10), A.TGLBM, 103)
+      when '3' then B.NMBM
+      when '4' then A.REFERENSI
+      end like '%'+ #Parameter.Value# + '%'
+      Order by A.NOBM
+    </select>
+    <select id="QueryByJlraBktmem" extends="BaseQueryBktmem" parameterClass="Bktmem" resultMap="return-result">
+      where A.KDBM in ('142') and
+      A.UNITKEY=#Unitkey#
+      and case #Parameter.Field#
+      when '1' then A.NOBM
+      when '2' then convert(char(10), A.TGLBM, 103)
+      when '3' then B.NMBM
+      when '4' then A.REFERENSI
+      end like '%'+ #Parameter.Value# + '%'
+      Order by A.NOBM
+    </select>
+    <select id="QueryByJsurBktmem" extends="BaseQueryBktmem" parameterClass="Bktmem" resultMap="return-result">
+      where A.KDBM in ('143') and
+      A.UNITKEY=#Unitkey#
+      and case #Parameter.Field#
+      when '1' then A.NOBM
+      when '2' then convert(char(10), A.TGLBM, 103)
+      when '3' then B.NMBM
+      when '4' then A.REFERENSI
+      end like '%'+ #Parameter.Value# + '%'
+      Order by A.NOBM
+    </select>
+    <select id="QueryByJloBktmem" extends="BaseQueryBktmem" parameterClass="Bktmem" resultMap="return-result">
+      where A.KDBM in ('144') and
+      A.UNITKEY=#Unitkey#
+      and case #Parameter.Field#
+      when '1' then A.NOBM
+      when '2' then convert(char(10), A.TGLBM, 103)
+      when '3' then B.NMBM
+      when '4' then A.REFERENSI
+      end like '%'+ #Parameter.Value# + '%'
+      Order by A.NOBM
+    </select>
+    <select id="QueryByJelimBktmem" extends="BaseQueryBktmem" parameterClass="Bktmem" resultMap="return-result">
+      where A.KDBM in ('15') and
+      A.UNITKEY=#Unitkey#
+      and case #Parameter.Field#
+      when '1' then A.NOBM
+      when '2' then convert(char(10), A.TGLBM, 103)
+      when '3' then B.NMBM
+      when '4' then A.REFERENSI
+      end like '%'+ #Parameter.Value# + '%'
+      Order by A.NOBM
+    </select>
+    <select id="QueryByBuktiBktmem" extends="BaseQueryBktmem" parameterClass="Bktmem" resultMap="return-result">
+      where A.KDBM in ('01','02','03','04','05','90','11','031','111') and
+      A.UNITKEY=#Unitkey#
+      and case #Parameter.Field#
+      when '1' then A.NOBM
+      when '2' then convert(char(10), A.TGLBM, 103)
+      when '3' then B.NMBM
+      when '4' then A.REFERENSI
+      end like '%'+ #Parameter.Value# + '%'
+      Order by A.NOBM
+    </select>
+    <!--<select id="QueryByNotElimBktmem" extends="BaseQueryBktmem" parameterClass="Bktmem" resultMap="return-result">
+      where A.KDBM not in ('13','141','142','143','144','15') and
+      A.UNITKEY=#Unitkey#
+      and case #Parameter.Field#
+      when '1' then A.NOBM
+      when '2' then convert(char(10), A.TGLBM, 103)
+      when '3' then B.NMBM
+      when '4' then A.REFERENSI
+      end like '%'+ #Parameter.Value# + '%'
+      Order by A.NOBM
+    </select>-->
+    <select id="QueryByElimBktmem" extends="BaseQueryBktmem" parameterClass="Bktmem" resultMap="return-result">
+      where A.KDBM in ('98') and
+      A.UNITKEY=#Unitkey#
+      and case #Parameter.Field#
+      when '1' then A.NOBM
+      when '2' then convert(char(10), A.TGLBM, 103)
+      when '3' then B.NMBM
+      when '4' then A.REFERENSI
+      end like '%'+ #Parameter.Value# + '%'
+      Order by A.NOBM
+    </select>
+    <select id="QueryByKdbmBktmem" extends="BaseQueryBktmem" parameterClass="Bktmem" resultMap="return-result">
+      where A.KDBM in ('98') and
+      A.UNITKEY=#Unitkey#
+    </select>
+    <select id="LoadByPKBktmem" extends="BaseQueryBktmem" parameterClass="Bktmem" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOBM=#Nobm# 
+    </select>
+    <procedure id="ExecTransferAset" parameterMap="transfer-aset-param" timeout="0">
+      WSP_TRANSFERASET
+    </procedure>
+    <procedure id="ExecTransferJoto" parameterMap="transfer-aset-param" timeout="0">
+      WSP_JOTO
+    </procedure>
+    <procedure id="ExecTransferJurang" parameterMap="transfer-ang-param" timeout="0">
+      WSP_JURANG
+    </procedure>
+    
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Bktmem">
+      <parameter property="Idxttd" column="IDXTTD"/>
+      <parameter property="Kdbm" column="KDBM"/>
+      <parameter property="Referensi" column="REFERENSI"/>
+      <parameter property="Tglbm" column="TGLBM"/>
+      <parameter property="Uraian" column="URAIAN"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nobm" column="NOBM"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Bktmem">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Bktmem">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nobm" column="NOBM"/>
+    </parameterMap>
+    <parameterMap id="transfer-aset-param" class="Bktmem">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Nobm" column="nobm"/>
+    </parameterMap>
+    <parameterMap id="transfer-ang-param" class="Bktmem">
+      <parameter property="Kdtahap" column="kdtahap"/>
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Nobm" column="nobm"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

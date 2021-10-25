@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Matangd" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Matangd" type="Usadi.Valid49.BO.MatangdControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Matangd">
+      <result property="Kdper" column="KDPER"/>
+      <result property="Mtglevel" column="MTGLEVEL"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Kdkhusus" column="KDKHUSUS"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="MTGKEY"/>
+      <result property="Field" column="KDPER"/>
+      <result property="Value" column="NMPER"/>
+      <result property="Type" column="TYPE"/>
+    </resultMap>
+
+  </resultMaps>
+  <statements>
+    <insert id="InsertMatangd" parameterMap="insert-param">
+      <generate table="MATANGD"/>
+    </insert>
+    <update id="UpdateByMatangd" parameterMap="update-param">
+      <generate table="MATANGD" by="MTGKEY"/>
+    </update>
+    <delete id="DeleteByMatangd" parameterMap="delete-param">
+      <generate table="MATANGD" by="MTGKEY"/>
+    </delete>
+    <update id="UpdateByKdkhususMatangdppkd" parameterClass="Matangd">
+      update MATANGD
+      set KDKHUSUS=#Kdkhusus#
+      where MTGKEY=#Mtgkey#
+    </update>
+    <select id="BaseQueryMatangd" parameterClass="Matangd" resultMap="return-result">
+      select rtrim(M.MTGKEY) as MTGKEY,
+      rtrim(M.MTGLEVEL) as MTGLEVEL,
+      rtrim(M.KDPER) as KDPER, rtrim(M.NMPER) as NMPER,rtrim(M.KDKHUSUS) as KDKHUSUS, rtrim(M.TYPE) as TYPE
+      from MATANGD M
+    </select>
+    <select id="QueryByAllMatangd" extends="BaseQueryMatangd" parameterClass="Matangd" resultMap="return-result">
+      where 
+      case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      <!--when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL-->
+      when '3' then M.TYPE
+      when '4' then M.MTGLEVEL
+      end like '%'+ #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryByLoMatangd" extends="BaseQueryMatangd"  parameterClass="Matangd" resultMap="return-result">
+      where LEFT(M.KDPER,2)='7.' <!--and M.MTGKEY not in (select MTGKEY from Setdlralo)-->
+      and M.TYPE='D'
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryByLraMatangd" extends="BaseQueryMatangd"  parameterClass="Matangd" resultMap="return-result">
+      where LEFT(M.KDPER,2)='4.'      <!--and M.TYPE='D'-->
+
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryByMtgsbdanaMatangd" extends="BaseQueryMatangd" parameterclass="Usadi.Valid49.BO.MtgsbdanaControl" resultMap="return-lookup">
+      where LEFT(M.KDPER,2)='4.' AND  M.MTGKEY not in (select MTGKEY from Mtgsbdana where KDDANA=#Kddana#)
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryByKdkhususMatangdppkd" extends="BaseQueryMatangd" parameterClass="Matangd" resultMap="return-result">
+      where KDKHUSUS = #Kdkhusus#
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like '%'+ #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryByKdperMatangd" extends="BaseQueryMatangd" parameterClass="Matangd" resultMap="return-result">
+      where M.KDPER=#Kdper#
+    </select>
+    <select id="QueryByNmperMatangd" extends="BaseQueryMatangd" parameterClass="Matangd" resultMap="return-result">
+      where replace(rtrim(NMPER),' ','') like replace(rtrim(#Nmper#),' ','')+'%'
+    </select>
+    <select id="BaseQueryLookupMatangd" parameterclass="Usadi.Valid49.BO.RaskdControl" resultMap="return-lookup">
+      select rtrim(M.MTGKEY)+'-'+rtrim(M.TYPE) as MTGKEY,rtrim(M.KDPER) as KDPER, rtrim(M.NMPER) as NMPER,rtrim(M.TYPE) as TYPE
+      from MATANGD M
+    </select>
+    <select id="QueryByMatangdppkdMatangd" extends="BaseQueryLookupMatangd" parameterclass="Usadi.Valid49.BO.MatangdppkdControl" resultMap="return-lookup">
+      where M.KDKHUSUS not in (#Kdkhusus#)  and (M.TYPE=#Opsi# or #Opsi#='H')
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryByTupdMatangd" extends="BaseQueryMatangd" parameterClass="Matangd" resultMap="return-result">
+      where M.MTGLEVEL in ('1','2')
+      order by M.KDPER
+    </select>
+    <select id="QueryByRaskdMatangd" extends="BaseQueryLookupMatangd" parameterclass="Usadi.Valid49.BO.RaskdControl" resultMap="return-lookup">
+      where M.MTGKEY not in (select MTGKEY from RASKD where UNITKEY=#Unitkey# AND KDTAHAP=#Kdtahap#)
+      and (M.TYPE=#Opsi# or #Opsi#='H') and M.KDKHUSUS in ('2')
+      and left(M.KDPER,2)='4.'
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryByDaskumdMatangd" extends="BaseQueryLookupMatangd" parameterclass="Usadi.Valid49.BO.DaskumdControl" resultMap="return-lookup">
+      where M.MTGKEY not in (select MTGKEY from DASKUMD where KDDASKUM=#Kddaskum#)
+      and left(M.KDPER,2)='4.'
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <!--25 - 02 - 2009 : GN-->
+    <select id="QueryBySetdlraMatangd" extends="BaseQueryLookupMatangd" parameterclass="Usadi.Valid49.BO.SetdlraControl" resultMap="return-lookup">
+      <!--where M.MTGKEY not in (select MTGKEY from SETDLRA) and-->
+      where M.MTGKEY not in (select MTGKEY from SETDLRA)
+      and (M.TYPE=#Opsi# or #Opsi#='H')
+      <!--and M.KDKHUSUS in ('2') and left(M.KDPER,2)='4.'-->
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryBySetdlra64Matangd" extends="BaseQueryLookupMatangd" parameterclass="Usadi.Valid49.BO.Setdlra64Control" resultMap="return-lookup">
+      <!--where M.MTGKEY not in (select MTGKEY from SETDLRA) and-->
+      where M.MTGKEY not in (select MTGKEY from SETDLRA64)
+      and (M.TYPE=#Opsi# or #Opsi#='H')
+      <!--and M.KDKHUSUS in ('2') and left(M.KDPER,2)='4.'-->
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryBySetdlraloMatangd" extends="BaseQueryLookupMatangd" parameterclass="Usadi.Valid49.BO.SetdlraloControl" resultMap="return-lookup">
+      where LEFT(M.KDPER,2)='4.' and M.MTGKEY not in (select MTGKEYLRA from Setdlralo)
+      and M.TYPE='D' <!--or #Opsi#='H')-->
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryBySetupdloMatangd" extends="BaseQueryLookupMatangd" parameterclass="Usadi.Valid49.BO.SetupdloControl" resultMap="return-lookup">
+      where LEFT(M.KDPER,2)='7.' and M.MTGKEY not in (select MTGKEY from Setupdlo)
+      and (M.TYPE=#Opsi# or #Opsi#='H')
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <!--25 - 02 - 2009 : GN-->
+    <select id="QueryBySetdlakMatangd" extends="BaseQueryLookupMatangd" parameterclass="Usadi.Valid49.BO.SetdlakControl" resultMap="return-lookup">
+      where  M.MTGKEY not in (select MTGKEY from SETDLAK) and left(M.KDPER,2)='4.'
+      and (M.TYPE=#Opsi# or #Opsi#='H')
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryByDaskdMatangd" extends="BaseQueryLookupMatangd" parameterclass="Usadi.Valid49.BO.DaskdControl" resultMap="return-lookup">
+      where M.MTGKEY not in (select MTGKEY from DASKD D left outer join SKDASK S on S.IDXDASK=D.IDXDASK and S.UNITKEY=D.UNITKEY where D.UNITKEY=#Unitkey# AND S.KDTAHAP=#Kdtahap#)
+      and (M.TYPE=#Opsi# or #Opsi#='H')
+      and left(M.KDPER,2)='4.'
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like '%'+ #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryBySkoddetMatangd" extends="BaseQueryLookupMatangd" parameterclass="Usadi.Valid49.BO.SkoddetControl" resultMap="return-lookup">
+      where M.MTGKEY not in (select MTGKEY from SKODDET where UNITKEY=#Unitkey# AND IDXSKO=#Idxsko#)
+      and left(M.KDPER,2)='4.'
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like '%'+ #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryByTbpdetdMatangd" extends="BaseQueryMatangd" parameterclass="Usadi.Valid49.BO.TbpdetdControl" resultMap="return-lookup">
+      where M.MTGKEY not in (select MTGKEY from TBPDETD where UNITKEY=#Unitkey# and NOTBP=#Notbp# and NOJETRA=#Nojetra#)
+      and left(M.KDPER,2)='4.'
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryByRkmdetdMatangd" extends="BaseQueryMatangd" parameterclass="Usadi.Valid49.BO.RkmdetdControl" resultMap="return-lookup">
+      where M.MTGKEY not in (select MTGKEY from RKMDETD where UNITKEY=#Unitkey# and NOSTS=#Nosts# and NOJETRA=#Nojetra#)
+      and (M.TYPE=#Opsi# or #Opsi#='H')
+      and left(M.KDPER,2)='4.'
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryBySppdetdMatangd" extends="BaseQueryMatangd" parameterclass="Usadi.Valid49.BO.SppdetdControl" resultMap="return-lookup">
+      where M.MTGKEY not in (select MTGKEY from SPPDETD where UNITKEY=#Unitkey# and NOSPP=#Nospp# and NOJETRA=#Nojetra#)
+      and left(M.KDPER,2)='4.'
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+		<select id="QueryByBpkdetdMatangd" extends="BaseQueryMatangd" parameterclass="Usadi.Valid49.BO.BpkdetdControl" resultMap="return-lookup">
+      where M.MTGKEY not in (select MTGKEY from BPKDETD where UNITKEY=#Unitkey# and NOBPK=#Nobpk# and NOJETRA=#Nojetra#)
+      and M.MTGKEY in(SELECT MTGKEY FROM DASKD WHERE UNITKEY=#Unitkey#)
+      and left(M.KDPER,2)='4.'
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      end like #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryBySpmdetdMatangd" extends="BaseQueryMatangd" parameterclass="Usadi.Valid49.BO.SpmdetdControl" resultMap="return-lookup">
+      where M.MTGKEY not in (select MTGKEY from SPMDETD where UNITKEY=#Unitkey# and NOSPM=#Nospm# and NOJETRA=#Nojetra#)
+      and left(M.KDPER,2)='4.'
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryByJakasMatangd" extends="BaseQueryMatangd" parameterClass="Matangd" resultMap="return-lookup">
+      where case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like '%'+ #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryBySp2ddetdMatangd" extends="BaseQueryMatangd" parameterclass="Usadi.Valid49.BO.Sp2ddetdControl" resultMap="return-lookup">
+      where M.MTGKEY not in (select MTGKEY from SP2DDETD where UNITKEY=#Unitkey# and NOSP2D=#Nosp2d# and NOJETRA=#Nojetra#)
+      and left(M.KDPER,2)='4.'
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryBySpjdetdMatangd" extends="BaseQueryMatangd" parameterclass="Usadi.Valid49.BO.SpjdetdControl" resultMap="return-lookup">
+      where M.MTGKEY not in (select MTGKEY from SPJDETD where UNITKEY=#Unitkey# and NOSPJ=#Nospj# and NOJETRA=#Nojetra#)
+      and left(M.KDPER,2)='4.'
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <!--<select id="QueryByTupdMatangd" extends="BaseQueryLookupMatangd" parameterclass="Usadi.Valid49.BO.TupdControl" resultMap="return-lookup">
+      where M.MTGKEY not in (select MTGKEY from TUPD)
+      <![CDATA[and rtrim(M.KDPER) <> '']]>
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like '%'+ #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>-->
+    <select id="QueryByStdhargadMatangd" extends="BaseQueryLookupMatangd" parameterclass="Usadi.Valid49.BO.StdhargadControl" resultMap="return-lookup">
+      where  M.MTGKEY not in (select MTGKEY from STDHARGAD)
+      and left(M.KDPER,2)='4.'
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like '%'+ #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryByMtgdunitMatangd" extends="BaseQueryLookupMatangd" parameterclass="Usadi.Valid49.BO.MtgdunitControl" resultMap="return-lookup">
+      where  M.MTGKEY not in (select MU.MTGKEY from MTGDUNIT MU left outer join MATANGD M on M.MTGKEY=MU.MTGKEY where MU.UNITKEY=#Unitkey# and M.TYPE='D')
+      and (M.TYPE=#Opsi# or #Opsi#='H')
+      and left(M.KDPER,2)='4.'
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like '%'+ #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryBySaldodlaluMatangd" extends="BaseQueryLookupMatangd" parameterclass="Usadi.Valid49.BO.SaldodlaluControl" resultMap="return-lookup">
+      where M.MTGKEY not in (select MTGKEY from SALDODLALU where UNITKEY=#Unitkey#)
+      and left(M.KDPER,2)='4.' AND m.[type] = 'D'
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like '%'+ #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryBySallodlaluMatangd" extends="BaseQueryLookupMatangd" parameterclass="Usadi.Valid49.BO.SallodlaluControl" resultMap="return-lookup">
+      where M.MTGKEY not in (select MTGKEY from SALDODLALU where UNITKEY=#Unitkey#)
+      and left(M.KDPER,2)='7.' AND m.[type] = 'D'
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like '%'+ #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <!--<select id="QueryByMtgsbdanaMatangd" extends="BaseQueryLookupMatangd" parameterclass="Usadi.Valid49.BO.MtgsbdanaControl" resultMap="return-lookup">
+      --><!--where left(M.KDPER,2)='4.' AND
+      case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL
+      when '5' then M.TYPE
+      end like '%'+ #Parameter.Value# + '%'--><!--
+      order by M.KDPER
+    </select>-->
+    <select id="LoadByPKMatangd" extends="BaseQueryMatangd" parameterClass="Matangd" resultMap="return-result">
+      where M.MTGKEY=#Mtgkey#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Matangd">
+      <parameter property="Kdper" column="KDPER"/>
+      <parameter property="Mtglevel" column="MTGLEVEL"/>
+      <parameter property="Nmper" column="NMPER"/>
+      <parameter property="Kdkhusus" column="KDKHUSUS"/>
+      <parameter property="Type" column="TYPE"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Matangd">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Matangd">
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

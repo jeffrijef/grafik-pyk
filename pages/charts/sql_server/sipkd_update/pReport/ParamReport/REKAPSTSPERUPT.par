@@ -1,0 +1,4 @@
+TITLE=Rekap Laporan Penerimaan Berdasarkan Objek Pendapatan
+KdperdObjek=string;Kode;50;
+Awal=datetime;Tanggal;30;
+Akhir=datetime;Tanggal;30;

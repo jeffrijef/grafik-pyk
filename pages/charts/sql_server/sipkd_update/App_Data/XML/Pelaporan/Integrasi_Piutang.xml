@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Integrasi_Piutang" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <alias>
+      <typeAlias alias="Integrasi_Piutang" type="Usadi.Valid49.BO.Integrasi_PiutangControl" />
+    </alias>
+    <resultMaps>
+      <resultMap id="return-result" class="Integrasi_Piutang">
+        <result property="Kdper" column="KDPER"/>
+        <result property="Nilai_sisih" column="NILAI_SISIH"/>
+        <result property="Nilaibayar" column="NILAIBAYAR"/>
+        <result property="Nilaisk" column="NILAISK"/>
+        <result property="Nmper" column="NMPER"/>
+        <result property="Status_sisih" column="STATUS_SISIH"/>
+        <result property="Tgl_hitung" column="TGL_HITUNG"/>
+        <result property="Tglvalid" column="TGLVALID"/>
+        <result property="Umur_piutang" column="UMUR_PIUTANG"/>
+        <result property="Nosk" column="NOSK"/>
+        <result property="Jdok" column="JDOK"/>
+        <result property="Unitkey" column="UNITKEY"/>
+      </resultMap>
+    </resultMaps>
+    <statements>
+      <insert id="InsertIntegrasi_Piutang" parameterMap="insert-param">
+        <generate table="Integrasi_Piutang"/>
+      </insert>
+      <update id="UpdateByIntegrasi_Piutang" parameterMap="update-param">
+        <generate table="Integrasi_Piutang" by="UMUR_PIUTANG,NOSK,JDOK,UNITKEY"/>
+      </update>
+      <update id="UpdateByTglvalidIntegrasi_Piutang" parameterClass="Integrasi_Piutang">
+        update Integrasi_Piutang set TGLVALID=#Tglvalid#
+        where Unitkey=#Unitkey# and NOSK=#Nosk# and Jdok=#Jdok# and Umur_piutang=#Umur_piutang#
+      </update>
+      <update id="UpdateByDraftIntegrasi_Piutang" parameterClass="Integrasi_Piutang" >
+        update Integrasi_Piutang set TGLVALID=null
+        where Unitkey=#Unitkey# and NOSK=#Nosk# and Jdok=#Jdok# and Umur_piutang=#Umur_piutang#
+      </update>
+      <delete id="DeleteByIntegrasi_Piutang" parameterMap="delete-param">
+        <generate table="Integrasi_Piutang" by="UMUR_PIUTANG,NOSK,JDOK,UNITKEY"/>
+      </delete>
+      <select id="BaseQueryIntegrasi_Piutang" parameterClass="Integrasi_Piutang" resultMap="return-result">
+        select I.KDPER,I.NILAI_SISIH,I.NILAIBAYAR,I.NILAISK,I.NMPER,I.STATUS_SISIH,I.TGL_HITUNG,I.TGLVALID,I.UMUR_PIUTANG,I.NOSK,I.JDOK,I.UNITKEY
+        from Integrasi_Piutang I
+      </select>
+      <select id="QueryByAllIntegrasi_Piutang" extends="BaseQueryIntegrasi_Piutang" parameterClass="Integrasi_Piutang" resultMap="return-result">
+        where  Unitkey=#Unitkey# and
+        case #Parameter.Field#
+        when '1' then I.NOSK
+        when '2' then I.NMPER
+        end like '%'+ #Parameter.Value# + '%'
+        order by I.NOSK,I.JDOK,I.KDPER
+      </select>
+      <select id="LoadByPKIntegrasi_Piutang" extends="BaseQueryIntegrasi_Piutang" parameterClass="Integrasi_Piutang" resultMap="return-result">
+        where I.UMUR_PIUTANG = #Umur_piutang# and I.NOSK = #Nosk# and I.JDOK = #Jdok# and I.UNITKEY = #Unitkey#
+      </select>
+    </statements>
+    <parameterMaps>
+      <parameterMap id="insert-param" class="Integrasi_Piutang">
+        <parameter property="Kdper" column="KDPER"/>
+        <parameter property="Nilai_sisih" column="NILAI_SISIH"/>
+        <parameter property="Nilaibayar" column="NILAIBAYAR"/>
+        <parameter property="Nilaisk" column="NILAISK"/>
+        <parameter property="Nmper" column="NMPER"/>
+        <parameter property="Status_sisih" column="STATUS_SISIH"/>
+        <parameter property="Tgl_hitung" column="TGL_HITUNG"/>
+        <parameter property="Tglvalid" column="TGLVALID"/>
+        <parameter property="Umur_piutang" column="UMUR_PIUTANG"/>
+        <parameter property="Nosk" column="NOSK"/>
+        <parameter property="Jdok" column="JDOK"/>
+        <parameter property="Unitkey" column="UNITKEY"/>
+      </parameterMap>
+      <parameterMap id="update-param" extends="insert-param" class="Integrasi_Piutang">
+      </parameterMap>
+      <parameterMap id="delete-param" class="Integrasi_Piutang">
+        <parameter property="Umur_piutang" column="UMUR_PIUTANG"/>
+        <parameter property="Nosk" column="NOSK"/>
+        <parameter property="Jdok" column="JDOK"/>
+        <parameter property="Unitkey" column="UNITKEY"/>
+      </parameterMap>
+    </parameterMaps>
+</sqlMap>
+

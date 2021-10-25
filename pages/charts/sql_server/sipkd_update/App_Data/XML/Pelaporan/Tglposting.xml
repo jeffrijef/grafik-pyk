@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Tglposting" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Tglposting" type="Usadi.Valid49.BO.TglpostingControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Tglposting">
+      <result property="Kdposting" column="KDPOSTING"/>
+      <result property="Keterangan" column="KETERANGAN"/>
+      <result property="Tglposting" column="TGLPOSTING"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Idposting" column="IDPOSTING"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertTglposting" parameterMap="insert-param">
+      <generate table="TGLPOSTING"/>
+    </insert>
+    <update id="UpdateByTglposting" parameterMap="update-param">
+      <generate table="TGLPOSTING" by="IDPOSTING"/>
+    </update>
+    <delete id="DeleteByTglposting" parameterMap="delete-param">
+      <generate table="TGLPOSTING" by="IDPOSTING"/>
+    </delete>
+    <select id="BaseQueryTglposting" parameterClass="Tglposting" resultMap="return-result">
+      select A.IDPOSTING,A.KDPOSTING,A.KETERANGAN,A.TGLPOSTING,A.UNITKEY
+      from TGLPOSTING A
+    </select>
+    <select id="QueryByAllTglposting" extends="BaseQueryTglposting" parameterClass="Tglposting" resultMap="return-result">
+      where A.KDPOSTING=#Kdposting# and A.UNITKEY=#Unitkey# and
+      case #Parameter.Field#
+      when '1' then A.KDPOSTING
+      when '2' then A.KETERANGAN
+      when '3' then convert(char(10), A.TGLPOSTING, 103)
+      end like '%'+ #Parameter.Value# + '%'
+    </select>
+    <select id="LoadByPKTglposting" extends="BaseQueryTglposting" parameterClass="Tglposting" resultMap="return-result">
+      where A.IDPOSTING=#Idposting# 
+    </select>
+    <select id="LoadByUnitkeyTglposting" extends="BaseQueryTglposting" parameterClass="Tglposting" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.KDPOSTING=#Kdposting#
+    </select>
+    <procedure id="ExecWSP_JURNALPROGNOSISAKBR6" parameterMap="transfer-param-hit" timeout="0">
+      WSP_JURNALPROGNOSISAKBR6
+    </procedure>
+    <procedure id="ExecJurnalAll" parameterMap="transfer-param-hit" timeout="0">
+      WSP_JURNALALL
+    </procedure>
+    <procedure id="ExecJurnalAllSkpd" parameterMap="transfer-param-hit-skpd" timeout="0">
+      WSP_JURNALALLSKPD
+    </procedure>
+    <procedure id="ExecUpdateSaldoLRA" parameterMap="transfer-param-lra" timeout="0">
+      WSP_UPDATESALDO_LRA
+    </procedure>
+    <procedure id="ExecUpdateSaldoLAK" parameterMap="transfer-param" timeout="0">
+      WSP_UPDATESALDO_LAK
+    </procedure>
+    <procedure id="ExecUpdateSaldoAkhir" parameterMap="transfer-param-saldoakhir" timeout="0">
+      WSP_UPDATESALDO_AKHIR
+    </procedure>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Tglposting">
+      <parameter property="Kdposting" column="KDPOSTING"/>
+      <parameter property="Keterangan" column="KETERANGAN"/>
+      <parameter property="Tglposting" column="TGLPOSTING"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Idposting" column="IDPOSTING"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Tglposting">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Tglposting">
+     <parameter property="Idposting" column="IDPOSTING"/>
+    </parameterMap>
+    <parameterMap id="transfer-param-hit" class="Tglposting">
+    </parameterMap>
+    <parameterMap id="transfer-param-hit-skpd" class="Tglposting">
+      <parameter property="Unitkey" column="unitkey"/>
+    </parameterMap>
+    <parameterMap id="transfer-param" class="Tglposting">
+      <parameter property="Tglposting" column="tgl"/>
+    </parameterMap>
+    <parameterMap id="transfer-param-lra" class="Tglposting">
+      <parameter property="Tglposting" column="tgl"/>
+      <parameter property="Unitkey" column="unitkey"/>
+    </parameterMap>
+    <parameterMap id="transfer-param-saldoakhir" class="Tglposting">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Tglposting" column="tgl"/>
+    </parameterMap>
+    <parameterMap id="transfer-param-prog" class="Tglposting">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Kd_bulan" column="bln"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

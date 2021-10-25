@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Bkubank" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Bkubank" type="Usadi.Valid49.BO.BkubankControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Bkubank">
+      <result property="AllowSuperUser" column="ALLOWSUPERUSER"/>
+      <result property="Idxttd" column="IDXTTD"/>
+      <result property="Nobukti" column="NOBUKU"/>
+      <result property="Tglbukti" column="TGLBUKU"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Uraian" column="URAIAN"/>
+      <result property="Keybend" column="KEYBEND"/>
+      <result property="Tglbkuskpd" column="TGLBKUSKPD"/>
+      <result property="Nobkuskpd" column="NOBKUSKPD"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertBkubank" parameterMap="insert-param">
+      <generate table="BKUBANK"/>
+    </insert>
+    <update id="UpdateByBkubank" parameterMap="update-param">
+      <generate table="BKUBANK" by="NOBKUSKPD,UNITKEY"/>
+    </update>
+		<update id="UpdateByTglvalidBkubank" parameterClass="Bkubank">
+      update BKUBANK set TGLVALID=#Tglvalid#
+      where UNITKEY=#Unitkey# and NOBKUSKPD=#Nobkuskpd#
+    </update>
+    <update id="UpdateByDraftBkubank" parameterClass="Bkubank" >
+      update BKUBANK set TGLVALID=null
+      where UNITKEY=#Unitkey# and NOBKUSKPD=#Nobkuskpd#
+    </update>
+    <delete id="DeleteByBkubank" parameterMap="delete-param">
+      <generate table="BKUBANK" by="NOBKUSKPD,UNITKEY"/>
+    </delete>
+    <select id="BaseQueryBkubank" parameterClass="Bkubank" resultMap="return-result">
+      select #AllowSuperUser# as ALLOWSUPERUSER,rtrim(A.IDXTTD) as IDXTTD,rtrim(A.KEYBEND) as KEYBEND,A.NOBKUSKPD,A.NOBUKU,A.TGLBKUSKPD,A.TGLVALID,A.UNITKEY,A.URAIAN
+      ,B.TGLBUKU
+      from BKUBANK A
+      Left outer Join BKBANK B on A.NOBUKU = B.NOBUKU and A.UNITKEY=B.UNITKEY
+    </select>
+    <select id="QueryByAllBkubank" extends="BaseQueryBkubank" parameterClass="Bkubank" resultMap="return-result">
+      where A.UNITKEY=#Unitkey#
+      and (A.KEYBEND = #Keybend# or #Keybend#='')
+      and case #Parameter.Field#
+      when '1' then A.NOBKUSKPD
+      when '2' then A.NOBUKU
+      when '3' then convert(char(10), A.TGLBKUSKPD, 103)
+      when '4' then convert(char(10), A.TGLVALID, 103)
+      when '5' then A.URAIAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOBKUSKPD
+    </select>
+    <select id="QueryByNobukuBkubank" extends="BaseQueryBkubank" parameterClass="Bkubank" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOBUKU=#Nobukti#
+    </select>
+    <select id="LoadByPKBkubank" extends="BaseQueryBkubank" parameterClass="Bkubank" resultMap="return-result">
+			where A.NOBKUSKPD=#Nobkuskpd# and A.UNITKEY=#Unitkey#
+		</select>
+    <procedure id="ExecVALIDATE_GESERUANG_33" parameterMap="transfer-param4">
+      WSP_VALIDATIONUANGGESER_33
+    </procedure>
+    <procedure id="ExecVALIDATE_GESERUANG_34" parameterMap="transfer-param4">
+      WSP_VALIDATIONUANGGESER_34
+    </procedure>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Bkubank">
+      <!--<parameter property="Idxttd" column="IDXTTD"/>-->
+      <parameter property="Keybend" column="KEYBEND"/>
+      <parameter property="Nobukti" column="NOBUKU"/>
+      <parameter property="Tglbkuskpd" column="TGLBKUSKPD"/>
+      <parameter property="Uraian" column="URAIAN"/>
+      <parameter property="Nobkuskpd" column="NOBKUSKPD"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Bkubank">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Bkubank">
+      <parameter property="Nobkuskpd" column="NOBKUSKPD"/>
+			<parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="transfer-param4" class="Bkubank">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Keybend" column="keybend"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Spjdetp" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Spjdetp" type="Usadi.Valid49.BO.SpjdetpControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Spjdetp">
+      <result property="Keterangan" column="KETERANGAN"/>
+      <result property="Kdpajak" column="KDPAJAK"/>
+      <result property="Nmpajak" column="NMPAJAK"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nospj" column="NOSPJ"/>
+      <result property="Pjkkey" column="PJKKEY"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSpjdetp" parameterMap="insert-param">
+      <generate table="SPJDETP"/>
+    </insert>
+    <update id="UpdateBySpjdetp" parameterMap="update-param">
+      <generate table="SPJDETP" by="UNITKEY,NOSPJ,PJKKEY"/>
+    </update>
+    <delete id="DeleteBySpjdetp" parameterMap="delete-param">
+      <generate table="SPJDETP" by="UNITKEY,NOSPJ,PJKKEY"/>
+    </delete>
+    <select id="BaseQuerySpjdetp" parameterClass="Spjdetp" resultMap="return-result">
+			select A.KETERANGAN,A.NILAI,A.NOSPJ,A.PJKKEY,A.UNITKEY
+			,C.KDPAJAK,C.NMPAJAK
+			from SPJDETP A
+			left outer join PSPJ B on A.NOSPJ = B.NOSPJ and A.UNITKEY=B.UNITKEY
+			left outer join JPAJAK C on A.PJKKEY = C.PJKKEY
+		</select>
+    <select id="QueryByAllSpjdetp" extends="BaseQuerySpjdetp" parameterClass="Spjdetp" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSPJ=#Nospj#
+      and case #Parameter.Field#
+      when '1' then C.KDPAJAK
+      when '2' then C.NMPAJAK
+      end like '%'+ #Parameter.Value# + '%'
+      order by C.KDPAJAK
+    </select>
+    <select id="LoadByPKSpjdetp" extends="BaseQuerySpjdetp" parameterClass="Spjdetp" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSPJ=#Nospj# and A.PJKKEY=#Pjkkey# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Spjdetp">
+      <parameter property="Keterangan" column="KETERANGAN"/>
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nospj" column="NOSPJ"/>
+      <parameter property="Parameter.Key" column="PJKKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param"  class="Spjdetp">
+      <parameter property="Keterangan" column="KETERANGAN"/>
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nospj" column="NOSPJ"/>
+      <parameter property="Pjkkey" column="PJKKEY"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Spjdetp">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nospj" column="NOSPJ"/>
+      <parameter property="Pjkkey" column="PJKKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

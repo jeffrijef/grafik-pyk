@@ -1,0 +1,8 @@
+TITLE=Rincian Objek Penerimaan
+Unitkey=string;Key Unit;4;
+Idxkode=string;Index Kode;4;;-1;;-1
+Mtgkey=string;Rekening;10;
+Bln=string;Bulan;4;
+Akhir=datetime;Tanggal Akhir;30;
+Jnsbend=string;Jenis Bendahara;4;;-1;1;-1;
+Keybend=string;Bendahara;4;

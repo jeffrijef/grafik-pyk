@@ -1,0 +1,7 @@
+TITLE=Buku Penerimaan/Penyetoran
+Unitkey=string;Key Unit;4;
+Jnsbend=string;Jenis Bendahara;4;;-1;1;-1;
+Keybend=string;Bendahara;4;
+Bln=string;Bulan;4;
+Akhir=datetime;Tanggal Akhir;30;
+Nip=string;Nip;30;

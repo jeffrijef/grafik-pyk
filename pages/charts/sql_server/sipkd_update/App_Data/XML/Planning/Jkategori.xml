@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Jkategori" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Jkategori" type="Usadi.Valid49.BO.JkategoriControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Jkategori">
+      <result property="Kdkategori" column="KDKATEGORI"/>
+      <result property="Nmkategori" column="NMKATEGORI"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <insert id="InsertJkategori" parameterMap="insert-param" >
+      <generate table="JKATEGORI"/>
+    </insert>
+    <update id="UpdateByJkategori" parameterMap="update-param" >
+      <generate table="JKATEGORI" by="KDKATEGORI"/>
+    </update>
+    <delete id="DeleteByJkategori" parameterMap="delete-param" >
+      <generate table="JKATEGORI" by="KDKATEGORI"/>
+    </delete>
+    <select id="QueryByAllJkategori" parameterClass="Jkategori" resultMap="return-result">
+      SELECT * FROM JKATEGORI
+    </select>
+    <select id="LoadByPKJkategori" parameterClass="Jkategori"  resultMap="return-result" >
+      SELECT * FROM JKATEGORI
+      WHERE KDKATEGORI=#Kdkategori#
+    </select>
+  </statements>
+
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Jkategori">
+      <parameter property="Nmkategori" column="NMKATEGORI"/>
+      <parameter property="Kdkategori" column="KDKATEGORI"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Jkategori">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Jkategori">
+      <parameter property="Kdkategori" column="KDKATEGORI"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>
+

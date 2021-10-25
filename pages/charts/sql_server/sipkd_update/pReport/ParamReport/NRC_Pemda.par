@@ -1,0 +1,3 @@
+TITLE=Laporan Keuangan -  Neraca Pemda
+Level=string;Level Rekening;2;
+Tgl=datetime;Tanggal;4;

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Renjaddet" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Renjaddet" type="Usadi.Valid49.BO.RenjaddetControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Renjaddet">
+      <result property="Kdrek" column="KDREK"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Kdtahun" column="KDTAHUN"/>
+      <result property="Nmtahun" column="NMTAHUN"/>
+      <result property="Nilaimin1" column="NILAIMIN1"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Nilaipls1" column="NILAIPLS1"/>
+      <result property="Nmrek" column="NMREK"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <insert id="InsertRenjaddet" parameterMap="insert-param" >
+      <generate table="RENJADDET"/>
+    </insert>
+    <update id="UpdateByRenjaddet" parameterMap="update-param" >
+      <generate table="RENJADDET" by="KDREK,UNITKEY,KDTAHUN"/>
+    </update>
+    <delete id="DeleteByRenjaddet" parameterMap="delete-param" >
+      <generate table="RENJADDET" by="KDREK,UNITKEY,KDTAHUN"/>
+    </delete>
+    <select id="BaseQueryRenjaddet" parameterClass="Renjaddet" resultMap="return-result">
+      select RD.KDREK, RD.UNITKEY, RD.KDTAHUN, RD.NILAIMIN1, RD.NILAI, RD.NILAIPLS1, UN.KDUNIT, UN.NMUNIT, TN.NMTAHUN, JD.NMREK
+      from RENJADDET RD
+      left outer join DAFTUNIT UN on RD.UNITKEY = UN.UNITKEY
+      left outer join JTAHUN TN on RD.KDTAHUN = TN.KDTAHUN
+      left outer join JPENDAPATAN JD on RD.KDREK = JD.KDREK
+    </select>
+    <select id="QueryByAllRenjaddet" extends="BaseQueryRenjaddet" parameterClass="Renjaddet" resultMap="return-result">
+      where RD.UNITKEY=#Unitkey# and RD.KDTAHUN=#Kdtahun#
+      order by JD.KDREK
+    </select>
+    <select id="LoadByPKRenjaddet" extends="BaseQueryRenjaddet" parameterClass="Renjaddet"  resultMap="return-result" >
+      where RD.UNITKEY=#Unitkey# and RD.KDTAHUN=#Kdtahun# and RD.KDREK=#Kdrek#
+    </select>
+  </statements>
+
+  <parameterMaps>
+    <parameterMap id="base-param" class="Renjaddet">
+      <parameter property="Nilaimin1" column="NILAIMIN1"/>
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Nilaipls1" column="NILAIPLS1"/>
+    </parameterMap>
+    <parameterMap id="insert-param" extends="base-param" class="Renjaddet">
+      <parameter property="Parameter.Key" column="KDREK"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Kdtahun" column="KDTAHUN"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="base-param" class="Renjaddet">
+      <parameter property="Kdrek" column="KDREK"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Kdtahun" column="KDTAHUN"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Renjaddet">
+      <parameter property="Kdrek" column="KDREK"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Kdtahun" column="KDTAHUN"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>
+

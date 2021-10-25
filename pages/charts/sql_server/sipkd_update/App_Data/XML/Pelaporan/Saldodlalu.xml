@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Saldodlalu" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Saldodlalu" type="Usadi.Valid49.BO.SaldodlaluControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Saldodlalu">
+      <result property="Nilai" column="NILAI"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSaldodlalu" parameterMap="insert-param">
+      <generate table="Saldodlalu"/>
+    </insert>
+    <update id="UpdateBySaldodlalu" parameterMap="update-param">
+      <generate table="Saldodlalu" by="UNITKEY,MTGKEY"/>
+    </update>
+    <delete id="DeleteBySaldodlalu" parameterMap="delete-param">
+      <generate table="Saldodlalu" by="UNITKEY,MTGKEY"/>
+    </delete>
+    <select id="BaseQuerySaldodlalu" parameterClass="Saldodlalu" resultMap="return-result">
+      select UNITKEY,SA.MTGKEY,M.KDPER,M.NMPER,NILAI
+      from Saldodlalu SA
+      left outer join MATANGD M on SA.MTGKEY=M.MTGKEY
+    </select>
+    <select id="QueryByAllSaldodlalu" extends="BaseQuerySaldodlalu" parameterClass="Saldodlalu" resultMap="return-result">
+      where SA.UNITKEY=#Unitkey# and LEFT(M.KDPER,2)='4.'
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryByLolaluSaldodlalu" extends="BaseQuerySaldodlalu" parameterClass="Saldodlalu" resultMap="return-result">
+      where SA.UNITKEY=#Unitkey# and LEFT(M.KDPER,2)='7.'
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="LoadByPKSaldodlalu" extends="BaseQuerySaldodlalu" parameterClass="Saldodlalu" resultMap="return-result">
+      where SA.UNITKEY=#Unitkey# and SA.MTGKEY=#Mtgkey# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Saldodlalu">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Saldodlalu">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Saldodlalu">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

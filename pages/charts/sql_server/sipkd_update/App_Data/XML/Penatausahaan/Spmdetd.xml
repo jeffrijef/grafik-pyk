@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Spmdetd" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Spmdetd" type="Usadi.Valid49.BO.SpmdetdControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Spmdetd">
+	    <result property="Nmper" column="NMPER"/>
+      <result property="Kdper" column="KDPER"/>
+	    <result property="Idxkode" column="IDXKODE"/>
+      <result property="Idxsko" column="IDXSKO"/>
+      <result property="Idxttd" column="IDXTTD"/>
+      <result property="Kdp3" column="KDP3"/>
+      <result property="Kdstatus" column="KDSTATUS"/>
+      <result property="Keperluan" column="KEPERLUAN"/>
+      <result property="Ketotor" column="KETOTOR"/>
+      <result property="Keybend" column="KEYBEND"/>
+      <result property="Nokontrak" column="NOKONTRAK"/>
+      <result property="Noreg" column="NOREG"/>
+      <result property="Nospp" column="NOSPP"/>
+      <result property="Penolakan" column="PENOLAKAN"/>
+      <result property="Tglspm" column="TGLSPM"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Tgspp" column="TGSPP"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Nojetra" column="NOJETRA"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nospm" column="NOSPM"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSpmdetd" parameterMap="insert-param">
+      <generate table="SPMDETD"/>
+    </insert>
+    <update id="UpdateBySpmdetd" parameterMap="update-param">
+      <generate table="SPMDETD" by="NOJETRA,MTGKEY,UNITKEY,NOSPM"/>
+    </update>
+    <delete id="DeleteBySpmdetd" parameterMap="delete-param">
+      <generate table="SPMDETD" by="NOJETRA,MTGKEY,UNITKEY,NOSPM"/>
+    </delete>
+    <delete id="DeleteByAllSpmdetd" parameterClass="Spmdetd" >
+      delete from SPMDETD
+      where UNITKEY=#Unitkey# and NOSPM=#Nospm#
+    </delete>
+    <select id="BaseQuerySpmdetd" parameterClass="Spmdetd" resultMap="return-result">
+      SELECT S.*, rtrim(A.KDSTATUS) as KDSTATUS,A.NOSPP,A.TGSPP,A.TGLSPM,A.IDXSKO,A.KETOTOR,rtrim(A.KEYBEND) as KEYBEND,
+      A.NOREG,NOKONTRAK,A.KDP3,A.KEPERLUAN,rtrim(A.IDXTTD) as IDXTTD,A.PENOLAKAN,A.TGLVALID,A.IDXKODE,
+      rtrim(M.KDPER) as KDPER, rtrim(M.NMPER) as NMPER
+      FROM SPMDETD S
+      LEFT OUTER JOIN ANTARBYR A ON S.NOSPM = A.NOSPM and S.UNITKEY = A.UNITKEY
+      LEFT OUTER JOIN DAFTUNIT U ON S.UNITKEY = U.UNITKEY
+      LEFT OUTER JOIN MATANGD M ON S.MTGKEY = M.MTGKEY
+      LEFT OUTER JOIN JTRNLKAS J ON S.NOJETRA = J.NOJETRA
+    </select>
+    <select id="QueryByAllSpmdetd" extends="BaseQuerySpmdetd" parameterClass="Spmdetd" resultMap="return-result">
+			where S.UNITKEY=#Unitkey# and S.NOSPM=#Nospm# and S.NOJETRA=#Nojetra#
+			and case #Parameter.Field#
+			when '1' then M.KDPER
+			when '2' then M.NMPER
+			end like '%'+ #Parameter.Value# + '%'
+			order by M.KDPER
+		</select>
+    <select id="QueryByTotalSpmdetd" extends="BaseQuerySpmdetd" parameterClass="Spmdetd" resultMap="return-result">
+      where S.UNITKEY=#Unitkey# and S.NOSPM=#Nospm# and S.NOJETRA=#Nojetra#
+    </select>
+    <select id="LoadByPKSpmdetd" extends="BaseQuerySpmdetd" parameterClass="Spmdetd" resultMap="return-result">
+			where S.MTGKEY=#Mtgkey# and S.UNITKEY=#Unitkey# and S.NOSPM=#Nospm# and S.NOJETRA=#Nojetra#
+		</select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Spmdetd">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nospm" column="NOSPM"/>
+    </parameterMap>
+    <parameterMap id="update-param" class="Spmdetd">
+			<parameter property="Nilai" column="NILAI"/>
+			<parameter property="Nojetra" column="NOJETRA"/>
+			<parameter property="Mtgkey" column="MTGKEY"/>
+			<parameter property="Unitkey" column="UNITKEY"/>
+			<parameter property="Nospm" column="NOSPM"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Spmdetd">
+      <parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nospm" column="NOSPM"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

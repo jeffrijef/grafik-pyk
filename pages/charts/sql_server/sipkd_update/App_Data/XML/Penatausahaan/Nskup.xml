@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Nskup" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<alias>
+		<typeAlias alias="Nskup" type="Usadi.Valid49.BO.NskupControl" />
+	</alias>
+	<resultMaps>
+		<resultMap id="return-result" class="Nskup">
+      <result property="Kdtahap" column="KDTAHAP"/>
+			<result property="Pagu" column="PAGU"/>
+			<result property="Nilai" column="NILAI"/>
+			<result property="Kdunit" column="KDUNIT"/>
+			<result property="Nmunit" column="NMUNIT"/>
+			<result property="Unitkey" column="UNITKEY"/>
+		</resultMap>
+    <resultMap id="return-result-det" extends="return-result" class="Nskup">
+      <result property="Kdlevel" column="KDLEVEL"/>
+    </resultMap>
+	</resultMaps>
+	<statements>
+		<insert id="InsertNskup" parameterMap="insert-param">
+			<generate table="NSKUP"/>
+		</insert>
+		<update id="UpdateByNskup" parameterClass="Nskup" >
+			update NSKUP set NILAI=#Nilai#,PAGU=#Pagu#
+			where UNITKEY=#Prevunitkey# and KDTAHAP=#Kdtahap#
+		</update>
+		<update id="UpdateByNilaiNskup" parameterClass="Nskup" >
+			update NSKUP set NILAI=0
+			where UNITKEY=#Prevunitkey# and KDTAHAP=#Kdtahap#
+		</update>
+    <update id="UpdateByPaguskpdNskup" parameterClass="Nskup" >
+      update NSKUP set NILAI=#Nilai#,
+      PAGU=(SELECT sum(PAGU) from NSKUP C INNER JOIN DAFTUNIT B ON B.UNITKEY=C.UNITKEY where KDLEVEL ='4' AND LEFT(B.KDUNIT,8)=#Kdunitskpd#)
+      where UNITKEY=#Prevunitkey# and KDTAHAP=#Kdtahap# and #Kdlevel#='4'
+    </update>
+		<!--<delete id="DeleteByNskup" parameterMap="delete-param">
+      <generate table="NSKUP" by="UNITKEY"/>
+    </delete>-->
+		<select id="BaseQueryNskup" parameterClass="Nskup" resultMap="return-result">
+      select A.NILAI,RTRIM(A.UNITKEY)as UNITKEY,A.PAGU,RTRIM(A.KDTAHAP) as KDTAHAP
+      , rtrim(U.KDUNIT) as KDUNIT, rtrim(U.NMUNIT) as NMUNIT
+      from NSKUP A
+      left outer join DAFTUNIT U on A.UNITKEY=U.UNITKEY
+    </select>
+		<select id="QueryByPaguNskup" parameterClass="Nskup" resultMap="return-result">
+      select A.NILAI,RTRIM(A.UNITKEY)as UNITKEY,A.PAGU,RTRIM(A.KDTAHAP) as KDTAHAP
+      , rtrim(U.KDUNIT) as KDUNIT, rtrim(U.NMUNIT) as NMUNIT
+      from NSKUP A
+      left outer join DAFTUNIT U on A.UNITKEY=U.UNITKEY
+      where A.KDTAHAP =#Kdtahap#  and U.KDLEVEL ='3' and <!--A.UNITKEY=#Prevunitkey# and-->
+      <!--select A.NILAI,RTRIM(A.UNITKEY)as UNITKEY,
+      PAGU=(SELECT sum(PAGU) from NSKUP C INNER JOIN DAFTUNIT B ON B.UNITKEY=C.UNITKEY where KDLEVEL ='4' and B.KDUNIT LIKE U.KDUNIT+'%')
+      ,RTRIM(A.KDTAHAP) as KDTAHAP
+      , rtrim(U.KDUNIT) as KDUNIT, rtrim(U.NMUNIT) as NMUNIT
+      from NSKUP A
+      left outer join DAFTUNIT U on A.UNITKEY=U.UNITKEY
+      where A.KDTAHAP ='1'  and U.KDLEVEL ='3' and-->
+      case #Parameter.Field#
+      when '1' then U.KDUNIT
+      when '2' then U.NMUNIT
+      when '3' then convert(char(10), A.NILAI, 103)
+      end like '%'+ #Parameter.Value# + '%'
+      order by U.KDUNIT
+    </select>
+		<select id="QueryByPagudetNskup" parameterClass="Nskup" resultMap="return-result-det">
+      select A.NILAI,rtrim(A.UNITKEY) as UNITKEY,A.PAGU,A.KDTAHAP,rtrim(U.KDLEVEL) as KDLEVEL
+      , rtrim(U.KDUNIT) as KDUNIT, rtrim(U.NMUNIT) as NMUNIT
+      from NSKUP A
+      left outer join DAFTUNIT U on A.UNITKEY=U.UNITKEY
+      where A.KDTAHAP =#Kdtahap#  AND LEFT(U.KDUNIT,8)=#Kdunitskpd#
+      and U.KDLEVEL ='4' and
+      case #Parameter.Field#
+      when '1' then U.NMUNIT
+      when '2' then convert(char(10), A.NILAI, 103)
+      end like '%'+ #Parameter.Value# + '%'
+      order by U.KDUNIT
+    </select>
+		<select id="QueryByAllNskup" extends="BaseQueryNskup" parameterClass="Nskup" resultMap="return-result">
+			where A.Nilai > 0 and
+			case #Parameter.Field#
+			when '1' then U.KDUNIT
+			when '2' then U.NMUNIT
+			end like '%'+ #Parameter.Value# + '%'
+			order by U.KDUNIT
+		</select>
+		<select id="LoadByPKNskup" extends="BaseQueryNskup" parameterClass="Nskup" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.KDTAHAP =#Kdtahap#
+    </select>
+		<procedure id="ExecInsertUpdate" timeout="0" parameterMap="exec-param">
+			WSPI_INSERTUPDATE_NSKUP
+		</procedure>
+		<procedure id="ExecInsertPaguSkpd" timeout="0" parameterMap="exec-param2">
+			WSPI_INSERT_PAGUSKPD
+		</procedure>
+	</statements>
+	<parameterMaps>
+		<parameterMap id="insert-param" class="Nskup">
+			<parameter property="Kdtahap" column="KDTAHAP"/>
+			<parameter property="Pagu" column="PAGU"/>
+			<parameter property="Nilai" column="NILAI"/>
+			<parameter property="Unitkey" column="UNITKEY"/>
+		</parameterMap>
+		<parameterMap id="update-param" extends="insert-param" class="Nskup">
+		</parameterMap>
+		<!--<parameterMap id="delete-param" class="Nskup">
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>-->
+		<parameterMap id="exec-param" class="Nskup">
+			<parameter property="Unitkey" column="unitkey"/>
+			<parameter property="Nilai" column="nilai"/>
+			<parameter property="Pagu" column="pagu"/>
+			<parameter property="Kdtahap" column="kdtahap"/>
+		</parameterMap>
+		<parameterMap id="exec-param2" class="Nskup">
+			<parameter property="Kdtahap" column="kdtahap"/>
+		</parameterMap>
+	</parameterMaps>
+</sqlMap>

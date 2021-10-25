@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Jtahun" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Jtahun" type="Usadi.Valid49.BO.JtahunControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Jtahun">
+      <result property="Kdtahun" column="KDTAHUN"/>
+      <result property="Nmtahun" column="NMTAHUN"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <insert id="InsertJtahun" parameterMap="insert-param" >
+      <generate table="JTAHUN"/>
+    </insert>
+    <update id="UpdateByJtahun" parameterMap="update-param" >
+      <generate table="JTAHUN" by="KDTAHUN"/>
+    </update>
+    <delete id="DeleteByJtahun" parameterMap="delete-param" >
+      <generate table="JTAHUN" by="KDTAHUN"/>
+    </delete>
+    <select id="QueryByAllJtahun" parameterClass="Jtahun" resultMap="return-result">
+      SELECT * FROM JTAHUN
+      order by KDTAHUN
+    </select>
+    <select id="LoadByPKJtahun" parameterClass="Jtahun"  resultMap="return-result" >
+      SELECT * FROM JTAHUN
+      WHERE KDTAHUN=#Kdtahun#
+    </select>
+  </statements>
+
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Jtahun">
+      <parameter property="Nmtahun" column="NMTAHUN"/>
+      <parameter property="Kdtahun" column="KDTAHUN"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Jtahun">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Jtahun">
+      <parameter property="Kdtahun" column="KDTAHUN"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>
+

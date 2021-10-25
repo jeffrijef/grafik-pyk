@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Pemda" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Pemda" type="Usadi.Valid49.BO.PemdaControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Pemda">
+      <result property="Configdes" column="CONFIGDES"/>
+      <result property="Configval" column="CONFIGVAL"/>
+      <result property="Configid" column="CONFIGID"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertPemda" parameterMap="insert-param">
+      <generate table="PEMDA"/>
+    </insert>
+    <update id="UpdateByPemda" parameterMap="update-param">
+      <generate table="PEMDA" by="CONFIGID"/>
+    </update>
+    <delete id="DeleteByPemda" parameterMap="delete-param">
+      <generate table="PEMDA" by="CONFIGID"/>
+    </delete>
+    <select id="BaseQueryPemda" parameterClass="Pemda" resultMap="return-result">
+      select A.CONFIGDES,A.CONFIGID,A.CONFIGVAL
+      from PEMDA A
+    </select>
+    <select id="QueryByAllPemda" extends="BaseQueryPemda" parameterClass="Pemda" resultMap="return-result">
+      where
+      case #Parameter.Field#
+        when '1' then A.CONFIGDES
+        when '2' then A.CONFIGID
+        when '3' then A.CONFIGVAL
+      end like '%'+ #Parameter.Value# + '%' 
+    </select>
+    <select id="LoadByPKPemda" extends="BaseQueryPemda" parameterClass="Pemda" resultMap="return-result">
+      where A.CONFIGID=#Configid# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Pemda">
+      <parameter property="Configdes" column="CONFIGDES"/>
+      <parameter property="Configval" column="CONFIGVAL"/>
+      <parameter property="Configid" column="CONFIGID"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Pemda">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Pemda">
+      <parameter property="Configid" column="CONFIGID"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

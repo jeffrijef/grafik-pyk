@@ -1,0 +1,7 @@
+TITLE=LAPORAN REALISASI PENGELUARAN
+Unitkey=string;Key Unit;4;
+Kdkegunit=string;Kode Kegiatan Unit;4;
+Awal=datetime;Tanggal;30;
+Akhir=datetime;Tanggal;30;
+Kdtahap=string;Tahap;10;
+Keybend=string;Bendahara;4;

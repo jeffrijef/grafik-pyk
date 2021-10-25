@@ -1,0 +1,9 @@
+TITLE=Rincian Objek Belanja Langsung
+Unitkey=string;Key Unit;4;
+Kdkegunit=string;Kegiatan;4;
+Idxkode=string;Index Kode;4;;-1;;-1
+Mtgkey=string;Rekening;10;
+Nip=string;Nip;30;
+Bend=string; Bendahara;30;
+Awal=datetime;Tanggal;30;
+Akhir=datetime;Tanggal;30;

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Bkspj" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Bkspj" type="Usadi.Valid49.BO.BkspjControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Bkspj">
+			<result property="Nmunit" column="NMUNIT"/>
+			<result property="Kdunit" column="KDUNIT"/>
+			<result property="Nospj" column="NOSPJ"/>
+			<result property="Unitkey" column="UNITKEY"/>
+			<result property="Tglbk" column="TGLBK"/>
+			<result property="Tglvalid" column="TGLVALID"/>
+			<result property="Uraian" column="URAIAN"/>
+			<result property="Nobk" column="NOBK"/>
+		</resultMap>
+	</resultMaps>
+	<statements>
+		<insert id="InsertBkspj" parameterMap="insert-param">
+			<generate table="BKSPJ"/>
+		</insert>
+		<update id="UpdateByBkspj" parameterMap="update-param">
+      <generate table="BKSPJ" by="UNITKEY,NOBK"/>
+    </update>
+    <update id="UpdateByTglvalidBkspj" parameterClass="Bkspj">
+      update BKSPJ set TGLVALID=#Tglvalid#
+      where UNITKEY=#Unitkey# and NOBK=#Nobk#
+    </update>
+    <update id="UpdateByDraftBkspj" parameterClass="Bkspj" >
+      update BKSPJ set TGLVALID=null
+      where UNITKEY=#Unitkey# and NOBK=#Nobk#
+    </update>
+    <delete id="DeleteByBkspj" parameterMap="delete-param">
+      <generate table="BKSPJ" by="UNITKEY,NOBK"/>
+    </delete>
+    <select id="BaseQueryBkspj" parameterClass="Bkspj" resultMap="return-result">
+			SELECT A.*, U.KDUNIT, U.NMUNIT
+			FROM BKSPJ A
+			LEFT OUTER JOIN DAFTUNIT U ON A.UNITKEY=U.UNITKEY
+			LEFT OUTER JOIN PSPJ B ON A.NOSPJ=B.NOSPJ
+		</select>
+    <select id="QueryByAllBkspj" extends="BaseQueryBkspj" parameterClass="Bkspj" resultMap="return-result">
+			where A.UNITKEY=#Unitkey#
+			and case #Parameter.Field#
+			when '1' then A.NOBK
+			when '2' then convert(char(10), A.TGLBK, 103)
+			when '3' then A.NOSPJ
+			when '4' then A.URAIAN
+			end like '%'+ #Parameter.Value# + '%'
+		</select>
+    <select id="LoadByPKBkspj" extends="BaseQueryBkspj" parameterClass="Bkspj" resultMap="return-result">
+			where A.NOBK=#Nobk# and A.UNITKEY=#Unitkey#
+		</select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Bkspj">
+      <parameter property="Nospj" column="NOSPJ"/>
+      <parameter property="Tglbk" column="TGLBK"/>
+      <!--<parameter property="Tglvalid" column="TGLVALID"/>-->
+      <parameter property="Uraian" column="URAIAN"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nobk" column="NOBK"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Bkspj">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Bkspj">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nobk" column="NOBK"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

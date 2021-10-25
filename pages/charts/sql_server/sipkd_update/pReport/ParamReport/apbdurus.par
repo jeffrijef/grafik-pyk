@@ -1,0 +1,5 @@
+TITLE=APBD - Ringkasan Urusan (Lamp II)
+Kdtahap=string;Tahap;4;
+Levunit=string;Kode Level;4;
+Tanggal=datetime;Tanggal;30;
+Hal=string;Halaman;4;

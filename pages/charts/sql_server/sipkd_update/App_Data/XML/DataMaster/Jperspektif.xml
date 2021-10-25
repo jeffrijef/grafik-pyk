@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Jperspektif" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Jperspektif" type="Usadi.Valid49.BO.JperspektifControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Jperspektif">
+      <result property="Ket" column="KET"/>
+      <result property="Nmperspektif" column="NMPERSPEKTIF"/>
+      <result property="Kdperspektif" column="KDPERSPEKTIF"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertJperspektif" parameterMap="insert-param">
+      <generate table="JPERSPEKTIF"/>
+    </insert>
+    <update id="UpdateByJperspektif" parameterMap="update-param">
+      <generate table="JPERSPEKTIF" by="KDPERSPEKTIF"/>
+    </update>
+    <delete id="DeleteByJperspektif" parameterMap="delete-param">
+      <generate table="JPERSPEKTIF" by="KDPERSPEKTIF"/>
+    </delete>
+    <select id="BaseQueryJperspektif" parameterClass="Jperspektif" resultMap="return-result">
+      select A.KDPERSPEKTIF,A.KET,A.NMPERSPEKTIF
+      from JPERSPEKTIF A
+    </select>
+    <select id="QueryByAllJperspektif" extends="BaseQueryJperspektif" parameterClass="Jperspektif" resultMap="return-result">
+			where
+			case #Parameter.Field#
+			when '1' then A.KDPERSPEKTIF
+			when '2' then A.NMPERSPEKTIF
+			when '3' then A.KET
+			end like '%'+ #Parameter.Value# + '%'
+			Order by A.KDPERSPEKTIF
+		</select>
+    <select id="LoadByPKJperspektif" extends="BaseQueryJperspektif" parameterClass="Jperspektif" resultMap="return-result">
+      where A.KDPERSPEKTIF=#Kdperspektif# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Jperspektif">
+      <parameter property="Ket" column="KET"/>
+      <parameter property="Nmperspektif" column="NMPERSPEKTIF"/>
+      <parameter property="Kdperspektif" column="KDPERSPEKTIF"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Jperspektif">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Jperspektif">
+      <parameter property="Kdperspektif" column="KDPERSPEKTIF"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

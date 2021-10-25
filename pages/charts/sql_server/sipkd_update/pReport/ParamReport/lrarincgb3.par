@@ -1,0 +1,5 @@
+TITLE= RINGKASAN BELANJA LANGSUNG
+Kdtahap=string;Tahap;4;
+Bulan=int;Bulan;2;
+Hal=string;Halaman;4;
+Tgl=datetime;Tanggal Cetak;30;

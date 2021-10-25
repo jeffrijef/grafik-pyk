@@ -1,0 +1,4 @@
+TITLE=Jurnal SKPD
+Unitkey=string;Key Unit;4;
+Tglawal=datetime;Tanggal Awal;30;
+Tglakhir=datetime;Tanggal Akhir;30;

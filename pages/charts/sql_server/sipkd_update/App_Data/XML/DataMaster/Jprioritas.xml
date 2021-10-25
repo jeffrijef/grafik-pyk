@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Jprioritas" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Jprioritas" type="Usadi.Valid49.BO.JprioritasControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Jprioritas">
+      <result property="Priokey" column="PRIOKEY"/>
+      <result property="Kdprio" column="KDPRIO"/>
+      <result property="Nmprio" column="NMPRIO"/>
+      <result property="Type" column="TYPE"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="PRIOKEY"/>
+      <result property="Field" column="KDPRIO"/>
+      <result property="Value" column="NMPRIO"/>
+      <result property="Type" column="PRIOKEY"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertJprioritas" parameterMap="insert-param">
+      <generate table="Jprioritas"/>
+    </insert>
+    <!--<update id="UpdateByJprioritas" parameterMap="update-param">
+      <generate table="Jprioritas" by="PRIOKEY"/>
+    </update>-->
+    <update id="UpdateByJprioritas" parameterClass="Jprioritas">
+      UPDATE JPRIORITAS
+      SET KDPRIO=#Kdprio#, NMPRIO=#Nmprio#, TYPE=#Type#
+      WHERE PRIOKEY=#Priokey#
+    </update>
+    <delete id="DeleteByJprioritas" parameterMap="delete-param">
+      <generate table="Jprioritas" by="PRIOKEY"/>
+    </delete>
+    <select id="BaseQueryJprioritas" parameterClass="Jprioritas" resultMap="return-result">
+      SELECT PRIOKEY,KDPRIO,NMPRIO,TYPE FROM JPRIORITAS j
+    </select>
+    <select id="QueryByAllJprioritas" extends="BaseQueryJprioritas" parameterClass="Jprioritas" resultMap="return-result">
+      where case #Parameter.Field#
+      when '1' then j.KDPRIO
+      when '2' then j.NMPRIO
+      end like '%'+ #Parameter.Value# + '%'
+      order by j.KDPRIO
+    </select>
+    <select id="QueryByKdprioJprioritas" extends="BaseQueryJprioritas" parameterClass="Jprioritas" resultMap="return-result">
+      where j.KDPRIO=#Kdprio#
+    </select>
+    <select id="QueryByKdprioupdateJprioritas" extends="BaseQueryJprioritas" parameterClass="Jprioritas" resultMap="return-result">
+      <![CDATA[
+      where j.KDPRIO=#Kdprio# AND j.PRIOKEY<>#Priokey#
+      ]]>
+    </select>
+    <select id="QueryByPriokegJprioritas" extends="BaseQueryJprioritas" parameterClass="Jprioritas" resultMap="return-result">
+      order by j.KDPRIO
+    </select>
+    <select id="LoadByPKJprioritas" extends="BaseQueryJprioritas" parameterClass="Jprioritas" resultMap="return-result">
+      where j.PRIOKEY=#Priokey#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Jprioritas">
+      <parameter property="Priokey" column="PRIOKEY"/>
+      <parameter property="Kdprio" column="KDPRIO"/>
+      <parameter property="Nmprio" column="NMPRIO"/>
+      <parameter property="Type" column="TYPE"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Jprioritas">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Jprioritas">
+      <parameter property="Priokey" column="PRIOKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

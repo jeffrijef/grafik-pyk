@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Rkajabar" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Rkajabar" type="Usadi.Valid49.BO.RkajabarControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Rkajabar">
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nuprgrm" column="NUPRGRM"/>
+      <result property="Nukeg" column="NUKEG"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Rka" column="RKA"/>
+      <result property="Jabar" column="JABAR"/>
+      <result property="Angkas" column="ANGKAS"/>
+      <result property="Rkajabar" column="RKAJABAR"/>
+      <result property="Rkaangkas" column="RKAANGKAS"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <procedure id="ExecRkaJabar" parameterMap="exec-param" resultMap="return-result">
+      WSPC_RKAJABAR
+    </procedure>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="exec-param" class="Rkajabar">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Kdtahap" column="kdtahap"/>
+      <parameter property="Kdkegunit" column="kdkegunit"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

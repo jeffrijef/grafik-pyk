@@ -1,0 +1,4 @@
+TITLE=SPJ Penerimaan Fungsional
+Unitkey=string;Key Unit;4;
+Bln=string; Bulan;4;
+Tanggal=datetime;Tanggal;30;

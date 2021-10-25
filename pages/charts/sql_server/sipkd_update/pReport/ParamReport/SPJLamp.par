@@ -1,0 +1,6 @@
+TITLE=LAMPIRAN SPJ
+Unitkey=string;Key Unit;4;;-1;
+KdKegunit=String;Kode Kegiatan Unit;10
+Kdtahap=string;Tahap;4;
+Tglcetak=DATETIME;Tanggal Cetak;10
+Bend=String;Bendahara;30

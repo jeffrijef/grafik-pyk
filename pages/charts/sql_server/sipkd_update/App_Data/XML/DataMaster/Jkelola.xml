@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Jkelola" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Jkelola" type="Usadi.Valid49.BO.JkelolaControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Jkelola">
+      <result property="Ketkelola" column="KETKELOLA"/>
+      <result property="Nmkelola" column="NMKELOLA"/>
+      <result property="Kdkelola" column="KDKELOLA"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="KDKELOLA"/>
+      <result property="Field" column="KDKELOLA"/>
+      <result property="Value" column="NMKELOLA"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertJkelola" parameterMap="insert-param">
+      <generate table="JKELOLA"/>
+    </insert>
+    <update id="UpdateByJkelola" parameterMap="update-param">
+      <generate table="JKELOLA" by="KDKELOLA"/>
+    </update>
+    <delete id="DeleteByJkelola" parameterMap="delete-param">
+      <generate table="JKELOLA" by="KDKELOLA"/>
+    </delete>
+    <select id="BaseQueryJkelola" parameterClass="Jkelola" resultMap="return-result">
+      select J.KDKELOLA,J.NMKELOLA,J.KETKELOLA   
+			from JKELOLA J
+    </select>
+    <select id="QueryByAllJkelola" extends="BaseQueryJkelola" parameterClass="Jkelola" resultMap="return-result">
+      where case #Parameter.Field#
+      when '1' then J.KDKELOLA
+      when '2' then J.NMKELOLA
+      when '3' then J.KETKELOLA
+      end like '%'+ #Parameter.Value# + '%'
+      order by J.KDKELOLA
+    </select>
+    <select id="LoadByPKJkelola" extends="BaseQueryJkelola" parameterClass="Jkelola" resultMap="return-result">
+      where J.KDKELOLA=#Kdkelola# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Jkelola">
+      <parameter property="Ketkelola" column="KETKELOLA"/>
+      <parameter property="Nmkelola" column="NMKELOLA"/>
+      <parameter property="Kdkelola" column="KDKELOLA"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Jkelola">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Jkelola">
+      <parameter property="Kdkelola" column="KDKELOLA"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

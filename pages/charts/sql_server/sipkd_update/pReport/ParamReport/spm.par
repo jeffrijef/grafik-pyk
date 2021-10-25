@@ -1,0 +1,6 @@
+TITLE=S P M
+Unitkey=string;Key Unit;4;;;;-1
+Idxkode=string;label;4;
+Nospm=string;Nomor Unit;20;
+Jnsrek=string;Jenis;20;
+Nip=string;Nip;30;

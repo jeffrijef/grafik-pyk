@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Saldodetb" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Saldodetb" type="Usadi.Valid49.BO.SaldodetbControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Saldodetb">
+      <result property="Nilai" column="NILAI"/>
+      <result property="Ekspresi" column="EKSPRESI"/>
+      <result property="Inclsubtotal" column="INCLSUBTOTAL"/>
+      <result property="Jumbyek" column="JUMBYEK"/>
+      <result property="Kdjabar" column="KDJABAR"/>
+      <result property="Idstdharga" column="IDSTDHARGA"/>
+      <result property="Satuan" column="SATUAN"/>
+      <result property="Hrgsat" column="HRGSAT"/>
+      <result property="Uraian" column="URAIAN"/>
+      <result property="Nmstd" column="NMSTD"/>
+      <result property="Subtotal" column="SUBTOTAL"/>
+      <result property="Tarif" column="TARIF"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Kdnilai" column="KDNILAI"/>
+      <result property="Kd_bulan" column="KD_BULAN"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Unitkey" column="UNITKEY"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSaldodetb" parameterMap="insert-param">
+      <generate table="SALDODETB"/>
+    </insert>
+    <update id="UpdateBySaldodetb" parameterMap="update-param">
+      <generate table="SALDODETB" by="KDNILAI,KD_BULAN,MTGKEY,UNITKEY"/>
+    </update>
+    <update id="UpdateByHeaderSaldodetb" parameterClass="Saldodetb">
+      <![CDATA[
+      update SALDODETB
+      set JUMBYEK = 0, SUBTOTAL =  (select sum(isnull(SUBTOTAL,0)) as SUBTOTAL
+      from SALDODETB
+      where UNITKEY = #Unitkey# and KD_BULAN = #Kd_bulan#
+      and MTGKEY = #Mtgkey#
+      and KDJABAR like ltrim(rtrim(#Kdjabar#))+'%' and KDJABAR <> #Kdjabar# 
+      and type='D'
+      group by UNITKEY,MTGKEY,KD_BULAN)
+      where UNITKEY = #Unitkey# and KD_BULAN = #Kd_bulan#
+      and MTGKEY = #Mtgkey# and KDNILAI=#Kdnilai#
+      ]]>
+    </update>
+    <delete id="DeleteBySaldodetb" parameterMap="delete-param">
+      <generate table="SALDODETB" by="KDNILAI,KD_BULAN,MTGKEY,UNITKEY"/>
+    </delete>
+    <select id="BaseQuerySaldodetb" parameterClass="Saldodetb" resultMap="return-result">
+      select A.EKSPRESI,A.INCLSUBTOTAL,A.JUMBYEK,A.KDJABAR,A.IDSTDHARGA,A.KDNILAI,A.KD_BULAN,A.MTGKEY,A.SATUAN,A.SUBTOTAL,A.TARIF,rtrim(A.TYPE)  as TYPE,A.UNITKEY,A.URAIAN
+      ,cast(0 as decimal) as NILAI,A.URAIAN,C.NMSTD,rtrim(C.HRGSTD)+'/'+rtrim(C.SATUAN) as HRGSAT
+      from SALDODETB A
+      left outer join SALDOLRAB B on A.MTGKEY = B.MTGKEY AND A.UNITKEY = B.UNITKEY AND A.KD_BULAN = B.KD_BULAN
+      left outer join STDHARGA C on A.IDSTDHARGA = C.IDSTDHARGA
+    </select>
+    <select id="QueryByAllSaldodetb" extends="BaseQuerySaldodetb" parameterClass="Saldodetb" resultMap="return-result">
+       where A.UNITKEY=#Unitkey#  and A.MTGKEY=#Mtgkey# and A.KD_BULAN = #Kd_bulan#
+      and case #Parameter.Field#
+      when '1' then A.KDJABAR
+      when '2' then A.URAIAN
+      when '3' then A.EKSPRESI
+      when '4' then A.SATUAN
+      when '5' then convert(char(32), A.TARIF)
+      when '6' then convert(char(32), A.SUBTOTAL)
+      when '7' then rtrim(A.TYPE)
+      end like #Parameter.Value# + '%'
+      order by A.KDJABAR
+    </select>
+    <select id="QueryByKdjabarSaldodetb" extends="BaseQuerySaldodetb" parameterClass="Saldodetb" resultMap="return-result">
+      where A.KDJABAR=#Kdjabar# and A.KD_BULAN=#Kd_bulan# and A.MTGKEY=#Mtgkey# and A.UNITKEY=#Unitkey#
+    </select>
+    <select id="LoadByPKSaldodetb" extends="BaseQuerySaldodetb" parameterClass="Saldodetb" resultMap="return-result">
+      where A.KDNILAI=#Kdnilai# and A.KD_BULAN=#Kd_bulan# and A.MTGKEY=#Mtgkey# and A.UNITKEY=#Unitkey#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Saldodetb">
+      <parameter property="Ekspresi" column="EKSPRESI"/>
+      <parameter property="Inclsubtotal" column="INCLSUBTOTAL"/>
+      <parameter property="Jumbyek" column="JUMBYEK"/>
+      <parameter property="Kdjabar" column="KDJABAR"/>
+      <!--<parameter property="Idstdharga" column="IDSTDHARGA"/>-->
+      <parameter property="Satuan" column="SATUAN"/>
+      <parameter property="Subtotal" column="SUBTOTAL"/>
+      <parameter property="Tarif" column="TARIF"/>
+      <parameter property="Type" column="TYPE"/>
+      <parameter property="Uraian" column="URAIAN"/>
+      <parameter property="Kdnilai" column="KDNILAI"/>
+      <parameter property="Kd_bulan" column="KD_BULAN"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Saldodetb">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Saldodetb">
+      <parameter property="Kdnilai" column="KDNILAI"/>
+      <parameter property="Kd_bulan" column="KD_BULAN"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+	  <parameterMap id="exec-param" class="Saldodetb">
+		  <parameter property="Unitkey" column="unitkey"/>
+		  <parameter property="Kdkegunit" column="kdkegunit"/>
+		  <parameter property="Mtgkey" column="mtgkey"/>
+		  <parameter property="Idxkode" column="idxkode"/>
+	  </parameterMap>
+  </parameterMaps>
+</sqlMap>

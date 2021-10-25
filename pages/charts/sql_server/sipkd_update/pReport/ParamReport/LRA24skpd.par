@@ -1,0 +1,6 @@
+TITLE= Laporan Keuangan - L R A
+Unitkey=string;Key Unit;4;
+Level=string;Level Rekening;4;
+Tahap=string;Kode Tahap;4;
+Periode=string; Periode;4;
+Hal=string;Halaman;4;

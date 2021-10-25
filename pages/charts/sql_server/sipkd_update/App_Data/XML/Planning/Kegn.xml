@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Kegn" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Kegn" type="Usadi.Valid49.BO.KegnControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Kegn">
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Idprgrmn" column="IDPRGRMN"/>
+      <result property="Kdkegs" column="KDKEGS"/>
+      <result property="Sasaran" column="SASARAN"/>
+      <result property="Keterangan" column="KETERANGAN"/>
+      <result property="Statustr" column="STATUSTR"/>
+      <result property="Statusvd" column="STATUSVD"/>
+      <result property="Kdkegn" column="KDKEGN"/>
+      <result property="Nokegn" column="NOKEGN"/>
+      <result property="Nmkegn" column="NMKEGN"/>
+      <result property="Kdtahun" column="KDTAHUN"/>
+      <result property="Nmtahun" column="NMTAHUN"/>
+      <result property="Lokasin" column="LOKASIN"/>
+      <result property="Targetpn" column="TARGETPN"/>
+      <result property="Targetfn" column="TARGETFN"/>
+      <result property="Satuantn" column="SATUANTN"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Noprgrmn" column="NOPRGRMN"/>
+      <result property="Nmprgrmn" column="NMPRGRMN"/>
+      <result property="Nokegs" column="NOKEGS"/>
+      <result property="Nmkegs" column="NMKEGS"/>
+      <result property="Kddana" column="KDDANA"/>
+      <result property="Kdsifat" column="KDSIFAT"/>
+      <result property="Uruskey" column="URUSKEY"/>
+      <result property="Kdurus" column="KDURUS"/>
+      <result property="Nmurus" column="NMURUS"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <insert id="InsertKegn" parameterMap="insert-param" >
+      <generate table="KEGN"/>
+    </insert>
+    <update id="UpdateByKegn" parameterMap="update-param" >
+      <generate table="KEGN" by="UNITKEY,KDTAHUN,KDKEGN"/>
+    </update>
+    <delete id="DeleteByKegn" parameterMap="delete-param" >
+      <generate table="KEGN" by="UNITKEY,KDTAHUN,KDKEGN"/>
+    </delete>
+    <select id="BaseQueryKegn" parameterClass="Kegn" resultMap="return-result">
+      select KN.KDTAHUN, KN.UNITKEY, KN.KDKEGN, KN.KDKEGS, KN.KDSIFAT, KN.IDPRGRMN, KN.KDDANA, KN.SASARAN, KN.KETERANGAN, KN.STATUSTR,
+      KN.STATUSVD, KN.NOKEGN, KN.NMKEGN, KN.LOKASIN, KN.TARGETPN, KN.TARGETFN, KN.SATUANTN, PN.NOPRGRMN, PN.NMPRGRMN,
+      KS.NOKEGS, KS.NMKEGS, UN.KDUNIT, UN.NMUNIT,TN.NMTAHUN,
+      PN.URUSKEY,UR.KDUNIT as KDURUS,UR.NMUNIT as NMURUS
+      from KEGN KN
+      left outer join PGRMN PN on KN.UNITKEY = PN.UNITKEY and KN.IDPRGRMN = PN.IDPRGRMN and KN.KDTAHUN = PN.KDTAHUN
+      left outer join KEGS KS on KN.UNITKEY = KS.UNITKEY and KN.KDKEGS = KS.KDKEGS
+      left outer join DAFTUNIT UN on KN.UNITKEY = UN.UNITKEY
+      left outer join DAFTUNIT UR on PN.URUSKEY = UR.UNITKEY
+      left outer join JTAHUN TN on KN.KDTAHUN = TN.KDTAHUN
+    </select>
+    <select id="QueryByAllKegn" extends="BaseQueryKegn" parameterClass="Kegn" resultMap="return-result">
+      where
+      KN.UNITKEY=#Unitkey#
+      and KN.IDPRGRMN=#Idprgrmn#
+      and KN.KDTAHUN=#Kdtahun#
+      and case #Parameter.Field #
+      when '1' then KN.NOKEGN
+      when '2' then KN.NMKEGN
+      end like '%'+#Parameter.Value#+'%'
+      order by KN.NOKEGN
+    </select>    
+    <select id="LoadByPKKegn" extends="BaseQueryKegn" parameterClass="Kegn"  resultMap="return-result" >
+      WHERE KN.UNITKEY=#Unitkey# AND KN.KDTAHUN=#Kdtahun# AND KN.KDKEGN=#Kdkegn#
+    </select>
+  </statements>
+
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Kegn">
+      <parameter property="Idprgrmn" column="IDPRGRMN"/>
+      <parameter property="Kdkegs" column="KDKEGS"/>
+      <parameter property="Sasaran" column="SASARAN"/>
+      <parameter property="Keterangan" column="KETERANGAN"/>
+      <parameter property="Statustr" column="STATUSTR"/>
+      <parameter property="Statusvd" column="STATUSVD"/>
+      <parameter property="Nokegn" column="NOKEGN"/>
+      <parameter property="Nmkegn" column="NMKEGN"/>
+      <parameter property="Lokasin" column="LOKASIN"/>
+      <parameter property="Targetpn" column="TARGETPN"/>
+      <parameter property="Targetfn" column="TARGETFN"/>
+      <parameter property="Satuantn" column="SATUANTN"/>
+      <parameter property="Kddana" column="KDDANA"/>
+      <parameter property="Kdsifat" column="KDSIFAT"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Kdtahun" column="KDTAHUN"/>
+      <parameter property="Kdkegn" column="KDKEGN"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Kegn">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Kegn">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Kdtahun" column="KDTAHUN"/>
+      <parameter property="Kdkegn" column="KDKEGN"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>
+

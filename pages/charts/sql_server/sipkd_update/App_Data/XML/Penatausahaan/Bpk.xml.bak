@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Bpk" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<alias>
+		<typeAlias alias="Bpk" type="Usadi.Valid49.BO.BpkControl" />
+	</alias>
+	<resultMaps>
+		<resultMap id="return-result" class="Bpk">
+			<result property="AllowSuperUser" column="ALLOWSUPERUSER"/>
+			<result property="Idxkode" column="IDXKODE"/>
+			<result property="Kdstatus" column="KDSTATUS"/>
+			<result property="Sttunai" column="STTUNAI"/>
+			<result property="Stbank" column="STBANK"/>
+			<result property="Stpanjar" column="STPANJAR"/>
+			<result property="Keybend" column="KEYBEND"/>
+			<result property="Penerima" column="PENERIMA"/>
+			<result property="Tglbpk" column="TGLBPK"/>
+			<result property="Tglvalid" column="TGLVALID"/>
+			<result property="Uraibpk" column="URAIBPK"/>
+			<result property="Unitkey" column="UNITKEY"/>
+			<result property="Nobpk" column="NOBPK"/>
+			<result property="Kdkegunit" column="KDKEGUNIT"/>
+		</resultMap>
+		<resultMap id="return-result-view" extends="return-result" class="Bpk">
+			<result property="Nmunit" column="NMUNIT"/>
+			<result property="Kdunit" column="KDUNIT"/>
+			<result property="Nmkegunit" column="NMKEGUNIT"/>
+			<result property="Nukeg" column="NUKEG"/>
+			<!--<result property="Tglsp2d" column="TGLSP2D"/>
+			<result property="Nosp2d" column="NOSP2D"/>-->
+		</resultMap>
+		<resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+			<result property="Key" column="NOBPK"/>
+			<result property="Field" column="NOBPK"/>
+			<result property="Value" column="URAIBPK"/>
+			<result property="Value1" column="NAMA"/>
+		</resultMap>
+		<resultMap id="return-result-Sp2d" class="Bpk">
+			<result property="Idxkode" column="IDXKODE"/>
+			<result property="Kdstatus" column="KDSTATUS"/>
+			<result property="Sttunai" column="STTUNAI"/>
+			<result property="Stbank" column="STBANK"/>
+			<result property="Stpanjar" column="STPANJAR"/>
+			<result property="Keybend" column="KEYBEND"/>
+			<result property="Penerima" column="PENERIMA"/>
+			<result property="Tglbpk" column="TGLBPK"/>
+			<result property="Tglvalid" column="TGLVALID"/>
+			<result property="Uraibpk" column="URAIBPK"/>
+			<result property="Unitkey" column="UNITKEY"/>
+			<result property="Nobpk" column="NOBPK"/>
+			<result property="Kdkegunit" column="KDKEGUNIT"/>
+			<result property="Tglsp2d" column="TGLSP2D"/>
+			<result property="Nosp2d" column="NOSP2D"/>
+		</resultMap>
+	</resultMaps>
+	<statements>
+		<insert id="InsertBpk" parameterMap="insert-param">
+			<generate table="BPK"/>
+		</insert>
+		<statement id="InsertSp2dbpkBpk" parameterClass="Bpk">
+			insert into SP2DBPK
+			(NOBPK,UNITKEY,NOSP2D)
+			values (#Nobpk#,#Unitkey#,#Nosp2d#)
+		</statement>
+		<update id="UpdateByBpk" parameterMap="update-param">
+			<generate table="BPK" by="UNITKEY,NOBPK"/>
+		</update>
+		<update id="UpdateBySp2dBpk" parameterClass="Bpk" >
+			update  SP2DBPK set
+			NOSP2D=#Nosp2d# where UNITKEY=#Unitkey# and NOBPK=#Nobpk#
+		</update>
+		<update id="UpdateBySahBpk" parameterClass="Bpk" >
+			update BPK set TGLVALID=#Tglvalid# where UNITKEY=#Unitkey# and NOBPK=#Nobpk#
+		</update>
+		<update id="UpdateByDraftBpk" parameterClass="Bpk" >
+      update BPK set TGLVALID=null FROM BPK A LEFT OUTER JOIN BPKSPJ B ON b.UNITKEY = A.UNITKEY AND b.NOBPK = A.NOBPK where A.UNITKEY=#Unitkey# and A.NOBPK=#Nobpk# AND B.NOBPK IS NULL
+    </update>
+		<delete id="DeleteByBpk" parameterMap="delete-param">
+			<generate table="BPK" by="UNITKEY,NOBPK"/>
+		</delete>
+		<delete id="DeleteByBpkr" parameterMap="delete-param">
+			<generate table="BPK" by="UNITKEY,NOBPK"/>
+		</delete>
+		<delete id="DeleteBySp2dBpk"  parameterClass="Bpk">
+			delete SP2DBPK where  NOBPK=#Nobpk# and UNITKEY=#Unitkey#
+		</delete>
+		<select id="BaseQueryBpk" parameterClass="Bpk" resultMap="return-result">
+			SELECT distinct #AllowSuperUser# as ALLOWSUPERUSER,B.UNITKEY, rtrim(B.KDSTATUS) as KDSTATUS, B.NOBPK, B.TGLBPK, B.URAIBPK, rtrim(B.KEYBEND) as KEYBEND, B.PENERIMA, B.TGLVALID, B.IDXKODE
+			, B.STTUNAI, B.STBANK, B.STPANJAR
+			,isnull(BD.KDKEGUNIT,#Kdkegunit#) as KDKEGUNIT
+			FROM BPK B
+			LEFT OUTER JOIN BPKDETR BD ON B.UNITKEY = BD.UNITKEY and B.NOBPK = BD.NOBPK
+		</select>
+		<select id="QueryByAllBpk" extends="BaseQueryBpk" parameterClass="Bpk" resultMap="return-result">
+			where B.UNITKEY=#Unitkey# and B.IDXKODE=#Idxkode#
+			and (isnull(BD.KDKEGUNIT,'')=isnull(#Kdkegunit#,'') or isnull(#Kdkegunit#,'')='' or (BD.KDKEGUNIT is null and #Kdkegunit# is not null))
+			and B.KEYBEND = #Keybend#
+			and case #Parameter.Field#
+			when '1' then B.NOBPK
+			when '2' then convert(char(10), B.TGLBPK, 103)
+			when '3' then convert(char(10), B.TGLVALID, 103)
+			when '4' then B.PENERIMA
+			when '5' then B.URAIBPK
+			end like '%'+ #Parameter.Value# + '%'
+			order by B.NOBPK
+		</select>
+		<select id="QueryByBpkpajakBpk" parameterClass="Bpk" resultMap="return-lookup">
+			select distinct B.NOBPK,convert(char(10),B.TGLBPK, 103) as TGLBPK,
+			rtrim(B.URAIBPK) as URAIBPK
+			,BD.JNS_BEND+'-'+P.NAMA as NAMA, D.KDKEGUNIT
+			from BPK B
+			left outer join BPKDETR D on B.UNITKEY=D.UNITKEY and B.NOBPK=D.NOBPK
+			left outer join BEND BD on B.KEYBEND=BD.KEYBEND
+			left outer join PEGAWAI P on P.NIP=BD.NIP
+			left outer join MKEGIATAN M on D.KDKEGUNIT = M.KDKEGUNIT
+			where B.UNITKEY=#Unitkey# and B.KEYBEND=#Keybend# and
+			B.NOBPK not in (select NOBPK from BPKPAJAK where UNITKEY=#Unitkey# and NOBPK=#Nobpk# )
+			and case #Parameter.Field#
+			when '1' then B.NOBPK
+			end like #Parameter.Value# + '%'
+			order by B.NOBPK
+		</select>
+		<select id="QueryByNobpkBpk" extends="BaseQueryBpk" parameterClass="Bpk" resultMap="return-result">
+			where B.UNITKEY=#Unitkey# and B.KEYBEND=#Keybend#
+			order by B.NOBPK
+		</select>
+		<select id="QueryByNobpk1Bpk" extends="BaseQueryBpk" parameterClass="Bpk" resultMap="return-result">
+			where B.UNITKEY=#Unitkey#
+			order by B.NOBPK
+		</select>
+		<procedure id="ExecViewBpk" parameterMap="select-param" timeout="0" resultMap="return-result-view">
+			WSPI_BPK
+		</procedure>
+    <procedure id="ExecViewBpkkoreksi" parameterMap="select-param" timeout="0" resultMap="return-result-view">
+      WSPI_BPKkoreksi
+    </procedure>
+		<select id="QueryByBpkspjBpk" parameterClass="Bpk" resultMap="return-lookup">
+      select distinct B.NOBPK,convert(char(10),B.TGLBPK, 103) as TGLBPK,
+      rtrim(left(B.URAIBPK,80)) as URAIBPK
+      ,BD.JNS_BEND+'-'+P.NAMA as NAMA
+      from BPK B
+      left outer join BEND BD on B.KEYBEND=BD.KEYBEND
+      left outer join PEGAWAI P on P.NIP=BD.NIP
+      where B.UNITKEY=#Unitkey# and B.IDXKODE=#Idxkode#
+      and ( (#Kdstatus# = '42' and B.KDSTATUS in ('21','22')and(B.KEYBEND=#Keybend# or isnull(#Keybend#,'')='' )) or (#Kdstatus#='43' and B.KDSTATUS='23' and B.KEYBEND=#Keybend#))
+      and B.NOBPK not in (select NOBPK from BPKSPJ where UNITKEY=#Unitkey# and IDXKODE=#Idxkode#)
+      <!--and B.NOBPK in (select NOBPK from BKUBPK where UNITKEY=#Unitkey#) and TGLBKUSKPD is not null-->
+      and case #Parameter.Field#
+      when '1' then B.NOBPK
+      when '2' then B.URAIBPK
+      when '3' then rtrim(P.NIP)+'-'+BD.JNS_BEND+'-'+P.NAMA
+      end like '%'+ #Parameter.Value# + '%'
+      order by B.NOBPK
+    </select>
+    <select id="QueryByBpkspjkorBpk" parameterClass="Bpk" resultMap="return-lookup">
+      select distinct B.NOBPK,convert(char(10),B.TGLBPK, 103) as TGLBPK,
+      rtrim(left(B.URAIBPK,80)) as URAIBPK
+      ,BD.JNS_BEND+'-'+P.NAMA as NAMA
+      from BPK B
+      left outer join BEND BD on B.KEYBEND=BD.KEYBEND
+      left outer join PEGAWAI P on P.NIP=BD.NIP
+      where B.UNITKEY=#Unitkey# and B.IDXKODE=#Idxkode#
+      and ( (B.KDSTATUS in ('20')and(B.KEYBEND=#Keybend# or isnull(#Keybend#,'')='' )))
+      and B.NOBPK not in (select NOBPK from BPKSPJ where UNITKEY=#Unitkey# and IDXKODE=#Idxkode#)
+      and case #Parameter.Field#
+      when '1' then B.NOBPK
+      when '2' then B.URAIBPK
+      when '3' then rtrim(P.NIP)+'-'+BD.JNS_BEND+'-'+P.NAMA
+      end like '%'+ #Parameter.Value# + '%'
+      order by B.NOBPK
+    </select>
+		<select id="QueryByKegBpk" parameterClass="Bpk" resultMap="return-result">
+			SELECT distinct B.UNITKEY, rtrim(B.KDSTATUS) as KDSTATUS, B.NOBPK, B.TGLBPK, B.URAIBPK, rtrim(B.KEYBEND) as KEYBEND, B.PENERIMA, B.TGLVALID, B.IDXKODE
+			, rtrim(U.KDUNIT) as KDUNIT, rtrim(U.NMUNIT) as NMUNIT, S.LBLSTATUS, S.URAIAN AS URAISTATUS
+			,isnull(R.KDKEGUNIT,#Kdkegunit#) as KDKEGUNIT
+			FROM BPK B
+			LEFT OUTER JOIN BPKDETR R ON B.UNITKEY = R.UNITKEY AND B.NOBPK=R.NOBPK
+			LEFT OUTER JOIN DAFTUNIT U ON B.UNITKEY = U.UNITKEY
+			LEFT OUTER JOIN BEND D ON B.KEYBEND = D.KEYBEND
+			LEFT OUTER JOIN STATTRS S ON B.KDSTATUS = S.KDSTATUS
+			LEFT OUTER JOIN ZKODE Z ON B.IDXKODE = Z.IDXKODE
+			where B.UNITKEY=#Unitkey# and B.IDXKODE=#Idxkode#
+			and (isnull(R.KDKEGUNIT,'')=isnull(#Kdkegunit#,'') or isnull(#Kdkegunit#,'')='')
+			<!--and (B.KEYBEND = #Keybend# or #Keybend#='')-->
+			and B.KEYBEND = #Keybend#
+			and case #Parameter.Field#
+			when '1' then B.NOBPK
+			when '2' then convert(char(10), B.TGLBPK, 103)
+			when '3' then convert(char(10), B.TGLVALID, 103)
+			when '4' then B.PENERIMA
+			when '5' then B.URAIBPK
+			end like '%'+ #Parameter.Value# + '%'
+			order by B.NOBPK
+		</select>
+		<select id="LoadByPKBpk" parameterClass="Bpk" resultMap="return-result-Sp2d">
+			SELECT distinct #AllowSuperUser# as ALLOWSUPERUSER,
+			rtrim(B.UNITKEY) as UNITKEY, rtrim(B.KDSTATUS) as KDSTATUS, 
+			rtrim(B.NOBPK) as NOBPK, B.TGLBPK, B.URAIBPK, rtrim(B.KEYBEND) as KEYBEND, B.PENERIMA, B.TGLVALID, B.IDXKODE
+			, B.STTUNAI, B.STBANK, B.STPANJAR, isnull(S.Nosp2d,'')AS nosp2d, isnull(s2.TGLSP2D,'')AS tglsp2d,isnull(BD.KDKEGUNIT,#Kdkegunit#) as KDKEGUNIT
+			FROM BPK B
+			LEFT OUTER JOIN BPKDETR BD ON B.UNITKEY = BD.UNITKEY and B.NOBPK = BD.NOBPK
+			left join SP2DBPK S on S.Unitkey=B.Unitkey and S.Nobpk=B.Nobpk
+			INNER JOIN SP2D s2 ON s2.UNITKEY = S.UNITKEY AND s2.NOSP2D = S.NOSP2D
+			where B.UNITKEY=#Unitkey# and B.NOBPK=#Nobpk#
+		</select>
+		<select id="LoadByPKBpkr" extends="BaseQueryBpk" parameterClass="Bpk" resultMap="return-result">
+			where B.UNITKEY=#Unitkey# and B.NOBPK=#Nobpk#
+		</select>
+    <select id="LoadByPK2Bpk" extends="BaseQueryBpk" parameterClass="Bpk" resultMap="return-result">
+      where B.UNITKEY=#Unitkey# and B.NOBPK=#Nobpk#
+    </select>
+
+
+
+	</statements>
+	<parameterMaps>
+		<parameterMap id="insert-param" class="Bpk">
+			<parameter property="Idxkode" column="IDXKODE"/>
+			<parameter property="Kdstatus" column="KDSTATUS"/>
+			<parameter property="Sttunai" column="STTUNAI"/>
+			<parameter property="Stbank" column="STBANK"/>
+			<parameter property="Stpanjar" column="STPANJAR"/>
+			<parameter property="Keybend" column="KEYBEND"/>
+			<parameter property="Penerima" column="PENERIMA"/>
+			<parameter property="Tglbpk" column="TGLBPK"/>
+			<parameter property="Uraibpk" column="URAIBPK"/>
+			<parameter property="Unitkey" column="UNITKEY"/>
+			<parameter property="Nobpk" column="NOBPK"/>
+		</parameterMap>
+		<parameterMap id="update-param" extends="insert-param" class="Bpk">
+		</parameterMap>
+		<parameterMap id="delete-param" class="Bpk">
+			<parameter property="Unitkey" column="UNITKEY"/>
+			<parameter property="Nobpk" column="NOBPK"/>
+		</parameterMap>
+		<parameterMap id="select-param" class="Bpk">
+			<parameter property="AllowSuperUser" column="allowsuperuser"/>
+			<parameter property="Unitkey" column="unitkey"/>
+			<parameter property="Idxkode" column="idxkode"/>
+			<parameter property="Kdkegunit" column="kdkegunit"/>
+			<parameter property="Keybend" column="keybend"/>
+			<parameter property="Parameter.Field" column="field"/>
+			<parameter property="Parameter.Value" column="value"/>
+			<!--<parameter property="Hal" column="hal"/>-->
+		</parameterMap>
+	</parameterMaps>
+</sqlMap>

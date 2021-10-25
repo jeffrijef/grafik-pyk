@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Doksah" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Doksah" type="Usadi.Valid49.BO.DoksahControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Doksah">
+      <result property="Ket" column="KET"/>
+      <result property="Nmdoksah" column="NMDOKSAH"/>
+      <result property="Kddoksah" column="KDDOKSAH"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertDoksah" parameterMap="insert-param">
+      <generate table="DOKSAH"/>
+    </insert>
+    <update id="UpdateByDoksah" parameterMap="update-param">
+      <generate table="DOKSAH" by="KDDOKSAH"/>
+    </update>
+    <delete id="DeleteByDoksah" parameterMap="delete-param">
+      <generate table="DOKSAH" by="KDDOKSAH"/>
+    </delete>
+    <select id="BaseQueryDoksah" parameterClass="Doksah" resultMap="return-result">
+      select A.KDDOKSAH,A.KET,A.NMDOKSAH
+      from DOKSAH A
+    </select>
+    <select id="QueryByAllDoksah" extends="BaseQueryDoksah" parameterClass="Doksah" resultMap="return-result">
+			where
+			case #Parameter.Field#
+			when '1' then A.KDDOKSAH
+			when '2' then A.NMDOKSAH
+			when '3' then A.KET
+			end like '%'+ #Parameter.Value# + '%'
+			Order by A.KDDOKSAH
+		</select>
+    <select id="LoadByPKDoksah" extends="BaseQueryDoksah" parameterClass="Doksah" resultMap="return-result">
+      where A.KDDOKSAH=#Kddoksah# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Doksah">
+      <parameter property="Ket" column="KET"/>
+      <parameter property="Nmdoksah" column="NMDOKSAH"/>
+      <parameter property="Kddoksah" column="KDDOKSAH"/>
+			</parameterMap>
+			<parameterMap id="update-param" extends="insert-param" class="Doksah">
+			</parameterMap>
+			<parameterMap id="delete-param" class="Doksah">
+      <parameter property="Kddoksah" column="KDDOKSAH"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

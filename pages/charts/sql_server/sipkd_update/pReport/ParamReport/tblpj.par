@@ -1,0 +1,8 @@
+TITLE=Tanda Bukti LPJ
+Unitkey=string;Key Unit;4;;;;;
+Kdkegunit=string;Kegiatan;4;
+Idxkode=string;label;50;;;;-1;
+
+Nospj=string;Key Unit;30;
+Tanggal=datetime;Tanggal Cetak;20;;;
+Nip=string;Pimpinan Kegiatan;30;

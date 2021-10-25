@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Saldoblalu" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Saldoblalu" type="Usadi.Valid49.BO.SaldoblaluControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Saldoblalu">
+      <result property="Nilai" column="NILAI"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSaldoblalu" parameterMap="insert-param">
+      <generate table="Saldoblalu"/>
+    </insert>
+    <update id="UpdateBySaldoblalu" parameterMap="update-param">
+      <generate table="Saldoblalu" by="UNITKEY,MTGKEY"/>
+    </update>
+    <delete id="DeleteBySaldoblalu" parameterMap="delete-param">
+      <generate table="Saldoblalu" by="UNITKEY,MTGKEY"/>
+    </delete>
+    <select id="BaseQuerySaldoblalu" parameterClass="Saldoblalu" resultMap="return-result">
+      select UNITKEY,SA.MTGKEY,M.KDPER,M.NMPER,NILAI
+      from Saldoblalu SA
+      left outer join MATANGB M on SA.MTGKEY=M.MTGKEY
+    </select>
+    <select id="QueryByAllSaldoblalu" extends="BaseQuerySaldoblalu" parameterClass="Saldoblalu" resultMap="return-result">
+      where SA.UNITKEY=#Unitkey#
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="LoadByPKSaldoblalu" extends="BaseQuerySaldoblalu" parameterClass="Saldoblalu" resultMap="return-result">
+      where SA.UNITKEY=#Unitkey# and SA.MTGKEY=#Mtgkey# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Saldoblalu">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Saldoblalu">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Saldoblalu">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

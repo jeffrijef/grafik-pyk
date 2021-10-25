@@ -1,0 +1,5 @@
+TITLE=STS
+Unitkey=string;Key Unit;4;
+Idxkode=string;Index Kode;4;
+Nosts=string;Nomor STS;4;
+Nip=string;Nip;30;

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Mparkeg" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Mparkeg" type="Usadi.Valid49.BO.MparkegControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Mparkeg">
+      <result property="Levelkeg" column="LEVELKEG"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Kdperspektif" column="KDPERSPEKTIF"/>
+      <result property="Nmperspektif" column="NMPERSPEKTIF"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nuprgrm" column="NUPRGRM"/>
+      <result property="Nmprgrm" column="NMPRGRM"/>
+      <result property="Idprgrm" column="IDPRGRM"/>
+      <result property="Nmkegunit" column="NMKEGUNIT"/>
+      <result property="Nukeg" column="NUKEG"/>
+      <result property="Kdkeg_induk" column="KDKEG_INDUK"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertMparkeg" parameterMap="insert-param">
+      <generate table="MPARKEG"/>
+    </insert>
+    <update id="UpdateByMparkeg" parameterMap="update-param">
+      <generate table="MPARKEG" by="KDKEG_INDUK"/>
+    </update>
+    <delete id="DeleteByMparkeg" parameterMap="delete-param">
+      <generate table="MPARKEG" by="KDKEG_INDUK"/>
+    </delete>
+    <delete id="DeleteByNukegMparkeg" parameterClass="Mparkeg">
+      delete from MPARKEG
+      where NUKEG=#Nukeg# and IDPRGRM=#Idprgrm#
+    </delete>
+    <select id="BaseQueryMparkeg" parameterClass="Mparkeg" resultMap="return-result">
+      SELECT MK.KDKEG_INDUK,MK.NUKEG,MK.NMKEGUNIT,MK.IDPRGRM,MK.KDPERSPEKTIF,MK.LEVELKEG,MK.TYPE,
+      MP.NMPRGRM,MP.NUPRGRM, U.KDUNIT, U.NMUNIT, MP.UNITKEY,J.NMPERSPEKTIF
+      FROM MPARKEG MK
+      LEFT OUTER JOIN MPGRM MP ON MK.IDPRGRM=MP.IDPRGRM
+      LEFT OUTER JOIN DAFTUNIT U ON MP.UNITKEY = U.UNITKEY
+      LEFT OUTER JOIN JPERSPEKTIF J ON MK.KDPERSPEKTIF = J.KDPERSPEKTIF
+    </select>
+    <select id="QueryByAllMparkeg" extends="BaseQueryMparkeg" parameterClass="Mparkeg" resultMap="return-result">
+      where MK.IDPRGRM = #Idprgrm# and MK.LEVELKEG='1'
+      and case #Parameter.Field#
+      when '1' then MK.NUKEG
+      when '2' then MK.NMKEGUNIT
+      when '3' then J.NMPERSPEKTIF
+      end like '%'+ #Parameter.Value# + '%'
+      order by MK.NUKEG
+    </select>
+    <!--<select id="QueryBySubMparkeg" extends="BaseQueryMparkeg" parameterClass="Mparkeg" resultMap="return-result">
+      where MK.IDPRGRM = #Idprgrm# and MK.LEVELKEG='2' and left(MK.NUKEG,len(#ParentNukeg#))=#ParentNukeg#
+      and case #Parameter.Field#
+      when '1' then MK.NUKEG
+      when '2' then MK.NMKEGUNIT
+      when '3' then J.NMPERSPEKTIF
+      end like '%'+ #Parameter.Value# + '%'
+      order by MK.NUKEG
+    </select>-->
+    <select id="QueryByNukegMparkeg" extends="BaseQueryMparkeg" parameterClass="Mparkeg" resultMap="return-result">
+      where MK.NUKEG=#Nukeg# and MK.IDPRGRM = #Idprgrm# and isnull(MP.UNITKEY,'')=isnull(#Unitkey#,'')
+    </select>
+    <!--<select id="QueryByPanjardetMparkeg" extends="BaseQueryMparkeg" parameterclass="Usadi.Valid49.BO.PanjardetControl" resultMap="return-lookup">
+      where MK.KDKEG_INDUK not in (select KDKEG_INDUK from PANJARDET where UNITKEY=#Unitkey#)
+      and case #Parameter.Field#
+      when '1' then MK.NUKEG
+      when '2' then MK.NMKEGUNIT
+      end like #Parameter.Value# + '%'
+      order by MK.NUKEG
+    </select>
+    <select id="QueryBySubtreeMparkeg" parameterClass="Mparkeg" resultMap="return-result-tree">
+      exec WSP_TREEKEG #Unitkey#,#Idprgrm#
+    </select>
+    <select id="QueryBySubtreerkaMparkeg" parameterClass="Mparkeg" resultMap="return-result-tree">
+      exec WSP_TREEKEGRKA #Unitkey#
+    </select>-->
+    <select id="LoadByNukegMparkeg" extends="QueryByNukegMparkeg" parameterClass="Mparkeg" resultMap="return-result">
+    </select>
+    <select id="LoadByPKMparkeg" extends="BaseQueryMparkeg" parameterClass="Mparkeg" resultMap="return-result">
+      where MK.KDKEG_INDUK=#Kdkeg_induk#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Mparkeg">
+      <parameter property="Kdperspektif" column="KDPERSPEKTIF"/>
+      <parameter property="Levelkeg" column="LEVELKEG"/>
+      <parameter property="Type" column="TYPE"/>
+      <parameter property="Idprgrm" column="IDPRGRM"/>
+      <parameter property="Nmkegunit" column="NMKEGUNIT"/>
+      <parameter property="Nukeg" column="NUKEG"/>
+      <parameter property="Kdkeg_induk" column="KDKEG_INDUK"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Mparkeg">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Mparkeg">
+      <parameter property="Kdkeg_induk" column="KDKEG_INDUK"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

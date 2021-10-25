@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Jpembiayaan" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Jpembiayaan" type="Usadi.Valid49.BO.JpembiayaanControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Jpembiayaan">
+      <result property="Kdrek" column="KDREK"/>
+      <result property="Nmrek" column="NMREK"/>
+      <result property="Type" column="TYPE"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="KDREK"/>
+      <result property="Field" column="KDREK"/>
+      <result property="Value" column="NMREK"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <insert id="InsertJpembiayaan" parameterMap="insert-param" >
+      <generate table="JPEMBIAYAAN"/>
+    </insert>
+    <update id="UpdateByJpembiayaan" parameterMap="update-param" >
+      <generate table="JPEMBIAYAAN" by="KDREK"/>
+    </update>
+    <delete id="DeleteByJpembiayaan" parameterMap="delete-param" >
+      <generate table="JPEMBIAYAAN" by="KDREK"/>
+    </delete>
+    <select id="BaseQueryJpembiayaan" parameterClass="Jpembiayaan" resultMap="return-result">
+      select * from JPEMBIAYAAN
+    </select>
+    <select id="QueryByAllJpembiayaan" extends="BaseQueryJpembiayaan" parameterClass="Jpembiayaan" resultMap="return-result">
+      order by KDREK
+    </select>
+    <select id="QueryByRenjabdetJpembiayaan" extends="BaseQueryJpembiayaan" parameterclass="Usadi.Valid49.BO.RenjabdetControl, Usadi.Valid49" resultMap="return-lookup">
+      where
+      TYPE='D' and
+      KDREK not in (select KDREK from Renjabdet where UNITKEY=#Unitkey# and KDTAHUN=#Kdtahun#)
+      order by KDREK
+    </select>
+    <select id="LoadByPKJpembiayaan" parameterClass="Jpembiayaan"  resultMap="return-result" >
+      select * from JPEMBIAYAAN
+      where KDREK=#Kdrek#
+    </select>
+  </statements>
+
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Jpembiayaan">
+      <parameter property="Nmrek" column="NMREK"/>
+      <parameter property="Type" column="TYPE"/>
+      <parameter property="Kdrek" column="KDREK"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Jpembiayaan">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Jpembiayaan">
+      <parameter property="Kdrek" column="KDREK"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>
+

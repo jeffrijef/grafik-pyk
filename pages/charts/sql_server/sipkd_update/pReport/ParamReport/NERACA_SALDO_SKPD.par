@@ -1,0 +1,3 @@
+TITLE=Neraca Saldo SKPD Sebelum Penyesuaian
+Unitkey=string;Key Unit;4;
+Tgl=datetime;Tanggal Cetak;4;

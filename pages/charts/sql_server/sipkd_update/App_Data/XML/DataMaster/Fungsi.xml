@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Fungsi" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Fungsi" type="Usadi.Valid49.BO.FungsiControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Fungsi">
+		<result property="Kdfung" column="KDFUNG"/>
+		<result property="Nmfung" column="NMFUNG"/>
+    <result property="Idfung" column="IDFUNG"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertFungsi" parameterMap="insert-param">
+      <generate table="FUNGSI"/>
+    </insert>
+    <update id="UpdateByFungsi" parameterMap="update-param">
+      <generate table="FUNGSI" by="IDFUNG"/>
+    </update>
+    <delete id="DeleteByFungsi" parameterMap="delete-param">
+      <generate table="FUNGSI" by="IDFUNG"/>
+    </delete>
+    <select id="BaseQueryFungsi" parameterClass="Fungsi" resultMap="return-result">
+      select F.IDFUNG, F.KDFUNG, F.NMFUNG 
+	    from FUNGSI F
+    </select>
+    <select id="QueryByAllFungsi" extends="BaseQueryFungsi" parameterClass="Fungsi" resultMap="return-result">
+      where 
+	    case #Parameter.Field#
+      when '1' then F.KDFUNG
+      when '2' then F.NMFUNG
+      end like '%'+ #Parameter.Value# + '%'
+      order by F.KDFUNG
+    </select>
+    <select id="QueryByKdfungFungsi" extends="BaseQueryFungsi" parameterClass="Fungsi" resultMap="return-result">
+      where F.KDFUNG=#Kdfung#
+    </select>
+    <select id="LoadByPKFungsi" extends="BaseQueryFungsi" parameterClass="Fungsi" resultMap="return-result">
+      where F.IDFUNG=#Idfung# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Fungsi">
+      <parameter property="Kdfung" column="KDFUNG"/>
+      <parameter property="Nmfung" column="NMFUNG"/>
+      <parameter property="Idfung" column="IDFUNG"/>
+      </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Fungsi">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Fungsi">
+      <parameter property="Idfung" column="IDFUNG"/>
+          </parameterMap>
+  </parameterMaps>
+</sqlMap>

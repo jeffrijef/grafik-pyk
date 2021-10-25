@@ -1,0 +1,6 @@
+TITLE= LAMPIRAN SPD
+Unitkey=string;Key Unit;4;
+Idxkode=string;Index Kode;4;;-1;;-1
+Idxsko=string;Index SKO;4;
+Keybend=string;Bendahara;30;
+Kdtahap=string;Kode Tahap;4;

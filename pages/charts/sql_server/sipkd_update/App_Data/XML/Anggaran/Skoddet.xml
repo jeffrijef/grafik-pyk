@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Skoddet" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Skoddet" type="Usadi.Valid49.BO.SkoddetControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Skoddet">
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Idxsko" column="IDXSKO"/>
+    </resultMap>
+    <resultMap id="return-result-total" class="Skoddet">
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Nilai" column="NILAI"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="MTGKEY"/>
+      <result property="Field" column="KDPER"/>
+      <result property="Value" column="NMPER"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSkoddet" parameterMap="insert-param">
+      <generate table="SKODDET"/>
+    </insert>
+    <update id="UpdateBySkoddet" parameterMap="update-param">
+      <generate table="SKODDET" by="UNITKEY,MTGKEY,IDXSKO"/>
+    </update>
+    <delete id="DeleteBySkoddet" parameterMap="delete-param">
+      <generate table="SKODDET" by="UNITKEY,MTGKEY,IDXSKO"/>
+    </delete>
+    <select id="BaseQuerySkoddet" parameterClass="Skoddet" resultMap="return-result">
+      select S.UNITKEY,S.IDXSKO,S.MTGKEY,S.NILAI,M.KDPER,M.NMPER
+      from SKODDET S
+      left outer join MATANGD M on S.MTGKEY=M.MTGKEY
+    </select>
+    <select id="QueryByAllSkoddet" extends="BaseQuerySkoddet" parameterClass="Skoddet" resultMap="return-result">
+      where UNITKEY=#Unitkey# and IDXSKO=#Idxsko#
+      and case #Parameter.Field#
+      when '1' then KDPER
+      when '2' then NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by KDPER
+    </select>
+    <select id="QueryByUntilnowSkoddet" parameterClass="Skoddet" resultMap="return-result-total">
+      select S.UNITKEY,S.IDXSKO,S.MTGKEY,S.NILAI
+      from SKODDET S
+      left outer join SKO SK on SK.UNITKEY=S.UNITKEY and SK.IDXSKO=S.IDXSKO
+      where S.UNITKEY=#Unitkey# and <![CDATA[SK.TGLSKO <= #Tglsko#]]> and TGLVALID is not null
+    </select>
+    <select id="LoadByPKSkoddet" extends="BaseQuerySkoddet" parameterClass="Skoddet" resultMap="return-result">
+      where S.UNITKEY=#Unitkey# and S.MTGKEY=#Mtgkey# and S.IDXSKO=#Idxsko# 
+    </select>
+    <select id="BaseQueryTotalSkoddet" parameterClass="Skoddet" resultMap="return-result-total">
+      select D.MTGKEY,sum(D.NILAI) as NILAI
+      from SKODDET D
+      left outer join SKO S on D.IDXSKO=S.IDXSKO and D.UNITKEY=S.UNITKEY
+    </select>
+    <select id="QueryByLastSkoddet" extends="BaseQueryTotalSkoddet" parameterClass="Skoddet" resultMap="return-result-total">
+      where S.UNITKEY=#Unitkey# and D.MTGKEY=#Mtgkey# and <![CDATA[S.TGLSKO <= #Tglsko# and S.IDXSKO <> #Idxsko#]]>
+      group by D.MTGKEY
+    </select>
+    <select id="QueryByTotalSkoddet" extends="BaseQueryTotalSkoddet" parameterClass="Skoddet" resultMap="return-result-total">
+      where S.UNITKEY=#Unitkey# and S.IDXSKO=#Idxsko#
+      group by D.MTGKEY
+    </select>
+    <select id="BaseQueryLookupSkoddet" parameterClass="Skoddet" resultMap="return-lookup">
+      <![CDATA[
+      select distinct B.KDPER, B.NMPER,B.MTGKEY
+      from SKODDET A
+      left join MATANGD B on A.mtgkey = B.mtgkey
+      where A.UNITKEY=#Unitkey#
+      and A.IDXSKO in (select IDXSKO from SKO where UNITKEY=#Unitkey# 
+      and TGLSKO <= (select TGLSKO from SKO where UNITKEY=#Unitkey# 
+      and IDXSKO = #Idxsko#) and TGLVALID is not NULL)
+      ]]>
+    </select>
+    <select id="QueryBySppdetdSkoddet" extends="BaseQueryLookupSkoddet" parameterclass="Usadi.Valid49.BO.SppdetdControl" resultMap="return-lookup">
+      and A.MTGKEY not in (select MTGKEY from SPPDETD S where S.UNITKEY=#Unitkey# and S.NOSPP=#Nospp# )
+      order by B.KDPER
+    </select>
+    <!--gn:090323-->
+    <select id="QueryBySpmdetdSkoddet" extends="BaseQueryLookupSkoddet" parameterclass="Usadi.Valid49.BO.SpmdetdControl" resultMap="return-lookup">
+      and A.MTGKEY not in (select MTGKEY from SPMDETD S where S.UNITKEY=#Unitkey# and S.NOSPM=#Nospm# )
+      order by B.KDPER
+    </select>
+    <select id="QueryBySp2ddetdSkoddet" extends="BaseQueryLookupSkoddet" parameterclass="Usadi.Valid49.BO.Sp2ddetdControl" resultMap="return-lookup">
+      and A.MTGKEY not in (select MTGKEY from SP2DDETD S where S.UNITKEY=#Unitkey# and S.NOSP2D=#Nosp2d# )
+      order by B.KDPER
+    </select>
+    <select id="LoadByTotalRekSkoddet" parameterClass="Skoddet" resultMap="return-result-total">
+      <![CDATA[
+      select B.KDPER, B.NMPER,B.MTGKEY, sum(A.NILAI) AS NILAI
+      from SKODDET A
+      left join MATANGD B on A.MTGKEY = B.MTGKEY
+      where A.UNITKEY=#Unitkey# and A.MTGKEY=#Mtgkey#
+      and A.IDXSKO in (select IDXSKO from SKO where UNITKEY=#Unitkey# 
+      and TGLSKO <= (select TGLSKO from SKO where UNITKEY=#Unitkey# 
+      and IDXSKO = #Idxsko#) and TGLVALID is not NULL)
+      group BY B.KDPER, B.NMPER, B.MTGKEY
+      ]]>
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Skoddet">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Idxsko" column="IDXSKO"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Skoddet">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Skoddet">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Idxsko" column="IDXSKO"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

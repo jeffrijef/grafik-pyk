@@ -1,0 +1,4 @@
+TITLE= Laporan Operasional
+Unitkey=string;Key Unit;4;
+Level=string;Level Rekening;4;
+Tgl=datetime;Tanggal Cetak;30;

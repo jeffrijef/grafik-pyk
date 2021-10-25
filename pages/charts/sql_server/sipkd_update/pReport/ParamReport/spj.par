@@ -1,0 +1,5 @@
+TITLE=Register SPJ
+Unitkey=string;Key Unit;4;
+Kdtahap=string;Tahap;4;
+Bend=string; Bendahara;30;
+Bln=string; Bulan;4;

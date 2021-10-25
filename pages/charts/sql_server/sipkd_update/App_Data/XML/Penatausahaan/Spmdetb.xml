@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Spmdetb" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Spmdetb" type="Usadi.Valid49.BO.SpmdetbControl" />
+  </alias>
+  <resultMaps>
+		<resultMap id="return-result" class="Spmdetb">
+			<result property="Nilai" column="NILAI"/>
+			<result property="Nojetra" column="NOJETRA"/>
+			<result property="Nospm" column="NOSPM"/>
+			<result property="Unitkey" column="UNITKEY"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+			<result property="Kdper" column="KDPER"/>
+			<result property="Nmper" column="NMPER"/>
+		</resultMap>
+	</resultMaps>
+	<statements>
+		<insert id="InsertSpmdetb" parameterMap="insert-param">
+			<generate table="SPMDETB"/>
+		</insert>
+		<update id="UpdateBySpmdetb" parameterMap="update-param">
+			<generate table="SPMDETB" by="NOJETRA,MTGKEY,UNITKEY,NOSPM"/>
+		</update>
+		<delete id="DeleteBySpmdetb" parameterMap="delete-param">
+			<generate table="SPMDETB" by="NOJETRA,MTGKEY,UNITKEY,NOSPM"/>
+		</delete>
+    <delete id="DeleteByAllSpmdetb" parameterClass="Spmdetb" >
+      delete from SPMDETB
+      where UNITKEY=#Unitkey# and NOSPM=#Nospm#
+    </delete>
+    <select id="BaseQuerySpmdetb" parameterClass="Spmdetb" resultMap="return-result">
+      select A.MTGKEY,A.NILAI,A.NOJETRA,A.NOSPM,A.UNITKEY
+      ,rtrim(D.KDPER) as KDPER, rtrim(D.NMPER) as NMPER
+      from SPMDETB A
+      left outer join MATANGB D on A.MTGKEY = D.MTGKEY
+    </select>
+		<select id="QueryByAllSpmdetb" extends="BaseQuerySpmdetb" parameterClass="Spmdetb" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSPM=#Nospm# and A.NOJETRA=#Nojetra#
+      and case #Parameter.Field#
+      when '1' then D.KDPER
+      when '2' then D.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by D.KDPER
+    </select>
+    <select id="QueryByTotalSpmdetb" extends="BaseQuerySpmdetb" parameterClass="Spmdetb" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSPM=#Nospm# and A.NOJETRA=#Nojetra#
+    </select>
+    <select id="LoadByPKSpmdetb" extends="BaseQuerySpmdetb" parameterClass="Spmdetb" resultMap="return-result">
+      where A.MTGKEY=#Mtgkey# and A.UNITKEY=#Unitkey# and A.NOSPM=#Nospm# and A.NOJETRA=#Nojetra#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Spmdetb">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nospm" column="NOSPM"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Spmdetb">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Spmdetb">
+      <parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nospm" column="NOSPM"/>
+    </parameterMap>
+    <parameterMap id="delete-all-param" class="Spmdetb">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nospm" column="NOSPM"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

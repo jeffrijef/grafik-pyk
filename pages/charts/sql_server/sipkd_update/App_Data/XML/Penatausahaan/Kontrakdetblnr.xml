@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Kontrakdetblnr" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Kontrakdetblnr" type="Usadi.Valid49.BO.KontrakdetblnrControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Kontrakdetblnr">
+      <result property="Nilai" column="NILAI"/>
+      <result property="Kd_bulan" column="KD_BULAN"/>
+      <result property="Ket_bulan" column="KET_BULAN"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nokon" column="NOKON"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertKontrakdetblnr" parameterMap="insert-param">
+      <generate table="KONTRAKDETBLNR"/>
+    </insert>
+    <update id="UpdateByKontrakdetblnr" parameterMap="update-param">
+      <generate table="KONTRAKDETBLNR" by="KD_BULAN,UNITKEY,NOKON,MTGKEY"/>
+    </update>
+    <delete id="DeleteByKontrakdetblnr" parameterMap="delete-param">
+      <generate table="KONTRAKDETBLNR" by="KD_BULAN,UNITKEY,NOKON,MTGKEY"/>
+    </delete>
+    <delete id="DeleteByAllKontrakdetblnr" parameterClass="Kontrakdetblnr">
+      delete KONTRAKDETBLNR where UNITKEY=#Unitkey# and NOKON=#Nokon# and MTGKEY=#Mtgkey#
+    </delete>
+    <select id="BaseQueryKontrakdetblnr" parameterClass="Kontrakdetblnr" resultMap="return-result">
+      select A.KD_BULAN,'Triwulan '+cast(KD_BULAN as varchar(2)) as KET_BULAN,A.NILAI,A.NOKON,A.UNITKEY, A.MTGKEY
+      from KONTRAKDETBLNR A
+    </select>
+    <select id="QueryByAllKontrakdetblnr" extends="BaseQueryKontrakdetblnr" parameterClass="Kontrakdetblnr" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOKON=#Nokon# and A.MTGKEY=#Mtgkey#
+      and case #Parameter.Field#
+      when '1' then convert(char(10), A.KD_BULAN)
+      when '2' then 'Triwulan '+cast(KD_BULAN as varchar(2))
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.KD_BULAN
+    </select>
+    <select id="LoadByPKKontrakdetblnr" extends="BaseQueryKontrakdetblnr" parameterClass="Kontrakdetblnr" resultMap="return-result">
+      where A.KD_BULAN=#Kd_bulan# and A.UNITKEY=#Unitkey# and A.NOKON=#Nokon# and A.MTGKEY=#Mtgkey# 
+    </select>
+    <procedure id="ExecUpdateDetilKontrak" parameterMap="insert-detil-param" >
+      WSP_UpdateDetilKontrak
+    </procedure>
+    <procedure id="ExecValidateKontrakDPA" parameterMap="valid-detil-param" >
+      WSP_VALIDATIONKONTRAKDPA
+    </procedure>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Kontrakdetblnr">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Kd_bulan" column="KD_BULAN"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nokon" column="NOKON"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Kontrakdetblnr">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Kontrakdetblnr">
+      <parameter property="Kd_bulan" column="KD_BULAN"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nokon" column="NOKON"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+    <parameterMap id="insert-detil-param" class="Kontrakdetblnr">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Nokon" column="nokon"/>
+      <parameter property="Mtgkey" column="mtgkey"/>
+      <parameter property="Kd_bulan" column="kdbulan"/>
+      <parameter property="Nilai" column="nilai"/>
+    </parameterMap>
+    <parameterMap id="valid-detil-param" class="Kontrakdetblnr">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Kdkegunit" column="kdkegunit"/>
+      <parameter property="Kdtahap" column="kdtahap"/>
+      <parameter property="Kdper" column="kdper"/>
+      <parameter property="Nokon" column="nokon"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

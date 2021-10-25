@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Kelolaunit" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Kelolaunit" type="Usadi.Valid49.BO.KelolaunitControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Kelolaunit">
+      <result property="Ketkelola" column="KETKELOLA"/>
+      <result property="Nmkelola" column="NMKELOLA"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Kdkelola" column="KDKELOLA"/>
+      <result property="Unitkey" column="UNITKEY"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertKelolaunit" parameterMap="insert-param">
+      <generate table="KELOLAUNIT"/>
+    </insert>
+    <update id="UpdateByKelolaunit" parameterMap="update-param">
+      <generate table="KELOLAUNIT" by="UNITKEY"/>
+    </update>
+    <delete id="DeleteByKelolaunit" parameterMap="delete-param">
+      <generate table="KELOLAUNIT" by="UNITKEY"/>
+    </delete>
+    <select id="BaseQueryKelolaunit" parameterClass="Kelolaunit" resultMap="return-result">
+      select K.UNITKEY,JK.KDKELOLA, JK.NMKELOLA,JK.KETKELOLA, U.KDUNIT, U.NMUNIT
+      from KELOLAUNIT K
+      LEFT OUTER JOIN JKELOLA JK ON JK.KDKELOLA = K.KDKELOLA
+      LEFT OUTER JOIN DAFTUNIT U ON U.UNITKEY = K.UNITKEY
+    </select>
+    <select id="QueryByAllKelolaunit" extends="BaseQueryKelolaunit" parameterClass="Kelolaunit" resultMap="return-result">
+      where K.KDKELOLA = #Kdkelola# 
+      and case #Parameter.Field#
+      when '1' then JK.NMKELOLA
+      when '2' then U.NMUNIT
+      end like '%'+ #Parameter.Value# + '%'
+      ORDER BY U.KDUNIT
+    </select>
+    <select id="LoadByPKKelolaunit" extends="BaseQueryKelolaunit" parameterClass="Kelolaunit" resultMap="return-result">
+      where K.UNITKEY=#Unitkey# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Kelolaunit">
+      <parameter property="Kdkelola" column="KDKELOLA"/>
+      <!--<parameter property="Unitkey" column="UNITKEY"/>-->
+      <parameter property="Parameter.Key" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Kelolaunit">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Kelolaunit">
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

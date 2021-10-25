@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Webotor" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Webotor" type="CoreNET.Common.BO.WebotorControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Webotor">
+      <result property="Menuid" column="MENUID"/>
+      <result property="Ketgroup" column="KET"/>
+      <result property="Nmgroup" column="NMGROUP"/>
+      <result property="Role" column="ROLE"/>
+      <result property="Groupid" column="GROUPID"/>
+      <result property="Roleid" column="ROLEID"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertWebotor" parameterMap="insert-param">
+      <generate table="WEBOTOR"/>
+    </insert>
+    <update id="UpdateByWebotor" parameterMap="update-param">
+      <generate table="WEBOTOR" by="GROUPID,ROLEID"/>
+    </update>
+    <delete id="DeleteByWebotor" parameterClass="Webotor" >
+      delete from WEBOTOR
+      where GROUPID=#Groupid# and
+      ROLEID in (select ROLEID from WEBROLE where ltrim(rtrim(ROLEID)) like ltrim(rtrim(#Roleid#))+'%' )
+    </delete>
+    <select id="BaseQueryWebotor" parameterClass="Webotor" resultMap="return-result">
+      select O.GROUPID,O.ROLEID,R.MENUID,R.ROLE,G.NMGROUP,G.KET
+      from WEBOTOR O
+      left outer join WEBROLE R on O.ROLEID = R.ROLEID
+      left outer join WEBGROUP G on O.GROUPID = G.GROUPID
+    </select>
+    <select id="QueryByAllWebotor" extends="BaseQueryWebotor" parameterClass="Webotor" resultMap="return-result">
+      where
+      O.GROUPID=#Groupid#
+      and case #Parameter.Field#
+      when '1' then R.ROLEID
+      when '2' then R.ROLE
+      when '3' then R.TYPE
+      end like #Parameter.Value# + '%'
+      order by R.ROLEID
+    </select>
+    <select id="LoadByPKWebotor" extends="BaseQueryWebotor" parameterClass="Webotor" resultMap="return-result">
+      where O.GROUPID=#Groupid# and O.ROLEID=#Roleid# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Webotor">
+      <parameter property="Groupid" column="GROUPID"/>
+      <parameter property="Roleid" column="ROLEID"/>
+    </parameterMap>
+    <parameterMap id="update-param" class="Webotor">
+      <parameter property="Groupid" column="GROUPID"/>
+      <parameter property="Roleid" column="ROLEID"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Webotor">
+      <parameter property="Groupid" column="GROUPID"/>
+      <parameter property="Roleid" column="ROLEID"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

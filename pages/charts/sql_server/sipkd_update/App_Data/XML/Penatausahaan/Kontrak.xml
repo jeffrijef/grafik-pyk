@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Kontrak" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Kontrak" type="Usadi.Valid49.BO.KontrakControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Kontrak">
+      <result property="Nilai" column="NILAI"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Nukeg" column="NUKEG"/>
+      <result property="Nmkegunit" column="NMKEGUNIT"/>
+      <result property="Nmp3" column="NMP3"/>
+      <result property="Nminst" column="NMINST"/>
+      <result property="Kdp3" column="KDP3"/>
+      <result property="Tglkon" column="TGLKON"/>
+      <result property="Tglslskonk" column="TGLSLSKONK"/>
+      <result property="Uraian" column="URAIAN"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nokon" column="NOKON"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertKontrak" parameterMap="insert-param">
+      <generate table="KONTRAK"/>
+    </insert>
+    <insert id="InsertKontrakdetrKontrak" parameterClass="Kontrak" >
+      insert into KONTRAKDETR (UNITKEY,NOKON,MTGKEY,NILAI)
+      select UNITKEY,#Nokon# as NOKON,MTGKEY,sum(isnull(NILAI,0))-sum(isnull(REAL,0))
+      from
+      (
+      select UNITKEY,#Nokon# as NOKON,MTGKEY,NILAI,0 as REAL
+      from RASKR where UNITKEY=#Unitkey# and KDKEGUNIT=#Kdkegunit# and KDTAHAP=#Kdtahap#
+      union
+      select KD.UNITKEY,#Nokon# as NOKON,KD.MTGKEY,0 as NILAI,sum(isnull(KD.NILAI,0)) as REAL
+      from KONTRAKDETR KD
+      inner join KONTRAK K on K.UNITKEY=KD.UNITKEY and K.NOKON=KD.NOKON
+      where KD.UNITKEY=#Unitkey# and K.KDKEGUNIT=#Kdkegunit#
+      group by KD.UNITKEY,KD.MTGKEY
+      )A
+      where MTGKEY not in (select MTGKEY from KONTRAKDETR where UNITKEY=#Unitkey# and NOKON=#Nokon#)
+      group by UNITKEY,MTGKEY
+
+
+      declare @tot1 money
+      select @tot1 = sum(NILAI) from KONTRAKDETR where UNITKEY=#Unitkey# and NOKON=#Nokon#
+      update KONTRAK set NILAI = @tot1 where UNITKEY=#Unitkey# and NOKON=#Nokon#
+
+      insert into KONTRAKDETBLNR (UNITKEY,NOKON,MTGKEY,KD_BULAN,NILAI)
+      select UNITKEY,#Nokon# as NOKON, MTGKEY,KD_BULAN,sum(isnull(NILAI,0))-sum(isnull(REAL,0)) from
+      (
+        select UNITKEY,MTGKEY, KD_TRW AS KD_BULAN, SUM(NILAI) AS NILAI, 0 as REAL
+        FROM (
+          SELECT UNITKEY, RB.MTGKEY, KD_BULAN, KDKEGUNIT,(KD_BULAN - 1) / 3 + 1 AS KD_TRW, NILAI
+          FROM RASKBLNR AS RB
+          where UNITKEY=#Unitkey# and KDKEGUNIT=#Kdkegunit# and KDTAHAP=#Kdtahap#
+        )T
+        GROUP BY UNITKEY, MTGKEY, KD_TRW
+
+        union
+
+        select KD.UNITKEY,KD.MTGKEY,KD_BULAN,0 as NILAI,sum(isnull(KD.NILAI,0)) as REAL
+        from KONTRAKDETBLNR KD
+        inner join KONTRAK K on K.UNITKEY=KD.UNITKEY and K.NOKON=KD.NOKON
+        where KD.UNITKEY=#Unitkey# and K.KDKEGUNIT=#Kdkegunit#
+        group by KD.UNITKEY,KD.MTGKEY,KD_BULAN
+
+      )A
+      where MTGKEY not in (select MTGKEY from KONTRAKDETBLNR where UNITKEY=#Unitkey# and NOKON=#Nokon#)
+      GROUP BY UNITKEY, MTGKEY, KD_BULAN
+    </insert>
+    <update id="UpdateByKontrak" parameterMap="update-param">
+      <generate table="KONTRAK" by="UNITKEY,NOKON"/>
+    </update>
+    <delete id="DeleteByKontrak" parameterMap="delete-param">
+      <generate table="KONTRAK" by="UNITKEY,NOKON"/>
+    </delete>
+    <select id="BaseQueryKontrak" parameterClass="Kontrak" resultMap="return-result">
+      select A.KDKEGUNIT,A.KDP3,A.NILAI,A.NOKON,A.TGLKON,A.TGLSLSKONK,A.UNITKEY,A.URAIAN
+      ,rtrim(U.KDUNIT) as KDUNIT,rtrim(U.NMUNIT) as NMUNIT
+      ,rtrim(P.NMP3) as NMP3,rtrim(P.NMINST) as NMINST
+      ,rtrim(M.NUKEG) as NUKEG,rtrim(M.NMKEGUNIT) as NMKEGUNIT
+      from KONTRAK A
+      left join DAFTPHK3 P on A.KDP3=P.KDP3
+      left outer join DAFTUNIT U on A.UNITKEY = U.UNITKEY
+      left outer join MKEGIATAN M on A.KDKEGUNIT = M.KDKEGUNIT
+    </select>
+    <select id="QueryByAllKontrak" extends="BaseQueryKontrak" parameterClass="Kontrak" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and (A.KDKEGUNIT=#Kdkegunit# or isnull(#Kdkegunit#,'')='')
+      and case #Parameter.Field#
+      when '1' then A.NOKON
+      when '2' then convert(char(10), A.TGLKON, 103)
+      when '3' then convert(char(10), A.TGLSLSKONK, 103)
+      when '4' then P.NMP3
+      when '5' then A.URAIAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOKON
+    </select>
+    <procedure id="ExecValInsertKontrak" parameterMap="insert-detil-param" >
+      WSP_VALTOTKONTRAKDPA
+    </procedure>
+    <select id="LoadByPKKontrak" extends="BaseQueryKontrak" parameterClass="Kontrak" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOKON=#Nokon# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Kontrak">
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Kdp3" column="KDP3"/>
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Tglkon" column="TGLKON"/>
+      <parameter property="Tglslskonk" column="TGLSLSKONK"/>
+      <parameter property="Uraian" column="URAIAN"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nokon" column="NOKON"/>
+    </parameterMap>
+    <parameterMap id="insert-detil-param" class="Kontrak">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Kdkegunit" column="kdkegunit"/>
+      <parameter property="Kdtahap" column="kdtahap"/>
+      <!--<parameter property="Nokon" column="nokon"/>-->
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Kontrak">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Kontrak">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nokon" column="NOKON"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

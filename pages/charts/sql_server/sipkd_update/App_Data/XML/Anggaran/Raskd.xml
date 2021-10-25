@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Raskd" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Raskd" type="Usadi.Valid49.BO.RaskdControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Raskd">
+      <result property="Totbln" column="TOTBLN"/>
+      <result property="Totdet" column="TOTDET"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Uraian" column="URAIAN"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Mtglevel" column="MTGLEVEL"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Kdtahap" column="KDTAHAP"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Unitkey" column="UNITKEY"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="MTGKEY"/>
+      <result property="Field" column="KDPER"/>
+      <result property="Value" column="NMPER"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertRaskd" parameterMap="insert-param">
+      <generate table="RASKD"/>
+    </insert>
+    <insert id="InsertBulanRaskd" parameterClass="Raskd">
+      insert into RASKBLND ( UNITKEY, MTGKEY, KDTAHAP, KD_BULAN, NILAI)
+      select #Unitkey#,#Mtgkey#,#Kdtahap#,KD_BULAN,0
+      from BULAN
+    </insert>
+    <update id="UpdateByRaskd" parameterMap="update-param">
+      <generate table="RASKD" by="KDTAHAP,MTGKEY,UNITKEY"/>
+    </update>
+    <delete id="DeleteByRaskd" parameterMap="delete-param">
+      <generate table="RASKD" by="KDTAHAP,MTGKEY,UNITKEY"/>
+    </delete>
+    <select id="BaseQueryRaskd" parameterClass="Raskd" resultMap="return-result">
+      select R.KDTAHAP,R.MTGKEY,R.NILAI,R.UNITKEY, B.KDUNIT, B.NMUNIT, C.URAIAN, rtrim(D.KDPER) as KDPER, D.MTGLEVEL, D.NMPER,
+      Totdet=ISNULL((select sum(SUBTOTAL) from raskdetd R2 where r.mtgkey=R2.MTGKEY and r.UNITKEY=R2.UNITKEY and r.KDTAHAP=R2.KDTAHAP and R2.TYPE='D'),0),
+      Totbln=ISNULL((select sum(NILAI) from raskblnd R2 where r.mtgkey=R2.MTGKEY and r.UNITKEY=R2.UNITKEY and r.KDTAHAP=R2.KDTAHAP),0)
+      from RASKD R
+      left outer join DAFTUNIT B on R.UNITKEY = B.UNITKEY
+      left outer join TAHAP C on R.KDTAHAP = C.KDTAHAP
+      left outer join MATANGD D on R.MTGKEY = D.MTGKEY
+    </select>
+    <select id="QueryByAllRaskd" extends="BaseQueryRaskd" parameterClass="Raskd" resultMap="return-result">
+      where R.UNITKEY=#Unitkey# and R.KDTAHAP=#Kdtahap#
+      and case #Parameter.Field#
+        when '1' then D.KDPER
+        when '2' then D.NMPER
+      end like '%'+ #Parameter.Value# + '%' 
+      order by D.KDPER
+    </select>
+    <select id="LoadByPKRaskd" extends="BaseQueryRaskd" parameterClass="Raskd" resultMap="return-result">
+      where R.KDTAHAP=#Kdtahap# and R.MTGKEY=#Mtgkey# and R.UNITKEY=#Unitkey# 
+    </select>
+    <procedure id="ExecValidateRaskDFromSPD" parameterMap="select-param" >
+      WSP_VALIDATERASKFROMSPD
+    </procedure>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Raskd">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" class="Raskd">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Raskd">
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="select-param" class="Raskd">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Kdkegunit" column="kdkegunit"/>
+      <parameter property="Mtgkey" column="mtgkey"/>
+      <parameter property="Idxkode" column="idxkode"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Bkpajakspm" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Bkpajakspm" type="Usadi.Valid49.BO.BkpajakspmControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Bkpajakspm">
+      <result property="Nospm" column="NOSPM"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nobkpajak" column="NOBKPAJAK"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertBkpajakspm" parameterMap="insert-param">
+      <generate table="BKPAJAKSPM"/>
+    </insert>
+    <update id="UpdateByBkpajakspm" parameterMap="update-param">
+      <generate table="BKPAJAKSPM" by="UNITKEY,NOBKPAJAK"/>
+    </update>
+    <delete id="DeleteByBkpajakspm" parameterMap="delete-param">
+      <generate table="BKPAJAKSPM" by="UNITKEY,NOBKPAJAK"/>
+    </delete>
+    <select id="BaseQueryBkpajakspm" parameterClass="Bkpajakspm" resultMap="return-result">
+      select A.UNITKEY,A.NOBKPAJAK,A.NOSPM
+      from BKPAJAKSPM A
+      inner join BKPAJAK B on A.UNITKEY=B.UNITKEY and A.NOBKPAJAK=B.NOBKPAJAK
+    </select>
+    <select id="QueryByAllBkpajakspm" extends="BaseQueryBkpajakspm" parameterClass="Bkpajakspm" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSPM=#Nospm#
+      and case #Parameter.Field#
+      when '1' then A.NOBKPAJAK
+      when '2' then B.URAIAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOBKPAJAK
+    </select>
+    <procedure id="ExecTransferBKPajakkeSPM" parameterMap="transfer-param" timeout="0">
+      WSP_TRANSFER_BKPAJAK_SPM
+    </procedure>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Bkpajakspm">
+      <parameter property="Nospm" column="NOSPM"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nobkpajak" column="NOBKPAJAK"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Bkpajakspm">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Bkpajakspm">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nobkpajak" column="NOBKPAJAK"/>
+    </parameterMap>
+    <parameterMap id="transfer-param" class="Bkpajakspm">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Nospm" column="nospm"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

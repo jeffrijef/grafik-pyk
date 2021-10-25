@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Jpendapatan" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Jpendapatan" type="Usadi.Valid49.BO.JpendapatanControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Jpendapatan">
+      <result property="Kdrek" column="KDREK"/>
+      <result property="Nmrek" column="NMREK"/>
+      <result property="Type" column="TYPE"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="KDREK"/>
+      <result property="Field" column="KDREK"/>
+      <result property="Value" column="NMREK"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <insert id="InsertJpendapatan" parameterMap="insert-param" >
+      <generate table="JPENDAPATAN"/>
+    </insert>
+    <update id="UpdateByJpendapatan" parameterMap="update-param" >
+      <generate table="JPENDAPATAN" by="KDREK"/>
+    </update>
+    <delete id="DeleteByJpendapatan" parameterMap="delete-param" >
+      <generate table="JPENDAPATAN" by="KDREK"/>
+    </delete>
+    <select id="BaseQueryJpendapatan" parameterClass="Jpendapatan" resultMap="return-result">
+      select * from JPENDAPATAN
+    </select>
+    <select id="QueryByAllJpendapatan" extends="BaseQueryJpendapatan" parameterClass="Jpendapatan" resultMap="return-result">
+      order by KDREK
+    </select>
+    <select id="QueryByRenjaddetJpendapatan" extends="BaseQueryJpendapatan" parameterclass="Usadi.Valid49.BO.RenjaddetControl, Usadi.Valid49" resultMap="return-lookup">
+      where
+      TYPE='D' and
+      KDREK not in (select KDREK from Renjaddet where UNITKEY=#Unitkey# and KDTAHUN=#Kdtahun#)
+      order by KDREK
+    </select>    
+    <select id="LoadByPKJpendapatan" parameterClass="Jpendapatan"  resultMap="return-result" >
+      select * from JPENDAPATAN
+      where KDREK=#Kdrek#
+    </select>
+  </statements>
+
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Jpendapatan">
+      <parameter property="Nmrek" column="NMREK"/>
+      <parameter property="Type" column="TYPE"/>
+      <parameter property="Kdrek" column="KDREK"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Jpendapatan">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Jpendapatan">
+      <parameter property="Kdrek" column="KDREK"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>
+

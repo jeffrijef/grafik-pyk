@@ -1,0 +1,7 @@
+TITLE=Buku Besar - Belanja Langsung
+Tahap=string;Tahap;4;
+Tgl=datetime;Tanggal Cetak;30;
+Unitkey=string;Key Unit;10;
+Idxkode=string;Index Kode;4;;-1;;-1
+Kdkegunit=string;Kegiatan;4;;-1;1;-1
+Mtgkey=string;Tahap;10;

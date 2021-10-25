@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Jakas" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Jakas" type="Usadi.Valid49.BO.JakasControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Jakas">
+      <result property="Kdakas" column="KDAKAS"/>
+      <result property="Labelkas" column="LABELKAS"/>
+      <result property="Nmakas" column="NMAKAS"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertJakas" parameterMap="insert-param">
+      <generate table="JAKAS"/>
+    </insert>
+    <update id="UpdateByJakas" parameterMap="update-param">
+      <generate table="JAKAS" by="KDAKAS"/>
+    </update>
+    <delete id="DeleteByJakas" parameterMap="delete-param">
+      <generate table="JAKAS" by="KDAKAS"/>
+    </delete>
+    <select id="BaseQueryJakas" parameterClass="Jakas" resultMap="return-result">
+      select J.KDAKAS,J.LABELKAS,J.NMAKAS
+      from JAKAS J
+    </select>
+    <select id="QueryByAllJakas" extends="BaseQueryJakas" parameterClass="Jakas" resultMap="return-result">
+			where
+			case #Parameter.Field#
+			when '1' then J.KDAKAS
+			when '2' then J.NMAKAS
+			when '3' then J.LABELKAS
+			end like '%'+ #Parameter.Value# + '%'
+			order by J.KDAKAS
+		</select>
+    <select id="LoadByPKJakas" extends="BaseQueryJakas" parameterClass="Jakas" resultMap="return-result">
+      where J.KDAKAS=#Kdakas# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Jakas">
+      <parameter property="Labelkas" column="LABELKAS"/>
+      <parameter property="Nmakas" column="NMAKAS"/>
+      <parameter property="Kdakas" column="KDAKAS"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Jakas">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Jakas">
+      <parameter property="Kdakas" column="KDAKAS"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Weberror" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Weberror" type="Usadi.Valid49.BO.WeberrorControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Weberror">
+      <result property="Role" column="ROLE"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Corrected" column="CORRECTED"/>
+      <result property="Errnm" column="ERRNM"/>
+      <result property="Tglerr" column="TGLERR"/>
+      <result property="Tglok" column="TGLOK"/>
+      <result property="Errid" column="ERRID"/>
+      <result property="Roleid" column="ROLEID"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertWeberror" parameterMap="insert-param">
+      <generate table="WEBERROR"/>
+    </insert>
+    <update id="UpdateByWeberror" parameterMap="update-param">
+      <generate table="WEBERROR" by="ERRID,ROLEID"/>
+    </update>
+    <delete id="DeleteByWeberror" parameterMap="delete-param">
+      <generate table="WEBERROR" by="ERRID,ROLEID"/>
+    </delete>
+    <select id="BaseQueryWeberror" parameterClass="Weberror" resultMap="return-result">
+      select A.CORRECTED,A.ERRID,A.ERRNM,A.ROLEID,A.TGLERR,A.TGLOK
+      ,B.ROLE, B.TYPE
+      from WEBERROR A
+      left outer join WEBROLE B on A.ROLEID=B.ROLEID
+    </select>
+    <select id="QueryByAllWeberror" extends="BaseQueryWeberror" parameterClass="Weberror" resultMap="return-result">
+      where A.ROLEID=#Roleid#
+      and case #Parameter.Field#
+      when '1' then A.ROLEID
+      when '2' then convert(char(10), A.CORRECTED)
+      when '3' then A.ERRID
+      when '4' then A.ERRNM
+      when '5' then convert(char(10), A.TGLERR, 103)
+      when '6' then convert(char(10), A.TGLOK, 103)
+      end like '%'+ #Parameter.Value# + '%'
+    </select>
+    <select id="LoadByPKWeberror" extends="BaseQueryWeberror" parameterClass="Weberror" resultMap="return-result">
+      where A.ERRID=#Errid# and A.ROLEID=#Roleid# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Weberror">
+      <parameter property="Corrected" column="CORRECTED"/>
+      <parameter property="Errnm" column="ERRNM"/>
+      <parameter property="Tglerr" column="TGLERR"/>
+      <parameter property="Tglok" column="TGLOK"/>
+      <parameter property="Errid" column="ERRID"/>
+      <parameter property="Roleid" column="ROLEID"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Weberror">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Weberror">
+      <parameter property="Errid" column="ERRID"/>
+      <parameter property="Roleid" column="ROLEID"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Rkmdetd" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Rkmdetd" type="Usadi.Valid49.BO.RkmdetdControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Rkmdetd">
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Nojetra" column="NOJETRA"/>
+      <result property="Nosts" column="NOSTS"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Idxkode" column="IDXKODE"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Kdpers" column="KDPERS"/>
+      <result property="Type" column="TYPE"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertRkmdetd" parameterMap="insert-param">
+      <generate table="RKMDETD"/>
+    </insert>
+    <update id="UpdateByRkmdetd" parameterMap="update-param">
+      <generate table="RKMDETD" by="NOJETRA,UNITKEY,NOSTS,MTGKEY"/>
+    </update>
+    <delete id="DeleteByRkmdetd" parameterMap="delete-param">
+      <generate table="RKMDETD" by="NOJETRA,UNITKEY,NOSTS,MTGKEY"/>
+    </delete>
+    <delete id="DeleteByAllRkmdetd" parameterMap="delete-all-param">
+      <generate table="RKMDETD" by="UNITKEY,NOSTS"/>
+    </delete>
+    <select id="BaseQueryRkmdetd" parameterClass="Rkmdetd" resultMap="return-result">
+      select A.MTGKEY,A.NILAI,A.NOJETRA,A.NOSTS,A.UNITKEY
+      ,B.IDXKODE
+      ,rtrim(C.KDPER) as KDPER, rtrim(C.NMPER) as NMPER, C.TYPE
+      ,D.KDPERS
+      from RKMDETD A
+      left outer join STS B on A.NOSTS = B.NOSTS and A.UNITKEY = B.UNITKEY
+      left outer join MATANGD C on A.MTGKEY = C.MTGKEY
+      left outer join JTRNLKAS D on A.NOJETRA = D.NOJETRA
+    </select>
+    <select id="QueryByAllRkmdetd" extends="BaseQueryRkmdetd" parameterClass="Rkmdetd" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSTS=#Nosts# and (A.NOJETRA=#Nojetra# or (#Nojetra#='11' and A.NOJETRA in ('11','15','16')))
+      and case #Parameter.Field#
+      when '1' then C.KDPER
+      when '2' then C.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by C.KDPER
+    </select>
+    <procedure id="ExecVALIDATIONSKPSTS" parameterMap="select-param">
+      WSP_VALIDATIONSKPSTS
+    </procedure>
+    <select id="QueryByTotalRkmdetd" extends="BaseQueryRkmdetd" parameterClass="Rkmdetd" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSTS=#Nosts# and (A.NOJETRA=#Nojetra# or (#Nojetra#='11' and A.NOJETRA in ('11','15','16')))
+    </select>
+    <select id="LoadByPKRkmdetd" extends="BaseQueryRkmdetd" parameterClass="Rkmdetd" resultMap="return-result">
+			where A.UNITKEY=#Unitkey# and A.NOSTS=#Nosts# and A.MTGKEY=#Mtgkey# and A.NOJETRA=#Nojetra#
+		</select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Rkmdetd">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nosts" column="NOSTS"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" class="Rkmdetd">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nosts" column="NOSTS"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Rkmdetd">
+			<parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nosts" column="NOSTS"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+    <parameterMap id="delete-all-param" class="Rkmdetd">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nosts" column="NOSTS"/>
+    </parameterMap>
+    <parameterMap id="select-param" class="Rkmdetd">
+      <parameter property="Unitkey" column="unitkey"/>
+      <!--<parameter property="Noskp" column="noskp"/>-->
+      <parameter property="Nosts" column="nosts"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

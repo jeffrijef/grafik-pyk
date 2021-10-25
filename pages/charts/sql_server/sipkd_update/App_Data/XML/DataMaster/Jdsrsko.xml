@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Jdsrsko" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Jdsrsko" type="Usadi.Valid49.BO.JdsrskoControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Jdsrsko">
+      <result property="Nmdsr" column="NMDSR"/>
+      <result property="Kddsr" column="KDDSR"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertJdsrsko" parameterMap="insert-param">
+      <generate table="JDSRSKO"/>
+    </insert>
+    <update id="UpdateByJdsrsko" parameterMap="update-param">
+      <generate table="JDSRSKO" by="KDDSR"/>
+    </update>
+    <delete id="DeleteByJdsrsko" parameterMap="delete-param">
+      <generate table="JDSRSKO" by="KDDSR"/>
+    </delete>
+    <select id="BaseQueryJdsrsko" parameterClass="Jdsrsko" resultMap="return-result">
+      select rtrim(A.KDDSR) as KDDSR,A.NMDSR
+      from JDSRSKO A
+    </select>
+    <select id="QueryByAllJdsrsko" extends="BaseQueryJdsrsko" parameterClass="Jdsrsko" resultMap="return-result">
+			where
+			case #Parameter.Field#
+			when '1' then A.KDDSR
+			when '2' then A.NMDSR
+			end like '%'+ #Parameter.Value# + '%'
+			Order by A.KDDSR
+		</select>
+    <select id="LoadByPKJdsrsko" extends="BaseQueryJdsrsko" parameterClass="Jdsrsko" resultMap="return-result">
+      where A.KDDSR=#Kddsr# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Jdsrsko">
+      <parameter property="Nmdsr" column="NMDSR"/>
+      <parameter property="Kddsr" column="KDDSR"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Jdsrsko">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Jdsrsko">
+      <parameter property="Kddsr" column="KDDSR"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

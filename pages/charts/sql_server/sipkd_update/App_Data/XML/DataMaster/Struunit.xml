@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Struunit" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Struunit" type="Usadi.Valid49.BO.StruunitControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Struunit">
+      <result property="Numdigit" column="NUMDIGIT"/>
+      <result property="Nmlevel" column="NMLEVEL"/>
+      <result property="Kdlevel" column="KDLEVEL"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertStruunit" parameterMap="insert-param">
+      <generate table="STRUUNIT"/>
+    </insert>
+    <update id="UpdateByStruunit" parameterMap="update-param">
+      <generate table="STRUUNIT" by="KDLEVEL"/>
+    </update>
+    <delete id="DeleteByStruunit" parameterMap="delete-param">
+      <generate table="STRUUNIT" by="KDLEVEL"/>
+    </delete>
+    <select id="BaseQueryStruunit" parameterClass="Struunit" resultMap="return-result">
+      select rtrim(SU.KDLEVEL) as KDLEVEL,rtrim(SU.NMLEVEL) as NMLEVEL,rtrim(SU.NUMDIGIT) as NUMDIGIT
+      from STRUUNIT SU
+    </select>
+    <select id="QueryByAllStruunit" extends="BaseQueryStruunit" parameterClass="Struunit" resultMap="return-result">
+			where
+			case #Parameter.Field#
+			when '1' then SU.KDLEVEL
+			when '2' then SU.NMLEVEL
+			end like '%'+ #Parameter.Value# + '%'
+			Order by SU.KDLEVEL
+		</select>
+    <select id="QueryByNotSUStruunit" extends="BaseQueryStruunit" parameterClass="Struunit" resultMap="return-result">
+      where SU.KDLEVEL not in ('4')
+      Order by SU.KDLEVEL
+    </select>
+    <select id="LoadByPKStruunit" extends="BaseQueryStruunit" parameterClass="Struunit" resultMap="return-result">
+      where SU.KDLEVEL=#Kdlevel# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Struunit">
+      <parameter property="Numdigit" column="NUMDIGIT"/>
+      <parameter property="Nmlevel" column="NMLEVEL"/>
+      <parameter property="Kdlevel" column="KDLEVEL"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Struunit">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Struunit">
+      <parameter property="Kdlevel" column="KDLEVEL"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

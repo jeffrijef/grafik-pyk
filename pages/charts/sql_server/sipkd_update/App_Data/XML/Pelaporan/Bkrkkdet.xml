@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Bkrkkdet" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Bkrkkdet" type="Usadi.Valid49.BO.BkrkkdetControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Bkrkkdet">
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Kdpers" column="KDPERS"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nobk" column="NOBK"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertBkrkkdet" parameterMap="insert-param">
+      <generate table="BKRKKDET"/>
+    </insert>
+    <update id="UpdateByBkrkkdet" parameterMap="update-param">
+      <generate table="BKRKKDET" by="UNITKEY,NOBK,MTGKEY"/>
+    </update>
+    <delete id="DeleteByBkrkkdet" parameterMap="delete-param">
+      <generate table="BKRKKDET" by="UNITKEY,NOBK,MTGKEY"/>
+    </delete>
+    <select id="BaseQueryBkrkkdet" parameterClass="Bkrkkdet" resultMap="return-result">
+      select A.KDPERS,A.MTGKEY,A.NILAI,A.NOBK,A.UNITKEY,B.KDPER,B.NMPER,B.TYPE
+      from BKRKKDET A
+      left outer join MATANGNRC B on A.MTGKEY = B.MTGKEY
+    </select>
+    <select id="QueryByAllBkrkkdet" extends="BaseQueryBkrkkdet" parameterClass="Bkrkkdet" resultMap="return-result">
+      where (A.UNITKEY=#Unitkey# or #Unitkey#='')and (A.NOBK=#Nobk# or #Nobk#='')
+      and case #Parameter.Field#
+      when '1' then B.KDPER
+      when '2' then B.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by B.KDPER
+    </select>
+    <select id="LoadByPKBkrkkdet" extends="BaseQueryBkrkkdet" parameterClass="Bkrkkdet" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOBK=#Nobk# and A.MTGKEY=#Mtgkey# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Bkrkkdet">
+      <parameter property="Kdpers" column="KDPERS"/>
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nobk" column="NOBK"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" class="Bkrkkdet">
+      <parameter property="Kdpers" column="KDPERS"/>
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nobk" column="NOBK"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Bkrkkdet">
+     <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nobk" column="NOBK"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>
+

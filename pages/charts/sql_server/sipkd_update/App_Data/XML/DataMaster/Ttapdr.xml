@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Ttapdr" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Ttapdr" type="Usadi.Valid49.BO.TtapdrControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Ttapdr">
+      <result property="Jab" column="JAB"/>
+      <result property="No" column="NO"/>
+      <result property="Idxkode" column="IDXKODE"/>
+      <result property="Unitkey" column="UNITKEY"/>
+			<result property="Nmunit" column="NMUNIT"/>
+			<result property="Kdunit" column="KDUNIT"/>
+			<result property="Nama" column="NAMA"/>
+      <result property="Uraian" column="URAIAN"/>
+      <result property="Kdtahap" column="KDTAHAP"/>
+      <result property="Jabatan" column="JABATAN"/>
+      <result property="Nip" column="NIP"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertTtapdr" parameterMap="insert-param">
+      <generate table="TTAPDR"/>
+    </insert>
+    <update id="UpdateByTtapdr" parameterClass="Ttapdr" >
+      update TTAPDR set NIP=#Nip#,NO=#No#,JAB=#Jab#
+      where UNITKEY=#Unitkey# and KDKEGUNIT=#Kdkegunit# and KDTAHAP=#Kdtahap# and IDXKODE=#Idxkode#
+      and NIP=#Nipprev#
+    </update>
+    <delete id="DeleteByTtapdr" parameterMap="delete-param">
+      <generate table="TTAPDR" by="UNITKEY,KDKEGUNIT,KDTAHAP,NIP,IDXKODE"/>
+    </delete>
+    <select id="BaseQueryTtapdr" parameterClass="Ttapdr" resultMap="return-result">
+			select TA.*,P.NAMA,P.JABATAN,T.URAIAN
+			,rtrim(U.KDUNIT) as KDUNIT, rtrim(U.NMUNIT) as NMUNIT
+			from TTAPDR TA
+			left outer join PEGAWAI P on TA.NIP=P.NIP
+			left outer join TAHAP T on TA.KDTAHAP=T.KDTAHAP
+			LEFT OUTER JOIN DAFTUNIT U  ON TA.UNITKEY=U.UNITKEY
+		</select>
+    <select id="QueryByAllTtapdr" extends="BaseQueryTtapdr" parameterClass="Ttapdr" resultMap="return-result">
+      where TA.KDTAHAP=#Kdtahap# and (TA.UNITKEY=#Unitkey# or #Unitkey#='') and (TA.KDKEGUNIT=#Kdkegunit# or #Kdkegunit#='')
+      and (TA.IDXKODE=#Idxkode# or #Idxkode#=0)
+      and case #Parameter.Field#
+      when '1' then TA.NIP
+      when '2' then P.NAMA
+      when '3' then P.JABATAN
+      when '4' then U.KDUNIT
+      end like '%'+ #Parameter.Value# + '%'
+      order by TA.NO
+    </select>
+    <select id="LoadByPKTtapdr" extends="BaseQueryTtapdr" parameterClass="Ttapdr" resultMap="return-result">
+      where TA.KDTAHAP=#Kdtahap# and TA.NIP=#Nip# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Ttapdr">
+      <parameter property="Jab" column="JAB"/>
+      <parameter property="No" column="NO"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Nip" column="NIP"/>
+      <parameter property="Idxkode" column="IDXKODE"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Ttapdr">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Ttapdr">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Nip" column="NIP"/>
+      <parameter property="Idxkode" column="IDXKODE"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

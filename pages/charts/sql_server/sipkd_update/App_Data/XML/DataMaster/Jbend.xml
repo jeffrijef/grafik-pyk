@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Jbend" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Jbend" type="Usadi.Valid49.BO.JbendControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Jbend">
+      <result property="Urai_bend" column="URAI_BEND"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Jns_bend" column="JNS_BEND"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertJbend" parameterMap="insert-param">
+      <generate table="JBEND"/>
+    </insert>
+    <update id="UpdateByJbend" parameterMap="update-param">
+      <generate table="JBEND" by="JNS_BEND"/>
+    </update>
+    <delete id="DeleteByJbend" parameterMap="delete-param">
+      <generate table="JBEND" by="JNS_BEND"/>
+    </delete>
+    <select id="BaseQueryJbend" parameterClass="Jbend" resultMap="return-result">
+      select J.JNS_BEND,J.URAI_BEND,J.MTGKEY,N.KDPER
+      from JBEND J LEFT JOIN MATANGNRC N ON  N.MTGKEY=J.MTGKEY
+    </select>
+    <select id="QueryByAllJbend" extends="BaseQueryJbend" parameterClass="Jbend" resultMap="return-result">
+      WHERE case #Parameter.Field#
+      when '1' then J.JNS_BEND
+      when '2' then J.URAI_BEND
+      end like '%'+ #Parameter.Value# + '%'
+      order by J.JNS_BEND
+    </select>
+    <select id="LoadByPKJbend" extends="BaseQueryJbend" parameterClass="Jbend" resultMap="return-result">
+      where J.JNS_BEND=#Jns_bend#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Jbend">
+      <parameter property="Urai_bend" column="URAI_BEND"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Jns_bend" column="JNS_BEND"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Jbend">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Jbend">
+      <parameter property="Jns_bend" column="JNS_BEND"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

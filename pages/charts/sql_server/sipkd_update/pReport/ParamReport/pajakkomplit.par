@@ -1,0 +1,6 @@
+TITLE=BUKU PAJAK UP/GU/TU RINCI
+Unitkey=string;Key Unit;4;
+Keybend=string;Bendahara;4;
+Jnsbend=string;Jenis Bendahara;4;;-1;2;-1;
+Awal=datetime;Tanggal;30;
+Akhir=datetime;Tanggal;30;

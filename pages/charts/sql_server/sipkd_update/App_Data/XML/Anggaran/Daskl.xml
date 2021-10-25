@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Daskl" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Daskl" type="Usadi.Valid49.BO.DasklControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Daskl">
+      <result property="Idxkode" column="IDXKODE"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Idxttd1" column="IDXTTD1"/>
+      <result property="Idxttd2" column="IDXTTD2"/>
+      <result property="Kdtahap" column="KDTAHAP"/>
+      <result property="Ketdask" column="KETDASK"/>
+      <result property="Nodask" column="NODASK"/>
+      <!--<result property="Idxdaskini" column="IDXDASK"/>-->
+      <result property="Nodaskini" column="NODASKINI"/>
+      <result property="Nosah" column="NOSAH"/>
+      <result property="Tgldask" column="TGLDASK"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Nmtahun" column="NMTAHUN"/>
+      <result property="Tglskdpa" column="TGLSKDPA"/>
+      <result property="Uraian" column="URAIAN"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Idxdask" column="IDXDASK"/>
+      <result property="Kdtahun" column="KDTAHUN"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertDaskl" parameterMap="insert-param">
+      <generate table="DASKL"/>
+    </insert>
+    <update id="UpdateByDaskl" parameterMap="update-param">
+      <generate table="DASKL" by="UNITKEY,IDXDASK,KDTAHUN"/>
+    </update>
+    <delete id="DeleteByDaskl" parameterMap="delete-param">
+      <generate table="DASKL" by="UNITKEY,IDXDASK,KDTAHUN"/>
+    </delete>
+    <select id="BaseQueryDaskl" parameterClass="Daskl" resultMap="return-result">
+      select DISTINCT A.IDXDASK,A.KDTAHUN,A.NODASK as NODASKINI,A.TGLSKDPA,A.UNITKEY,A.URAIAN
+      ,B.IDXKODE,B.IDXTTD1,B.IDXTTD2,B.KDTAHAP,B.KETDASK,B.NOSAH,B.TGLDASK,B.TGLVALID,B.NODASK
+      ,C.NMTAHUN,D.KDKEGUNIT
+      from DASKL A
+      left outer join SKDASK B on A.IDXDASK=B.IDXDASK and A.UNITKEY = B.UNITKEY
+      left outer join DASKR D on B.IDXDASK=D.IDXDASK
+      left outer join TAHUN C on A.KDTAHUN=C.KDTAHUN
+    </select>
+    <select id="QueryByAllDaskl" extends="BaseQueryDaskl" parameterClass="Daskl" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and D.KDKEGUNIT=#Kdkegunit# and
+      case #Parameter.Field#
+      when '1' then A.IDXDASK
+      when '2' then A.NODASK
+      when '3' then A.UNITKEY
+      when '4' then A.KDTAHUN
+      when '5' then convert(char(10), A.TGLSKDPA, 103)
+      when '6' then A.URAIAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NODASK
+    </select>
+    <select id="LoadByPKDaskl" extends="BaseQueryDaskl" parameterClass="Daskl" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.IDXDASK=#Idxdask# and A.KDTAHUN=#Kdtahun# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Daskl">
+      <parameter property="Nodaskini" column="NODASK"/>
+      <!--<parameter property="Nodask" column="NODASK"/>-->
+      <parameter property="Tglskdpa" column="TGLSKDPA"/>
+      <parameter property="Uraian" column="URAIAN"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Idxdask" column="IDXDASK"/>
+      <parameter property="Kdtahun" column="KDTAHUN"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Daskl">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Daskl">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Idxdask" column="IDXDASK"/>
+      <parameter property="Kdtahun" column="KDTAHUN"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

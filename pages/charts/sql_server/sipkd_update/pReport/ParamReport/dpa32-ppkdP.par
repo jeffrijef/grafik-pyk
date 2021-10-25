@@ -1,0 +1,6 @@
+TITLE=DPPA-PKPD 3.2
+Unitkey=string;Key Unit;4;
+Idxdask=string;Index Dask;4;
+Kdtahap=string;Tahap;4;
+Tanggal=datetime;Tanggal;30;
+Hal=string;Halaman;4;

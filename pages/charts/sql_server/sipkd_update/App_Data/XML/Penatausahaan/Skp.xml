@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Skp" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Skp" type="Usadi.Valid49.BO.SkpControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Skp">
+      <result property="AllowSuperUser" column="ALLOWSUPERUSER"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Kenaikan" column="KENAIKAN"/>
+      <result property="Bunga" column="BUNGA"/>
+      <result property="Keybend" column="KEYBEND"/>
+      <result property="Npwpd" column="NPWPD"/>
+      <result property="Tgltempo" column="TGLTEMPO"/>
+      <result property="Alamat" column="ALAMAT"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Idxkode" column="IDXKODE"/>
+      <result property="Kdstatus" column="KDSTATUS"/>
+	    <result property="Lblstatus" column="LBLSTATUS"/>
+      <result property="Uraistatus" column="URAISTATUS"/>
+      <result property="Penyetor" column="PENYETOR"/>
+      <result property="Tglskp" column="TGLSKP"/>
+      <result property="Uraiskp" column="URAISKP"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Noskp" column="NOSKP"/>      
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="NOSKP"/>
+      <result property="Field" column="NOSKP"/>
+      <result property="Value" column="TGLSKP"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSkp" parameterMap="insert-param">
+      <generate table="SKP"/>
+    </insert>
+    <update id="UpdateBySkp" parameterMap="update-param">
+      <generate table="SKP" by="UNITKEY,NOSKP"/>
+    </update>
+    <update id="UpdateByDraftSkp" parameterClass="Skp" >
+      update SKP set TGLVALID=null where UNITKEY=#Unitkey# and NOSKP=#Noskp#
+    </update>
+    <delete id="DeleteBySkp" parameterMap="delete-param">
+      <generate table="SKP" by="UNITKEY,NOSKP"/>
+    </delete>
+    <delete id="DeleteBySkpr" parameterMap="delete-param">
+      <generate table="SKP" by="UNITKEY,NOSKP"/>
+    </delete>
+    <select id="BaseQuerySkp" parameterClass="Skp" resultMap="return-result">
+      select distinct #AllowSuperUser# as ALLOWSUPERUSER,A.UNITKEY, rtrim(A.KDSTATUS) as KDSTATUS, A.NOSKP, A.TGLSKP, A.URAISKP
+      ,rtrim(A.KEYBEND) as KEYBEND,A.NPWPD,A.PENYETOR, A.ALAMAT, A.TGLTEMPO, A.IDXKODE, A.TGLVALID
+      ,rtrim(K1.KEYBEND) as KEYBEND,K1.NIP + P1.NAMA as NIPNAMA
+      ,C.KDUNIT,C.NMUNIT,E.LBLSTATUS,E.URAIAN as uraistatus
+      ,A.KENAIKAN,A.BUNGA
+      from SKP A
+      LEFT OUTER JOIN BEND K1 ON A.KEYBEND = K1.KEYBEND
+      LEFT OUTER JOIN JBEND J ON K1.JNS_BEND = J.JNS_BEND
+      LEFT OUTER JOIN DAFTUNIT C ON A.UNITKEY = C.UNITKEY
+      LEFT OUTER JOIN ZKODE D ON A.IDXKODE=D.IDXKODE
+      LEFT OUTER JOIN STATTRS E ON A.KDSTATUS = E.KDSTATUS
+      LEFT OUTER JOIN PEGAWAI P1 on K1.NIP=P1.NIP
+    </select>
+    <select id="QueryByAllSkp" extends="BaseQuerySkp" parameterClass="Skp" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.IDXKODE=#Idxkode# <!--and A.KEYBEND = #Keybend#-->
+      and (isnull(A.KEYBEND,'')=isnull(#Keybend#,'') or isnull(#Keybend#,'')=''
+      or ((A.KEYBEND is null) and #Keybend# is not null))
+      and case #Parameter.Field#
+      when '1' then A.NOSKP
+      when '2' then convert(char(10),A.TGLSKP, 103)
+      when '3' then convert(char(10),A.TGLTEMPO, 103)
+      when '4' then A.PENYETOR
+      when '5' then A.URAISKP
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOSKP
+    </select>
+    <select id="QueryByNOSKPSkp" extends="BaseQuerySkp" parameterClass="Skp" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# <!--and A.KEYBEND = #Keybend#-->
+      order by A.NOSKP
+    </select>
+    <select id="QueryByNOSKP1Skp" extends="BaseQuerySkp" parameterClass="Skp" resultMap="return-result">
+      where A.UNITKEY=#Unitkey#
+      order by A.NOSKP
+    </select>
+    <select id="QueryBySkpstsSkp" parameterClass="Skp" resultMap="return-lookup">
+      SELECT  A.NOSKP,convert(char(10),A.TGLSkp, 103) as TGLSKP,A.URAISKP  FROM
+      (
+      SELECT  X.UNITKEY, X.NOSKP ,X.URAISKP, X.TGLSKP,KDSTATUS,TGLVALID,IDXKODE
+      FROM SKP X LEFT OUTER JOIN SKPTBP Y ON X.UNITKEY = Y.UNITKEY AND X.NOSKP = Y.NOSKP
+      WHERE Y.NOSKP IS NULL
+      ) A LEFT OUTER JOIN SKPSTS B ON B.UNITKEY = A.UNITKEY AND B.NOSKP = A.NOSKP
+
+      WHERE KDSTATUS in ('70','73') AND TGLVALID is Not Null
+      AND A.UNITKEY=#Unitkey# and IDXKODE=#Idxkode#
+      and A.NOSKP not in (select NOSKP from SKPSTS where UNITKEY=#Unitkey# and a.NOSKP in (select C.NOSKP from SKPDET C left join SKPSTS D on c.NOSKP=d.NOSKP left join RKMDETD E on d.NOSTS=e.NOSTS where isnull((c.NILAI-e.NILAI),1)!=0))
+
+      AND case #Parameter.Field#
+      when '1' then A.NOSKP
+      when '2' then A.URAISKP
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.TGLSkp,A.NOSKP
+
+    </select>
+    <select id="LoadByPKSkp" extends="BaseQuerySkp" parameterClass="Skp" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSKP=#Noskp# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Skp">
+      <parameter property="Kenaikan" column="KENAIKAN"/>
+      <parameter property="Bunga" column="BUNGA"/>
+      <parameter property="Tgltempo" column="TGLTEMPO"/>
+      <parameter property="Alamat" column="ALAMAT"/>
+      <parameter property="Idxkode" column="IDXKODE"/>
+      <parameter property="Kdstatus" column="KDSTATUS"/>
+      <parameter property="Keybend" column="KEYBEND"/>
+			<parameter property="Npwpd" column="NPWPD"/>
+      <parameter property="Penyetor" column="PENYETOR"/>
+      <parameter property="Tglskp" column="TGLSKP"/>
+      <parameter property="Uraiskp" column="URAISKP"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Noskp" column="NOSKP"/>
+    </parameterMap>
+    <parameterMap id="update-param" class="Skp">
+      <parameter property="Tglvalid" column="TGLVALID"/>
+      <parameter property="Kenaikan" column="KENAIKAN"/>
+      <parameter property="Bunga" column="BUNGA"/>
+      <parameter property="Tgltempo" column="TGLTEMPO"/>
+      <parameter property="Alamat" column="ALAMAT"/>
+      <parameter property="Idxkode" column="IDXKODE"/>
+      <parameter property="Kdstatus" column="KDSTATUS"/>
+      <!--<parameter property="Keybend" column="KEYBEND"/>-->
+      <parameter property="Npwpd" column="NPWPD"/>
+      <parameter property="Penyetor" column="PENYETOR"/>
+      <parameter property="Tglskp" column="TGLSKP"/>
+      <parameter property="Uraiskp" column="URAISKP"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Noskp" column="NOSKP"/>
+    </parameterMap>
+    <parameterMap id="update-param1" class="Skp">
+      <parameter property="Tglvalid" column="TGLVALID"/>
+      <parameter property="Kenaikan" column="KENAIKAN"/>
+      <parameter property="Bunga" column="BUNGA"/>
+      <parameter property="Tgltempo" column="TGLTEMPO"/>
+      <parameter property="Alamat" column="ALAMAT"/>
+      <parameter property="Idxkode" column="IDXKODE"/>
+      <parameter property="Kdstatus" column="KDSTATUS"/>
+      <parameter property="Keybend" column="KEYBEND"/>
+      <parameter property="Npwpd" column="NPWPD"/>
+      <parameter property="Penyetor" column="PENYETOR"/>
+      <parameter property="Tglskp" column="TGLSKP"/>
+      <parameter property="Uraiskp" column="URAISKP"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Noskp" column="NOSKP"/>
+      <parameter property="Tgltempo" column="TGLTEMPO"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Skp">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Noskp" column="NOSKP"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

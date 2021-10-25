@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Daskrtl" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Daskrtl" type="Usadi.Valid49.BO.DaskrtlControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Daskrtl">
+      <result property="Kdtahap" column="KDTAHAP"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Mtglevel" column="MTGLEVEL"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Idxdask" column="IDXDASK"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nodask" column="NODASK"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="MTGKEY"/>
+      <result property="Field" column="KDPER"/>
+      <result property="Value" column="NMPER"/>
+    </resultMap>  
+  </resultMaps>
+  <statements>
+    <insert id="InsertDaskrtl" parameterMap="insert-param">
+      <generate table="DASKRTL"/>
+    </insert>
+    <insert id="InsertBulanDaskrtl" parameterClass="Daskrtl">
+      insert into DASKBLNRTL ( UNITKEY, MTGKEY, IDXDASK, KD_BULAN, NILAI)
+      select #Unitkey#,#Mtgkey#,#Idxdask#,KD_BULAN,0
+      from BULAN
+    </insert>
+    <update id="UpdateByDaskrtl" parameterMap="update-param">
+      <generate table="DASKRTL" by="IDXDASK,MTGKEY,UNITKEY"/>
+    </update>
+    <update id="UpdateByGeserDaskrtl" parameterClass="Daskrtl" >
+      update DASKRTL set MTGKEY=#Mtgkey#
+      where UNITKEY=#Unitkey# and IDXDASK=#Idxdask# and MTGKEY=#Mtgkeyprev#
+    </update>
+    <delete id="DeleteByDaskrtl" parameterMap="delete-param">
+      <generate table="DASKRTL" by="IDXDASK,MTGKEY,UNITKEY"/>
+    </delete>
+    <select id="BaseQueryDaskrtl" parameterClass="Daskrtl" resultMap="return-result">
+      select A.IDXDASK,A.MTGKEY,A.NILAI,A.UNITKEY
+      ,B.KDPER,B.MTGLEVEL,B.NMPER
+      ,C.NODASK,C.KDTAHAP
+      from DASKRTL A
+      left outer join MATANGR B on A.MTGKEY=B.MTGKEY
+      LEFT OUTER join SKDASK C on A.IDXDASK=C.IDXDASK and A.UNITKEY = C.UNITKEY
+    </select>
+    <select id="QueryByKasDaskrtl" extends="BaseQueryDaskrtl" parameterClass="Daskrtl" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and C.KDTAHAP=#Kdtahap#
+    </select>
+    <select id="QueryByAllDaskrtl" extends="BaseQueryDaskrtl" parameterClass="Daskrtl" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.IDXDASK=#Idxdask#
+      and case #Parameter.Field#
+      when '1' then B.KDPER
+      when '2' then B.NMPER
+      when '3' then convert(char(10), A.NILAI)
+      when '4' then A.UNITKEY
+      end like '%'+ #Parameter.Value# + '%'
+      order by B.KDPER
+    </select>
+    <select id="QueryByTotalDaskrtl" extends="BaseQueryDaskrtl" parameterClass="Daskrtl" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.MTGKEY=#Mtgkey# and KDTAHAP=#Kdtahap# 
+    </select>
+    <select id="BaseQueryLookupDaskrtl" parameterClass="Daskrtl" resultMap="return-lookup">
+      select A.MTGKEY,B.KDPER,B.NMPER,B.TYPE
+      from DASKRTL A left outer join MATANGR B on A.MTGKEY=B.MTGKEY
+      where A.UNITKEY=#Unitkey#
+      and A.IDXDASK in (select IDXDASK from SKDASK where UNITKEY=#Unitkey#
+      and (IDXKODE=#Idxkode# or (IDXKODE='3' and #Idxkode#='4') or IDXKODE='6') and KDTAHAP=#Kdtahap# and TGLVALID is not NULL)
+      <!--and B.KDPER in (select KDPER from dbo.GetFilterMatangr(#Idxkode#))-->
+      and case #Parameter.Field#
+      when '1' then B.KDPER
+      when '2' then B.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+    </select>
+    <select id="BaseQueryRekupDaskrtl" parameterclass="Usadi.Valid49.BO.TbpdetrtlControl" resultMap="return-lookup">
+      select A.MTGKEY,A.KDPER,A.NMPER,rtrim(A.TYPE)  as TYPE
+      from MATANGR A
+      where A.MTGLEVEL = 3 and left(KDPER,3)='5.1' <![CDATA[and left(KDPER,5)<>'5.1.1']]>
+    </select>
+    <select id="QueryBySppdetrtlUPDaskrtl" extends="BaseQueryRekupDaskrtl" parameterclass="Usadi.Valid49.BO.SppdetrtlControl" resultMap="return-lookup">
+      and A.MTGKEY not in (select MTGKEY from SPPDETRTL S where  S.UNITKEY=#Unitkey# and S.NOSPP=#Nospp#  and S.NOJETRA=#Nojetra#)
+      order by A.KDPER
+    </select>
+    <select id="QueryBySpmdetrtlUPDaskrtl" extends="BaseQueryRekupDaskrtl" parameterclass="Usadi.Valid49.BO.SpmdetrtlControl" resultMap="return-lookup">
+      and A.MTGKEY not in (select MTGKEY from SPMDETRTL S where  S.UNITKEY=#Unitkey# and S.NOSPM=#Nospm#  and S.NOJETRA=#Nojetra#)
+      order by A.KDPER
+    </select>
+    <select id="QueryBySp2ddetrtlUPDaskrtl" extends="BaseQueryRekupDaskrtl" parameterclass="Usadi.Valid49.BO.Sp2ddetrtlControl" resultMap="return-lookup">
+      and A.MTGKEY not in (select MTGKEY from SP2DDETRTL S where  S.UNITKEY=#Unitkey# and S.NOSP2D=#Nosp2d#  and S.NOJETRA=#Nojetra#)
+      order by A.KDPER
+    </select>
+    <select id="QueryBySkortldetDaskrtl" extends="BaseQueryLookupDaskrtl" parameterclass="Usadi.Valid49.BO.SkortldetControl" resultMap="return-lookup">
+      and A.MTGKEY not in (select MTGKEY from SKORTLDET S where S.UNITKEY=#Unitkey# and S.IDXSKO=#Idxsko#)
+      order by B.KDPER
+    </select>
+    <select id="QueryByTbpdetrtlDaskrtl" extends="BaseQueryLookupDaskrtl" parameterclass="Usadi.Valid49.BO.TbpdetrtlControl" resultMap="return-lookup">
+      and A.MTGKEY not in (select MTGKEY from TBPDETRTL S where S.UNITKEY=#Unitkey# and S.NOTBP=#Notbp#  and S.NOJETRA=#Nojetra#)
+      order by B.KDPER
+    </select>
+    <select id="QueryByRkmdetrtlDaskrtl" extends="BaseQueryLookupDaskrtl" parameterclass="Usadi.Valid49.BO.RkmdetrtlControl" resultMap="return-lookup">
+      and A.MTGKEY not in (select MTGKEY from RKMDETRTL S where S.UNITKEY=#Unitkey# and S.NOSTS=#Nosts#  and S.NOJETRA=#Nojetra#)
+      order by B.KDPER
+    </select>
+    <select id="QueryByBpkdetrtlDaskrtl" extends="BaseQueryLookupDaskrtl" parameterclass="Usadi.Valid49.BO.BpkdetrtlControl" resultMap="return-lookup">
+      and A.MTGKEY not in (select MTGKEY from BPKDETRTL S where  S.UNITKEY=#Unitkey# and S.NOBPK=#Nobpk#  and S.NOJETRA=#Nojetra#)
+      order by B.KDPER
+    </select>
+    <select id="QueryBySppdetrtlDaskrtl" extends="BaseQueryLookupDaskrtl" parameterclass="Usadi.Valid49.BO.SppdetrtlControl" resultMap="return-lookup">
+      and A.MTGKEY not in (select MTGKEY from SPPDETRTL S where  S.UNITKEY=#Unitkey# and S.NOSPP=#Nospp#  and S.NOJETRA=#Nojetra#)
+      order by B.KDPER
+    </select>
+    <select id="QueryBySpmdetrtlDaskrtl" extends="BaseQueryLookupDaskrtl" parameterclass="Usadi.Valid49.BO.SpmdetrtlControl" resultMap="return-lookup">
+      and A.MTGKEY not in (select MTGKEY from SPMDETRTL S where  S.UNITKEY=#Unitkey# and S.NOSPM=#Nospm#  and S.NOJETRA=#Nojetra#)
+      order by B.KDPER
+    </select>
+    <select id="QueryBySp2ddetrtlDaskrtl" extends="BaseQueryLookupDaskrtl" parameterclass="Usadi.Valid49.BO.Sp2ddetrtlControl" resultMap="return-lookup">
+      and A.MTGKEY not in (select MTGKEY from SP2DDETRTL S where  S.UNITKEY=#Unitkey# and S.NOSP2D=#Nosp2d#  and S.NOJETRA=#Nojetra#)
+      order by B.KDPER
+    </select>
+    <select id="QueryBySkppkddetDaskrtl"  parameterclass="Usadi.Valid49.BO.SkppkddetControl" resultMap="return-lookup">
+      select A.MTGKEY,B.KDPER,B.NMPER,B.TYPE
+      from DASKRTL A left outer join MATANGR B on A.MTGKEY=B.MTGKEY
+      where A.UNITKEY=#Unitkey#
+      and A.IDXDASK in (select IDXDASK from SKDASK where UNITKEY=#Unitkey#
+      and IDXKODE='3' and KDTAHAP=#Kdtahap# and TGLVALID is not NULL)
+      and case #Parameter.Field#
+      when '1' then B.KDPER
+      when '2' then B.NMPER
+      end like '%'+ #Parameter.Value# + '%'      
+      order by B.KDPER
+    </select>
+    <select id="QueryBySpjdetrtlDaskrtl" extends="BaseQueryLookupDaskrtl" parameterclass="Usadi.Valid49.BO.SpjdetrtlControl" resultMap="return-lookup">
+      and A.MTGKEY not in (select MTGKEY from SPJDETRTL S where  S.UNITKEY=#Unitkey# and S.NOSPJ=#Nospj#  and S.NOJETRA=#Nojetra#)
+      order by B.KDPER
+    </select>
+
+    <select id="BaseQueryLookupPotDaskrtl" parameterClass="Daskrtl" resultMap="return-lookup">
+      select MTGKEY,KDPER,NMPER,TYPE from(
+      <!--(select TOP 100 PERCENT A.MTGKEY,B.KDPER,B.NMPER,B.TYPE
+      from DASKRTL A left outer join MATANGR B on A.MTGKEY=B.MTGKEY
+      and B.KDPER in (select KDPER from dbo.GetFilterMatangr(#Idxkode#))
+      where A.UNITKEY =#Unitkey#
+      order by B.KDPER
+      union-->
+      select MTGKEY,KDPER,NMPER,TYPE
+      from MATANGB
+      where left(KDPER,3) = '7.1' and TYPE='D' 
+      )A
+      where
+      case #Parameter.Field#
+      when '1' then A.KDPER
+      when '2' then A.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+    </select>
+    <select id="QueryBySppdetrtlDaskrtlpot" extends="BaseQueryLookupPotDaskrtl" parameterclass="Usadi.Valid49.BO.SppdetrtlControl" resultMap="return-lookup">
+      and A.MTGKEY not in (select MTGKEY from SPPDETRTL S where S.UNITKEY=#Unitkey# and S.NOSPP=#Nospp# and S.NOJETRA=#Nojetra#)
+      and A.MTGKEY not in (select MTGKEY from SPPDETB S where S.UNITKEY=#Unitkey# and S.NOSPP=#Nospp# and S.NOJETRA=#Nojetra#)
+    </select>
+    <select id="QueryBySpmdetrtlDaskrtlpot" extends="BaseQueryLookupPotDaskrtl" parameterclass="Usadi.Valid49.BO.SpmdetrtlControl" resultMap="return-lookup">
+      and A.MTGKEY not in (select MTGKEY from SPMDETRTL S where S.UNITKEY=#Unitkey# and S.NOSPM=#Nospm# and S.NOJETRA=#Nojetra#)
+      and A.MTGKEY not in (select MTGKEY from SPMDETB S where S.UNITKEY=#Unitkey# and S.NOSPM=#Nospm# and S.NOJETRA=#Nojetra#)
+    </select>
+    <select id="QueryByRkmdetrtlDaskrtlpot" extends="BaseQueryLookupPotDaskrtl" parameterclass="Usadi.Valid49.BO.RkmdetrtlControl" resultMap="return-lookup">
+      and A.MTGKEY not in (select MTGKEY from RKMDETRTL S where S.UNITKEY=#Unitkey# and S.NOSTS=#Nosts# and S.NOJETRA=#Nojetra#)
+      and A.MTGKEY not in (select MTGKEY from RKMDETB S where S.UNITKEY=#Unitkey# and S.NOSTS=#Nosts# and S.NOJETRA=#Nojetra#)
+    </select>
+    <select id="QueryBySp2ddetrtlDaskrtlpot" extends="BaseQueryLookupPotDaskrtl" parameterclass="Usadi.Valid49.BO.Sp2ddetrtlControl" resultMap="return-lookup">
+      and A.MTGKEY not in (select MTGKEY from SP2DDETRTL S where S.UNITKEY=#Unitkey# and S.NOSP2D=#Nosp2d# and S.NOJETRA=#Nojetra#)
+      and A.MTGKEY not in (select MTGKEY from SP2DDETB S where S.UNITKEY=#Unitkey# and S.NOSP2D=#Nosp2d# and S.NOJETRA=#Nojetra#)
+    </select>
+    <select id="LoadByPKDaskrtl" extends="BaseQueryDaskrtl" parameterClass="Daskrtl" resultMap="return-result">
+      where A.IDXDASK=#Idxdask# and A.MTGKEY=#Mtgkey# and A.UNITKEY=#Unitkey# 
+    </select>
+    <select id="LoadByKdtahapDaskrtl" extends="BaseQueryDaskrtl" parameterClass="Daskrtl" resultMap="return-result">
+      where C.KDTAHAP=#Kdtahap# and A.MTGKEY=#Mtgkey# and A.UNITKEY=#Unitkey#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Daskrtl">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Idxdask" column="IDXDASK"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" class="Daskrtl">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Idxdask" column="IDXDASK"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Daskrtl">
+      <parameter property="Idxdask" column="IDXDASK"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

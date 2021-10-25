@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Bpkdetrtl" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Bpkdetrtl" type="Usadi.Valid49.BO.BpkdetrtlControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Bpkdetrtl">
+      <result property="Kdpers" column="KDPERS"/>
+      <result property="Idxkode" column="IDXKODE"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Uraibpk" column="URAIBPK"/>
+      <result property="Penerima" column="PENERIMA"/>
+      <result property="Tglbpk" column="TGLBPK"/>
+      <result property="Nmjetra" column="NMJETRA"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Nojetra" column="NOJETRA"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nobpk" column="NOBPK"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Type" column="TYPE"/>
+      <!--<result property="Kdkegunit" column="KDKEGUNIT"/>-->
+    </resultMap>
+    <resultMap id="return-result-total" class="Bpkdetrtl">
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Nilai" column="NILAI"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertBpkdetrtl" parameterMap="insert-param">
+      <generate table="BPKDETRTL"/>
+    </insert>
+    <update id="UpdateByBpkdetrtl" parameterMap="update-param">
+      <generate table="BPKDETRTL" by="NOJETRA,UNITKEY,NOBPK,MTGKEY"/>
+    </update>
+    <delete id="DeleteByBpkdetrtl" parameterMap="delete-param">
+      <generate table="BPKDETRTL" by="NOJETRA,UNITKEY,NOBPK,MTGKEY"/>
+    </delete>
+    <select id="BaseQueryBpkdetrtl" parameterClass="Bpkdetrtl" resultMap="return-result">
+      SELECT BL.*,J.NMJETRA,B.TGLBPK, B.PENERIMA, B.URAIBPK, rtrim(M.KDPER) as KDPER,
+      rtrim(M.NMPER) as NMPER, B.IDXKODE, J.KDPERS, M.TYPE
+      FROM BPKDETRTL BL
+      LEFT OUTER JOIN BPK B ON BL.NOBPK = B.NOBPK and BL.UNITKEY=B.UNITKEY
+      LEFT OUTER JOIN DAFTUNIT U ON BL.UNITKEY = U.UNITKEY
+      LEFT OUTER JOIN JTRNLKAS J ON BL.NOJETRA = J.NOJETRA
+      LEFT OUTER JOIN MATANGR M ON BL.MTGKEY = M.MTGKEY
+    </select>
+    <select id="QueryByAllBpkdetrtl" extends="BaseQueryBpkdetrtl" parameterClass="Bpkdetrtl" resultMap="return-result">
+      where BL.UNITKEY=#Unitkey# and BL.NOBPK=#Nobpk#
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryByTotalBpkdetrtl" extends="BaseQueryBpkdetrtl" parameterClass="Bpkdetrtl" resultMap="return-result">
+      where BL.UNITKEY=#Unitkey# and BL.NOBPK=#Nobpk#  and BL.NOJETRA=#Nojetra#
+    </select>
+    <select id="LoadByPKBpkdetrtl" extends="BaseQueryBpkdetrtl" parameterClass="Bpkdetrtl" resultMap="return-result">
+			where BL.UNITKEY=#Unitkey# and BL.NOBPK=#Nobpk# and BL.MTGKEY=#Mtgkey# and BL.NOJETRA=#Nojetra#
+		</select>
+    <select id="LoadByTotalRekBpkdetrtl" parameterClass="Bpkdetrtl" resultMap="return-result-total">
+      <![CDATA[
+      select B.KDPER, B.NMPER, B.MTGKEY, sum(case A.NOJETRA when '21' then A.NILAI else -A.NILAI end) AS NILAI
+      from BPKDETRTL A
+      left join BPK S ON A.UNITKEY = S.UNITKEY AND A.NOBPK = S.NOBPK
+      left join MATANGR B on A.MTGKEY = B.MTGKEY
+      where A.UNITKEY=#Unitkey# and A.MTGKEY=#Mtgkey# 
+      and S.TGLBPK <= #Tglbpk# and S.Nobpk <> #Nobpk#
+      group BY B.KDPER, B.NMPER, B.MTGKEY
+      ]]>
+    </select>
+    <!--<procedure id="ExecVALIDATE_BPKPANJAR" parameterMap="validate-tot-panjar-param">
+      WSP_VALIDATIONBPK_PANJAR
+    </procedure>-->
+    <procedure id="ExecVALIDATE_BPK_REK_DPA" parameterMap="validate-rek-param">
+      WSP_VALIDATIONBPK_REK
+    </procedure>
+    <procedure id="ExecVALIDATE_BPK_REK_SPD" parameterMap="validate-rek-param">
+      WSP_VALIDATIONBPK_REK_SPD
+    </procedure>
+    <procedure id="ExecVALIDATE_BPK_BANK" parameterMap="validate-tot-bank-param">
+      WSP_VALIDATIONBPK_BANK
+    </procedure>
+    <procedure id="ExecVALIDATE_BPK_TUNAI" parameterMap="validate-tot-tunai-param">
+      WSP_VALIDATIONBPK_TUNAI
+    </procedure>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Bpkdetrtl">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nobpk" column="NOBPK"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Bpkdetrtl">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Bpkdetrtl">
+			<parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nobpk" column="NOBPK"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+    <parameterMap id="validate-rek-param" class="Bpkdetrtl">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Kdkegunit" column="kdkegunit"/>
+      <parameter property="Mtgkey" column="mtgkey"/>
+      <parameter property="Kdtahap" column="kdtahap"/>
+    </parameterMap>
+    <!--<parameterMap id="validate-tot-panjar-param" class="Bpkdetrtl">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Keybend" column="keybend"/>
+      --><!--<parameter property="Kdkegunit" column="kdkegunit"/>
+    </parameterMap>-->
+    <parameterMap id="validate-tot-bank-param" class="Bpk">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Keybend" column="keybend"/>
+    </parameterMap>
+    <parameterMap id="validate-tot-tunai-param" class="Bpk">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Keybend" column="keybend"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

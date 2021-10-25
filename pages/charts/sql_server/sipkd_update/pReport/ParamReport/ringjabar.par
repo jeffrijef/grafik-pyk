@@ -1,0 +1,4 @@
+TITLE=APBD - Ringkasan (Lamp I)
+Kdtahap=string;Tahap;4;
+Kdlevel=string;Kode Level;4;
+Tanggal=datetime;Tanggal;30;;-1

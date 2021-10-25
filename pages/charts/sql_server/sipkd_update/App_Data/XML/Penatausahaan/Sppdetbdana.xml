@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Sppdetbdana" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <alias>
+      <typeAlias alias="Sppdetbdana" type="Usadi.Valid49.BO.SppdetbdanaControl" />
+    </alias>
+    <resultMaps>
+      <resultMap id="return-result" class="Sppdetbdana">
+        <result property="Nmdana" column="NMDANA"/>
+        <result property="Nilai" column="NILAI"/>
+        <result property="Kddana" column="KDDANA"/>
+        <result property="Nospp" column="NOSPP"/>
+        <result property="Unitkey" column="UNITKEY"/>
+        <result property="Mtgkey" column="MTGKEY"/>
+      </resultMap>
+    </resultMaps>
+    <statements>
+      <insert id="InsertSppdetbdana" parameterMap="insert-param">
+        <generate table="Sppdetbdana"/>
+      </insert>
+      <update id="UpdateBySppdetbdana" parameterMap="update-param">
+        <generate table="Sppdetbdana" by="KDDANA,NOSPP,UNITKEY,MTGKEY"/>
+      </update>
+      <delete id="DeleteBySppdetbdana" parameterMap="delete-param">
+        <generate table="Sppdetbdana" by="KDDANA,NOSPP,UNITKEY,MTGKEY"/>
+      </delete>
+      <update id="UpdateByUPsbdanaSppdetbdana" parameterClass="Sppdetbdana">
+        Update SPPDETB SET NILAI=isnull((select sum(nilai) from Sppdetbdana
+        where UNITKEY=#Unitkey# and NOSPP=#Nospp# and MTGKEY=#Mtgkey#),0)
+        where UNITKEY=#Unitkey# and NOSPP=#Nospp# and MTGKEY=#Mtgkey#
+      </update>
+
+      <select id="BaseQuerySppdetbdana" parameterClass="Sppdetbdana" resultMap="return-result">
+        select B.NOSPP,B.KDDANA,B.MTGKEY,B.UNITKEY,C.NMDANA,B.NILAI
+        from Sppdetbdana B
+        INNER JOIN JDANA C ON B.KDDANA=C.KDDANA
+      </select>
+      <select id="QueryByAllSppdetbdana" extends="BaseQuerySppdetbdana" parameterClass="Sppdetbdana" resultMap="return-result">
+        where B.UNITKEY=#Unitkey# and B.NOSPP=#Nospp# and B.MTGKEY=#Mtgkey# and
+        case #Parameter.Field#
+        when '1' then B.NOSPP
+        when '2' then B.KDDANA
+        end like '%'+ #Parameter.Value# + '%'
+        order by B.KDDANA
+      </select>
+      <select id="LoadByPKSppdetbdana" extends="BaseQuerySppdetbdana" parameterClass="Sppdetbdana" resultMap="return-result">
+        where B.KDDANA = #Kddana# and B.MTGKEY = #Mtgkey# and B.UNITKEY = #Unitkey# and B.NOSPP = #Nospp#
+      </select>
+    </statements>
+    <parameterMaps>
+      <parameterMap id="insert-param" class="Sppdetbdana">
+        <parameter property="Nilai" column="NILAI"/>
+        <parameter property="Kddana" column="KDDANA"/>
+        <parameter property="Nospp" column="NOSPP"/>
+        <parameter property="Unitkey" column="UNITKEY"/>
+        <parameter property="Mtgkey" column="MTGKEY"/>
+      </parameterMap>
+      <parameterMap id="update-param" extends="insert-param" class="Sppdetbdana">
+      </parameterMap>
+      <parameterMap id="delete-param" class="Sppdetbdana">
+        <parameter property="Kddana" column="KDDANA"/>
+        <parameter property="Nospp" column="NOSPP"/>
+        <parameter property="Unitkey" column="UNITKEY"/>
+        <parameter property="Mtgkey" column="MTGKEY"/>
+      </parameterMap>
+    </parameterMaps>
+</sqlMap>
+

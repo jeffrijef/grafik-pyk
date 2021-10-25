@@ -1,0 +1,4 @@
+TITLE=Laporan Keuangan -  Neraca SKPD
+Unitkey=string;Key Unit;4;
+Level=string;Level Rekening;2;
+Tgl=datetime;Tanggal;4;

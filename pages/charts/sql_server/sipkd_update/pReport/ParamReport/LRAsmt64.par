@@ -1,0 +1,5 @@
+TITLE= LRA Semester LRA 64
+Unitkey=string;Key Unit;4;
+Level=string;Level Rekening;4;
+Tahap=string;Kode Tahap;4;
+Tanggal=datetime;Tanggal Cetak;10;

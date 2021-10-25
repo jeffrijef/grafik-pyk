@@ -1,0 +1,4 @@
+TITLE=STATUS SP2D
+Unitkey=string;Key Unit;4;
+Awal=datetime;Tanggal Awal;30;
+Akhir=datetime;Tanggal Akhir;30;

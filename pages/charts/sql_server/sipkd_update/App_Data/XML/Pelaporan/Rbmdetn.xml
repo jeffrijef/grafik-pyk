@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Rbmdetn" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Rbmdetn" type="Usadi.Valid49.BO.RbmdetnControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Rbmdetn">
+      <result property="Idxttd" column="IDXTTD"/>
+      <result property="Kdbm" column="KDBM"/>
+      <result property="Referensi" column="REFERENSI"/>
+      <result property="Tglbm" column="TGLBM"/>
+      <result property="Validbm" column="VALIDBM"/>
+      <result property="Kdpers" column="KDPERS"/>
+      <result property="Nmpers" column="NMPERS"/>
+      <result property="Kdkhusus" column="KDKHUSUS"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Mtglevel" column="MTGLEVEL"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nobm" column="NOBM"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertRbmdetn" parameterMap="insert-param">
+      <generate table="RBMDETN"/>
+    </insert>
+    <update id="UpdateByRbmdetn" parameterClass="Rbmdetn" >
+      update RBMDETN
+      set KDPERS=#Kdpers#, NILAI=#Nilai#, MTGKEY=#Mtgkey#
+      where UNITKEY=#Unitkey# and NOBM=#Nobm# and MTGKEY=#Oldmtgkey#
+    </update>
+    <delete id="DeleteByRbmdetn" parameterMap="delete-param">
+      <generate table="RBMDETN" by="UNITKEY,NOBM,MTGKEY"/>
+    </delete>
+    <select id="BaseQueryRbmdetn" parameterClass="Rbmdetn" resultMap="return-result">
+      select A.KDPERS,A.MTGKEY,A.NILAI,A.NOBM,A.UNITKEY
+      ,rtrim(B.IDXTTD) as IDXTTD,B.KDBM,B.REFERENSI,B.TGLBM,B.VALIDBM
+      ,C.NMPERS
+      ,D.KDKHUSUS,D.KDPER,D.MTGLEVEL,D.NMPER
+      from RBMDETN A
+      left outer join BKTMEM B on A.NOBM = B.NOBM
+      left outer join PERSACC C on A.KDPERS = C.KDPERS
+      left outer join MATANGNRC D on A.MTGKEY = D.MTGKEY
+    </select>
+    <select id="QueryByAllRbmdetn" extends="BaseQueryRbmdetn" parameterClass="Rbmdetn" resultMap="return-result">
+			where A.UNITKEY=#Unitkey# and A.NOBM=#Nobm# and
+			case #Parameter.Field#
+			when '1' then D.KDPER
+			when '2' then D.NMPER
+			end like '%'+ #Parameter.Value# + '%'
+			Order by D.KDPER
+		</select>
+    <select id="LoadByPKRbmdetn" extends="BaseQueryRbmdetn" parameterClass="Rbmdetn" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOBM=#Nobm# and A.MTGKEY=#Mtgkey# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Rbmdetn">
+      <parameter property="Kdpers" column="KDPERS"/>
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nobm" column="NOBM"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Rbmdetn">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Rbmdetn">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nobm" column="NOBM"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

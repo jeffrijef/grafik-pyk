@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Tahap" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Tahap" type="Usadi.Valid49.BO.TahapControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Tahap">
+      <result property="Uraian" column="URAIAN"/>
+      <result property="Kdtahap" column="KDTAHAP"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertTahap" parameterMap="insert-param">
+      <generate table="TAHAP"/>
+    </insert>
+    <update id="UpdateByTahap" parameterMap="update-param">
+      <generate table="TAHAP" by="KDTAHAP"/>
+    </update>
+    <delete id="DeleteByTahap" parameterMap="delete-param">
+      <generate table="TAHAP" by="KDTAHAP"/>
+    </delete>
+    <select id="BaseQueryTahap" parameterClass="Tahap" resultMap="return-result">
+      select rtrim(A.KDTAHAP) as KDTAHAP,A.URAIAN
+      from TAHAP A
+    </select>
+    <select id="QueryByAllTahap" extends="BaseQueryTahap" parameterClass="Tahap" resultMap="return-result">
+      where
+      case #Parameter.Field#
+        when '1' then A.KDTAHAP
+        when '2' then A.URAIAN
+      end like '%'+ #Parameter.Value# + '%' 
+    </select>
+    <select id="QueryBySahTahap" extends="BaseQueryTahap" parameterClass="Tahap" resultMap="return-result">
+      where A.KDTAHAP in ('1','3')
+    </select>
+    <select id="LoadByPKTahap" extends="BaseQueryTahap" parameterClass="Tahap" resultMap="return-result">
+      where A.KDTAHAP=#Kdtahap# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Tahap">
+      <parameter property="Uraian" column="URAIAN"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Tahap">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Tahap">
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Daftunituk" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Daftunituk" type="Usadi.Valid49.BO.DaftunitukControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Daftunituk">
+      <result property="Unitkeyskpd" column="UNITKEYSKPD"/>
+      <result property="Kdunitskpd" column="KDUNITSKPD"/>
+      <result property="Nmunitskpd" column="NMUNITSKPD"/>
+
+      <result property="Unitkeyuk" column="UNITKEYUK"/>
+      <result property="Kdunituk" column="KDUNITUK"/>
+      <result property="Nmunituk" column="NMUNITUK"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertDaftunituk" parameterMap="insert-param">
+      <generate table="DAFTUNITUK"/>
+    </insert>
+    <update id="UpdateByDaftunituk" parameterMap="update-param">
+      <generate table="DAFTUNITUK" by="UNITKEYUK"/>
+    </update>
+    <delete id="DeleteByDaftunituk" parameterMap="delete-param">
+      <generate table="DAFTUNITUK" by="UNITKEYUK"/>
+    </delete>
+    <select id="BaseQueryDaftunituk" parameterClass="Daftunituk" resultMap="return-result">
+      select A.UNITKEYSKPD,B.KDUNIT as KDUNITSKPD, B.NMUNIT as NMUNITSKPD
+      , A.UNITKEYUK, C.KDUNIT as KDUNITUK, C.NMUNIT as NMUNITUK
+      from DAFTUNITUK A
+      left outer join DAFTUNIT B on A.UNITKEYSKPD=B.UNITKEY
+      left outer join DAFTUNIT C on A.UNITKEYUK=C.UNITKEY
+    </select>
+    <select id="QueryByAllDaftunituk" extends="BaseQueryDaftunituk" parameterClass="Daftunituk" resultMap="return-result">
+      where UNITKEYSKPD=#Unitkeyskpd#
+      and case #Parameter.Field#
+        when '1' then C.KDUNIT
+        when '2' then C.NMUNIT
+      end like '%'+ #Parameter.Value# + '%' 
+      order by C.KDUNIT
+    </select>
+    <select id="LoadByPKDaftunituk" extends="BaseQueryDaftunituk" parameterClass="Daftunituk" resultMap="return-result">
+      where A.UNITKEYUK=#Unitkeyuk# 
+    </select>
+    <procedure id="ExecTransferRKAUKkeRKA" timeout="0" parameterMap="transfer-param">
+      WSP_TRANSFER_RKAUK_KE_RKA
+    </procedure>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Daftunituk">
+      <parameter property="Unitkeyskpd" column="UNITKEYSKPD"/>
+      <parameter property="Parameter.Key" column="UNITKEYUK"/>
+    </parameterMap>
+    <parameterMap id="update-param" class="Daftunituk">
+      <parameter property="Unitkeyskpd" column="UNITKEYSKPD"/>
+      <parameter property="Unitkeyuk" column="UNITKEYUK"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Daftunituk">
+      <parameter property="Unitkeyuk" column="UNITKEYUK"/>
+    </parameterMap>
+    <parameterMap id="transfer-param" class="Daftunituk">
+      <parameter property="Unitkeyskpd" column="unitkeyskpd"/>
+      <parameter property="Kdtahap" column="kdtahap"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

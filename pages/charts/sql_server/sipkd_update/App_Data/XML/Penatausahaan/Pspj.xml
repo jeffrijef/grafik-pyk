@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Pspj" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Pspj" type="Usadi.Valid49.BO.PspjControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result-multikeg" class="Pspj">
+      <result property="AllowSuperUser" column="ALLOWSUPERUSER"/>
+      <result property="Idxkode" column="IDXKODE"/>
+      <result property="Idxttd" column="IDXTTD"/>
+      <result property="Kdstatus" column="KDSTATUS"/>
+      <result property="Keterangan" column="KETERANGAN"/>
+      <result property="Keybend" column="KEYBEND"/>
+      <result property="Nosah" column="NOSAH"/>
+      <result property="Nospj" column="NOSPJ"/>
+      <result property="Tglbuku" column="TGLBUKU"/>
+      <result property="Tglsah" column="TGLSAH"/>
+      <result property="Tglspj" column="TGLSPJ"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nip" column="NIP"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Kddok" column="KDDOK"/>
+      <result property="Lblstatus" column="LBLSTATUS"/>
+      <result property="Uraistatus" column="URAISTATUS"/>
+      <result property="Uraikode" column="URAIKODE"/>
+    </resultMap>
+    <resultMap id="return-result" extends="return-result-multikeg" class="Pspj">
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+    </resultMap>
+    <resultMap id="return-result-unit2" class="Pspj">
+      <result property="Unitkey" column="UNITKEY"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="NOSPJ"/>
+      <result property="Field" column="NOSPJ"/>
+      <result property="Value" column="KETERANGAN"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertPspj" parameterMap="insert-param">
+      <generate table="PSPJ"/>
+    </insert>
+    <update id="UpdateByPspj" parameterMap="update-param">
+      <generate table="PSPJ" by="UNITKEY,NOSPJ"/>
+    </update>
+    <update id="UpdateBySahPspj" parameterClass="Pspj">
+      update PSPJ set TGLSAH=#Tglsah#,NOSAH=#Nosah#
+      where UNITKEY=#Unitkey# and NOSPJ=#Nospj#
+    </update>
+    <update id="UpdateBySahPspjr" parameterClass="Pspj">
+      update PSPJ set TGLSAH=#Tglsah#
+      where UNITKEY=#Unitkey# and NOSPJ=#Nospj#
+    </update>
+    <update id="UpdateByValidPspj" parameterClass="Pspj">
+      update PSPJ set TGLVALID=#Tglvalid#
+      where UNITKEY=#Unitkey# and NOSPJ=#Nospj#
+    </update>
+    <update id="UpdateBySahValidPspj" parameterClass="Pspj">
+      update PSPJ set TGLVALID=#Tglvalid#
+      where UNITKEY=#Unitkey# and NOSPJ=#Nospj#
+    </update>
+    <update id="UpdateByDraftsahPspj" parameterClass="Pspj" >
+      update PSPJ set TGLSAH=null
+      where UNITKEY=#Unitkey# and NOSPJ=#Nospj#
+    </update>
+    <update id="UpdateByDraftvalidPspj" parameterClass="Pspj" >
+      update PSPJ set TGLVALID=null
+      where UNITKEY=#Unitkey# and NOSPJ=#Nospj#
+    </update>
+    <update id="UpdateByDraftvalidPspjjur" parameterClass="Pspj" >
+      update PSPJ set TGLVALID=null
+      where UNITKEY=#Unitkey# and NOSPJ=#Nospj#
+    </update>
+    <delete id="DeleteByPspj" parameterMap="delete-param">
+      <generate table="PSPJ" by="UNITKEY,NOSPJ"/>
+    </delete>
+    <select id="BaseQueryPspj" parameterClass="Pspj" resultMap="return-result">
+      select distinct #AllowSuperUser# as ALLOWSUPERUSER,A.IDXKODE,rtrim(A.IDXTTD) as IDXTTD,rtrim(A.KDSTATUS) as KDSTATUS,A.KETERANGAN,rtrim(A.KEYBEND) as KEYBEND,A.NOSAH,A.NOSPJ,A.TGLBUKU,A.TGLSAH,A.TGLSPJ,A.TGLVALID,A.UNITKEY
+      ,B.NIP,rtrim(C.KDUNIT) as KDUNIT, rtrim(C.NMUNIT) as NMUNIT
+      ,D.KDDOK,E.LBLSTATUS, E.URAIAN as URAISTATUS
+      ,F.URAIAN as URAIKODE,#Kdkegunit# as KDKEGUNIT
+      from PSPJ A
+      left outer join BEND B on A.KEYBEND = B.KEYBEND
+      left outer join DAFTUNIT C on A.UNITKEY = C.UNITKEY
+      left outer join JABTTD D on A.IDXTTD = D.IDXTTD
+      left outer join STATTRS E on A.KDSTATUS=E.KDSTATUS
+      left outer join ZKODE F on A.IDXKODE = F.IDXKODE
+      LEFT OUTER JOIN SPJDETR G ON A.NOSPJ = G.NOSPJ and A.UNITKEY = G.UNITKEY
+    </select>
+    <select id="QueryByAllPspj" extends="BaseQueryPspj" parameterClass="Pspj" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.IDXKODE=#Idxkode#
+      and (isnull(G.KDKEGUNIT,'')=isnull(#Kdkegunit#,'') or isnull(#Kdkegunit#,'')='' or (G.KDKEGUNIT is null and #Kdkegunit# is not null))
+      and case #Parameter.Field#
+      when '1' then A.NOSPJ
+      when '2' then convert(char(10), A.TGLSPJ, 103)
+      when '3' then A.NOSAH
+      when '4' then A.KETERANGAN
+      end like '%'+ #Parameter.Value# + '%'
+      Order by A.NOSPJ
+    </select>
+    <select id="QueryBySp3bdetPspj" parameterClass="Pspj" resultMap="return-lookup">
+      select A.NOSPJ,convert(char(10),A.TGLSPJ, 103) as TGLSPJ,rtrim(left(A.KETERANGAN,100)) As KETERANGAN from PSPJ A
+      LEFT JOIN DAFTUNIT d ON d.UNITKEY=a.UNITKEY
+      WHERE left(KDUNIT,8)='1.02.01.' AND KDLEVEL=4
+      <!--and A.TGLSAH is not null
+      and (A.KDSTATUS='42' and #Kdstatus#='22')-->
+      <!--and (A.KEYBEND=#Keybend# or (A.KEYBEND is null or A.KEYBEND=''))-->
+      and A.NOSPJ not in (select NOSPJ from SP3BDET where UNITKEY=#Unitkey#)
+      and case #Parameter.Field#
+      when '1' then A.NOSPJ
+      when '2' then A.KETERANGAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOSPJ
+    </select>
+    <select id="BaseQueryMultikegPspj" parameterClass="Pspj" resultMap="return-result-multikeg">
+      select distinct #AllowSuperUser# as ALLOWSUPERUSER,A.IDXKODE,rtrim(A.IDXTTD) as IDXTTD,rtrim(A.KDSTATUS) as KDSTATUS,A.KETERANGAN,rtrim(A.KEYBEND) as KEYBEND,A.NOSAH,A.NOSPJ,A.TGLBUKU,A.TGLSAH,A.TGLSPJ,A.TGLVALID,A.UNITKEY
+      ,B.NIP,rtrim(C.KDUNIT) as KDUNIT, rtrim(C.NMUNIT) as NMUNIT
+      ,D.KDDOK,E.LBLSTATUS, E.URAIAN as URAISTATUS
+      ,F.URAIAN as URAIKODE
+      from PSPJ A
+      left outer join BEND B on A.KEYBEND = B.KEYBEND
+      left outer join DAFTUNIT C on A.UNITKEY = C.UNITKEY
+      left outer join JABTTD D on A.IDXTTD = D.IDXTTD
+      left outer join STATTRS E on A.KDSTATUS=E.KDSTATUS
+      left outer join ZKODE F on A.IDXKODE = F.IDXKODE
+      <!--inner JOIN SPJDETR G ON A.NOSPJ = G.NOSPJ and A.UNITKEY = G.UNITKEY-->
+      <!--left JOIN SPJDETR G ON A.NOSPJ = G.NOSPJ and A.UNITKEY = G.UNITKEY-->
+      where A.UNITKEY=#Unitkey# and A.IDXKODE=#Idxkode#
+      and case #Parameter.Field#
+      when '1' then A.NOSPJ
+      when '2' then convert(char(10), A.TGLSPJ, 103)
+      when '3' then A.NOSAH
+      when '4' then A.KETERANGAN
+      end like '%'+ #Parameter.Value# + '%'
+    </select>
+    <select id="QueryByMultikegPspj" extends="BaseQueryMultikegPspj" parameterClass="Pspj" resultMap="return-result-multikeg">
+      and A.IDXKODE=#Idxkode# and A.KDSTATUS not in ('20') order by A.NOSPJ
+    </select>
+    <select id="QueryByKoreksiPspj" extends="BaseQueryMultikegPspj" parameterClass="Pspj" resultMap="return-result-multikeg">
+      and A.IDXKODE=#Idxkode# and A.KDSTATUS='20' order by A.NOSPJ
+    </select>
+    <select id="QueryByBendPspj" extends="BaseQueryMultikegPspj" parameterClass="Pspj" resultMap="return-result-multikeg">
+      and A.IDXKODE=#Idxkode# and A.KEYBEND=#Keybend# and A.KDSTATUS not in ('20')
+      order by A.NOSPJ
+    </select>
+    <select id="QueryBySpjjknPspj" extends="BaseQueryMultikegPspj" parameterClass="Pspj" resultMap="return-result-multikeg">
+      and A.IDXKODE=#Idxkode# and A.KEYBEND=#Keybend# and A.KDSTATUS not in ('20')
+      AND A.NOSPJ NOT IN (SELECT NOSPJ FROM SP3Bdet)
+      order by A.NOSPJ
+    </select>
+    <select id="QueryByBendKoreksiPspj" extends="BaseQueryMultikegPspj" parameterClass="Pspj" resultMap="return-result-multikeg">
+      and A.IDXKODE=#Idxkode# and A.KEYBEND=#Keybend# and A.KDSTATUS='20'
+      order by A.NOSPJ
+    </select>
+    <select id="QueryByJurnalPspj" extends="BaseQueryMultikegPspj" parameterClass="Pspj" resultMap="return-result-multikeg">
+      and A.TGLSAH is not null  order by A.NOSPJ
+    </select>
+    <select id="QueryByJurnalloPspj" extends="BaseQueryMultikegPspj" parameterClass="Pspj" resultMap="return-result-multikeg">
+      and A.TGLSAH is not null  order by A.NOSPJ
+    </select>
+    <select id="LoadByUnit2Pspj" parameterClass="Pspj" resultMap="return-result-unit2">
+      select unitkey from Pspj A where A.NOSPJ=#Nospj#
+    </select>
+    <select id="QueryByJurnalbtlPspj" parameterClass="Pspj" resultMap="return-result-multikeg">
+      select distinct #AllowSuperUser# as ALLOWSUPERUSER,A.IDXKODE,rtrim(A.IDXTTD) as IDXTTD,rtrim(A.KDSTATUS) as KDSTATUS,A.KETERANGAN,rtrim(A.KEYBEND) as KEYBEND,A.NOSAH,A.NOSPJ,A.TGLBUKU,A.TGLSAH,A.TGLSPJ,A.TGLVALID,A.UNITKEY
+      ,B.NIP,rtrim(C.KDUNIT) as KDUNIT, rtrim(C.NMUNIT) as NMUNIT
+      ,D.KDDOK,E.LBLSTATUS, E.URAIAN as URAISTATUS
+      ,F.URAIAN as URAIKODE
+      from PSPJ A
+      left outer join BEND B on A.KEYBEND = B.KEYBEND
+      left outer join DAFTUNIT C on A.UNITKEY = C.UNITKEY
+      left outer join JABTTD D on A.IDXTTD = D.IDXTTD
+      left outer join STATTRS E on A.KDSTATUS=E.KDSTATUS
+      left outer join ZKODE F on A.IDXKODE = F.IDXKODE
+      inner JOIN SPJDETRTL G ON A.NOSPJ = G.NOSPJ and A.UNITKEY = G.UNITKEY
+      where A.UNITKEY=#Unitkey# and A.TGLSAH is not null
+      and case #Parameter.Field#
+      when '1' then A.NOSPJ
+      when '2' then convert(char(10), A.TGLSPJ, 103)
+      when '3' then A.NOSAH
+      when '4' then A.KETERANGAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOSPJ
+    </select>
+    <select id="QueryByNoregPspj" extends="BaseQueryPspj" parameterClass="Pspj" resultMap="return-result">
+      where A.UNITKEY=#Unitkey#
+      order by S.NOREG
+    </select>
+    <select id="QueryByNospjPspj" extends="BaseQueryPspj" parameterClass="Pspj" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.KEYBEND=#Keybend#
+      order by A.NOSPJ
+    </select>
+    <select id="QueryByNospj1Pspj" extends="BaseQueryPspj" parameterClass="Pspj" resultMap="return-result">
+      where A.UNITKEY=#Unitkey#
+      order by A.NOSPJ
+    </select>
+    <select id="QueryByNoregPspjr" extends="QueryByNoregPspj" parameterClass="Pspj" resultMap="return-result">
+    </select>
+    <select id="QueryByKegPspjr"  parameterClass="Pspj" resultMap="return-result">
+      select distinct #AllowSuperUser# as ALLOWSUPERUSER,A.IDXKODE,rtrim(A.IDXTTD) as IDXTTD,rtrim(A.KDSTATUS) as KDSTATUS,A.KETERANGAN,rtrim(A.KEYBEND) as KEYBEND,A.NOSAH,A.NOSPJ,A.TGLBUKU,A.TGLSAH,A.TGLSPJ,A.TGLVALID,A.UNITKEY
+      ,B.NIP,rtrim(C.KDUNIT) as KDUNIT, rtrim(C.NMUNIT) as NMUNIT
+      ,D.KDDOK,E.LBLSTATUS, E.URAIAN as URAISTATUS
+      ,F.URAIAN as URAIKODE,isnull(G.KDKEGUNIT,#Kdkegunit#) as KDKEGUNIT
+      <!--,SK.TGLSKO,SK.NOSKO,SK.IDXSKO-->
+      from PSPJ A
+      left outer join BEND B on A.KEYBEND = B.KEYBEND
+      left outer join DAFTUNIT C on A.UNITKEY = C.UNITKEY
+      left outer join JABTTD D on A.IDXTTD = D.IDXTTD
+      left outer join STATTRS E on A.KDSTATUS=E.KDSTATUS
+      left outer join ZKODE F on A.IDXKODE = F.IDXKODE
+
+      LEFT OUTER JOIN SPJDETR G ON A.NOSPJ = G.NOSPJ and A.UNITKEY = G.UNITKEY
+      <!--LEFT OUTER JOIN SKO SK ON A.IDXKODE = SK.IDXKODE and A.UNITKEY = SK.UNITKEY-->
+      where A.UNITKEY=#Unitkey# and A.IDXKODE=#Idxkode#
+      and (isnull(G.KDKEGUNIT,'')=isnull(#Kdkegunit#,'') or isnull(#Kdkegunit#,'')='' or G.KDKEGUNIT is null)
+      and case #Parameter.Field#
+      when '1' then A.NOSPJ
+      when '2' then convert(char(10), A.TGLSPJ, 103)
+      when '3' then A.NOSAH
+      when '4' then A.KETERANGAN
+      end like '%'+ #Parameter.Value# + '%'
+      Order by A.NOSPJ
+    </select>
+    <select id="QueryBySpjsppPspj" parameterClass="Pspj" resultMap="return-lookup">
+
+      declare @opsi char (2)
+      set @opsi=(select valset from webset where kdset='bppgu')
+
+      if @opsi='Y'
+      begin
+      select A.NOSPJ,convert(char(10),A.TGLSPJ, 103) as TGLSPJ,rtrim(left(A.KETERANGAN,100)) As KETERANGAN from PSPJ A
+      <!--inner join BEND B on A.KEYBEND = B.KEYBEND-->
+      where (A.UNITKEY=#Unitkey# or a.UNITKEY IN (SELECT UNITKEYUK FROM DAFTUNITUK WHERE UNITKEYSKPD = #Unitkey#)) and A.TGLSAH is not null and
+      (A.KDSTATUS='42' or A.KDSTATUS='20' and #Kdstatus#='22') and IDXKODE=#Idxkode#
+      and (A.KEYBEND=#Keybend# or (A.KEYBEND is null or A.KEYBEND=''))
+      and A.NOSPJ not in (select NOSPJ from SPJSPP where (UNITKEY=#Unitkey# or UNITKEY IN (SELECT UNITKEYUK FROM DAFTUNITUK WHERE UNITKEYSKPD = #Unitkey#)))
+      <!--and KDSTATUS != 20 -->
+      and case #Parameter.Field#
+      when '1' then A.NOSPJ
+      when '2' then A.KETERANGAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOSPJ
+      end
+      else
+      begin
+      select A.NOSPJ,convert(char(10),A.TGLSPJ, 103) as TGLSPJ,rtrim(left(A.KETERANGAN,100)) As KETERANGAN from PSPJ A
+      <!--inner join BEND B on A.KEYBEND = B.KEYBEND-->
+      where (A.UNITKEY=#Unitkey# or a.UNITKEY IN (SELECT UNITKEYUK FROM DAFTUNITUK WHERE UNITKEYSKPD = #Unitkey#)) and A.TGLSAH is not null and
+      (A.KDSTATUS='42'  or A.KDSTATUS='20' and #Kdstatus#='22') and IDXKODE=#Idxkode#
+      <!--and (A.KEYBEND=#Keybend# or (A.KEYBEND is null or A.KEYBEND=''))-->
+      and A.NOSPJ not in (select NOSPJ from SPJSPP where (UNITKEY=#Unitkey# or UNITKEY IN (SELECT UNITKEYUK FROM DAFTUNITUK WHERE UNITKEYSKPD = #Unitkey#)))
+      <!--and KDSTATUS != 20
+	  mem block kdstatus 20-->
+      and case #Parameter.Field#
+      when '1' then A.NOSPJ
+      when '2' then A.KETERANGAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOSPJ
+      end
+
+
+    </select>
+    <select id="LoadByPKPspjjur" extends="BaseQueryPspj" parameterClass="Pspj" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSPJ=#Nospj#
+    </select>
+    <select id="LoadByPKPspj" extends="BaseQueryPspj" parameterClass="Pspj" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSPJ=#Nospj#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Pspj">
+      <parameter property="Idxkode" column="IDXKODE"/>
+      <parameter property="Idxttd" column="IDXTTD"/>
+      <parameter property="Kdstatus" column="KDSTATUS"/>
+      <parameter property="Keterangan" column="KETERANGAN"/>
+      <parameter property="Keybend" column="KEYBEND"/>
+      <parameter property="Tglbuku" column="TGLBUKU"/>
+      <parameter property="Tglspj" column="TGLSPJ"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nospj" column="NOSPJ"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Pspj">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Pspj">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nospj" column="NOSPJ"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

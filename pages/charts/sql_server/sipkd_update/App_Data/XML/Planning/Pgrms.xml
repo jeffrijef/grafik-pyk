@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Pgrms" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Pgrms" type="Usadi.Valid49.BO.PgrmsControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Pgrms">
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Idprgrms" column="IDPRGRMS"/>
+      <result property="Sasaran" column="SASARAN"/>
+      <result property="Keterangan" column="KETERANGAN"/>
+      <result property="Statustr" column="STATUSTR"/>
+      <result property="Statusvd" column="STATUSVD"/>
+      <result property="Noprgrms" column="NOPRGRMS"/>
+      <result property="Nmprgrms" column="NMPRGRMS"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="IDPRGRMS"/>
+      <result property="Field" column="NOPRGRMS"/>
+      <result property="Value" column="NMPRGRMS"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <insert id="InsertPgrms" parameterMap="insert-param" >
+      <generate table="PGRMS"/>
+    </insert>
+    <update id="UpdateByPgrms" parameterMap="update-param" >
+      <generate table="PGRMS" by="UNITKEY,IDPRGRMS"/>
+    </update>
+    <delete id="DeleteByPgrms" parameterMap="delete-param" >
+      <generate table="PGRMS" by="UNITKEY,IDPRGRMS"/>
+    </delete>
+    <select id="BaseQueryPgrms" parameterClass="Pgrms" resultMap="return-result">
+      select      PS.UNITKEY, PS.IDPRGRMS, PS.SASARAN, PS.KETERANGAN, PS.STATUSTR, 
+        PS.STATUSVD, PS.NOPRGRMS, PS.NMPRGRMS, UN.KDUNIT, UN.NMUNIT
+      from PGRMS PS
+      left outer join DAFTUNIT UN on PS.UNITKEY = UN.UNITKEY
+    </select>
+    <select id="QueryByAllPgrms" extends="BaseQueryPgrms" parameterClass="Pgrms" resultMap="return-result">
+      where
+      PS.UNITKEY=#Unitkey#
+      and case #Parameter.Field #
+      when '1' then PS.NOPRGRMS
+      when '2' then PS.NMPRGRMS
+      end like '%'+#Parameter.Value#+'%'
+      order by PS.NOPRGRMS
+    </select>
+    <select id="QueryByBijakpgrmunitsPgrms" extends="BaseQueryPgrms" parameterclass="Usadi.Valid49.BO.BijakpgrmunitsControl, Usadi.Valid49" resultMap="return-lookup">
+      where PS.UNITKEY=#Unitkey#
+      and PS.IDPRGRMS not in (select IDPRGRMS from BIJAKPGRMUNITS where UNITKEY = #Unitkey#)
+      and
+      case #Parameter.Field#
+      when '1' then PS.NOPRGRMS
+      when '2' then PS.NMPRGRMS
+      end like '%'+#Parameter.Value#+'%'
+      order by PS.NOPRGRMS
+    </select>
+    <select id="LoadByPKPgrms" extends="BaseQueryPgrms" parameterClass="Pgrms"  resultMap="return-result" >
+      where PS.UNITKEY=#Unitkey# and PS.IDPRGRMS=#Idprgrms#
+    </select>
+  </statements>
+
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Pgrms">
+      <parameter property="Sasaran" column="SASARAN"/>
+      <parameter property="Keterangan" column="KETERANGAN"/>
+      <parameter property="Statustr" column="STATUSTR"/>
+      <parameter property="Statusvd" column="STATUSVD"/>
+      <parameter property="Noprgrms" column="NOPRGRMS"/>
+      <parameter property="Nmprgrms" column="NMPRGRMS"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Idprgrms" column="IDPRGRMS"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Pgrms">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Pgrms">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Idprgrms" column="IDPRGRMS"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>
+

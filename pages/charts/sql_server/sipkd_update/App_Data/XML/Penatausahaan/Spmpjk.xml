@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Spmpjk" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Spmpjk" type="Usadi.Valid49.BO.SpmpjkControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Spmpjk">
+      <result property="Idxkode" column="IDXKODE"/>
+      <result property="Idxsko" column="IDXSKO"/>
+      <result property="Idxttd" column="IDXTTD"/>
+      <result property="Kdp3" column="KDP3"/>
+      <result property="Kdstatus" column="KDSTATUS"/>
+      <result property="Keperluan" column="KEPERLUAN"/>
+      <result property="Ketotor" column="KETOTOR"/>
+      <result property="Keybend" column="KEYBEND"/>
+      <result property="Nokontrak" column="NOKONTRAK"/>
+      <result property="Noreg" column="NOREG"/>
+      <result property="Penolakan" column="PENOLAKAN"/>
+      <result property="Tglspm" column="TGLSPM"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Kdpajak" column="KDPAJAK"/>
+      <result property="Nmpajak" column="NMPAJAK"/>
+      <result property="Rumuspjk" column="RUMUSPJK"/>
+      <result property="Keterangan" column="KETERANGAN"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nospm" column="NOSPM"/>
+      <result property="Pjkkey" column="PJKKEY"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSpmpjk" parameterMap="insert-param">
+      <generate table="SPMPJK"/>
+    </insert>
+    <update id="UpdateBySpmpjk" parameterMap="update-param">
+      <generate table="SPMPJK" by="UNITKEY,NOSPM,PJKKEY"/>
+    </update>
+    <delete id="DeleteBySpmpjk" parameterMap="delete-param">
+      <generate table="SPMPJK" by="UNITKEY,NOSPM,PJKKEY"/>
+    </delete>
+    <delete id="DeleteByAllSpmpjk" parameterClass="Spmpjk" >
+      delete from SPMPJK
+      where UNITKEY=#Unitkey# and NOSPM=#Nospm#
+    </delete>
+    <select id="BaseQuerySpmpjk" parameterClass="Spmpjk" resultMap="return-result">
+      select A.KETERANGAN,A.NILAI,A.NOSPM,A.PJKKEY,A.UNITKEY
+      ,B.IDXKODE,B.IDXSKO,rtrim(B.IDXTTD) as IDXTTD,B.KDP3,rtrim(B.KDSTATUS) as KDSTATUS,B.KEPERLUAN,B.KETOTOR,rtrim(B.KEYBEND) as KEYBEND,
+      B.NOKONTRAK,B.NOREG,B.PENOLAKAN,B.TGLSPM,B.TGLVALID
+      ,C.KDPAJAK,C.NMPAJAK,C.RUMUSPJK
+      from SPMPJK A
+      left outer join ANTARBYR B on A.NOSPM = B.NOSPM and A.UNITKEY=B.UNITKEY
+      left outer join JPAJAK C on A.PJKKEY = C.PJKKEY
+    </select>
+    <select id="QueryByAllSpmpjk" extends="BaseQuerySpmpjk" parameterClass="Spmpjk" resultMap="return-result">
+			where A.UNITKEY=#Unitkey# and A.NOSPM=#Nospm#
+			and case #Parameter.Field#
+			when '1' then C.KDPAJAK
+			when '2' then C.NMPAJAK
+			end like '%'+ #Parameter.Value# + '%'
+      order by C.KDPAJAK
+		</select>
+    <select id="QueryByTotalSpmpjk" extends="BaseQuerySpmpjk" parameterClass="Spmpjk" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSPM=#Nospm#
+    </select>
+    <select id="LoadByPKSpmpjk" extends="BaseQuerySpmpjk" parameterClass="Spmpjk" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSPM=#Nospm# and A.PJKKEY=#Pjkkey# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Spmpjk">
+      <parameter property="Keterangan" column="KETERANGAN"/>
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nospm" column="NOSPM"/>
+      <parameter property="Parameter.Key" column="PJKKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" class="Spmpjk">
+      <parameter property="Keterangan" column="KETERANGAN"/>
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nospm" column="NOSPM"/>
+      <parameter property="Pjkkey" column="PJKKEY"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Spmpjk">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nospm" column="NOSPM"/>
+      <parameter property="Pjkkey" column="PJKKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

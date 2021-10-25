@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<siteMap xmlns="http://schemas.microsoft.com/AspNet/SiteMap-File-1.0" >
+  <siteMapNode url="~/Default.aspx?id=0" title="Utility" roles="ALL">
+    <siteMapNode url="~/Default.aspx?id=1" title="Utama" roles="ALL">
+      <siteMapNode url="~/Logout.aspx?id=101" title="Ke Halaman Muka" roles="ALL"/>
+      <siteMapNode url="~/pSistem/Konfigurasi.aspx?id=103" title="Pindah Tahapan" roles="MDSKPKD"/>
+      <siteMapNode url="~/pSistem/SetPassword.aspx?id=102" title="Ubah Sandi" roles="ALL"/>
+      <siteMapNode url="~/pSistem/Konfigurasi.aspx?id=104" title="Reset User" roles="MDSKPKD"/>
+      <siteMapNode url="~/pSistem/Konfigurasi.aspx?id=105" title="Reset Password" roles="MDSKPKD"/>
+      <!--<siteMapNode url="~/pSistem/Database.aspx?id=107&amp;mode=exopt" title="Kirim Option" roles="MDSKPKD"/>
+      <siteMapNode url="~/pSistem/Database.aspx?id=108&amp;mode=imopt" title="Terima Option" roles="MDSKPKD"/>-->
+      <siteMapNode url="~/pSistem/Database.aspx?id=111&amp;mode=hitsikd" title="Siapkan Data SIE" roles="MDSKPKD"/>
+      <siteMapNode url="~/pSistem/Database.aspx?id=112&amp;mode=exsikd" title="Kirim Data SIKD" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageAAA.aspx?id=999&amp;kode=Ut" title="Option" roles="MDSKPKD"/>
+      <!--<siteMapNode url="~/pSistem/Log.aspx?id=990" title="Method Log" roles="DEV"/>-->
+    </siteMapNode>
+    <siteMapNode url="~/Default.aspx?id=2" title="Pengaturan">
+      <siteMapNode url="~/pPage/PageAAA.aspx?id=201" title="Fitur" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageAAA.aspx?id=202" title="Kelompok" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageAAA.aspx?id=203" title="Hak Akses Kelompok" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageAAA.aspx?id=204" title="Pengguna" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageAAA.aspx?id=205" title="Pengguna Aktif" roles="MDSKPKD"/>
+      <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=206" title="Web Fitur" roles="MDSKPKD"/>-->
+      <!--<siteMapNode url="~/pPage/PageAAA.aspx?id=207" title="Web Error" roles="MDSKPKD"/>-->
+      <siteMapNode url="~/pPage/PageAAA.aspx?id=208" title="User SKPD" roles="MDSKPKD"/>
+			<siteMapNode url="~/pPage/PageAAA.aspx?id=209" title="User Kegiatan" roles="MDSKPKD"/>
+			<!--<siteMapNode url="~/pPage/PageAAA.aspx?id=210&amp;bend=2" title="Bendahara Kegiatan" roles="MDSKPKD"/>-->
+    </siteMapNode>
+    <!--<siteMapNode url="~/Default.aspx?id=3" title="Database">
+      <siteMapNode url="~/pSistem/Database.aspx?id=301&amp;mode=newdb" title="Database Baru" roles="MDSKPKD"/>
+      <siteMapNode url="~/pSistem/Database.aspx?id=302&amp;mode=backup" title="Backup" roles="MDSKPKD"/>
+      <siteMapNode url="~/pSistem/Database.aspx?id=303&amp;mode=restore" title="Restore" roles="MDSKPKD"/>
+      <siteMapNode url="~/pSistem/Database.aspx?id=304&amp;mode=clean" title="Cek Integrasi Data" roles="MDSKPKD"/>
+    </siteMapNode>-->
+    <siteMapNode url="~/Default.aspx?id=4" title="Data">
+      <siteMapNode url="~/pPage/PageAAA.aspx?id=401" title="Tahap" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageAAA.aspx?id=402" title="Bulan" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageAAA.aspx?id=403" title="Triwulan" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageAAA.aspx?id=404" title="Tahun" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageAAA.aspx?id=405" title="Zona Kode" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageAAA.aspx?id=406" title="Kunci(Nextkey)" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageAAA.aspx?id=407" title="Pemda" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageAAA.aspx?id=408" title="Set Web" roles="MDSKPKD"/>
+    </siteMapNode>
+    <!--<siteMapNode url="~/Default.aspx?id=3" title="Control">
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=501" title="RKA - Penjabaran" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=502" title="Kinerja Tak Lengkap" roles="MDSKPKD"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=503&amp;name=1.sie-templatea1&amp;graph=1" title="CR Template 1" description="Ringkasan APBD" roles="MPSKPD" resourceKey="1-2"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=503&amp;name=2.sie-templatea1&amp;graph=1" title="CR Template 2" description="Ringkasan APBD" roles="MPSKPD" resourceKey="1-2"/>
+      <siteMapNode url="~/pPage/PageRedirector.aspx?id=503&amp;name=3.sie-templatea1&amp;graph=1" title="CR Template 3" description="Ringkasan APBD" roles="MPSKPD" resourceKey="1-2"/>
+      <siteMapNode url="~/pPage/Default.aspx?id=503&amp;name=Control Cash" title="Ringaksan APBD" description="Ringkasan APBD" roles="MPSKPD" resourceKey="1-2"/>
+      <siteMapNode url="~/pPage/Default.aspx?id=503&amp;name=RKAR" title="APBD" description="Ringkasan APBD" roles="MPSKPD" resourceKey="1-2"/>
+    </siteMapNode>-->
+    <siteMapNode url="~/Files/Default.aspx"  title="File Pendukung" roles="ALL">
+      <siteMapNode url="~/pSistem/Download.aspx?id=911&amp;kode=ma" title="Dokumen" roles="ALL"/>
+      <siteMapNode url="~/Files/Default.aspx?file=2"  title="Manual&lt;hr size=0.1/&gt;" roles="ALL">
+        <siteMapNode url="~/Files/ManualHelp.aspx?pdfName=Option" title="Option Sipkd.V@Lid akrual&lt;hr size=0.1/&gt;" roles="ALL"/>
+      </siteMapNode>
+    </siteMapNode>
+  </siteMapNode>
+</siteMap>

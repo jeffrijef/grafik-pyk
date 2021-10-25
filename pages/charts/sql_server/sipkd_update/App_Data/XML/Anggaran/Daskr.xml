@@ -1,0 +1,659 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Daskr" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Daskr" type="Usadi.Valid49.BO.DaskrControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Daskr">
+      <result property="Kdtahap" column="KDTAHAP"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Mtglevel" column="MTGLEVEL"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Idxdask" column="IDXDASK"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nodask" column="NODASK"/>
+    </resultMap>
+    <resultMap id="return-result-total" class="Daskr">
+      <result property="Nilai" column="NILAI"/>
+    </resultMap>
+    <resultMap id="return-result-tree" class="Daskr">
+      <result property="Kdtahap" column="KDTAHAP"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Idxdask" column="IDXDASK"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Type" column="TYPE"/>
+    </resultMap>
+    <resultMap id="return-result-prog" class="Daskr">
+      <result property="Idprgrm" column="MTGKEY"/>
+      <result property="Nuprgrm" column="KDPER"/>
+      <result property="Nmprgrm" column="NMPER"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Idxdask" column="IDXDASK"/>
+      <result property="Kdtahap" column="KDTAHAP"/>
+      <result property="Unitkey" column="UNITKEY"/>
+    </resultMap>
+    <resultMap id="return-result-keg" class="Daskr">
+      <result property="Kdkegunit" column="MTGKEY"/>
+      <result property="Nukeg" column="KDPER"/>
+      <result property="Nmkegunit" column="NMPER"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Idxdask" column="IDXDASK"/>
+      <result property="Kdtahap" column="KDTAHAP"/>
+      <result property="Unitkey" column="UNITKEY"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="MTGKEY"/>
+      <result property="Field" column="KDPER"/>
+      <result property="Value" column="NMPER"/>
+      <result property="Type" column="TYPE"/>
+    </resultMap>
+    <resultMap id="return-lookup-pot" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="MTGKEY"/>
+      <result property="Field" column="KDPER"/>
+      <result property="Value" column="NMPER"/>
+    </resultMap>
+    <resultMap id="return-lookup-bend" class="CoreNET.Common.Base.BaseParameter">
+			<result property="Key" column="MTGKEY"/>
+			<result property="Field" column="KDPER"/>
+			<result property="Value" column="NMPER"/>
+		</resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertDaskr" parameterMap="insert-param">
+      <generate table="DASKR"/>
+    </insert>
+    <insert id="InsertBulanDaskr" parameterClass="Daskr">
+      insert into DASKBLNR ( UNITKEY, MTGKEY, KDKEGUNIT, IDXDASK, KD_BULAN, NILAI)
+      select #Unitkey#,#Mtgkey#,#Kdkegunit#,#Idxdask#,KD_BULAN,0
+      from BULAN
+    </insert>
+    <update id="UpdateByDaskr" parameterMap="update-param">
+      <generate table="DASKR" by="IDXDASK,KDKEGUNIT,MTGKEY,UNITKEY"/>
+    </update>
+    <update id="UpdateByGeserDaskr" parameterClass="Daskr" >
+      update DASKR set MTGKEY=#Mtgkey#
+      where UNITKEY=#Unitkey# and KDKEGUNIT=#Kdkegunit# and IDXDASK=#Idxdask# and MTGKEY=#Mtgkeyprev#
+    </update>
+    <delete id="DeleteByDaskr" parameterMap="delete-param">
+      <generate table="DASKR" by="IDXDASK,KDKEGUNIT,MTGKEY,UNITKEY"/>
+    </delete>
+    <select id="BaseQueryDaskr" parameterClass="Daskr" resultMap="return-result">
+      select A.IDXDASK,A.KDKEGUNIT,A.MTGKEY,A.NILAI,A.UNITKEY
+      ,B.KDPER,B.MTGLEVEL,B.NMPER,B.TYPE
+      ,C.NODASK,C.KDTAHAP
+      from DASKR A
+      left outer join MATANGR B on A.MTGKEY=B.MTGKEY
+      left outer join SKDASK C on A.IDXDASK=C.IDXDASK and A.UNITKEY = C.UNITKEY
+    </select>
+    <select id="QueryByKegunitDaskr" extends="BaseQueryDaskr" parameterClass="Daskr" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.KDKEGUNIT=#Kdkegunit# and C.KDTAHAP=#Kdtahap#
+    </select>
+    <select id="QueryByAllDaskr" extends="BaseQueryDaskr" parameterClass="Daskr" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.IDXDASK=#Idxdask# and C.KDTAHAP=#Kdtahap#
+      and (isnull(A.KDKEGUNIT,'')=isnull(#Kdkegunit#,'') or isnull(#Kdkegunit#,'')='' or A.KDKEGUNIT is null)
+      and case #Parameter.Field#
+      when '1' then B.KDPER
+      when '2' then B.NMPER
+      when '3' then A.KDKEGUNIT
+      when '4' then convert(char(10), A.NILAI)
+      when '5' then A.UNITKEY
+      end like '%'+ #Parameter.Value# + '%'
+      order by B.KDPER
+    </select>
+    <select id="QueryByTotalDaskr" parameterClass="Daskr" resultMap="return-result-total">
+      select A.NILAI
+      from DASKR A
+      left outer join SKDASK C on A.IDXDASK=C.IDXDASK and A.UNITKEY = C.UNITKEY
+      where A.UNITKEY=#Unitkey# and A.MTGKEY=#Mtgkey# and A.KDKEGUNIT=#Kdkegunit# and
+      C.KDTAHAP=#Kdtahap# 
+    </select>
+    <select id="LoadByPKDaskr" extends="BaseQueryDaskr" parameterClass="Daskr" resultMap="return-result">
+      where A.IDXDASK=#Idxdask# and A.KDKEGUNIT=#Kdkegunit# and A.MTGKEY=#Mtgkey# and A.UNITKEY=#Unitkey#
+    </select>
+    <select id="LoadByKdtahapDaskr" extends="BaseQueryDaskr" parameterClass="Daskr" resultMap="return-result">
+      where C.KDTAHAP=#Kdtahap# and A.MTGKEY=#Mtgkey# and A.UNITKEY=#Unitkey# and A.KDKEGUNIT=#Kdkegunit#
+    </select>
+    <select id="QueryByLookupUserKegDaskr" parameterclass="Usadi.Valid49.BO.UserkegControl" resultMap="return-lookup-bend">
+      <!--select * from (
+      select MP.UNITKEY,isnull(UR.UNITKEY,'') as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2'))) as KDPER, isnull(UR.NMUNIT,'NON URUSAN') as NMPER,'H' as TYPE
+      from MPGRM MP
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      where (MP.IDPRGRM=#Idprgrm# and UR.KDUNIT in (select left(KDUNIT,8) from USERSKPD US
+      inner join DAFTUNIT U on US.UNITKEY = U.UNITKEY where Userid=#Userid# )) OR( mp.UNITKEY IS null and MP.IDPRGRM=#Idprgrm#)
+      union
+      select
+      MP.UNITKEY,MP.IDPRGRM as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM) as KDPER, MP.NMPRGRM as NMPER,'H' as TYPE
+      from MPGRM MP
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      where (MP.IDPRGRM=#Idprgrm# and UR.KDUNIT in (select left(KDUNIT,8) from USERSKPD US
+      inner join DAFTUNIT U on US.UNITKEY = U.UNITKEY where Userid=#Userid# )) OR( mp.UNITKEY IS null and MP.IDPRGRM=#Idprgrm#)
+      union
+      select
+      MP.UNITKEY,MK.KDKEGUNIT as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM)+rtrim(MK.NUKEG) as KDPER,
+      MK.NMKEGUNIT as NMPER,'D' as TYPE
+      from MKEGIATAN MK
+      left outer join MPGRM MP ON MP.IDPRGRM = MK.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      where (MK.TYPE='H' and MP.IDPRGRM=#Idprgrm# and UR.KDUNIT in (select left(KDUNIT,8) from USERSKPD US
+      inner join DAFTUNIT U on US.UNITKEY = U.UNITKEY where Userid=#Userid# )) OR(MK.TYPE='H' and  mp.UNITKEY IS null and MP.IDPRGRM=#Idprgrm#)
+      )A-->
+      select * from (
+      select P.UNITKEY,isnull(UR.UNITKEY,'') as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2'))) as KDPER, isnull(UR.NMUNIT,'NON URUSAN') as NMPER
+      from PGRMUNIT P left outer join MPGRM MP on P.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on P.UNITKEY = UN.UNITKEY
+      inner join KEGUNIT K on P.UNITKEY=K.UNITKEY and P.IDPRGRM=K.IDPRGRM
+      where P.UNITKEY =#Unitkey# and P.KDTAHAP=#Kdtahap#
+      union
+      select P.UNITKEY,P.IDPRGRM as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM) as KDPER, MP.NMPRGRM as NMPER
+      from PGRMUNIT P left outer join MPGRM MP on P.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on P.UNITKEY = UN.UNITKEY
+      inner join KEGUNIT K on P.UNITKEY=K.UNITKEY and P.IDPRGRM=K.IDPRGRM
+      where P.UNITKEY =#Unitkey# and P.KDTAHAP=#Kdtahap#
+      union
+      select K.UNITKEY,rtrim(K.KDKEGUNIT)+'-x-H' as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM)+rtrim(MK.NUKEG) as KDPER, MK.NMKEGUNIT as NMPER
+      from KEGUNIT K
+      left outer join MKEGIATAN MK on MK.KDKEGUNIT=K.KDKEGUNIT
+      left outer join MPGRM MP on MK.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on K.UNITKEY = UN.UNITKEY
+      where K.UNITKEY =#Unitkey#  and K.KDTAHAP=#Kdtahap#
+      <!--and (isnull(K.KDKEGUNIT,'')=isnull(#Kdkegunit#,'') or isnull(#Kdkegunit#,'')='' or K.KDKEGUNIT is  null)-->
+      )A
+    </select>
+    <select id="QueryByUserkegDaskr" extends="QueryByLookupUserKegDaskr" parameterclass="Usadi.Valid49.BO.UserkegControl" resultMap="return-lookup-bend">
+      where UNITKEY =#Unitkey#
+      and MTGKEY not in (select rtrim(KDKEGUNIT)+'-x-H' from USERKEG S where Userid=#Userid#)
+      order by KDPER
+
+      <!--where UNITKEY =#Unitkey#
+      and MTGKEY not in (select rtrim(KDKEGUNIT)+'-x-H' from BENDKEG S where S.KEYBEND=#Keybend# and UNITKEY =#Unitkey# )
+      order by KDPER-->
+    </select>
+    
+    
+    <select id="QueryByProgKegDaskr" parameterclass="Usadi.Valid49.BO.SkdaskControl" resultMap="return-result-keg">
+      select *,#Idxdask# as IDXDASK,#Kdtahap# as KDTAHAP from (
+      select P.UNITKEY,isnull(UR.UNITKEY,'') as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2'))) as KDPER, isnull(UR.NMUNIT,'NON URUSAN') as NMPER, 'H' as TYPE
+      from PGRMUNIT P left outer join MPGRM MP on P.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on P.UNITKEY = UN.UNITKEY
+      where P.UNITKEY =#Unitkey#
+      union
+      select P.UNITKEY,P.IDPRGRM as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM) as KDPER, MP.NMPRGRM as NMPER, 'H' as TYPE
+      from PGRMUNIT P
+      left outer join KEGUNIT K on K.IDPRGRM = P.IDPRGRM and K.UNITKEY=P.UNITKEY and
+      K.KDKEGUNIT in (select D.KDKEGUNIT from DASKR D left outer join SKDASK S
+      on D.IDXDASK=S.IDXDASK and D.UNITKEY=S.UNITKEY
+      )
+      left outer join MPGRM MP on P.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on P.UNITKEY = UN.UNITKEY
+      where P.UNITKEY =#Unitkey#
+      union
+      select K.UNITKEY,K.KDKEGUNIT as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM)+rtrim(MK.NUKEG) as KDPER, MK.NMKEGUNIT as NMPER, 'D' as TYPE
+      from KEGUNIT K
+      left outer join MKEGIATAN MK on MK.KDKEGUNIT=K.KDKEGUNIT
+      left outer join MPGRM MP on MK.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on K.UNITKEY = UN.UNITKEY
+      where K.UNITKEY =#Unitkey#
+      )A
+    </select>
+    <select id="QueryByProgDaskr" parameterclass="Usadi.Valid49.BO.SkdaskControl" resultMap="return-result-prog">
+      select distinct *,#Idxdask# as IDXDASK,#Kdtahap# as KDTAHAP from (
+      select P.UNITKEY,P.IDPRGRM as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM) as KDPER, MP.NMPRGRM as NMPER, 'D' as TYPE
+      from PGRMUNIT P
+      left outer join KEGUNIT K on K.IDPRGRM = P.IDPRGRM and K.UNITKEY=P.UNITKEY and
+      K.KDKEGUNIT in (select D.KDKEGUNIT from DASKR D left outer join SKDASK S
+      on D.IDXDASK=S.IDXDASK and D.UNITKEY=S.UNITKEY and S.IDXDASK=#Idxdask#
+      )
+      left outer join DASKR D on K.UNITKEY = D.UNITKEY and K.KDKEGUNIT = D.KDKEGUNIT
+      left outer join MPGRM MP on P.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on P.UNITKEY = UN.UNITKEY
+      where P.UNITKEY =#Unitkey# and P.KDTAHAP=#Kdtahap# and D.IDXDASK=#Idxdask#
+      )A
+    </select>
+    <select id="QueryByKegDaskr" parameterClass="Daskr" resultMap="return-result-keg">
+      select distinct *,#Idxdask# as IDXDASK,#Kdtahap# as KDTAHAP from (
+      select K.UNITKEY,K.KDKEGUNIT as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM)+rtrim(MK.NUKEG) as KDPER, MK.NMKEGUNIT as NMPER, 'D' as TYPE
+      from KEGUNIT K
+      left outer join MKEGIATAN MK on MK.KDKEGUNIT=K.KDKEGUNIT
+      left outer join MPGRM MP on MK.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on K.UNITKEY = UN.UNITKEY
+      where K.UNITKEY =#Unitkey# and K.IDPRGRM=#Idprgrm#
+      )A
+    </select>
+    <select id="BaseQueryLookupDaskr" parameterClass="Daskr" resultMap="return-lookup">
+      select distinct B.KDPER, B.NMPER,B.MTGKEY,B.TYPE
+      from DASKR A
+      left join MATANGR B on A.mtgkey = B.mtgkey
+      where A.UNITKEY in (select UNITKEY from DAFTUNIT where KDUNIT=#Kdunit#)
+      and A.KDKEGUNIT=#Kdkegunit#
+      and A.IDXDASK in (select IDXDASK from SKDASK where UNITKEY in (select UNITKEY from DAFTUNIT where KDUNIT=#Kdunit#)
+      and (IDXKODE=#Idxkode# or IDXKODE='6') and KDTAHAP=#Kdtahap# and TGLVALID is not NULL)
+    </select>
+    <select id="BaseQueryLookup1Daskr" parameterClass="Daskr" resultMap="return-lookup">
+      <![CDATA[
+      select distinct B.KDPER, B.NMPER,B.MTGKEY
+      from DASKR A
+      left join MATANGR B on A.mtgkey = B.mtgkey
+      where A.UNITKEY=#Unitkey#
+      and A.IDXDASK in (select IDXDASK from SKDASK where UNITKEY=#Unitkey# 
+      and TGLDASK <= (select TGLDASK from SKDASK where UNITKEY=#Unitkey# 
+      and IDXDASK = #Idxdask#) and TGLVALID is not NULL)
+      ]]>
+    </select>
+    <!--Untuk satu BPK satu kegiatan-->
+    <select id="QueryByBpkdetrDaskr" parameterclass="Usadi.Valid49.BO.BpkdetrControl" resultMap="return-lookup">
+		select distinct B.KDPER, B.NMPER,B.MTGKEY,B.TYPE
+		from DASKR A
+		left join MATANGR B on A.mtgkey = B.mtgkey
+		where A.UNITKEY in (select UNITKEY from DAFTUNIT where KDUNIT=#Kdunit#)	 and A.KDKEGUNIT=#Kdkegunit#
+		and A.MTGKEY not in (select rtrim(MTGKEY) from BPKDETR S where S.UNITKEY=#Unitkey# and S.NOBPK=#Nobpk#  and S.KDKEGUNIT=#Kdkegunit#)
+		order by KDPER
+	</select>
+    <select id="QueryByBpkdetrkoreksiDaskr" parameterclass="Usadi.Valid49.BO.BpkdetrControl" resultMap="return-lookup">
+      select distinct B.KDPER, B.NMPER,B.MTGKEY,B.TYPE
+      from DASKR A
+      left join MATANGR B on A.mtgkey = B.mtgkey
+      where A.UNITKEY in (select UNITKEY from DAFTUNIT where KDUNIT=#Kdunit#)	 and A.KDKEGUNIT=#Kdkegunit#
+      and A.MTGKEY not in (select rtrim(MTGKEY) from BPKDETR S where S.UNITKEY=#Unitkey# and S.NOBPK=#Nobpk#  and S.KDKEGUNIT=#Kdkegunit#)
+      and A.MTGKEY in (select rtrim(MTGKEY) from SPJDETR where UNITKEY=#Unitkey# and KDKEGUNIT=#Kdkegunit# )
+      order by KDPER
+    </select>
+    <select id="QueryByLookupDaskr" parameterclass="Daskr" resultMap="return-lookup">
+      select * from (
+      <!--select UNITKEY,UNITKEY as MTGKEY,KDUNIT as KDPER,NMUNIT as NMPER
+      from DAFTUNIT
+      where UNITKEY =#Unitkey#
+      union-->
+      select P.UNITKEY,isnull(UR.UNITKEY,'') as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2'))) as KDPER, isnull(UR.NMUNIT,'NON URUSAN') as NMPER, 'H' as TYPE
+      from PGRMUNIT P left outer join MPGRM MP on P.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on P.UNITKEY = UN.UNITKEY
+      inner join KEGUNIT K on P.UNITKEY=K.UNITKEY and P.IDPRGRM=K.IDPRGRM
+      where P.UNITKEY =#Unitkey# and P.KDTAHAP=#Kdtahap#
+      and (K.KDKEGUNIT in (select KDKEGUNIT from BENDKEG BK
+      inner join BEND B on BK.KEYBEND=B.KEYBEND
+      inner join WEBUSER U  on B.NIP=U.NIP
+      where USERID=#Userid#)
+      or isnull(#Userid#,'')='')
+
+      union
+      select P.UNITKEY,P.IDPRGRM as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM) as KDPER, MP.NMPRGRM as NMPER, 'H' as TYPE
+      from PGRMUNIT P left outer join MPGRM MP on P.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on P.UNITKEY = UN.UNITKEY
+      inner join KEGUNIT K on P.UNITKEY=K.UNITKEY and P.IDPRGRM=K.IDPRGRM
+      where P.UNITKEY =#Unitkey# and P.KDTAHAP=#Kdtahap#
+      and (K.KDKEGUNIT in (select KDKEGUNIT from BENDKEG BK
+      inner join BEND B on BK.KEYBEND=B.KEYBEND
+      inner join WEBUSER U  on B.NIP=U.NIP
+      where USERID=#Userid#)
+      or isnull(#Userid#,'')='')
+
+      union
+      select K.UNITKEY,K.KDKEGUNIT+'-x-H' as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM)+rtrim(MK.NUKEG) as KDPER, MK.NMKEGUNIT as NMPER, 'H' as TYPE
+      from KEGUNIT K
+      left outer join MKEGIATAN MK on MK.KDKEGUNIT=K.KDKEGUNIT
+      left outer join MPGRM MP on MK.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on K.UNITKEY = UN.UNITKEY
+      where K.UNITKEY =#Unitkey#  and K.KDTAHAP=#Kdtahap#
+      and (K.KDKEGUNIT in (select KDKEGUNIT from BENDKEG BK
+      inner join BEND B on BK.KEYBEND=B.KEYBEND
+      inner join WEBUSER U  on B.NIP=U.NIP
+      where USERID=#Userid#)
+      or isnull(#Userid#,'')='')
+
+      union
+      select D.UNITKEY,rtrim(D.KDKEGUNIT)+'-'+ rtrim(D.MTGKEY)+'-'+rtrim(M.TYPE) as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM)+rtrim(MK.NUKEG)+rtrim(M.KDPER) as KDPER, M.NMPER, 'D' as TYPE
+      from DASKR D
+      left outer join KEGUNIT K on D.KDKEGUNIT=K.KDKEGUNIT
+      left outer join MKEGIATAN MK on MK.KDKEGUNIT=K.KDKEGUNIT
+      left outer join MPGRM MP on MK.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on K.UNITKEY = UN.UNITKEY
+      left outer join MATANGR M on D.MTGKEY=M.MTGKEY
+      where K.UNITKEY =#Unitkey# and K.KDTAHAP=#Kdtahap#
+      and (K.KDKEGUNIT in (select KDKEGUNIT from BENDKEG BK
+      inner join BEND B on BK.KEYBEND=B.KEYBEND
+      inner join WEBUSER U  on B.NIP=U.NIP
+      where USERID=#Userid#)
+      or isnull(#Userid#,'')='')
+
+      )A
+    </select>
+    <select id="BaseQueryRekupDaskr" parameterclass="Usadi.Valid49.BO.TbpdetrControl" resultMap="return-lookup">
+      select A.MTGKEY,A.KDPER,A.NMPER,rtrim(A.TYPE)  as TYPE
+      from MATANGR A
+      where A.MTGLEVEL = 3 and left(KDPER,3)='5.2'
+    </select>
+    <select id="QueryByBeritadetrDaskr" parameterclass="Usadi.Valid49.BO.BeritadetrControl" resultMap="return-lookup">
+      select distinct A.MTGKEY,A.KDPER,A.NMPER,rtrim(A.TYPE)  as TYPE
+      from MATANGR A
+      inner join Daskr B on A.MTGKEY=B.MTGKEY
+      inner join SKDASK s1 on s1.unitkey=B.unitkey and B.idxdask=s1.idxdask
+      where A.TYPE = 'D' and <!--left(KDPER,2)='5.'-->
+      LEFT(A.KDPER,4) in ('5.1.')
+      and rtrim(B.KDKEGUNIT)=#Kdkegunit# and B.unitkey=#Unitkey# and s1.kdtahap=#Kdtahap#
+      and A.MTGKEY not in (select MTGKEY from BERITADETR S where  S.UNITKEY=#Unitkey# and S.NOBA=#Noba#)
+      and case #Parameter.Field#
+      when '1' then A.KDPER
+      when '2' then A.NMPER
+      end like #Parameter.Value# + '%'
+      order by A.KDPER
+      <!--where UNITKEY =#Unitkey#
+      and MTGKEY not in (select MTGKEY from BERITADETR S where S.UNITKEY=#Unitkey# and S.NOBA=#Noba# )
+      order by KDPER-->
+    </select>
+    <select id="QueryByBeritadetrbmDaskr" parameterclass="Usadi.Valid49.BO.BeritadetrControl" resultMap="return-lookup">
+      select distinct A.MTGKEY,A.KDPER,A.NMPER,rtrim(A.TYPE)  as TYPE
+      from MATANGR A
+      inner join Daskr B on A.MTGKEY=B.MTGKEY
+      inner join SKDASK s1 on s1.unitkey=B.unitkey and B.idxdask=s1.idxdask
+      where A.TYPE = 'D' and
+      LEFT(A.KDPER,4) in ('5.2.')
+      and rtrim(B.KDKEGUNIT)=#Kdkegunit# and B.unitkey=#Unitkey# and s1.kdtahap=#Kdtahap#
+      and A.MTGKEY not in (select MTGKEY from BERITADETR S where  S.UNITKEY=#Unitkey# and S.NOBA=#Noba#)
+      and case #Parameter.Field#
+      when '1' then A.KDPER
+      when '2' then A.NMPER
+      end like #Parameter.Value# + '%'
+      order by A.KDPER
+      <!--where UNITKEY =#Unitkey#
+      and MTGKEY not in (select MTGKEY from BERITADETR S where S.UNITKEY=#Unitkey# and S.NOBA=#Noba# )
+      order by KDPER-->
+    </select>
+    <select id="QueryBySppdetrUPDaskr" extends="BaseQueryRekupDaskr" parameterclass="Usadi.Valid49.BO.SppdetrControl" resultMap="return-lookup">
+      and A.MTGKEY not in (select MTGKEY from SPPDETR S where  S.UNITKEY=#Unitkey# and S.NOSPP=#Nospp#  and S.NOJETRA=#Nojetra#)
+      order by A.KDPER
+    </select>
+    <select id="QueryBySpmdetrUPDaskr" extends="BaseQueryRekupDaskr" parameterclass="Usadi.Valid49.BO.SpmdetrControl" resultMap="return-lookup">
+      and A.MTGKEY not in (select MTGKEY from SPMDETR S where  S.UNITKEY=#Unitkey# and S.NOSPM=#Nospm#  and S.NOJETRA=#Nojetra#)
+      order by A.KDPER
+    </select>
+    <select id="QueryBySp2ddetrUPDaskr" extends="BaseQueryRekupDaskr" parameterclass="Usadi.Valid49.BO.Sp2ddetrControl" resultMap="return-lookup">
+      and A.MTGKEY not in (select MTGKEY from SP2DDETR S where  S.UNITKEY=#Unitkey# and S.NOSP2D=#Nosp2d#  and S.NOJETRA=#Nojetra#)
+      order by A.KDPER
+    </select>
+    
+    <select id="QueryBySkordetDaskr" extends="QueryByLookupDaskr" parameterclass="Usadi.Valid49.BO.SkordetControl" resultMap="return-lookup-bend">
+      where UNITKEY =#Unitkey#
+      and MTGKEY not in (select rtrim(KDKEGUNIT)+'-'+ rtrim(MTGKEY)+'-D' from SKORDET S where S.UNITKEY=#Unitkey# and S.IDXSKO=#Idxsko# )
+      order by KDPER
+    </select>
+    <select id="QueryByTbpdetrDaskr" extends="QueryByLookupDaskr" parameterclass="Usadi.Valid49.BO.TbpdetrControl" resultMap="return-lookup">
+      where UNITKEY =#Unitkey#
+      and MTGKEY not in (select rtrim(KDKEGUNIT)+'-'+ rtrim(MTGKEY)+'-D' from TBPDETR S where S.UNITKEY=#Unitkey# and S.NOTBP=#Notbp# )
+      order by KDPER
+    </select>
+
+		<select id="QueryByLookupBendDaskr" parameterclass="Usadi.Valid49.BO.BendkegControl" resultMap="return-lookup-bend">
+			select * from (
+			select P.UNITKEY,isnull(UR.UNITKEY,'') as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2'))) as KDPER, isnull(UR.NMUNIT,'NON URUSAN') as NMPER
+			from PGRMUNIT P left outer join MPGRM MP on P.IDPRGRM = MP.IDPRGRM
+			left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+			left outer join DAFTUNIT UN on P.UNITKEY = UN.UNITKEY
+			inner join KEGUNIT K on P.UNITKEY=K.UNITKEY and P.IDPRGRM=K.IDPRGRM
+			where P.UNITKEY =#Unitkey# and P.KDTAHAP=#Kdtahap#
+			union
+			select P.UNITKEY,P.IDPRGRM as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM) as KDPER, MP.NMPRGRM as NMPER
+			from PGRMUNIT P left outer join MPGRM MP on P.IDPRGRM = MP.IDPRGRM
+			left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+			left outer join DAFTUNIT UN on P.UNITKEY = UN.UNITKEY
+			inner join KEGUNIT K on P.UNITKEY=K.UNITKEY and P.IDPRGRM=K.IDPRGRM
+			where P.UNITKEY =#Unitkey# and P.KDTAHAP=#Kdtahap#
+			union
+			select K.UNITKEY,rtrim(K.KDKEGUNIT)+'-x-H' as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM)+rtrim(MK.NUKEG) as KDPER, MK.NMKEGUNIT as NMPER
+			from KEGUNIT K
+			left outer join MKEGIATAN MK on MK.KDKEGUNIT=K.KDKEGUNIT
+			left outer join MPGRM MP on MK.IDPRGRM = MP.IDPRGRM
+			left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+			left outer join DAFTUNIT UN on K.UNITKEY = UN.UNITKEY
+			where K.UNITKEY =#Unitkey#  and K.KDTAHAP=#Kdtahap#
+			<!--and (isnull(K.KDKEGUNIT,'')=isnull(#Kdkegunit#,'') or isnull(#Kdkegunit#,'')='' or K.KDKEGUNIT is  null)-->
+			)A
+		</select>
+		<select id="QueryByBendkegDaskr" extends="QueryByLookupBendDaskr" parameterclass="Usadi.Valid49.BO.BendkegControl" resultMap="return-lookup-bend">
+			where UNITKEY =#Unitkey#
+			and MTGKEY not in (select rtrim(KDKEGUNIT)+'-x-H' from BENDKEG S where S.KEYBEND=#Keybend# and UNITKEY =#Unitkey# )
+			order by KDPER
+		</select>
+    <!--<select id="QueryByRkmdetrDaskr" parameterclass="Usadi.Valid49.BO.RkmdetrControl" resultMap="return-lookup">
+		EXEC WSP_LOOKUP_RKMDETR #Unitkey#,#Kdtahap#,#Nosts#
+	</select>-->
+    <select id="QueryByRkmdetrDaskr" extends="QueryByLookupDaskr" parameterClass="Usadi.Valid49.BO.RkmdetrControl" resultMap="return-lookup">
+      where UNITKEY =#Unitkey#
+      and MTGKEY not in (select rtrim(KDKEGUNIT)+'-'+ rtrim(MTGKEY)+'-D' from RKMDETR S where S.UNITKEY=#Unitkey# and S.NOSTS=#Nosts# )
+      order by KDPER
+    </select>
+    <statement id="QueryBySppdetkegDaskr" parameterclass="Usadi.Valid49.BO.SppdetrControl" resultMap="return-lookup">
+			exec WSP_TREEVIEWREK #Unitkey#,#Kdtahap#,#Nuprgrm#<!--,#Userid#,-->
+		</statement>
+    <statement id="QueryBySppdetmultikegDaskr" parameterclass="Usadi.Valid49.BO.SppdetrControl" resultMap="return-lookup">
+      exec WSP_TREEVIEWREK2 #Unitkey#,#Kdtahap#,#Nuprgrm#,#Nospp#
+    </statement>
+    <!--<select id="QueryBySppdetkegDaskr" extends="QueryByLookupDaskr" parameterclass="Usadi.Valid49.BO.SppdetrControl" resultMap="return-lookup">
+      where UNITKEY =#Unitkey#
+      and (
+      (left(KDPER,2)=left(#Nuprgrm#,2) and left(KDPER,5)=left(#Nuprgrm#,5) and left(KDPER,8)=left(#Nuprgrm#,8) )
+      or (isnull(#Nuprgrm#,'') = '') )
+      
+      and MTGKEY not in (select rtrim(KDKEGUNIT)+'-'+ rtrim(MTGKEY)+'-D' from SPPDETR S where S.UNITKEY=#Unitkey# and S.NOSPP=#Nospp# and S.NOJETRA=#Nojetra#)
+      order by KDPER
+    </select>-->
+    <select id="QueryBySpmdetkegDaskr" extends="QueryByLookupDaskr" parameterclass="Usadi.Valid49.BO.SpmdetrControl" resultMap="return-lookup">
+      where UNITKEY =#Unitkey#
+      and MTGKEY not in (select rtrim(KDKEGUNIT)+'-'+ rtrim(MTGKEY)+'-D' from SPMDETR S where S.UNITKEY=#Unitkey# and S.NOSPM=#Nospm# and S.NOJETRA=#Nojetra#)
+      order by KDPER
+    </select>
+		<statement id="QueryBySp2ddetkegDaskr" parameterclass="Usadi.Valid49.BO.Sp2ddetrControl" resultMap="return-lookup">
+			exec WSP_TREEVIEWREK #Unitkey#,#Userid#,#Kdtahap#,,#Nuprgrm#
+		</statement>
+    <select id="QueryBySppdetrDaskr" extends="BaseQueryLookupDaskr" parameterclass="Usadi.Valid49.BO.SppdetrControl" resultMap="return-lookup">
+      and A.MTGKEY not in (select MTGKEY from SPPDETR S where S.UNITKEY=#Unitkey# and S.NOSPP=#Nospp# and S.KDKEGUNIT=#Kdkegunit# and S.NOJETRA=#Nojetra#)
+      order by KDPER
+    </select>
+    <select id="QueryBySppdetrkegDaskr" extends="BaseQueryLookupDaskr" parameterclass="Usadi.Valid49.BO.SppdetrControl" resultMap="return-lookup">
+      and A.MTGKEY not in (select MTGKEY from SPPDETR S where S.UNITKEY=#Unitkey# and S.NOSPP=#Nospp# and S.KDKEGUNIT=#Kdkegunit# and S.NOJETRA=#Nojetra#)
+      order by KDPER
+    </select>
+    <select id="QueryBySpmdetrDaskr" extends="BaseQueryLookupDaskr" parameterclass="Usadi.Valid49.BO.SpmdetrControl" resultMap="return-lookup">
+      and A.MTGKEY not in (select MTGKEY from SPMDETR S where S.UNITKEY=#Unitkey# and S.NOSPM=#Nospm# and S.KDKEGUNIT=#Kdkegunit# and S.NOJETRA=#Nojetra#)
+      order by KDPER
+    </select>
+    <select id="QueryBySpmdetrkegDaskr" extends="BaseQueryLookupDaskr" parameterclass="Usadi.Valid49.BO.SpmdetrControl" resultMap="return-lookup">
+      and A.MTGKEY not in (select MTGKEY from SPMDETR S where S.UNITKEY=#Unitkey# and S.NOSPM=#Nospm# and S.KDKEGUNIT=#Kdkegunit# and S.NOJETRA=#Nojetra#)
+      order by KDPER
+    </select>
+    <select id="QueryBySp2ddetrDaskr" extends="BaseQueryLookupDaskr" parameterclass="Usadi.Valid49.BO.Sp2ddetrControl" resultMap="return-lookup">
+      and A.MTGKEY not in (select MTGKEY from SP2DDETR S where S.UNITKEY=#Unitkey# and S.NOSP2D=#Nosp2d# and S.KDKEGUNIT=#Kdkegunit# and S.NOJETRA=#Nojetra#)
+      order by KDPER
+    </select>
+    <select id="QueryBySp2ddetrkegDaskr" extends="BaseQueryLookupDaskr" parameterclass="Usadi.Valid49.BO.Sp2ddetrControl" resultMap="return-lookup">
+      and A.MTGKEY not in (select MTGKEY from SP2DDETR S where S.UNITKEY=#Unitkey# and S.NOSP2D=#Nosp2d# and S.KDKEGUNIT=#Kdkegunit# and S.NOJETRA=#Nojetra#)
+      order by KDPER
+    </select>
+    
+    <select id="QueryByLookupKegDaskr" parameterclass="Usadi.Valid49.BO.SkordetControl" resultMap="return-lookup">
+      select * from (
+      select P.UNITKEY,isnull(UR.UNITKEY,'')+'-H' as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2'))) as KDPER, isnull(UR.NMUNIT,'NON URUSAN') as NMPER,'H' as TYPE
+      from PGRMUNIT P left outer join MPGRM MP on P.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on P.UNITKEY = UN.UNITKEY
+      inner join KEGUNIT K on P.UNITKEY=K.UNITKEY and P.IDPRGRM=K.IDPRGRM
+      where P.UNITKEY =#Unitkey# and P.KDTAHAP=#Kdtahap#
+      <!--and (K.KDKEGUNIT in (select KDKEGUNIT from BENDKEG BK
+      inner join BEND B on BK.KEYBEND=B.KEYBEND
+      inner join WEBUSER U  on B.NIP=U.NIP
+      where USERID=#Userid#)
+      or isnull(#Userid#,'')='')-->
+
+      union
+      select P.UNITKEY,P.IDPRGRM+'-H' as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM) as KDPER, MP.NMPRGRM as NMPER,'H' as TYPE
+      from PGRMUNIT P left outer join MPGRM MP on P.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on P.UNITKEY = UN.UNITKEY
+      inner join KEGUNIT K on P.UNITKEY=K.UNITKEY and P.IDPRGRM=K.IDPRGRM
+      where P.UNITKEY =#Unitkey# and P.KDTAHAP=#Kdtahap#
+      <!--and (K.KDKEGUNIT in (select KDKEGUNIT from BENDKEG BK
+      inner join BEND B on BK.KEYBEND=B.KEYBEND
+      inner join WEBUSER U  on B.NIP=U.NIP
+      where USERID=#Userid#)
+      or isnull(#Userid#,'')='')-->
+
+      union
+      select K.UNITKEY,K.KDKEGUNIT+'-D' as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM)+rtrim(MK.NUKEG) as KDPER, MK.NMKEGUNIT as NMPER,'D' as TYPE
+      from KEGUNIT K
+      left outer join MKEGIATAN MK on MK.KDKEGUNIT=K.KDKEGUNIT
+      left outer join MPGRM MP on MK.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on K.UNITKEY = UN.UNITKEY
+      where K.UNITKEY =#Unitkey#  and K.KDTAHAP=#Kdtahap#
+      <!--and (K.KDKEGUNIT in (select KDKEGUNIT from BENDKEG BK
+      inner join BEND B on BK.KEYBEND=B.KEYBEND
+      inner join WEBUSER U  on B.NIP=U.NIP
+      where USERID=#Userid#)
+      or isnull(#Userid#,'')='')-->
+
+      )A
+    </select>
+		<!--<select id="QueryByPanjardetDaskr" parameterclass="Usadi.Valid49.BO.PanjardetControl" resultMap="return-lookup">
+			exec WSP_TREEVIEWREK #Unitkey#,#Userid#,#Kdtahap#
+		</select>-->
+    <select id="QueryByPanjardetDaskr" extends="QueryByLookupKegDaskr" parameterclass="Usadi.Valid49.BO.PanjardetControl" resultMap="return-lookup">
+      where UNITKEY =#Unitkey#
+      and MTGKEY not in (select KDKEGUNIT+'-D' from PANJARDET S where S.UNITKEY=#Unitkey# and S.NOPANJAR=#Nopanjar# )
+      order by KDPER
+    </select>
+    <select id="QueryBySpjdetrDaskr" extends="QueryByLookupDaskr" parameterclass="Usadi.Valid49.BO.SpjdetrControl" resultMap="return-lookup">
+      where UNITKEY =#Unitkey#
+      and MTGKEY not in (select rtrim(KDKEGUNIT)+'-'+ rtrim(MTGKEY)+'-D' from SPJDETR S where S.UNITKEY=#Unitkey# and S.NOSPJ=#Nospj# )
+      order by KDPER
+    </select>
+    <select id="BaseQueryLookupPotDaskr" parameterClass="Usadi.Valid49.BO.SpmdetrControl" resultMap="return-lookup-pot">
+      <!--select MTGKEY,KDPER,NMPER,TYPE from
+      (select TOP 100 PERCENT A.MTGKEY,B.KDPER,('UM-'+B.NMPER)NMPER,B.TYPE
+      from SP2DDETR A
+      left join SP2D C on c.NOSP2D=a.NOSP2D
+      inner join BKUK D on D.NOSP2D=A.NOSP2D
+      left outer join MATANGR B on A.MTGKEY=B.MTGKEY
+      and B.KDPER in (select KDPER from dbo.GetFilterMatangr(#Idxkode#))
+      where A.UNITKEY =#Unitkey#  and c.KDSTATUS='25' and a.NOJETRA='21' and a.KDKEGUNIT=#Kdkegunit#
+      order by B.KDPER
+      union-->
+      select A.MTGKEY,A.KDPER,A.NMPER,A.TYPE
+      from MATANGB A
+      where left(A.KDPER,3) = '7.1' and A.TYPE='D' and
+      <!--)A-->
+      <!--where-->
+      case #Parameter.Field#
+      when '1' then A.KDPER
+      when '2' then A.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+    </select>
+    <select id="QueryBySpmdetrDaskrpot" extends="BaseQueryLookupPotDaskr" parameterclass="Usadi.Valid49.BO.SpmdetrControl" resultMap="return-lookup-pot">
+      and A.MTGKEY not in (select MTGKEY from SPMDETR S where S.UNITKEY=#Unitkey# and S.NOSPM=#Nospm# and S.NOJETRA=#Nojetra#)
+      and A.MTGKEY not in (select MTGKEY from SPMDETB S where S.UNITKEY=#Unitkey# and S.NOSPM=#Nospm# and S.NOJETRA=#Nojetra#)
+    </select>
+    <select id="QueryByBeritapotDaskrpot" parameterclass="Usadi.Valid49.BO.BeritapotControl" resultMap="return-lookup-pot">
+      select TOP 100 PERCENT A.MTGKEY,B.KDPER,('UM-'+B.NMPER)NMPER,B.TYPE
+      from SP2DDETR A
+      left join SP2D C on c.NOSP2D=a.NOSP2D
+      inner join BKUK D on D.NOSP2D=A.NOSP2D
+      left outer join MATANGR B on A.MTGKEY=B.MTGKEY
+      and B.KDPER in (select KDPER from dbo.GetFilterMatangr('2'))
+      where A.UNITKEY =#Unitkey#  and c.KDSTATUS='25' and a.NOJETRA='21' and a.KDKEGUNIT=#Kdkegunit#
+      and A.MTGKEY not in (select MTGKEY from BERITAPOT S where S.UNITKEY=#Unitkey# and S.NOBA=#Noba#)
+      order by B.KDPER
+    </select>
+    <select id="QueryByFilterDaskr" parameterClass="Daskr" resultMap="return-result-tree">
+      select UNITKEY,MTGKEY as KDKEGUNIT,KDPER,NMPER,TYPE,NILAI,#Idxdask# as IDXDASK,#Kdtahap# as KDTAHAP from (
+      select P.UNITKEY,UN.UNITKEY as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2'))) as KDPER, isnull(UR.NMUNIT,'NON URUSAN') as NMPER,'H' as TYPE,
+      NILAI=(select sum(S1.NILAI)
+      from DASKR S1
+      inner join KEGUNIT K1 on S1.UNITKEY=K1.UNITKEY and S1.KDKEGUNIT=K1.KDKEGUNIT
+      inner join PGRMUNIT P1 on K1.UNITKEY=P1.UNITKEY and K1.IDPRGRM=P1.IDPRGRM and K1.KDTAHAP=P1.KDTAHAP
+      left outer join MPGRM MP1 on P1.IDPRGRM=MP1.IDPRGRM
+      left outer join DAFTUNIT UR1 on UR1.UNITKEY=MP1.UNITKEY
+      where S1.UNITKEY=#Unitkey# and S1.IDXDASK=#Idxdask# and K1.KDTAHAP=#Kdtahap#
+      and isnull(UR1.UNITKEY,'')=isnull(UR.UNITKEY,'')
+      group by UR1.UNITKEY
+      )
+      from PGRMUNIT P left outer join MPGRM MP on P.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on P.UNITKEY = UN.UNITKEY
+      where P.UNITKEY =#Unitkey# and
+      P.IDPRGRM in
+      (select IDPRGRM from KEGUNIT where UNITKEY=#Unitkey# and
+      KDKEGUNIT in (select KDKEGUNIT from DASKR where UNITKEY=#Unitkey# and IDXDASK=#Idxdask#))
+      union
+      select P.UNITKEY,P.IDPRGRM as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM) as KDPER, MP.NMPRGRM as NMPER,'H' as TYPE,
+      NILAI=(select sum(S1.NILAI)
+      from DASKR S1
+      inner join KEGUNIT K1 on S1.UNITKEY=K1.UNITKEY and S1.KDKEGUNIT=K1.KDKEGUNIT
+      inner join PGRMUNIT P1 on K1.UNITKEY=P1.UNITKEY and K1.IDPRGRM=P1.IDPRGRM and K1.KDTAHAP=P1.KDTAHAP
+      where S1.UNITKEY=#Unitkey# and S1.IDXDASK=#Idxdask# and K1.KDTAHAP=#Kdtahap#
+      and P1.IDPRGRM=P.IDPRGRM
+      group by P1.UNITKEY,P1.IDPRGRM
+      )
+      from PGRMUNIT P left outer join MPGRM MP on P.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on P.UNITKEY = UN.UNITKEY
+      where P.UNITKEY =#Unitkey# and
+      P.IDPRGRM in
+      (select IDPRGRM from KEGUNIT where UNITKEY=#Unitkey# and
+      KDKEGUNIT in (select KDKEGUNIT from DASKR where UNITKEY=#Unitkey# and IDXDASK=#Idxdask#))
+      union
+      select K.UNITKEY,K.KDKEGUNIT as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM)+rtrim(MK.NUKEG) as KDPER, MK.NMKEGUNIT as NMPER,'D' as TYPE,
+      NILAI=(select sum(NILAI) from DASKR where UNITKEY=#Unitkey# and IDXDASK=#Idxdask# and KDKEGUNIT=K.KDKEGUNIT)
+      from KEGUNIT K
+      left outer join MKEGIATAN MK on MK.KDKEGUNIT=K.KDKEGUNIT
+      left outer join MPGRM MP on MK.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY
+      left outer join DAFTUNIT UN on K.UNITKEY = UN.UNITKEY
+      where K.UNITKEY =#Unitkey# and K.KDKEGUNIT in (select KDKEGUNIT from DASKR where UNITKEY=#Unitkey# and IDXDASK=#Idxdask#)
+      )A
+      where UNITKEY =#Unitkey#
+      and case #Parameter.Field#
+      when '1' then KDPER
+      when '2' then NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by KDPER
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Daskr">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Idxdask" column="IDXDASK"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" class="Daskr">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Idxdask" column="IDXDASK"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Daskr">
+      <parameter property="Idxdask" column="IDXDASK"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Trsklp" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<alias>
+		<typeAlias alias="Trsklp" type="Usadi.Valid49.BO.TrsklpControl" />
+	</alias>
+	<resultMaps>
+		<resultMap id="return-result" class="Trsklp">
+			<result property="Nodoklkp" column="NODOKLKP"/>
+			<result property="Kdlist" column="KDLIST"/>
+			<result property="Tgldoklkp" column="TGLDOKLKP"/>
+			<result property="Uraian" column="URAIAN"/>
+			<result property="Ket" column="KET"/>
+			<result property="Tglvalid" column="TGLVALID"/>
+		</resultMap>
+	</resultMaps>
+	<statements>
+		<insert id="InsertTrsklp" parameterMap="insert-param">
+			<generate table="TRSKLP"/>
+		</insert>
+		<update id="UpdateByTrsklp" parameterMap="update-param">
+			<generate table="TRSKLP" by="NODOKLKP,KDLIST"/>
+		</update>
+		<delete id="DeleteByTrsklp" parameterMap="delete-param">
+			<generate table="TRSKLP" by="NODOKLKP,KDLIST"/>
+		</delete>
+		<select id="BaseQueryTrsklp" parameterClass="Trsklp" resultMap="return-result">
+			SELECT T.NODOKLKP,T.KDLIST, TGLDOKLKP, M.URAIAN, KET, T.TGLVALID
+			FROM TRSKLP T LEFT OUTER JOIN DOKLKP D ON T.NODOKLKP=D.NODOKLKP
+			LEFT OUTER JOIN MLKPSP2D M ON T.KDLIST=M.KDLIST
+		</select>
+		<select id="QueryByAllTrsklp" extends="BaseQueryTrsklp" parameterClass="Trsklp" resultMap="return-result">
+			where T.NODOKLKP=#Nodoklkp# <!--AND T.KDLIST=#Kdlist#-->
+			and case #Parameter.Field#
+			when '1' then T.NODOKLKP
+			when '2' then D.URAIAN
+			when '3' then KET
+			end like '%'+ #Parameter.Value# + '%'
+			order by T.NODOKLKP
+		</select>
+		<select id="LoadByPKTrsklp" extends="BaseQueryTrsklp" parameterClass="Trsklp" resultMap="return-result">
+			where T.NODOKLKP=#Nodoklkp# AND T.KDLIST=#Kdlist#
+		</select>
+	</statements>
+	<parameterMaps>
+		<parameterMap id="insert-param" class="Trsklp">
+			<parameter property="Nodoklkp" column="NODOKLKP"/>
+			<parameter property="Kdlist" column="KDLIST"/>
+			<!--<parameter property="Tglvalid" column="TGLVALID"/>-->
+		</parameterMap>
+		<parameterMap id="update-param" class="Trsklp">
+			<parameter property="Nodoklkp" column="NODOKLKP"/>
+			<parameter property="Kdlist" column="KDLIST"/>
+			<parameter property="Tglvalid" column="TGLVALID"/>
+		</parameterMap>
+		<parameterMap id="delete-param" class="Trsklp">
+			<parameter property="Nodoklkp" column="NODOKLKP"/>
+			<parameter property="Kdlist" column="KDLIST"/>
+		</parameterMap>
+	</parameterMaps>
+</sqlMap>

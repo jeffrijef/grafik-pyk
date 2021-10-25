@@ -1,0 +1,9 @@
+TITLE=Register STS Per Rekening
+Unitkey=string;Key Unit;4;
+Idxkode=string;Index Kode;4;;-1;;-1
+Mtgkey=string;Rekening;10;
+Jnsbend=string;Jenis Bendahara;4;;-1;1;-1;
+Keybend=string;Bendahara;4;
+Awal=datetime;Tanggal;30;
+Akhir=datetime;Tanggal;30;
+Nip=string;Nip;30;

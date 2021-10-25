@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Tahun" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Tahun" type="Usadi.Valid49.BO.TahunControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Tahun">
+      <result property="Nmtahun" column="NMTAHUN"/>
+      <result property="Kdtahun" column="KDTAHUN"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertTahun" parameterMap="insert-param">
+      <generate table="TAHUN"/>
+    </insert>
+    <update id="UpdateByTahun" parameterMap="update-param">
+      <generate table="TAHUN" by="KDTAHUN"/>
+    </update>
+    <delete id="DeleteByTahun" parameterMap="delete-param">
+      <generate table="TAHUN" by="KDTAHUN"/>
+    </delete>
+    <select id="BaseQueryTahun" parameterClass="Tahun" resultMap="return-result">
+      select A.KDTAHUN,A.NMTAHUN
+      from TAHUN A
+    </select>
+    <select id="QueryByAllTahun" extends="BaseQueryTahun" parameterClass="Tahun" resultMap="return-result">
+      where
+      case #Parameter.Field#
+        when '1' then A.KDTAHUN
+        when '2' then A.NMTAHUN
+      end like '%'+ #Parameter.Value# + '%' 
+    </select>
+    <select id="LoadByPKTahun" extends="BaseQueryTahun" parameterClass="Tahun" resultMap="return-result">
+      where A.KDTAHUN=#Kdtahun# 
+    </select>
+    <select id="LoadByNmtahunTahun" extends="BaseQueryTahun" parameterClass="Tahun" resultMap="return-result">
+      where A.NMTAHUN=#Nmtahun#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Tahun">
+      <parameter property="Nmtahun" column="NMTAHUN"/>
+      <parameter property="Kdtahun" column="KDTAHUN"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Tahun">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Tahun">
+      <parameter property="Kdtahun" column="KDTAHUN"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

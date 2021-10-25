@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Sp3bdet" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <alias>
+      <typeAlias alias="Sp3bdet" type="Usadi.Valid49.BO.Sp3bdetControl" />
+    </alias>
+    <resultMaps>
+      <resultMap id="return-result" class="Sp3bdet">
+        <result property="Unitkey2" column="UNITKEY2"/>
+        <result property="Keterangan" column="KETERANGAN"/>
+        <result property="Tglspj" column="TGLSPJ"/>
+        <result property="Tglbuku" column="TGLBUKU"/>
+        <result property="Nilai" column="NILAI"/>
+        <result property="Unitkey" column="UNITKEY"/>
+        <result property="Nosp3b" column="NOSP3B"/>
+        <result property="Nospj" column="NOSPJ"/>
+      </resultMap>
+      <resultMap id="return-result-tot" class="Sp3bdet">
+        <result property="Tot" column="TOT"/>
+      </resultMap>
+    </resultMaps>
+    <statements>
+      <insert id="InsertSp3bdet" parameterMap="insert-param">
+        <generate table="Sp3bdet"/>
+      </insert>
+      <update id="UpdateBySp3bdet" parameterMap="update-param">
+        <generate table="Sp3bdet" by="UNITKEY,NOSP3B,NOSPJ"/>
+      </update>
+      <delete id="DeleteBySp3bdet" parameterMap="delete-param">
+        <generate table="Sp3bdet" by="UNITKEY,NOSP3B,NOSPJ"/>
+      </delete>
+      <select id="BaseQuerySp3bdet" parameterClass="Sp3bdet" resultMap="return-result">
+        select S.NOSPJ,S.NOSP3B,S.UNITKEY
+        ,J.TGLSPJ, J.TGLBUKU, J.KETERANGAN,S.NILAI,S.UNITKEY2
+        from Sp3bdet S
+        left outer join PSPJ J on S.UNITKEY2=J.UNITKEY and S.NOSPJ=J.NOSPJ
+      </select>
+      <select id="QueryByAllSp3bdet" extends="BaseQuerySp3bdet" parameterClass="Sp3bdet" resultMap="return-result">
+        where  S.NOSP3B = #Nosp3b# and S.UNITKEY = #Unitkey# and
+        case #Parameter.Field#
+        when '1' then S.NILAI
+        when '2' then S.UNITKEY
+        when '3' then S.NOSP3B
+        when '4' then S.NOSPJ
+        end like '%'+ #Parameter.Value# + '%'
+        order by S.NOSPJ
+      </select>
+      <select id="LoadByTotSp3bdet" parameterClass="Sp3bdet" resultMap="return-result-tot">
+        select sum(NILAI) Tot from SPJDETR A where A.UNITKEY=#Unitkey2# and A.NOSPJ=#Nospj#
+      </select>
+      <select id="LoadByPKSp3bdet" extends="BaseQuerySp3bdet" parameterClass="Sp3bdet" resultMap="return-result">
+        where S.UNITKEY = #Unitkey# and S.NOSP3B = #Nosp3b# and S.NOSPJ = #Nospj#
+      </select>
+    </statements>
+    <parameterMaps>
+      <parameterMap id="insert-param" class="Sp3bdet">
+        <parameter property="Unitkey2" column="UNITKEY2"/>
+        <parameter property="Nilai" column="NILAI"/>
+        <parameter property="Unitkey" column="UNITKEY"/>
+        <parameter property="Nosp3b" column="NOSP3B"/>
+        <parameter property="Nospj" column="NOSPJ"/>
+      </parameterMap>
+      <parameterMap id="update-param" extends="insert-param" class="Sp3bdet">
+      </parameterMap>
+      <parameterMap id="delete-param" class="Sp3bdet">
+        <parameter property="Unitkey" column="UNITKEY"/>
+        <parameter property="Nosp3b" column="NOSP3B"/>
+        <parameter property="Nospj" column="NOSPJ"/>
+      </parameterMap>
+      <!--<parameterMap id="transfer-param" class="Sp3bdet">
+        <parameter property="Unitkey" column="unitkey"/>
+        <parameter property="Nospj" column="nospj"/>
+        <parameter property="Nosp3b" column="nosp3b"/>
+      </parameterMap>-->
+    </parameterMaps>
+</sqlMap>
+

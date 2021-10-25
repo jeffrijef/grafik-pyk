@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Skpdet" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Skpdet" type="Usadi.Valid49.BO.SkpdetControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Skpdet">
+	  <result property="Unitkey" column="UNITKEY"/>
+	  <result property="Noskp" column="NOSKP"/>
+	  <result property="Tglskp" column="TGLSKP"/>      
+    <result property="Uraiskp" column="URAISKP"/>
+    <result property="Mtgkey" column="MTGKEY"/>
+    <result property="Kdper" column="KDPER"/>
+    <result property="Nmper" column="NMPER"/>
+    <result property="Nojetra" column="NOJETRA"/>
+    <result property="Nilai" column="NILAI"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSkpdet" parameterMap="insert-param">
+      <generate table="SKPDET"/>
+    </insert>
+    <update id="UpdateBySkpdet" parameterMap="update-param">
+      <generate table="SKPDET" by="NOJETRA,UNITKEY,NOSKP,MTGKEY"/>
+    </update>
+    <delete id="DeleteBySkpdet" parameterMap="delete-param">
+      <generate table="SKPDET" by="NOJETRA,UNITKEY,NOSKP,MTGKEY"/>
+    </delete>
+    <select id="BaseQuerySkpdet" parameterClass="Skpdet" resultMap="return-result">
+     SELECT A.* , M.KDPER, M.NMPER, S.TGLSKP, S.URAISKP
+      FROM SKPDET A
+      LEFT OUTER JOIN SKP S ON A.NOSKP = S.NOSKP and A.UNITKEY = S.UNITKEY
+      LEFT OUTER JOIN JTRNLKAS C on A.NOJETRA = C.NOJETRA
+      LEFT OUTER JOIN MATANGD M ON A.MTGKEY=M.MTGKEY
+    </select>
+    <select id="QueryByAllSkpdet" extends="BaseQuerySkpdet" parameterClass="Skpdet" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSKP=#Noskp# and (A.NOJETRA=#Nojetra# or (#Nojetra#='11' and A.NOJETRA in ('11','15','16','60','61','62','63','64','65')))
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryByTotalSkpdet" extends="BaseQuerySkpdet" parameterClass="Skpdet" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSKP=#Noskp# and (A.NOJETRA=#Nojetra# or (#Nojetra#='11' and A.NOJETRA in ('11','15','16','60','61','62','63','64','65')))
+    </select>
+    <select id="LoadByPKSkpdet" extends="BaseQuerySkpdet" parameterClass="Skpdet" resultMap="return-result">
+			where A.UNITKEY=#Unitkey# and A.NOSKP=#Noskp# and A.MTGKEY=#Mtgkey# and A.NOJETRA=#Nojetra#
+		</select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Skpdet">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Noskp" column="NOSKP"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" class="Skpdet">
+			<parameter property="Nilai" column="NILAI"/>
+			<parameter property="Nojetra" column="NOJETRA"/>
+			<parameter property="Unitkey" column="UNITKEY"/>
+			<parameter property="Noskp" column="NOSKP"/>
+			<parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Skpdet">
+			<parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Noskp" column="NOSKP"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

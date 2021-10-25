@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Int_penyusutan" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <alias>
+      <typeAlias alias="Int_penyusutan" type="Usadi.Valid49.BO.Int_penyusutanControl" />
+    </alias>
+    <resultMaps>
+      <resultMap id="return-result" class="Int_penyusutan">
+        <result property="Tglvalid" column="TGLVALID"/>
+        <result property="Kdunit" column="KDUNIT"/>
+        <result property="Nilaisusut" column="NILAISUSUT"/>
+        <result property="Nmper" column="NMPER"/>
+        <result property="Nmunit" column="NMUNIT"/>
+        <result property="Tglsusut" column="TGLSUSUT"/>
+        <result property="Kdper" column="KDPER"/>
+        <result property="Nobukti" column="NOBUKTI"/>
+      </resultMap>
+    </resultMaps>
+    <statements>
+      <insert id="InsertInt_penyusutan" parameterMap="insert-param">
+        <generate table="Int_penyusutan"/>
+      </insert>
+      <update id="UpdateByInt_penyusutan" parameterMap="update-param">
+        <generate table="Int_penyusutan" by="KDPER,NOBUKTI"/>
+      </update>
+      <update id="UpdateByDraftInt_penyusutan" parameterClass="Int_penyusutan" >
+        update Int_penyusutan set TGLVALID=null
+        where KDPER=#Kdper# and NOBUKTI=#Nobukti#
+      </update>
+      <delete id="DeleteByInt_penyusutan" parameterMap="delete-param">
+        <generate table="Int_penyusutan" by="KDPER,NOBUKTI"/>
+      </delete>
+      <select id="BaseQueryInt_penyusutan" parameterClass="Int_penyusutan" resultMap="return-result">
+        select I.TGLVALID,I.KDPER,I.KDUNIT,I.NILAISUSUT,I.NMPER,I.NMUNIT,I.TGLSUSUT,I.NOBUKTI
+        from INT_PENYUSUTAN I
+      </select>
+      <select id="QueryByAllInt_penyusutan" extends="BaseQueryInt_penyusutan" parameterClass="Int_penyusutan" resultMap="return-result">
+        where I.KDUNIT=#Kdunit# and
+        case #Parameter.Field#
+        when '1' then I.NOBUKTI
+        when '2' then I.NMPER
+        end like '%'+ #Parameter.Value# + '%'
+        order by I.NOBUKTI,I.KDPER
+      </select>
+      <select id="LoadByPKInt_penyusutan" extends="BaseQueryInt_penyusutan" parameterClass="Int_penyusutan" resultMap="return-result">
+        where I.NOBUKTI=#Nobukti# AND I.KDPER=#Kdper#
+      </select>
+    </statements>
+    <parameterMaps>
+      <parameterMap id="insert-param" class="Int_penyusutan">
+        <parameter property="Tglvalid" column="TGLVALID"/>
+        <parameter property="Kdunit" column="KDUNIT"/>
+        <parameter property="Nilaisusut" column="NILAISUSUT"/>
+        <parameter property="Nmper" column="NMPER"/>
+        <parameter property="Nmunit" column="NMUNIT"/>
+        <parameter property="Tglsusut" column="TGLSUSUT"/>
+        <parameter property="Kdper" column="KDPER"/>
+        <parameter property="Nobukti" column="NOBUKTI"/>
+      </parameterMap>
+      <parameterMap id="update-param" extends="insert-param" class="Int_penyusutan">
+        <parameter property="Kdper" column="KDPER"/>
+        <parameter property="Nobukti" column="NOBUKTI"/> </parameterMap>
+      <parameterMap id="delete-param" class="Int_penyusutan">
+        <parameter property="Kdper" column="KDPER"/>
+        <parameter property="Nobukti" column="NOBUKTI"/>
+      </parameterMap>
+    </parameterMaps>
+</sqlMap>
+

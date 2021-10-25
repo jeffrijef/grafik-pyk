@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Bkbankdet" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Bkbankdet" type="Usadi.Valid49.BO.BkbankdetControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Bkbankdet">
+      <result property="Keybend1" column="KEYBEND1"/>
+      <result property="Keybend2" column="KEYBEND2"/>
+      <result property="Kdpers" column="KDPERS"/>
+      <result property="Nmjetra" column="NMJETRA"/>
+      <result property="Nojetra" column="NOJETRA"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nobuku" column="NOBUKU"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertBkbankdet" parameterMap="insert-param">
+      <generate table="BKBANKDET"/>
+    </insert>
+    <update id="UpdateByBkbankdet" parameterMap="update-param">
+      <generate table="BKBANKDET" by="UNITKEY,NOBUKU,NOJETRA"/>
+    </update>
+    <delete id="DeleteByBkbankdet" parameterMap="delete-param">
+      <generate table="BKBANKDET" by="UNITKEY,NOBUKU,NOJETRA"/>
+    </delete>
+    <delete id="DeleteByAllBkbankdet" parameterMap="delete-param-all">
+      <generate table="BKBANKDET" by="UNITKEY,NOBUKU"/>
+    </delete>
+    <select id="BaseQueryBkbankdet" parameterClass="Bkbankdet" resultMap="return-result">
+      select A.NILAI,A.NOBUKU,A.NOJETRA,A.UNITKEY
+      , rtrim(B.KEYBEND1) as KEYBEND1, rtrim(B.KEYBEND2) as KEYBEND2
+      , C.KDPERS,C.NMJETRA
+      from BKBANKDET A
+      LEFT OUTER JOIN BKBANK B ON A.NOBUKU = B.NOBUKU and A.UNITKEY = B.UNITKEY
+      LEFT OUTER JOIN JTRNLKAS C on A.NOJETRA = C.NOJETRA
+    </select>
+    <select id="QueryByAllBkbankdet" extends="BaseQueryBkbankdet" parameterClass="Bkbankdet" resultMap="return-result">
+			where A.UNITKEY=#Unitkey# and A.NOBUKU=#Nobuku#
+			and case #Parameter.Field#
+			when '1' then A.NOJETRA
+			when '2' then C.NMJETRA
+			end like '%'+ #Parameter.Value# + '%'
+			order by A.NOJETRA
+		</select>
+    <select id="QueryByTotalBkbankdet" extends="BaseQueryBkbankdet" parameterClass="Bkbankdet" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOBUKU=#Nobuku#
+    </select>
+    <select id="QueryByNotNowBkbankdet" extends="BaseQueryBkbankdet" parameterClass="Bkbankdet" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and <![CDATA[A.NOBUKU<>#Nobuku#]]>
+    </select>
+    <select id="LoadByPKBkbankdet" extends="BaseQueryBkbankdet" parameterClass="Bkbankdet" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOBUKU=#Nobuku# 
+    </select>
+    <procedure id="ExecVALIDATIONUANGGESER_33" parameterMap="transfer-param4">
+      <!--WSP_VALIDATIONUANGGESER_33-->
+      WSP_VALIDATIONBPK_BANK
+    </procedure>
+    <procedure id="ExecVALIDATIONUANGGESER_34" parameterMap="transfer-param4">
+      WSP_VALIDATIONUANGGESER_34
+    </procedure>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Bkbankdet">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nobuku" column="NOBUKU"/>
+      <parameter property="Nojetra" column="NOJETRA"/>
+    </parameterMap>
+    <parameterMap id="update-param" class="Bkbankdet">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nobuku" column="NOBUKU"/>
+      <parameter property="Nojetra" column="NOJETRA"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Bkbankdet">
+      <parameter property="Unitkey" column="UNITKEY"/>
+			<parameter property="Nobuku" column="NOBUKU"/>
+      <parameter property="Nojetra" column="NOJETRA"/>
+    </parameterMap>
+    <parameterMap id="delete-param-all" class="Bkbankdet">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nobuku" column="NOBUKU"/>
+    </parameterMap>
+    <parameterMap id="transfer-param4" class="Bkbankdet">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Keybend" column="keybend"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

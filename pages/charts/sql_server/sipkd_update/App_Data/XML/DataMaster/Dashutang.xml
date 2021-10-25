@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Dashutang" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Dashutang" type="Usadi.Valid49.BO.DashutangControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Dashutang">
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Noakad" column="NOAKAD"/>
+      <result property="Noperda" column="NOPERDA"/>
+      <result property="Norekmen" column="NOREKMEN"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertDashutang" parameterMap="insert-param">
+      <generate table="DASHUTANG"/>
+    </insert>
+    <update id="UpdateByDashutang" parameterMap="update-param">
+      <generate table="DASHUTANG" by="MTGKEY"/>
+    </update>
+    <delete id="DeleteByDashutang" parameterMap="delete-param">
+      <generate table="DASHUTANG" by="MTGKEY"/>
+    </delete>
+    <select id="BaseQueryDashutang" parameterClass="Dashutang" resultMap="return-result">
+      select A.MTGKEY,isnull(A.NOAKAD,'') as NOAKAD,isnull(A.NOPERDA,'') as NOPERDA,isnull(A.NOREKMEN,'') as NOREKMEN,
+      M.KDPER,M.NMPER
+      from DASHUTANG A left outer join MATANGB M on A.MTGKEY=M.MTGKEY
+    </select>
+    <select id="QueryByAllDashutang" extends="BaseQueryDashutang" parameterClass="Dashutang" resultMap="return-result">
+      where
+      case #Parameter.Field#
+        when '1' then M.KDPER
+        when '2' then M.NMPER
+      end like '%'+ #Parameter.Value# + '%' 
+      order by M.KDPER
+    </select>
+    <select id="LoadByPKDashutang" extends="BaseQueryDashutang" parameterClass="Dashutang" resultMap="return-result">
+      where A.MTGKEY=#Mtgkey# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Dashutang">
+      <parameter property="Noakad" column="NOAKAD"/>
+      <parameter property="Noperda" column="NOPERDA"/>
+      <parameter property="Norekmen" column="NOREKMEN"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Dashutang">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Dashutang">
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

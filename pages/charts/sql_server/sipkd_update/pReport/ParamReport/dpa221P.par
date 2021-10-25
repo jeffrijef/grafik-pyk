@@ -1,0 +1,7 @@
+TITLE=DPA-SKPD 2.2.1
+Unitkey=string;KEY unit;4;
+Kdtahap=string;Tahap;4;
+Kdkegunit=string;Kd Kegunit;10;
+Idxdask=string;Id Dask;10;
+Tanggal=datetime;Tanggal;30;
+Hal=string;Halaman;4;

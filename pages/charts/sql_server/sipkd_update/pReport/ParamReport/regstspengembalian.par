@@ -1,0 +1,5 @@
+TITLE=Register STS Pengembalian
+Unitkey=string;Key Unit;4;
+Keybend=string;Bendahara;4;
+Awal=datetime;Tanggal;30;
+Akhir=datetime;Tanggal;30;

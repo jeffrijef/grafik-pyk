@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Urusrtl" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Urusrtl" type="Usadi.Valid49.BO.UrusrtlControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Urusrtl">
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertUrusrtl" parameterMap="insert-param">
+      <generate table="Urusrtl"/>
+    </insert>
+    <update id="UpdateByUrusrtl" parameterMap="update-param">
+      <generate table="Urusrtl" by="MTGKEY"/>
+    </update>
+    <delete id="DeleteByUrusrtl" parameterMap="delete-param">
+      <generate table="Urusrtl" by="MTGKEY"/>
+    </delete>
+    <select id="BaseQueryUrusrtl" parameterClass="Urusrtl" resultMap="return-result">
+      SELECT u.MTGKEY,KDPER,NMPER,u.UNITKEY,KDUNIT,NMUNIT 
+      FROM URUSRTL u
+      LEFT OUTER JOIN DAFTUNIT d ON u.UNITKEY=d.UNITKEY
+      LEFT OUTER JOIN MATANGR m ON u.MTGKEY=m.MTGKEY
+    </select>
+    <select id="QueryByAllUrusrtl" extends="BaseQueryUrusrtl" parameterClass="Urusrtl" resultMap="return-result">
+      where u.UNITKEY=#Unitkey# and
+      case #Parameter.Field#
+      when '1' then m.KDPER
+      when '2' then m.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      ORDER BY m.KDPER
+    </select>
+    <select id="LoadByPKUrusrtl" extends="BaseQueryUrusrtl" parameterClass="Urusrtl" resultMap="return-result">
+      where u.UNITKEY=#Unitkey#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Urusrtl">
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Urusrtl">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Urusrtl">
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

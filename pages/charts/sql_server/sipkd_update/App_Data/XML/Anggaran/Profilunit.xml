@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Profilunit" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Profilunit" type="Usadi.Valid49.BO.ProfilunitControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Profilunit">
+      <result property="Ketprofil" column="KETPROFIL"/>
+      <result property="Nodesk" column="NODESK"/>
+      <result property="Kdlevel" column="KDLEVEL"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Kdprofil" column="KDPROFIL"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nmprofil" column="NMPROFIL"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertProfilunit" parameterMap="insert-param">
+      <generate table="PROFILUNIT"/>
+    </insert>
+    <update id="UpdateByProfilunit" parameterMap="update-param">
+      <generate table="PROFILUNIT" by="KDPROFIL,UNITKEY"/>
+    </update>
+    <delete id="DeleteByProfilunit" parameterMap="delete-param">
+      <generate table="PROFILUNIT" by="KDPROFIL,UNITKEY"/>
+    </delete>
+    <select id="BaseQueryProfilunit" parameterClass="Profilunit" resultMap="return-result">
+      select A.KDPROFIL,A.KETPROFIL,A.NODESK,A.UNITKEY
+      ,B.KDLEVEL,B.KDUNIT,B.NMUNIT
+			,C.NMPROFIL
+      from PROFILUNIT A 
+			LEFT OUTER JOIN DAFTUNIT B ON A.UNITKEY=B.UNITKEY
+      LEFT OUTER JOIN PROFIL C ON A.KDPROFIL=C.KDPROFIL
+    </select>
+    <select id="QueryByAllProfilunit" extends="BaseQueryProfilunit" parameterClass="Profilunit" resultMap="return-result">
+      where A.UNITKEY=#Unitkey#
+      and case #Parameter.Field#
+        when '1' then C.NMPROFIL
+        when '2' then A.KETPROFIL
+      end like '%'+ #Parameter.Value# + '%'
+    </select>
+    <select id="LoadByPKProfilunit" extends="BaseQueryProfilunit" parameterClass="Profilunit" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.KDPROFIL=#Kdprofil#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Profilunit">
+      <parameter property="Ketprofil" column="KETPROFIL"/>
+      <parameter property="Nodesk" column="NODESK"/>
+      <parameter property="Kdprofil" column="KDPROFIL"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Profilunit">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Profilunit">
+      <parameter property="Kdprofil" column="KDPROFIL"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

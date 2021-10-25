@@ -1,0 +1,7 @@
+TITLE=KAS TUNAI
+Unitkey=string;Key Unit;4;
+Jnsbend=string;Jenis Bendahara;4;;-1;2;-1;
+Keybend=string;Bendahara;4;
+Nip=string;Nip;30;
+Bln=int;Bulan;4;
+Tgl=datetime;Tanggal;30;

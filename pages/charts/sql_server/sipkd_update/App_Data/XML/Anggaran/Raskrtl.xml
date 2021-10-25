@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Raskrtl" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Raskrtl" type="Usadi.Valid49.BO.RaskrtlControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Raskrtl">
+      <result property="Totbln" column="TOTBLN"/>
+      <result property="Totdet" column="TOTDET"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Uraian" column="URAIAN"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Mtglevel" column="MTGLEVEL"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Kdtahap" column="KDTAHAP"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Unitkey" column="UNITKEY"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="MTGKEY"/>
+      <result property="Field" column="KDPER"/>
+      <result property="Value" column="NMPER"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertRaskrtl" parameterMap="insert-param">
+      <generate table="RASKRTL"/>
+    </insert>
+     <insert id="InsertBulanRaskrtl" parameterClass="Raskrtl">
+      insert into RASKBLNRTL ( UNITKEY, MTGKEY, KDTAHAP, KD_BULAN, NILAI)
+      select #Unitkey#,#Mtgkey#,#Kdtahap#,KD_BULAN,0
+      from BULAN
+    </insert>
+    <update id="UpdateByRaskrtl" parameterMap="update-param">
+      <generate table="RASKRTL" by="KDTAHAP,MTGKEY,UNITKEY"/>
+    </update>
+    <delete id="DeleteByRaskrtl" parameterMap="delete-param">
+      <generate table="RASKRTL" by="KDTAHAP,MTGKEY,UNITKEY"/>
+    </delete>
+    <select id="BaseQueryRaskrtl" parameterClass="Raskrtl" resultMap="return-result">
+      select A.KDTAHAP,A.MTGKEY,A.NILAI,A.UNITKEY, B.KDUNIT, B.NMUNIT, C.URAIAN, D.KDPER, D.MTGLEVEL, D.NMPER,
+      Totdet=ISNULL((select sum(SUBTOTAL) from raskdetrtl r where r.mtgkey=a.MTGKEY and r.UNITKEY=a.UNITKEY and r.KDTAHAP=a.KDTAHAP and r.TYPE='D'),0),
+      Totbln=ISNULL((select sum(NILAI) from raskblnrtl r where r.mtgkey=a.MTGKEY and r.UNITKEY=a.UNITKEY and r.KDTAHAP=a.KDTAHAP),0)
+      from RASKRTL A
+      left outer join DAFTUNIT B on A.UNITKEY = B.UNITKEY
+      left outer join TAHAP C on A.KDTAHAP = C.KDTAHAP
+      left outer join MATANGR D on A.MTGKEY = D.MTGKEY
+    </select>
+    <select id="QueryByAllRaskrtl" extends="BaseQueryRaskrtl" parameterClass="Raskrtl" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.KDTAHAP=#Kdtahap# 
+      and case #Parameter.Field#
+      when '1' then D.KDPER
+      when '2' then D.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by D.KDPER
+    </select>
+    <select id="LoadByPKRaskrtl" extends="BaseQueryRaskrtl" parameterClass="Raskrtl" resultMap="return-result">
+      where A.KDTAHAP=#Kdtahap# and A.MTGKEY=#Mtgkey# and A.UNITKEY=#Unitkey#
+    </select>
+    <procedure id="ExecValidateRaskRtlFromSPD" parameterMap="select-param" >
+      WSP_VALIDATERASKFROMSPD
+    </procedure>
+	  <!-- RH:27 Juli 2010; Validasi RKA terhadap SP2D yg sudah diterbitkan  -->
+	  <procedure id="ExecValidateRaskRtlBySP2D" parameterMap="select-param">
+		  WSP_VALIDATERKABYSP2D
+	  </procedure>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Raskrtl">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" class="Raskrtl">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Raskrtl">
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="select-param" class="Raskrtl">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Kdkegunit" column="kdkegunit"/>
+      <parameter property="Mtgkey" column="mtgkey"/>
+      <parameter property="Idxkode" column="idxkode"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

@@ -1,0 +1,6 @@
+TITLE=Laporan Penutupan Kas Bulanan
+Unitkey=string;Key Unit;4;
+Kdtahap=string;Tahap;4;
+Nuprgrm=string;Nomor Penutupan Kas;30;
+Bulan=string;Tahap;4;
+Bend=string;Bendahara;4;

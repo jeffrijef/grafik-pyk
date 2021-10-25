@@ -1,0 +1,12 @@
+TITLE=DPA 2.2.1
+Unitkey=string;Key Unit;4;
+Kdtahap=string;Tahap;4;
+Kdkegunit=string;Kd Kegunit;10;
+Idxdask=string;Id Dask;10;
+Tanggal=datetime;Tanggal;30;
+Hal=string;Halaman;4;;-1;1
+Idxkode=string;Index Kode;4;;-1;;-1
+
+
+
+

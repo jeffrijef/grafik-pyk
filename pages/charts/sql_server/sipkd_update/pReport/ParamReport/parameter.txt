@@ -1,0 +1,2 @@
+Idxkode=string;label;50;;-1
+Kdkegunit=string;-;4;;-1;

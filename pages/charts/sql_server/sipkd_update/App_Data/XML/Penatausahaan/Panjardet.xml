@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Panjardet" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Panjardet" type="Usadi.Valid49.BO.PanjardetControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Panjardet">
+      <result property="Keybend" column="KEYBEND"/>
+      <result property="Idprgrm" column="IDPRGRM"/>
+      <result property="Kdpers" column="KDPERS"/>
+      <result property="Nmjetra" column="NMJETRA"/>
+      <result property="Nojetra" column="NOJETRA"/>
+			<result property="Nukeg" column="NUKEG"/>
+      <result property="Nmkegunit" column="NMKEGUNIT"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nopanjar" column="NOPANJAR"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertPanjardet" parameterMap="insert-param">
+      <generate table="PANJARDET"/>
+    </insert>
+    <update id="UpdateByPanjardet" parameterMap="update-param">
+      <generate table="PANJARDET" by="NOJETRA,UNITKEY,NOPANJAR,KDKEGUNIT"/>
+    </update>
+    <delete id="DeleteByPanjardet" parameterMap="delete-param">
+      <generate table="PANJARDET" by="NOJETRA,UNITKEY,NOPANJAR,KDKEGUNIT"/>
+    </delete>
+    <delete id="DeleteByAllPanjardet" parameterMap="delete-param-all">
+      <generate table="PANJARDET" by="UNITKEY,NOPANJAR"/>
+    </delete>
+    <select id="BaseQueryPanjardet" parameterClass="Panjardet" resultMap="return-result">
+      select A.KDKEGUNIT,A.NILAI,A.NOJETRA,A.NOPANJAR,A.UNITKEY
+      , rtrim(B.KEYBEND) as KEYBEND
+      , C.KDPERS,C.NMJETRA
+      , D.IDPRGRM,D.NUKEG,D.NMKEGUNIT
+      from PANJARDET A
+      LEFT OUTER JOIN PANJAR B ON A.NOPANJAR = B.NOPANJAR and A.UNITKEY = B.UNITKEY
+      LEFT OUTER JOIN JTRNLKAS C on A.NOJETRA = C.NOJETRA
+      LEFT OUTER JOIN MKEGIATAN D on A.KDKEGUNIT = D.KDKEGUNIT
+    </select>
+    <select id="QueryByAllPanjardet" extends="BaseQueryPanjardet" parameterClass="Panjardet" resultMap="return-result">
+			where A.UNITKEY=#Unitkey# and A.NOPANJAR=#Nopanjar#
+			and case #Parameter.Field#
+			when '1' then D.NUKEG
+			when '2' then D.NMKEGUNIT
+			end like '%'+ #Parameter.Value# + '%'
+			Order by D.NUKEG
+		</select>
+    <select id="QueryByTotalPanjardet" extends="BaseQueryPanjardet" parameterClass="Panjardet" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOPANJAR=#Nopanjar# and A.NOJETRA=#Nojetra#
+    </select>
+    <select id="LoadByPKPanjardet" extends="BaseQueryPanjardet" parameterClass="Panjardet" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOPANJAR=#Nopanjar# and A.KDKEGUNIT=#Kdkegunit# 
+    </select>
+    <procedure id="ExecVALIDATE_PANJARBANK_31" parameterMap="transfer-param4">
+      WSP_VALIDATIONPANJARBANK_31
+    </procedure>
+    <procedure id="ExecVALIDATE_PANJARBANK_32" parameterMap="transfer-param3">
+      WSP_VALIDATIONPANJARBANK_32
+    </procedure>
+    <procedure id="ExecVALIDATE_PANJARTUNAI_31" parameterMap="transfer-param4">
+      WSP_VALIDATIONPANJARTUNAI_31
+    </procedure>
+    <procedure id="ExecVALIDATE_PANJARTUNAI_32" parameterMap="transfer-param3">
+      WSP_VALIDATIONPANJARTUNAI_32
+    </procedure>
+
+    <!--WSP_VALIDATIONPANJARBANK_31
+    WSP_VALIDATIONPANJARBANK_32
+    WSP_VALIDATIONPANJARTUNAI_31
+    WSP_VALIDATIONPANJARTUNAI_32-->
+
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Panjardet">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nopanjar" column="NOPANJAR"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+    </parameterMap>
+    <parameterMap id="update-param" class="Panjardet">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nopanjar" column="NOPANJAR"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Panjardet">
+			<parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nopanjar" column="NOPANJAR"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+    </parameterMap>
+    <parameterMap id="transfer-param3" class="Panjardet">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Keybend" column="keybend"/>
+      <parameter property="Kdkegunit" column="kdkegunit"/>
+    </parameterMap>
+    <parameterMap id="transfer-param4" class="Panjardet">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Keybend" column="keybend"/>
+    </parameterMap>
+    <parameterMap id="transfer-param3" class="Panjardet">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Keybend" column="keybend"/>
+      <parameter property="Kdkegunit" column="kdkegunit"/>
+    </parameterMap>
+    <parameterMap id="delete-param-all" class="Panjardet">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nopanjar" column="NOPANJAR"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

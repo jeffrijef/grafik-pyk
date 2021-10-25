@@ -1,0 +1,6 @@
+TITLE=Saldo Panjar Seluruh Kegiatan
+Unitkey=string;Key Unit;4;
+Nip=string;Nip;30;
+Bend=string; Bendahara;30;
+Awal=datetime;Tanggal Awal;30;
+Akhir=datetime;Tanggal Akhir;30;

@@ -1,0 +1,5 @@
+TITLE=Register SPD
+Unitkey=string;Key Unit;4;
+Idxkode=string;Index Kode;4;;-1
+Awal=datetime;Tanggal Awal;30;
+Akhir=datetime;Tanggal Akhir;30;

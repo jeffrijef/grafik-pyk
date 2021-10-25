@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Sp2dpjk" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Sp2dpjk" type="Usadi.Valid49.BO.Sp2dpjkControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Sp2dpjk">
+      <result property="Idxkode" column="IDXKODE"/>
+      <result property="Idxsko" column="IDXSKO"/>
+      <result property="Idxttd" column="IDXTTD"/>
+      <result property="Kdp3" column="KDP3"/>
+      <result property="Kdstatus" column="KDSTATUS"/>
+      <result property="Keperluan" column="KEPERLUAN"/>
+      <result property="Ketotor" column="KETOTOR"/>
+      <result property="Keybend" column="KEYBEND"/>
+      <result property="Nokontrak" column="NOKONTRAK"/>
+      <result property="Noreg" column="NOREG"/>
+      <result property="Nospm" column="NOSPM"/>
+      <result property="Penolakan" column="PENOLAKAN"/>
+      <result property="Tglsp2d" column="TGLSP2D"/>
+      <result property="Tglspm" column="TGLSPM"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Kdpajak" column="KDPAJAK"/>
+      <result property="Nmpajak" column="NMPAJAK"/>
+      <result property="Rumuspjk" column="RUMUSPJK"/>
+      <result property="Keterangan" column="KETERANGAN"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nosp2d" column="NOSP2D"/>
+      <result property="Pjkkey" column="PJKKEY"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSp2dpjk" parameterMap="insert-param">
+      <generate table="SP2DPJK"/>
+    </insert>
+    <update id="UpdateBySp2dpjk" parameterMap="update-param">
+      <generate table="SP2DPJK" by="UNITKEY,NOSP2D,PJKKEY"/>
+    </update>
+    <delete id="DeleteBySp2dpjk" parameterMap="delete-param">
+      <generate table="SP2DPJK" by="UNITKEY,NOSP2D,PJKKEY"/>
+    </delete>
+    <select id="BaseQuerySp2dpjk" parameterClass="Sp2dpjk" resultMap="return-result">
+      select A.KETERANGAN,A.NILAI,A.NOSP2D,A.PJKKEY,A.UNITKEY
+      ,B.IDXKODE,B.IDXSKO,rtrim(B.IDXTTD) as IDXTTD,B.KDP3,rtrim(B.KDSTATUS) as KDSTATUS,B.KEPERLUAN,B.KETOTOR,rtrim(B.KEYBEND) as KEYBEND,B.NOKONTRAK, B.NOREG,B.NOSPM,B.PENOLAKAN,B.TGLSP2D,B.TGLSPM,B.TGLVALID
+      ,C.KDPAJAK,C.NMPAJAK,C.RUMUSPJK
+      from SP2DPJK A
+      left outer join SP2D B on A.NOSP2D = B.NOSP2D and A.UNITKEY = B.UNITKEY
+      left outer join JPAJAK C on A.PJKKEY = C.PJKKEY
+    </select>
+    <select id="QueryByAllSp2dpjk" extends="BaseQuerySp2dpjk" parameterClass="Sp2dpjk" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSP2D=#Nosp2d#
+      and case #Parameter.Field#
+      when '1' then C.KDPAJAK
+      when '2' then C.NMPAJAK
+      end like '%'+ #Parameter.Value# + '%'
+      order by C.KDPAJAK
+    </select>
+    <select id="QueryByTotalSp2dpjk" extends="BaseQuerySp2dpjk" parameterClass="Sp2dpjk" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSP2D=#Nosp2d#
+    </select>
+    <select id="LoadByPKSp2dpjk" extends="BaseQuerySp2dpjk" parameterClass="Sp2dpjk" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSP2D=#Nosp2d# and A.PJKKEY=#Pjkkey# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Sp2dpjk">
+      <parameter property="Keterangan" column="KETERANGAN"/>
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nosp2d" column="NOSP2D"/>
+      <parameter property="Parameter.Key" column="PJKKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" class="Sp2dpjk">
+      <parameter property="Keterangan" column="KETERANGAN"/>
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nosp2d" column="NOSP2D"/>
+      <parameter property="Pjkkey" column="PJKKEY"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Sp2dpjk">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nosp2d" column="NOSP2D"/>
+      <parameter property="Pjkkey" column="PJKKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

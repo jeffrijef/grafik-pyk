@@ -1,0 +1,6 @@
+TITLE=Buku Kas Bendahara Pengeluaran
+Unitkey=string;Key Unit;4;
+Keybend=string;Bendahara;4;
+Nip=string;Nip;30;
+Bln=string;Bulan;4;
+Tgl=datetime;Tanggal;30;

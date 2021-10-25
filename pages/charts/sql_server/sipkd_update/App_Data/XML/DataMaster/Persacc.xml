@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Persacc" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Persacc" type="Usadi.Valid49.BO.PersaccControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Persacc">
+      <result property="Nmpers" column="NMPERS"/>
+      <result property="Kdpers" column="KDPERS"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertPersacc" parameterMap="insert-param">
+      <generate table="PERSACC"/>
+    </insert>
+    <update id="UpdateByPersacc" parameterMap="update-param">
+      <generate table="PERSACC" by="KDPERS"/>
+    </update>
+    <delete id="DeleteByPersacc" parameterMap="delete-param">
+      <generate table="PERSACC" by="KDPERS"/>
+    </delete>
+    <select id="BaseQueryPersacc" parameterClass="Persacc" resultMap="return-result">
+      select A.KDPERS,A.NMPERS
+      from PERSACC A
+    </select>
+    <select id="QueryByAllPersacc" extends="BaseQueryPersacc" parameterClass="Persacc" resultMap="return-result">
+			where
+			case #Parameter.Field#
+			when '1' then A.KDPERS
+			when '2' then A.NMPERS
+			end like '%'+ #Parameter.Value# + '%'
+			Order by A.KDPERS
+		</select>
+    <select id="LoadByPKPersacc" extends="BaseQueryPersacc" parameterClass="Persacc" resultMap="return-result">
+      where A.KDPERS=#Kdpers# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Persacc">
+      <parameter property="Nmpers" column="NMPERS"/>
+      <parameter property="Kdpers" column="KDPERS"/>
+    </parameterMap>
+			<parameterMap id="update-param" extends="insert-param" class="Persacc">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Persacc">
+      <parameter property="Kdpers" column="KDPERS"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

@@ -1,0 +1,5 @@
+TITLE=SPJ PENERIMAAN - FUNGSIONAL
+Unitkey=string;Key Unit;4;
+Kdtahap=string;Tahap;4;
+Bln=string; Bulan;4;
+Tanggal=datetime;Tanggal;30;

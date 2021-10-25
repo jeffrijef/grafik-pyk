@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Khususrek" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Khususrek" type="Usadi.Valid49.BO.KhususrekControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Khususrek">
+      <result property="Nmkhusus" column="NMKHUSUS"/>
+      <result property="Kdkhusus" column="KDKHUSUS"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertKhususrek" parameterMap="insert-param">
+      <generate table="KHUSUSREK"/>
+    </insert>
+    <update id="UpdateByKhususrek" parameterMap="update-param">
+      <generate table="KHUSUSREK" by="KDKHUSUS"/>
+    </update>
+    <delete id="DeleteByKhususrek" parameterMap="delete-param">
+      <generate table="KHUSUSREK" by="KDKHUSUS"/>
+    </delete>
+    <select id="BaseQueryKhususrek" parameterClass="Khususrek" resultMap="return-result">
+      select A.KDKHUSUS,A.NMKHUSUS
+      from KHUSUSREK A
+    </select>
+    <select id="QueryByAllKhususrek" extends="BaseQueryKhususrek" parameterClass="Khususrek" resultMap="return-result">
+			where
+			case #Parameter.Field#
+			when '1' then A.KDKHUSUS
+			when '2' then A.NMKHUSUS
+			end like '%'+ #Parameter.Value# + '%'
+			Order by A.KDKHUSUS
+		</select>
+    <select id="LoadByPKKhususrek" extends="BaseQueryKhususrek" parameterClass="Khususrek" resultMap="return-result">
+      where A.KDKHUSUS=#Kdkhusus# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Khususrek">
+      <parameter property="Nmkhusus" column="NMKHUSUS"/>
+      <parameter property="Kdkhusus" column="KDKHUSUS"/>
+    </parameterMap>
+			<parameterMap id="update-param" extends="insert-param" class="Khususrek">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Khususrek">
+      <parameter property="Kdkhusus" column="KDKHUSUS"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Matangdlra64" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Matangdlra64" type="Usadi.Valid49.BO.Matangdlra64Control" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Matangdlra64">
+      <result property="Kdper" column="KDPER"/>
+      <result property="Mtglevel" column="MTGLEVEL"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Kdkhusus" column="KDKHUSUS"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Nlraawal" column="NLRAAWAL"/> <!--17/12/08-->
+      <result property="Mtgkey" column="MTGKEY"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="MTGKEY"/>
+      <result property="Field" column="KDPER"/>
+      <result property="Value" column="NMPER"/>
+      <result property="Type" column="TYPE"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertMatangdlra64" parameterMap="insert-param">
+      <generate table="MATANGDLRA64"/>
+    </insert>
+    <update id="UpdateByMatangdlra64" parameterMap="update-param">
+      <generate table="MATANGDLRA64" by="MTGKEY"/>
+    </update>
+    <delete id="DeleteByMatangdlra64" parameterMap="delete-param">
+      <generate table="MATANGDLRA64" by="MTGKEY"/>
+    </delete>
+    <select id="BaseQueryMatangdlra64" parameterClass="Matangdlra64" resultMap="return-result">
+      select rtrim(M.MTGKEY) as MTGKEY,
+      rtrim(M.MTGLEVEL) as MTGLEVEL,
+      rtrim(M.KDPER) as KDPER, rtrim(M.NMPER) as NMPER,rtrim(M.KDKHUSUS) as KDKHUSUS, rtrim(M.TYPE) as TYPE
+      ,NLRAAWAL
+      from MATANGDLRA64 M
+    </select>
+    <select id="QueryByAllMatangdlra64" extends="BaseQueryMatangdlra64" parameterClass="Matangdlra64" resultMap="return-result">
+      where case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      <!--when '3' then M.MTGKEY
+      when '4' then M.MTGLEVEL-->
+      when '3' then M.TYPE
+      end like '%'+ #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="QueryByKdperMatangdlra64" extends="BaseQueryMatangdlra64" parameterClass="Matangdlra64" resultMap="return-result">
+      where M.KDPER=#Kdper#
+    </select>
+    <select id="LoadByPKMatangdlra64" extends="BaseQueryMatangdlra64" parameterClass="Matangdlra64" resultMap="return-result">
+      where M.MTGKEY=#Mtgkey#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Matangdlra64">
+      <parameter property="Kdper" column="KDPER"/>
+      <parameter property="Mtglevel" column="MTGLEVEL"/>
+      <parameter property="Nmper" column="NMPER"/>
+      <parameter property="Kdkhusus" column="KDKHUSUS"/>
+      <parameter property="Type" column="TYPE"/>
+      <parameter property="Nlraawal" column="NLRAAWAL"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Matangdlra64">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Matangdlra64">
+      <parameter property="Mtgkey" column="MTGKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Saldolrar" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Saldolrar" type="Usadi.Valid49.BO.SaldolrarControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Saldolrar">
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Nprognosis" column="NPROGNOSIS"/>
+      <result property="Soawal" column="SOAWAL"/>
+      <result property="Soman" column="SOMAN"/>
+      <result property="Soakhir" column="SOAKHIR"/>
+      <result property="Uraian" column="URAIAN"/>
+      <result property="Kd_bulan" column="KD_BULAN"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Unitkey" column="UNITKEY"/>
+    </resultMap>
+    <resultMap id="return-result2" class="Saldolrar">
+      <result property="Nprognosis" column="NPROGNOSIS"/>
+      <result property="Soakhir" column="SOAKHIR"/>
+      <result property="Uraian" column="URAIAN"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Unitkey" column="UNITKEY"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSaldolrar" parameterMap="insert-param">
+      <generate table="SALDOLRAR"/>
+    </insert>
+    <update id="UpdateBySaldolrar" parameterMap="update-param">
+      <generate table="SALDOLRAR" by="KD_BULAN,KDKEGUNIT,MTGKEY,UNITKEY"/>
+    </update>
+    <delete id="DeleteBySaldolrar" parameterMap="delete-param">
+      <generate table="SALDOLRAR" by="KD_BULAN,KDKEGUNIT,MTGKEY,UNITKEY"/>
+    </delete>
+    <select id="BaseQuerySaldolrar" parameterClass="Saldolrar" resultMap="return-result">
+      select A.UNITKEY,A.URAIAN, A.KD_BULAN,A.MTGKEY,R.NILAI as SOAWAL,A.SOMAN,A.SOAKHIR,A.NPROGNOSIS,
+      M.KDPER, M.NMPER, A.KDKEGUNIT
+      from SALDOLRAR A
+      <!--left outer join RASKR R on A.UNITKEY=R.UNITKEY and A.MTGKEY=R.MTGKEY and KDTAHAP=#Kdtahap# and A.KDKEGUNIT=R.KDKEGUNIT-->
+      inner join DASKR R on A.UNITKEY=R.UNITKEY and A.MTGKEY=R.MTGKEY and A.KDKEGUNIT=R.KDKEGUNIT
+      inner JOIN SKDASK s ON s.IDXDASK = R.IDXDASK AND s.UNITKEY = R.UNITKEY and s.KDTAHAP=#Kdtahap#
+      inner join MATANGR M on A.MTGKEY=M.MTGKEY
+    </select>
+    <select id="QueryByAllSaldolrar" extends="BaseQuerySaldolrar" parameterClass="Saldolrar" resultMap="return-result">
+      where A.KD_BULAN=#Kd_bulan# and A.UNITKEY=#Unitkey# and (A.KDKEGUNIT = #Kdkegunit# or isnull(#Kdkegunit#,'') = '')
+      and case #Parameter.Field#
+      when '1' then M.KDPER
+      when '2' then M.NMPER
+      end like '%'+ #Parameter.Value# + '%'
+      order by M.KDPER
+    </select>
+    <select id="LoadByPKSaldolrar" extends="BaseQuerySaldolrar" parameterClass="Saldolrar" resultMap="return-result">
+      where A.KD_BULAN=#Kd_bulan# and A.KDKEGUNIT=#Kdkegunit# and A.MTGKEY=#Mtgkey# and A.UNITKEY=#Unitkey# 
+    </select>
+    <select id="LoadByRekSaldolrar" parameterClass="Saldolrar" resultMap="return-result2">
+      select A.UNITKEY,A.URAIAN, A.KDKEGUNIT, A.MTGKEY,sum(A.SOAKHIR) as SOAKHIR,sum(A.NPROGNOSIS) as NPROGNOSIS
+      from SALDOLRAR A
+      where A.MTGKEY=#Mtgkey# and A.UNITKEY=#Unitkey#
+      group by A.UNITKEY,A.URAIAN, A.KDKEGUNIT, A.MTGKEY
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Saldolrar">
+      <parameter property="Nprognosis" column="NPROGNOSIS"/>
+      <parameter property="Soakhir" column="SOAKHIR"/>
+      <parameter property="Soman" column="SOMAN"/>
+      <parameter property="Uraian" column="URAIAN"/>
+      <parameter property="Kd_bulan" column="KD_BULAN"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Saldolrar">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Saldolrar">
+      <parameter property="Kd_bulan" column="KD_BULAN"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

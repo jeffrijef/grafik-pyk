@@ -1,0 +1,4 @@
+TITLE=Jurnal Pendapatan Khusus (BUD)
+Unitkey=string;Key Unit;10;
+Tglawal=datetime;Tanggal Awal;10;
+Tglakhir=datetime;Tanggal Akhir;10;

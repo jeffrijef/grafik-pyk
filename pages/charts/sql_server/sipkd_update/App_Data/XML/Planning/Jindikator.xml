@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Jindikator" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Jindikator" type="Usadi.Valid49.BO.JindikatorControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Jindikator">
+      <result property="Kdjkk" column="KDJKK"/>
+      <result property="Urjkk" column="URJKK"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <insert id="InsertJindikator" parameterMap="insert-param" >
+      <generate table="JINDIKATOR"/>
+    </insert>
+    <update id="UpdateByJindikator" parameterMap="update-param" >
+      <generate table="JINDIKATOR" by="KDJKK"/>
+    </update>
+    <delete id="DeleteByJindikator" parameterMap="delete-param" >
+      <generate table="JINDIKATOR" by="KDJKK"/>
+    </delete>
+    <select id="QueryByAllJindikator" parameterClass="Jindikator" resultMap="return-result">
+      select * from JINDIKATOR
+      order by KDJKK
+    </select>
+    <select id="LoadByPKJindikator" parameterClass="Jindikator"  resultMap="return-result" >
+      select * from JINDIKATOR
+      where KDJKK=#Kdjkk#
+    </select>
+  </statements>
+
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Jindikator">
+      <parameter property="Urjkk" column="URJKK"/>
+      <parameter property="Kdjkk" column="KDJKK"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Jindikator">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Jindikator">
+      <parameter property="Kdjkk" column="KDJKK"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>
+

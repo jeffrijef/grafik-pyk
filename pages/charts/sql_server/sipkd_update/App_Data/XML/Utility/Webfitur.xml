@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Webfitur" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Webfitur" type="Usadi.Valid49.BO.WebfiturControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Webfitur">
+      <result property="Menuid" column="MENUID"/>
+      <result property="Role" column="ROLE"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Bantuan" column="BANTUAN"/>
+      <result property="Kdfitur" column="KDFITUR"/>
+      <result property="Nmfitur" column="NMFITUR"/>
+      <result property="Status" column="STATUS"/>
+      <result property="Fiturid" column="FITURID"/>
+      <result property="Roleid" column="ROLEID"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertWebfitur" parameterMap="insert-param">
+      <generate table="WEBFITUR"/>
+    </insert>
+    <update id="UpdateByWebfitur" parameterMap="update-param">
+      <generate table="WEBFITUR" by="FITURID,ROLEID"/>
+    </update>
+    <delete id="DeleteByWebfitur" parameterMap="delete-param">
+      <generate table="WEBFITUR" by="FITURID,ROLEID"/>
+    </delete>
+    <select id="BaseQueryWebfitur" parameterClass="Webfitur" resultMap="return-result">
+			select isnull(A.BANTUAN,'') as BANTUAN,isnull(A.FITURID,'') as FITURID,
+			isnull(A.KDFITUR,'') as KDFITUR,isnull(A.NMFITUR,'') as NMFITUR,
+			isnull(B.ROLEID,'') as ROLEID,isnull(A.STATUS,0) as STATUS,
+			isnull(B.MENUID,'') as MENUID,isnull(B.ROLE,'') as ROLE,
+			<!--isnull(rtrim(A.TYPE)  as TYPE,'') as TYPE-->
+			isnull(A.TYPE,'') as TYPE
+			from WEBROLE B
+			left outer join WEBFITUR A on A.ROLEID=B.ROLEID
+		</select>
+    <select id="QueryByAllWebfitur" extends="BaseQueryWebfitur" parameterClass="Webfitur" resultMap="return-result">
+      where (B.MENUID=#Menuid# or B.ROLEID=#Roleid#) <!--and A.KDFITUR is not null-->
+			and case #Parameter.Field#
+			when '1' then isnull(A.KDFITUR,'')
+			when '2' then isnull(A.NMFITUR,'')
+			when '3' then isnull(A.BANTUAN,'')
+			when '4' then isnull(A.TYPE,'')
+			<!--when '5' then convert(char(10), A.STATUS)-->
+			end like '%'+ #Parameter.Value# + '%'
+			order by B.ROLEID,A.KDFITUR
+		</select>
+    <select id="LoadByPKWebfitur" extends="BaseQueryWebfitur" parameterClass="Webfitur" resultMap="return-result">
+      where A.FITURID=#Fiturid# and B.MENUID=#Menuid#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Webfitur">
+      <parameter property="Type" column="TYPE"/>
+      <parameter property="Bantuan" column="BANTUAN"/>
+      <parameter property="Kdfitur" column="KDFITUR"/>
+      <parameter property="Nmfitur" column="NMFITUR"/>
+      <parameter property="Status" column="STATUS"/>
+      <parameter property="Fiturid" column="FITURID"/>
+      <parameter property="Roleid" column="ROLEID"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Webfitur">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Webfitur">
+      <parameter property="Fiturid" column="FITURID"/>
+      <parameter property="Roleid" column="ROLEID"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

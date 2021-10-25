@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Sp2d" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Sp2d" type="Usadi.Valid49.BO.Sp2dControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result-nosp2d" class="Sp2d">
+      <result property="Nosp2d" column="NOSP2D"/>
+    </resultMap>
+    <resultMap id="return-result-multikeg" class="Sp2d">
+      <result property="AllowSuperUser" column="ALLOWSUPERUSER"/>
+      <result property="Nobbantu" column="NOBBANTU"/>
+      <result property="Nmbkas" column="NMBKAS"/>
+      <result property="Idxkode" column="IDXKODE"/>
+      <result property="Idxsko" column="IDXSKO"/>
+      <result property="Idxttd" column="IDXTTD"/>
+      <result property="Kdp3" column="KDP3"/>
+      <result property="Nmp3" column="NMP3"/>
+      <result property="Kdstatus" column="KDSTATUS"/>
+      <result property="Keperluan" column="KEPERLUAN"/>
+      <result property="Ketotor" column="KETOTOR"/>
+      <result property="Keybend" column="KEYBEND"/>
+      <result property="Nokon" column="NOKONTRAK"/>
+      <result property="Tglkon" column="TGLKON"/>
+      <result property="Nokontrak" column="NOKONTRAK"/>
+      <result property="Noreg" column="NOREG"/>
+      <result property="Nosp2d" column="NOSP2D"/>
+      <result property="Nospm" column="NOSPM"/>
+      <result property="Penolakan" column="PENOLAKAN"/>
+      <result property="Tglsp2d" column="TGLSP2D"/>
+      <result property="Tglspm" column="TGLSPM"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nosko" column="NOSKO"/>
+      <result property="Tglsko" column="TGLSKO"/>
+    </resultMap>
+    <resultMap id="return-result" extends="return-result-multikeg" class="Sp2d">
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+    </resultMap>
+    <resultMap id="return-result-Sp2djur" class="Usadi.Valid49.BO.Sp2djurControl">
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Nojetra" column="NOJETRA"/>
+      <result property="Nosp2d" column="NOSP2D"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Idxkode" column="IDXKODE"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Kdpers" column="KDPERS"/>
+      <result property="Type" column="TYPE"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="NOSP2D"/>
+      <result property="Field" column="NOSP2D"/>
+      <result property="Value" column="TGLSP2D"/>
+    </resultMap>
+    <resultMap id="return-result-total" class="Sp2d">
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Nilai" column="NILAI"/>
+    </resultMap>
+    <resultMap id="return-result-idxkode" class="Sp2d">
+      <result property="Nosp2d" column="NOSP2D"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSp2d" parameterMap="insert-param">
+      <generate table="SP2D"/>
+    </insert>
+    <update id="UpdateBySp2d" parameterMap="update-param">
+      <generate table="SP2D" by="UNITKEY,NOSP2D"/>
+    </update>
+    <update id="UpdateBySahSp2d" parameterClass="Sp2d">
+      update SP2D set TGLVALID=#Tglvalid#,NOREG=#Noreg#
+      where UNITKEY=#Unitkey# and NOSP2D=#Nosp2d#
+    </update>
+    <update id="UpdateByDraftSp2d" parameterClass="Sp2d" >
+      update SP2D set TGLVALID=null
+      where UNITKEY=#Unitkey# and NOSP2D=#Nosp2d#
+    </update>
+    <delete id="DeleteBySp2d" parameterMap="delete-param">
+      <generate table="SP2D" by="UNITKEY,NOSP2D"/>
+    </delete>
+    <select id="BaseQuerySp2d" parameterClass="Sp2d" resultMap="return-result">
+      select distinct #AllowSuperUser# as ALLOWSUPERUSER,A.IDXKODE,A.IDXSKO,rtrim(A.IDXTTD) as IDXTTD,rtrim(A.KDSTATUS) as KDSTATUS,
+      isnull((A.KEPERLUAN),'')KEPERLUAN,isnull((A.NOKONTRAK),'')NOKONTRAK,
+      A.KDP3, isnull((DP3.NMP3),'')NMP3,
+      A.KETOTOR,rtrim(A.KEYBEND) as KEYBEND,A.NOREG,A.NOSP2D,
+      A.NOSPM,A.PENOLAKAN,A.TGLSP2D,A.TGLSPM,A.TGLVALID,A.UNITKEY
+      ,SK.NOSKO,SK.TGLSKO,#Kdkegunit# as KDKEGUNIT,<!--isnull(D.KDKEGUNIT,#Kdkegunit#) as KDKEGUNIT,-->
+      A.NOBBANTU,C.NMBKAS,K.TGLKON
+      from SP2D A
+      LEFT OUTER JOIN SP2DDETR D ON A.NOSP2D = D.NOSP2D and A.UNITKEY = D.UNITKEY
+      LEFT OUTER JOIN SKO SK ON A.IDXSKO = SK.IDXSKO and A.UNITKEY = SK.UNITKEY
+      LEFT OUTER JOIN DAFTPHK3 DP3 ON A.KDP3 = DP3.KDP3
+      left outer join BKBKAS C on A.NOBBANTU = C.NOBBANTU
+      left outer join BEND B on A.KEYBEND=B.KEYBEND
+      left outer join JBEND J on J.JNS_BEND=B.JNS_BEND
+      LEFT OUTER JOIN KONTRAK K ON A.NOKONTRAK = K.NOKON AND a.UNITKEY = k.UNITKEY
+    </select>
+    <select id="QueryByAllSp2d" extends="BaseQuerySp2d" parameterClass="Sp2d" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.IDXKODE=#Idxkode# and (#Idxkode# not in ('2') or (#Idxkode#='2' and A.KDSTATUS in ('21','22','23')))
+      and case #Parameter.Field#
+      when '1' then A.NOSP2D
+      when '2' then convert(char(10), A.TGLSP2D, 103)
+      when '3' then convert(char(10), A.TGLVALID, 103)
+      when '4' then A.KETOTOR
+      when '5' then A.NOSPM
+      when '6' then A.NOREG
+      when '7' then A.NOKONTRAK
+      when '8' then A.KEPERLUAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOSP2D
+    </select>
+    <!--WR-051010-->
+    <select id="QueryByAllGUPPKDaSp2d" extends="BaseQuerySp2d" parameterClass="Sp2d" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.IDXKODE=#Idxkode# and  A.KDSTATUS not in ('22','23')
+      and case #Parameter.Field#
+      when '1' then A.NOSP2D
+      when '2' then convert(char(10), A.TGLSP2D, 103)
+      when '3' then convert(char(10), A.TGLVALID, 103)
+      when '4' then A.KETOTOR
+      when '5' then A.NOSPM
+      when '6' then A.NOREG
+      when '7' then A.NOKONTRAK
+      when '8' then A.KEPERLUAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOSP2D
+    </select>
+    <!--WR-051010-->
+    <select id="QueryByAllGUPPKDSp2d" extends="BaseQuerySp2d" parameterClass="Sp2d" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.IDXKODE=#Idxkode# and A.KDSTATUS in ('22','23')
+      and case #Parameter.Field#
+      when '1' then A.NOSP2D
+      when '2' then convert(char(10), A.TGLSP2D, 103)
+      when '3' then convert(char(10), A.TGLVALID, 103)
+      when '4' then A.KETOTOR
+      when '5' then A.NOSPM
+      when '6' then A.NOREG
+      when '7' then A.NOKONTRAK
+      when '8' then A.KEPERLUAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOSP2D
+    </select>
+    <select id="QueryByAll01Sp2d" extends="BaseQuerySp2d" parameterClass="Sp2d" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.IDXKODE=#Idxkode# and (#Idxkode# not in ('2') or (#Idxkode#='2' and A.KDSTATUS in ('21','22','23')))
+      and right(J.JNS_BEND,1)='1' and case #Parameter.Field#
+      when '1' then A.NOSP2D
+      when '2' then convert(char(10), A.TGLSP2D, 103)
+      when '3' then convert(char(10), A.TGLVALID, 103)
+      when '4' then A.KETOTOR
+      when '5' then A.NOSPM
+      when '6' then A.NOREG
+      when '7' then A.NOKONTRAK
+      when '8' then A.KEPERLUAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOSP2D
+    </select>
+    <select id="QueryByAll02Sp2d" extends="BaseQuerySp2d" parameterClass="Sp2d" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.IDXKODE=#Idxkode# and (#Idxkode# not in ('2') or (#Idxkode#='2' and A.KDSTATUS in ('21','22','23')))
+      and right(J.JNS_BEND,1)='2' and case #Parameter.Field#
+      when '1' then A.NOSP2D
+      when '2' then convert(char(10), A.TGLSP2D, 103)
+      when '3' then convert(char(10), A.TGLVALID, 103)
+      when '4' then A.KETOTOR
+      when '5' then A.NOSPM
+      when '6' then A.NOREG
+      when '7' then A.NOKONTRAK
+      when '8' then A.KEPERLUAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOSP2D
+    </select>
+    <select id="QueryByNosp2dSp2d" parameterClass="Sp2d" resultMap="return-result-nosp2d">
+      select NOSP2D from SP2D where (NOSP2D=#Nosp2d# or #Nosp2d#='')
+      order by NOSP2D
+    </select>
+    <select id="QueryBySp2dblSp2d" parameterClass="Sp2d" resultMap="return-result">
+      select distinct #AllowSuperUser# as ALLOWSUPERUSER,A.IDXKODE,A.IDXSKO,rtrim(A.IDXTTD) as IDXTTD,rtrim(A.KDSTATUS) as KDSTATUS,
+      isnull((A.KEPERLUAN),'')KEPERLUAN,isnull((A.NOKONTRAK),'')NOKONTRAK,
+      A.KDP3, isnull((DP3.NMP3),'')NMP3,
+      A.KETOTOR,rtrim(A.KEYBEND) as KEYBEND,A.NOREG,A.NOSP2D,
+      A.NOSPM,A.PENOLAKAN,A.TGLSP2D,A.TGLSPM,A.TGLVALID,A.UNITKEY
+      ,SK.NOSKO,SK.TGLSKO,isnull(D.KDKEGUNIT,#Kdkegunit#) as KDKEGUNIT,
+      A.NOBBANTU,C.NMBKAS,K.TGLKON
+      from SP2D A
+      LEFT OUTER JOIN SP2DDETR D ON A.NOSP2D = D.NOSP2D and A.UNITKEY = D.UNITKEY
+      LEFT OUTER JOIN SKO SK ON A.IDXSKO = SK.IDXSKO and A.UNITKEY = SK.UNITKEY
+      LEFT OUTER JOIN DAFTPHK3 DP3 ON A.KDP3 = DP3.KDP3
+      left outer join BKBKAS C on A.NOBBANTU = C.NOBBANTU
+      LEFT OUTER JOIN KONTRAK K ON A.NOKONTRAK = K.NOKON and A.UNITKEY=K.UNITKEY
+      where A.UNITKEY=#Unitkey# and A.IDXKODE=#Idxkode# and KDSTATUS in ('24','25') <!--RH:09-10-07-->
+      and (isnull(D.KDKEGUNIT,'')=isnull(#Kdkegunit#,'') or isnull(#Kdkegunit#,'')=''
+      or ((D.KDKEGUNIT is null) and #Kdkegunit# is not null))
+      and case #Parameter.Field#
+      when '1' then A.NOSP2D
+      when '2' then convert(char(10), A.TGLSP2D, 103)
+      when '3' then convert(char(10), A.TGLVALID, 103)
+      when '4' then A.KETOTOR
+      when '5' then A.NOSPM
+      when '6' then A.NOREG
+      when '7' then A.NOKONTRAK
+      when '8' then A.KEPERLUAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOSP2D
+    </select>
+    <select id="QueryBySp2dblmultiSp2d" parameterClass="Sp2d" resultMap="return-result-multikeg">
+      select distinct #AllowSuperUser# as ALLOWSUPERUSER,A.IDXKODE,A.IDXSKO,rtrim(A.IDXTTD) as IDXTTD,rtrim(A.KDSTATUS) as KDSTATUS,
+      isnull((A.KEPERLUAN),'')KEPERLUAN,isnull((A.NOKONTRAK),'')NOKONTRAK,
+      A.KDP3, isnull((DP3.NMP3),'')NMP3,
+      A.KETOTOR,rtrim(A.KEYBEND) as KEYBEND,A.NOREG,A.NOSP2D,
+      A.NOSPM,A.PENOLAKAN,A.TGLSP2D,A.TGLSPM,A.TGLVALID,A.UNITKEY
+      ,SK.NOSKO,SK.TGLSKO,
+      A.NOBBANTU,C.NMBKAS,K.TGLKON
+      from SP2D A
+      LEFT OUTER JOIN SKO SK ON A.IDXSKO = SK.IDXSKO and A.UNITKEY = SK.UNITKEY
+      LEFT OUTER JOIN DAFTPHK3 DP3 ON A.KDP3 = DP3.KDP3
+      left outer join BKBKAS C on A.NOBBANTU = C.NOBBANTU
+      LEFT OUTER JOIN KONTRAK K ON A.NOKONTRAK = K.NOKON AND A.UNITKEY=K.UNITKEY
+      where A.UNITKEY=#Unitkey# and A.IDXKODE=#Idxkode# and KDSTATUS in ('24')
+      and case #Parameter.Field#
+      when '1' then A.NOSP2D
+      when '2' then convert(char(10), A.TGLSP2D, 103)
+      when '3' then convert(char(10), A.TGLVALID, 103)
+      when '4' then A.KETOTOR
+      when '5' then A.NOSPM
+      when '6' then A.NOREG
+      when '7' then A.NOKONTRAK
+      when '8' then A.KEPERLUAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOSP2D
+    </select>
+    <select id="QueryByMultikegSp2d" parameterClass="Sp2d" resultMap="return-result-multikeg">
+      select distinct #AllowSuperUser# as ALLOWSUPERUSER,A.IDXKODE,A.IDXSKO,rtrim(A.IDXTTD) as IDXTTD,rtrim(A.KDSTATUS) as KDSTATUS,
+      isnull((A.KEPERLUAN),'')KEPERLUAN,isnull((A.NOKONTRAK),'')NOKONTRAK,
+      A.KDP3, isnull((DP3.NMP3),'')NMP3,
+      A.KETOTOR,rtrim(A.KEYBEND) as KEYBEND,A.NOREG,A.NOSP2D,
+      A.NOSPM,A.PENOLAKAN,A.TGLSP2D,A.TGLSPM,A.TGLVALID,A.UNITKEY,A.NOBBANTU,C.NMBKAS
+      ,SK.NOSKO,SK.TGLSKO,K.TGLKON
+      from SP2D A
+      LEFT OUTER JOIN SPMDETR D ON A.NOSPM = D.NOSPM and A.UNITKEY = D.UNITKEY
+      LEFT OUTER JOIN SKO SK ON A.IDXSKO = SK.IDXSKO and A.UNITKEY = SK.UNITKEY
+      LEFT OUTER JOIN DAFTPHK3 DP3 ON A.KDP3 = DP3.KDP3
+      left outer join BKBKAS C on A.NOBBANTU = C.NOBBANTU
+      LEFT OUTER JOIN KONTRAK K ON S.NOKONTRAK = K.NOKON AND A.UNITKEY=K.UNITKEY
+      where A.UNITKEY=#Unitkey# and A.IDXKODE=#Idxkode# and A.KDSTATUS in ('21','22','23')
+      and case #Parameter.Field#
+      when '1' then A.NOSP2D
+      when '2' then convert(char(10), A.TGLSP2D, 103)
+      when '3' then convert(char(10), A.TGLVALID, 103)
+      when '4' then A.KETOTOR
+      when '5' then A.NOSPM
+      when '6' then A.NOREG
+      when '7' then A.NOKONTRAK
+      when '8' then A.KEPERLUAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOSP2D
+    </select>
+    <select id="QueryByNospmSp2d" extends="BaseQuerySp2d" parameterClass="Sp2d" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSPM=#Nospm#
+    </select>
+    <select id="QueryByIdxkodeSp2d" parameterClass="Sp2d" resultMap="return-result-idxkode">
+      select NOSP2D from SP2D
+      where UNITKEY=#Unitkey# and IDXKODE=#Idxkode#
+    </select>
+    <select id="QueryByOrderByNoregSp2d" extends="BaseQuerySp2d" parameterClass="Sp2d" resultMap="return-result">
+      where A.UNITKEY=#Unitkey#
+      order by A.NOREG
+    </select>
+    <select id="QueryByDpdetSp2d" parameterclass="Usadi.Valid49.BO.DpdetControl" resultMap="return-lookup">
+      select NOSP2D,convert(char(10), A.TGLSP2D, 103) as TGLSP2D
+      from SP2D A
+      where A.NOSP2D not in (select NOSP2D from DPDET)
+      and case #Parameter.Field#
+      when '1' then A.NOSP2D
+      when '2' then convert(char(10), A.TGLSP2D, 103)
+      end like #Parameter.Value# + '%'
+      order by A.NOSP2D
+    </select>
+    <select id="QueryByBeritapotSp2d" parameterclass="Usadi.Valid49.BO.BeritapotControl" resultMap="return-lookup">
+      select NOSP2D,convert(char(10), A.TGLSP2D, 103) as TGLSP2D
+      from SP2D A
+      where kdstatus='25' <!--and A.NOSP2D not in (select NOSP2D from BERITAPOT where NOSP2D is not null)-->
+      and UNITKEY=#Unitkey# and
+      case #Parameter.Field#
+      when '1' then A.NOSP2D
+      when '2' then convert(char(10), A.TGLSP2D, 103)
+      end like #Parameter.Value# + '%'
+      order by A.NOSP2D
+    </select>
+    <select id="QueryBySp2dsalurdetSp2d" parameterclass="Usadi.Valid49.BO.Sp2dsalurdetControl" resultMap="return-lookup">
+      select NOSP2D,convert(char(10), A.TGLSP2D, 103) as TGLSP2D
+      from SP2D A
+      where A.NOSP2D not in (select NOSP2D from SP2DSALURDET)
+      and case #Parameter.Field#
+      when '1' then A.NOSP2D
+      when '2' then convert(char(10), A.TGLSP2D, 103)
+      end like #Parameter.Value# + '%'
+      order by A.NOSP2D
+    </select>
+    <select id="QueryByAllSp2djur" parameterClass="Sp2d" resultMap="return-result-Sp2djur">
+      SELECT
+      A.IDXKODE,A.NOSP2D,A.UNITKEY
+      ,B.MTGKEY,B.NILAI,D.KDPERS,D.NOJETRA
+      ,rtrim(C.KDPER) as KDPER, rtrim(C.NMPER) as NMPER, C.TYPE
+      from SP2D A
+      left outer join SP2DDETD B on A.NOSP2D = B.NOSP2D and A.UNITKEY = B.UNITKEY
+      left outer join MATANGD C on B.MTGKEY = C.MTGKEY
+      left outer join JTRNLKAS D on B.NOJETRA = D.NOJETRA
+      where B.MTGKEY is not null
+    </select>
+    <select id="QueryByIdxskoSp2d" extends="BaseQuerySp2d" parameterClass="Sp2d" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.IDXSKO=#Idxsko#
+    </select>
+    <select id="LoadByPKSp2d" extends="BaseQuerySp2d" parameterClass="Sp2d" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSP2D=#Nosp2d# 
+    </select>
+    <select id="LoadByNoSp2d" extends="BaseQuerySp2d" parameterClass="Sp2d" resultMap="return-result">
+      where A.NOSP2D=#Nosp2d#
+    </select>
+    <procedure id="ExecTransferSPMkeSP2D" parameterMap="transfer-param" timeout="0">
+      WSP_TRANSFER_SPMSP2D
+    </procedure>  
+    <select id="LoadBySP2DSKPDSp2d" parameterClass="Sp2d" resultMap="return-result-total">
+      select #Unitkey# as UNITKEY,'' as KDKEGUNIT,'' as MTGKEY,'' as KDPER,'' as NMPER,sum(NILAI) as NILAI
+      from dbo.GetSp2ddet(#Unitkey#,#Kdkegunit#,#Tglsko#,#Nosp2d#)
+    </select>
+    <select id="LoadBySP2DKegSp2d" parameterClass="Sp2d" resultMap="return-result-total">
+      select UNITKEY,KDKEGUNIT,'' as MTGKEY,'' as KDPER,'' as NMPER,sum(NILAI) as NILAI
+      from dbo.GetSp2ddet(#Unitkey#,#Kdkegunit#,#Tglsko#,#Nosp2d#)
+      group by UNITKEY,KDKEGUNIT
+    </select>
+    <select id="LoadBySP2DRekSp2d" parameterClass="Sp2d" resultMap="return-result-total">
+      select UNITKEY,'' as KDKEGUNIT,MTGKEY,KDPER,NMPER,NILAI
+      from dbo.GetSp2ddet(#Unitkey#,#Kdkegunit#,#Tglsko#,#Nosp2d#)
+      where MTGKEY=#Mtgkey#
+    </select>
+    <select id="LoadBySP2DRekRSp2d" parameterClass="Sp2d" resultMap="return-result-total">
+      select UNITKEY,KDKEGUNIT,MTGKEY,KDPER,NMPER,NILAI
+      from dbo.GetSp2ddet(#Unitkey#,#Kdkegunit#,#Tglsko#,#Nosp2d#)
+      where MTGKEY=#Mtgkey#
+    </select>
+    <procedure id="ExecTransferGajiSp2d" parameterMap="transfer-gaji-param" timeout="0">
+      WSP_TRANSFERGAJISP2D
+    </procedure>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Sp2d">
+      <parameter property="Nobbantu" column="NOBBANTU"/>
+      <parameter property="Idxkode" column="IDXKODE"/>
+      <parameter property="Idxsko" column="IDXSKO"/>
+      <parameter property="Idxttd" column="IDXTTD"/>
+      <parameter property="Kdp3" column="KDP3"/>
+      <parameter property="Kdstatus" column="KDSTATUS"/>
+      <parameter property="Keperluan" column="KEPERLUAN"/>
+      <parameter property="Ketotor" column="KETOTOR"/>
+      <parameter property="Keybend" column="KEYBEND"/>
+      <parameter property="Nokontrak" column="NOKONTRAK"/>
+      <parameter property="Noreg" column="NOREG"/>
+      <parameter property="Nospm" column="NOSPM"/>
+      <parameter property="Penolakan" column="PENOLAKAN"/>
+      <parameter property="Tglsp2d" column="TGLSP2D"/>
+      <parameter property="Tglspm" column="TGLSPM"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nosp2d" column="NOSP2D"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Sp2d">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Sp2d">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nosp2d" column="NOSP2D"/>
+    </parameterMap>
+    <parameterMap id="transfer-param" class="Sp2d">
+      <parameter property="Nospm" column="nospm"/>
+      <parameter property="Nosp2d" column="nosp2d"/>
+      <parameter property="Unitkey" column="unitkey"/>
+    </parameterMap>
+    <parameterMap id="transfer-gaji-param" class="Sp2d">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Nosp2d" column="nosp2d"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Mtgsbdana" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Mtgsbdana" type="Usadi.Valid49.BO.MtgsbdanaControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Mtgsbdana">
+      <result property="Ket" column="KET"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Nmdana" column="NMDANA"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Kddana" column="KDDANA"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="KDDANA"/>
+      <result property="Field" column="KDDANA"/>
+      <result property="Value" column="NMDANA"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertMtgsbdana" parameterMap="insert-param">
+      <generate table="MTGSBDANA"/>
+    </insert>
+    <update id="UpdateByMtgsbdana" parameterMap="update-param">
+      <generate table="MTGSBDANA" by="MTGKEY,KDDANA"/>
+    </update>
+    <delete id="DeleteByMtgsbdana" parameterMap="delete-param">
+      <generate table="MTGSBDANA" by="MTGKEY,KDDANA"/>
+    </delete>
+    <select id="BaseQueryMtgsbdana" parameterClass="Mtgsbdana" resultMap="return-result">
+      select distinct A.MTGKEY,C.KDDANA KDPER,C.NMDANA NMPER,C.KDDANA,C.NMDANA,C.KET
+      from MTGSBDANA A
+      LEFT JOIN MATANGD B ON A.MTGKEY=B.MTGKEY
+      INNER JOIN JDANA C ON A.KDDANA=C.KDDANA
+    </select>
+    <select id="QueryByAllMtgsbdana" extends="BaseQueryMtgsbdana" parameterClass="Mtgsbdana" resultMap="return-result">
+      where  A.MTGKEY = #Mtgkey# and
+      case #Parameter.Field#
+      when '1' then C.KDDANA
+      when '2' then C.NMDANA
+      end like '%'+ #Parameter.Value# + '%'
+      order by C.KDDANA
+    </select>
+    <select id="QueryBySbdanarMtgsbdana" extends="BaseQueryMtgsbdana" parameterclass="Usadi.Valid49.BO.SbdanarControl" resultMap="return-lookup">
+      select distinct C.KDDANA,C.NMDANA
+      from MTGSBDANA A
+      INNER JOIN JDANA C ON A.KDDANA=C.KDDANA
+      INNER JOIN SBDANAKEG D ON D.KDDANA=C.KDDANA
+      where C.KDDANA not in (select KDDANA from SBDANAR where UNITKEY=#Unitkey# and KDKEGUNIT =#Kdkegunit# and KDTAHAP=#Kdtahap# and MTGKEY=#Mtgkey#)
+      and D.KDTAHAP=#Kdtahap# and D.KDKEGUNIT =#Kdkegunit# and UNITKEY=#Unitkey#
+      and
+      <!--where  C.KDDANA not in (select KDDANA from SBDANAR) and-->
+      case #Parameter.Field#
+      when '1' then C.KDDANA
+      when '2' then C.NMDANA
+      end like '%'+ #Parameter.Value# + '%'
+      order by C.KDDANA
+    </select>
+    <select id="QueryBySbdanabMtgsbdana" extends="BaseQueryMtgsbdana" parameterclass="Usadi.Valid49.BO.SbdanabControl" resultMap="return-lookup">
+      where C.KDDANA not in (select KDDANA from SBDANAB where UNITKEY=#Unitkey# and KDTAHAP=#Kdtahap# and MTGKEY=#Mtgkey#) and
+      <!--where  C.KDDANA not in (select KDDANA from SBDANAB) and-->
+      case #Parameter.Field#
+      when '1' then C.KDDANA
+      when '2' then C.NMDANA
+      end like '%'+ #Parameter.Value# + '%'
+      order by C.KDDANA
+    </select>
+    <select id="QueryBySbdanartlMtgsbdana" extends="BaseQueryMtgsbdana" parameterclass="Usadi.Valid49.BO.SbdanartlControl" resultMap="return-lookup">
+      where C.KDDANA not in (select KDDANA from SBDANARTL where UNITKEY=#Unitkey# and KDTAHAP=#Kdtahap# and MTGKEY=#Mtgkey#) and
+      a.MTGKEY=#Mtgkey# AND
+      <!--where  C.KDDANA not in (select KDDANA from SBDANARTL) and-->
+      case #Parameter.Field#
+      when '1' then C.KDDANA
+      when '2' then C.NMDANA
+      end like '%'+ #Parameter.Value# + '%'
+      order by C.KDDANA
+    </select>
+    <select id="LoadByPKMtgsbdana" extends="BaseQueryMtgsbdana" parameterClass="Mtgsbdana" resultMap="return-result">
+      where A.KDDANA=#Kddana# and A.MTGKEY=#Mtgkey#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Mtgsbdana">
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Kddana" column="KDDANA"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Mtgsbdana">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Mtgsbdana">
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Kddana" column="KDDANA"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

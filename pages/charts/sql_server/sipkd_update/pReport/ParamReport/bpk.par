@@ -1,0 +1,8 @@
+TITLE=Surat Bukti Pengeluaran
+Unitkey=sring;Key Unit;10;;;;;-1;
+Kdtahap=string;Tahap;4;
+Keybend=string;Bendahara;4;
+Jnsbend=string;Jenis Bendahara;4;;-1;2;-1;
+Idxkode=string;Index Kode;4;
+Nobpk=String;Nomor BPK;30;
+Nip=string;Pimpinan Kegiatan;30;

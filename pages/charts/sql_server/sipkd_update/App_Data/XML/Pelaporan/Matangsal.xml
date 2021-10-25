@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Matangsal" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <alias>
+      <typeAlias alias="Matangsal" type="Usadi.Valid49.BO.MatangsalControl" />
+    </alias>
+    <resultMaps>
+      <resultMap id="return-result" class="Matangsal">
+        <result property="Kdkhusus" column="KDKHUSUS"/>
+        <result property="Kdper" column="KDPER"/>
+        <result property="Mtglevel" column="MTGLEVEL"/>
+        <result property="Nsalawal" column="NSALAWAL"/>
+        <result property="Nmper" column="NMPER"/>
+        <result property="Type" column="TYPE"/>
+        <result property="Mtgkey" column="MTGKEY"/>
+      </resultMap>
+    </resultMaps>
+    <statements>
+      <insert id="InsertMatangsal" parameterMap="insert-param">
+        <generate table="Matangsal"/>
+      </insert>
+      <update id="UpdateByMatangsal" parameterMap="update-param">
+        <generate table="Matangsal" by="MTGKEY"/>
+      </update>
+      <delete id="DeleteByMatangsal" parameterMap="delete-param">
+        <generate table="Matangsal" by="MTGKEY"/>
+      </delete>
+      <select id="BaseQueryMatangsal" parameterClass="Matangsal" resultMap="return-result">
+        select M.KDKHUSUS,M.KDPER,M.MTGLEVEL,M.NSALAWAL,M.NMPER,M.TYPE,M.MTGKEY
+        from Matangsal M
+      </select>
+      <select id="QueryByAllMatangsal" extends="BaseQueryMatangsal" parameterClass="Matangsal" resultMap="return-result">
+        where
+        case #Parameter.Field#
+          when '1' then M.KDKHUSUS
+          when '2' then M.KDPER
+          when '3' then M.MTGLEVEL
+          when '4' then M.NSALAWAL
+          when '5' then M.NMPER
+          when '6' then M.TYPE
+          when '7' then M.MTGKEY
+        end like '%'+ #Parameter.Value# + '%' 
+        order by M.KDPER
+      </select>
+      <select id="LoadByPKMatangsal" extends="BaseQueryMatangsal" parameterClass="Matangsal" resultMap="return-result">
+        where M.MTGKEY = #Mtgkey#
+      </select>
+    </statements>
+    <parameterMaps>
+      <parameterMap id="insert-param" class="Matangsal">
+        <parameter property="Kdkhusus" column="KDKHUSUS"/>
+        <parameter property="Kdper" column="KDPER"/>
+        <parameter property="Mtglevel" column="MTGLEVEL"/>
+        <parameter property="Nsalawal" column="NSALAWAL"/>
+        <parameter property="Nmper" column="NMPER"/>
+        <parameter property="Type" column="TYPE"/>
+        <parameter property="Mtgkey" column="MTGKEY"/>
+      </parameterMap>
+      <parameterMap id="update-param" extends="insert-param" class="Matangsal">
+      </parameterMap>
+      <parameterMap id="delete-param" class="Matangsal">
+        <parameter property="Mtgkey" column="MTGKEY"/>
+      </parameterMap>
+    </parameterMaps>
+</sqlMap>
+

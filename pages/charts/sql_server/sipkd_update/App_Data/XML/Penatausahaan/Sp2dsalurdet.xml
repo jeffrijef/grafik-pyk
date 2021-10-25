@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Sp2dsalurdet" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <alias>
+      <typeAlias alias="Sp2dsalurdet" type="Usadi.Valid49.BO.Sp2dsalurdetControl" />
+    </alias>
+    <resultMaps>
+      <resultMap id="return-result" class="Sp2dsalurdet">
+        <result property="Nosalur" column="NOSALUR"/>
+        <result property="Nosp2d" column="NOSP2D"/>
+      </resultMap>
+      <resultMap id="return-result-detail" extends="return-result" class="Sp2dsalurdet">
+        <result property="Tglsp2d" column="TGLSP2D"/>
+        <result property="Nilai" column="NILAI"/>
+        <result property="Potongan" column="POTONGAN"/>
+      </resultMap>
+    </resultMaps>
+    <statements>
+      <insert id="InsertSp2dsalurdet" parameterMap="insert-param">
+        <generate table="Sp2dsalurdet"/>
+      </insert>
+      <update id="UpdateBySp2dsalurdet" parameterMap="update-param">
+        <generate table="Sp2dsalurdet" by="NOSP2D"/>
+      </update>
+      <delete id="DeleteBySp2dsalurdet" parameterMap="delete-param">
+        <generate table="Sp2dsalurdet" by="NOSP2D"/>
+      </delete>
+      <select id="BaseQuerySp2dsalurdet" parameterClass="Sp2dsalurdet" resultMap="return-result">
+        select S.NOSALUR,S.NOSP2D
+        from SP2DSALURDET S
+      </select>
+      <select id="QueryByAllSp2dsalurdet" extends="BaseQuerySp2dsalurdet" parameterClass="Sp2dsalurdet" resultMap="return-result">
+        where
+        case #Parameter.Field#
+          when '1' then S.NOSALUR
+          when '2' then S.NOSP2D
+        end like '%'+ #Parameter.Value# + '%' 
+        order by S.NOSALUR
+      </select>
+      <select id="QueryByDetailSp2dsalurdet" parameterClass="Sp2dsalurdet" resultMap="return-result-detail">
+        select NOSALUR,NOSP2D,TGLSP2D,NILAI,
+        POTONGAN=isnull((select sum(d2.NILAI) from SP2DDETB d2 where d2.NOSP2D = x.NOSP2D),0)
+        from(
+        select S.NOSALUR,S.NOSP2D,d.TGLSP2D,sum(NILAI)NILAI,0 POTONGAN
+        from SP2DSALURDET S
+        inner join SP2D d on d.NOSP2D = s.NOSP2D
+        inner join SP2DDETR d2 on d.NOSP2D = d2.NOSP2D
+        group by S.NOSALUR,S.NOSP2D,d.TGLSP2D
+
+        union
+        select S.NOSALUR,S.NOSP2D,d.TGLSP2D,sum(NILAI)NILAI,0 POTONGAN
+        from SP2DSALURDET S
+        inner join SP2D d on d.NOSP2D = s.NOSP2D
+        inner join SP2DDETRTL d2 on d.NOSP2D = d2.NOSP2D
+        group by S.NOSALUR,S.NOSP2D,d.TGLSP2D
+
+        union
+        select S.NOSALUR,S.NOSP2D,d.TGLSP2D,sum(NILAI)NILAI,0 POTONGAN
+        from SP2DSALURDET S
+        inner join SP2D d on d.NOSP2D = s.NOSP2D
+        inner join SP2DDETD d2 on d.NOSP2D = d2.NOSP2D
+        group by S.NOSALUR,S.NOSP2D,d.TGLSP2D
+        )x
+        where x.NOSALUR=#Nosalur#
+      </select>
+      <select id="QueryByNosalurSp2dsalurdet" extends="BaseQuerySp2dsalurdet" parameterClass="Sp2dsalurdet" resultMap="return-result">
+        where S.NOSALUR=#Nosalur#
+      </select>
+      <select id="LoadByPKSp2dsalurdet" extends="BaseQuerySp2dsalurdet" parameterClass="Sp2dsalurdet" resultMap="return-result">
+        where S.NOSP2D = #Nosp2d#
+      </select>
+    </statements>
+    <parameterMaps>
+      <parameterMap id="insert-param" class="Sp2dsalurdet">
+        <parameter property="Nosalur" column="NOSALUR"/>
+        <parameter property="Nosp2d" column="NOSP2D"/>
+      </parameterMap>
+      <parameterMap id="update-param" extends="insert-param" class="Sp2dsalurdet">
+      </parameterMap>
+      <parameterMap id="delete-param" class="Sp2dsalurdet">
+        <parameter property="Nosp2d" column="NOSP2D"/>
+      </parameterMap>
+    </parameterMaps>
+</sqlMap>
+

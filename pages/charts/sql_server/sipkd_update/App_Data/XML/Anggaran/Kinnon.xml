@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Kinnon" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Kinnon" type="Usadi.Valid49.BO.KinnonControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Kinnon">
+      <result property="AllowSuperUser" column="ALLOWSUPERUSER"/>
+      <result property="Target" column="TARGET"/>
+      <result property="Tolokur" column="TOLOKUR"/>
+      <!--<result property="Idprgrm" column="IDPRGRM"/>-->
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Type" column="TYPE"/>
+      <!--<result property="Nmprgrm" column="NMPRGRM"/>
+      <result property="Nuprgrm" column="NUPRGRM"/>-->
+      <result property="Kdjkk" column="KDJKK"/>
+      <result property="Urjkk" column="URJKK"/>
+      <result property="Kdtahap" column="KDTAHAP"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Idxkode" column="IDXKODE"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertKinnon" parameterMap="insert-param">
+      <generate table="KINNON"/>
+    </insert>
+    <update id="UpdateByKinnon" parameterMap="update-param">
+      <generate table="KINNON" by="IDXKODE,KDJKK,KDTAHAP,UNITKEY"/>
+    </update>
+    <delete id="DeleteByKinnon" parameterMap="delete-param">
+      <generate table="KINNON" by="IDXKODE,KDJKK,KDTAHAP,UNITKEY"/>
+    </delete>
+    <select id="BaseQueryKinnon" parameterClass="Kinnon" resultMap="return-result">
+      select #AllowSuperUser# as ALLOWSUPERUSER,A.IDXKODE,A.KDJKK,A.KDTAHAP,A.TARGET,A.TOLOKUR,A.UNITKEY
+      , C.KDUNIT, C.NMUNIT, C.TYPE,E.URJKK
+
+      from KINNON A
+      LEFT OUTER JOIN DAFTUNIT C ON A.UNITKEY=C.UNITKEY
+      LEFT OUTER JOIN JKINKEG E ON A.KDJKK=E.KDJKK
+    </select>
+    <select id="QueryByAllKinnon" extends="BaseQueryKinnon" parameterClass="Kinnon" resultMap="return-result">
+      where A.KDTAHAP=#Kdtahap# and A.UNITKEY=#Unitkey# and IDXKODE=#Idxkode#
+      and case #Parameter.Field#
+      when '1' then E.URJKK
+      when '2' then A.TOLOKUR
+      when '3' then A.TARGET
+      end like '%'+ #Parameter.Value# + '%'
+    </select>
+    <select id="LoadByPKKinnon" extends="BaseQueryKinnon" parameterClass="Kinnon" resultMap="return-result">
+      where A.KDJKK=#Kdjkk# and A.KDTAHAP=#Kdtahap# and A.UNITKEY=#Unitkey# and IDXKODE=#Idxkode#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Kinnon">
+      <parameter property="Target" column="TARGET"/>
+      <parameter property="Tolokur" column="TOLOKUR"/>
+      <parameter property="Idxkode" column="IDXKODE"/>
+      <parameter property="Kdjkk" column="KDJKK"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Kinnon">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Kinnon">
+      <parameter property="Idxkode" column="IDXKODE"/>
+      <parameter property="Kdjkk" column="KDJKK"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

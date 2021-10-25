@@ -1,0 +1,4 @@
+TITLE=LAPORAN PERUBAHAN EKUITAS PPKD
+Unitkey=string;Key Unit;4;
+Tgl=datetime;Tanggal;4;
+Level=string;Level Rekening;2;

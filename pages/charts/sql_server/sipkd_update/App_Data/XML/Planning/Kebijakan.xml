@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Kebijakan" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Kebijakan" type="Usadi.Valid49.BO.KebijakanControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Kebijakan">
+      <result property="Idbijakan" column="IDBIJAKAN"/>
+      <result property="Nobijakan" column="NOBIJAKAN"/>
+      <result property="Nmbijakan" column="NMBIJAKAN"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <insert id="InsertKebijakan" parameterMap="insert-param" >
+      <generate table="KEBIJAKAN"/>
+    </insert>
+    <update id="UpdateByKebijakan" parameterMap="update-param" >
+      <generate table="KEBIJAKAN" by="IDBIJAKAN"/>
+    </update>
+    <delete id="DeleteByKebijakan" parameterMap="delete-param" >
+      <generate table="KEBIJAKAN" by="IDBIJAKAN"/>
+    </delete>
+    <select id="QueryByAllKebijakan" parameterClass="Kebijakan" resultMap="return-result">
+      select * from KEBIJAKAN
+      order by NOBIJAKAN
+    </select>
+    <select id="LoadByPKKebijakan" parameterClass="Kebijakan"  resultMap="return-result" >
+      select * from KEBIJAKAN
+      where IDBIJAKAN=#Idbijakan#
+    </select>
+  </statements>
+
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Kebijakan">
+      <parameter property="Nobijakan" column="NOBIJAKAN"/>
+      <parameter property="Nmbijakan" column="NMBIJAKAN"/>
+      <parameter property="Idbijakan" column="IDBIJAKAN"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Kebijakan">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Kebijakan">
+      <parameter property="Idbijakan" column="IDBIJAKAN"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>
+

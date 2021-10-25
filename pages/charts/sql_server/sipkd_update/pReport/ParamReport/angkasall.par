@@ -1,0 +1,6 @@
+TITLE=Anggaran Kas SKPD
+Unitkey=string;Unit;4;
+Kdtahap=string;Tahap;4;
+Kdlevel=string;Kode Level;4;;-1;5;
+Tanggal=datetime;Tanggal;30;
+Hal=string;Halaman;4;

@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Doklkp" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<alias>
+		<typeAlias alias="Doklkp" type="Usadi.Valid49.BO.DoklkpControl"/>
+	</alias>
+	<resultMaps>
+		<resultMap id="return-result" class="Doklkp">
+			<result property="Nodoklkp" column="NODOKLKP"/>
+			<result property="Uraian" column="URAIAN"/>
+			<result property="Tgldoklkp" column="TGLDOKLKP"/>
+			<result property="Tglvalid" column="TGLVALID"/>
+
+		</resultMap>
+	</resultMaps>
+	<statements>
+		<insert id="InsertDoklkp" parameterMap="insert-param">
+			<generate table="DOKLKP"/>
+		</insert>
+		<update id="UpdateByDoklkp" parameterMap="update-param">
+			<generate table="DOKLKP" by="NODOKLKP"/>
+		</update>
+		<delete id="DeleteByDoklkp" parameterMap="delete-param">
+			<generate table="DOKLKP" by="NODOKLKP"/>
+		</delete>
+		<select id="BaseQueryDoklkp" parameterClass="Doklkp" resultMap="return-result">
+			SELECT D.NODOKLKP, D.TGLVALID, D.URAIAN,  D.TGLDOKLKP
+			FROM DOKLKP D
+		</select>
+		<select id="QueryByAllDoklkp" extends="BaseQueryDoklkp" parameterClass="Doklkp" resultMap="return-result">
+			where
+			case #Parameter.Field#
+			when '1' then D.NODOKLKP
+			when '2' then convert(char(10), D.TGLDOKLKP, 103)
+			when '3' then D.URAIAN
+			when '4' then convert(char(10), D.TGLVALID, 103)
+
+			end like '%'+ #Parameter.Value# + '%'
+		</select>
+		<select id="LoadByPKDoklkp" extends="BaseQueryDoklkp" parameterClass="Doklkp" resultMap="return-result">
+			where D.NODOKLKP=#Nodoklkp#
+		</select>
+	</statements>
+	<parameterMaps>
+		<parameterMap id="insert-param" class="Doklkp">
+			<parameter property="Nodoklkp" column="NODOKLKP"/>
+			<parameter property="Tgldoklkp" column="TGLDOKLKP"/>
+			<parameter property="Uraian" column="URAIAN"/>
+			<parameter property="Tglvalid" column="TGLVALID"/>
+		</parameterMap>
+		<parameterMap id="update-param" extends="insert-param" class="Doklkp">
+		</parameterMap>
+		<parameterMap id="delete-param" class="Doklkp">
+			<parameter property="Nodoklkp" column="NODOKLKP"/>
+		</parameterMap>
+	</parameterMaps>
+</sqlMap>

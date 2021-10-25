@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Bpkdetb" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Bpkdetb" type="Usadi.Valid49.BO.BpkdetbControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Bpkdetb">
+			<result property="Kdpers" column="KDPERS"/>
+			<result property="Idxkode" column="IDXKODE"/>
+			<result property="Nmper" column="NMPER"/>
+			<result property="Kdper" column="KDPER"/>
+			<result property="Uraibpk" column="URAIBPK"/>
+			<result property="Penerima" column="PENERIMA"/>
+			<result property="Tglbpk" column="TGLBPK"/>
+			<result property="Nmjetra" column="NMJETRA"/>
+			<result property="Nilai" column="NILAI"/>
+			<result property="Nojetra" column="NOJETRA"/>
+			<result property="Unitkey" column="UNITKEY"/>
+			<result property="Nobpk" column="NOBPK"/>
+			<result property="Mtgkey" column="MTGKEY"/>
+			<result property="Type" column="TYPE"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertBpkdetb" parameterMap="insert-param">
+      <generate table="BPKDETB"/>
+    </insert>
+    <update id="UpdateByBpkdetb" parameterMap="update-param">
+      <generate table="BPKDETB" by="MTGKEY,NOJETRA,UNITKEY,NOBPK"/>
+    </update>
+    <delete id="DeleteByBpkdetb" parameterMap="delete-param">
+      <generate table="BPKDETB" by="MTGKEY,NOJETRA,UNITKEY,NOBPK"/>
+    </delete>
+    <select id="BaseQueryBpkdetb" parameterClass="Bpkdetb" resultMap="return-result">
+			select BL.MTGKEY,BL.NILAI,BL.NOBPK,BL.NOJETRA,BL.UNITKEY
+			,J.NMJETRA,B.TGLBPK, B.PENERIMA, B.URAIBPK, rtrim(M.KDPER) as KDPER,
+			rtrim(M.NMPER) as NMPER, B.IDXKODE, J.KDPERS, M.TYPE
+			FROM BPKDETB BL
+			LEFT OUTER JOIN BPK B ON BL.NOBPK = B.NOBPK and BL.UNITKEY=B.UNITKEY
+			LEFT OUTER JOIN DAFTUNIT U ON BL.UNITKEY = U.UNITKEY
+			LEFT OUTER JOIN JTRNLKAS J ON BL.NOJETRA = J.NOJETRA
+			LEFT OUTER JOIN MATANGB M ON BL.MTGKEY = M.MTGKEY
+		</select>
+    <select id="QueryByAllBpkdetb" extends="BaseQueryBpkdetb" parameterClass="Bpkdetb" resultMap="return-result">
+			where BL.UNITKEY=#Unitkey# and BL.NOBPK=#Nobpk# and 
+			case #Parameter.Field#
+			when '1' then M.KDPER
+			when '2' then M.NMPER
+			end like '%'+ #Parameter.Value# + '%'
+			order by M.KDPER
+		</select>
+    <select id="QueryByTotalBpkdetb" extends="BaseQueryBpkdetb" parameterClass="Bpkdetb" resultMap="return-result">
+      where BL.UNITKEY=#Unitkey# and BL.NOBPK=#Nobpk#  and BL.NOJETRA=#Nojetra#
+    </select>
+    <select id="LoadByPKBpkdetb" extends="BaseQueryBpkdetb" parameterClass="Bpkdetb" resultMap="return-result">
+			where BL.UNITKEY=#Unitkey# and BL.NOBPK=#Nobpk# and BL.MTGKEY=#Mtgkey# and BL.NOJETRA=#Nojetra#
+		</select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Bpkdetb">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nobpk" column="NOBPK"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Bpkdetb">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Bpkdetb">
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Nojetra" column="NOJETRA"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nobpk" column="NOBPK"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

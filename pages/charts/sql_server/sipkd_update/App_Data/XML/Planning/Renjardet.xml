@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Renjardet" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Renjardet" type="Usadi.Valid49.BO.RenjardetControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Renjardet">
+      <result property="Kdrek" column="KDREK"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Kdtahun" column="KDTAHUN"/>
+      <result property="Nilaimin1" column="NILAIMIN1"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Nilaipls1" column="NILAIPLS1"/>
+      <result property="Nmrek" column="NMREK"/>
+      <result property="Nmtahun" column="NMTAHUN"/>
+      <result property="Kdkegn" column="KDKEGN"/>
+      <result property="Nokegn" column="NOKEGN"/>
+      <result property="Nmkegn" column="NMKEGN"/>
+      <result property="Idprgrmn" column="IDPRGRMN"/>
+      <result property="Noprgrmn" column="NOPRGRMN"/>
+      <result property="Nmprgrmn" column="NMPRGRMN"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <insert id="InsertRenjardet" parameterMap="insert-param" >
+      <generate table="RENJARDET"/>
+    </insert>
+    <update id="UpdateByRenjardet" parameterMap="update-param" >
+      <generate table="RENJARDET" by="KDREK,UNITKEY,KDTAHUN,KDKEGN"/>
+    </update>
+    <delete id="DeleteByRenjardet" parameterMap="delete-param" >
+      <generate table="RENJARDET" by="KDREK,UNITKEY,KDTAHUN,KDKEGN"/>
+    </delete>
+    <select id="BaseQueryRenjardet" parameterClass="Renjardet" resultMap="return-result">
+      select RR.KDKEGN,RR.KDREK, RR.UNITKEY, RR.KDTAHUN, RR.NILAIMIN1, RR.NILAI,
+      RR.NILAIPLS1, UN.KDUNIT, UN.NMUNIT, TN.NMTAHUN, JR.NMREK,
+      KN.NOKEGN,KN.NMKEGN,PN.IDPRGRMN,PN.NOPRGRMN,PN.NMPRGRMN
+      from RENJARDET RR
+      left outer join DAFTUNIT UN on RR.UNITKEY = UN.UNITKEY
+      left outer join JTAHUN TN on RR.KDTAHUN = TN.KDTAHUN
+      left outer join JBELANJA JR on RR.KDREK = JR.KDREK
+      left outer join KEGN KN on RR.KDTAHUN = KN.KDTAHUN and RR.UNITKEY = KN.UNITKEY and RR.KDKEGN = KN.KDKEGN
+      left outer join PGRMN PN on KN.KDTAHUN = PN.KDTAHUN and KN.UNITKEY = PN.UNITKEY and KN.IDPRGRMN = PN.IDPRGRMN
+    </select>
+    <select id="QueryByAllRenjardet" extends="BaseQueryRenjardet" parameterClass="Renjardet" resultMap="return-result">
+      where RR.UNITKEY=#Unitkey# and RR.KDTAHUN=#Kdtahun# and RR.KDKEGN=#Kdkegn#
+      order by JR.KDREK
+    </select>
+    <select id="LoadByPKRenjardet" extends="BaseQueryRenjardet" parameterClass="Renjardet"  resultMap="return-result" >
+      where RR.UNITKEY=#Unitkey# and RR.KDTAHUN=#Kdtahun# and RR.KDKEGN=#Kdkegn# and RR.KDREK=#Kdrek#
+    </select>
+
+  </statements>
+
+  <parameterMaps>
+    <parameterMap id="base-param" class="Renjardet">
+      <parameter property="Nilaimin1" column="NILAIMIN1"/>
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Nilaipls1" column="NILAIPLS1"/>
+    </parameterMap>
+    <parameterMap id="insert-param" extends="base-param" class="Renjardet">
+      <parameter property="Parameter.Key" column="KDREK"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Kdtahun" column="KDTAHUN"/>
+      <parameter property="Kdkegn" column="KDKEGN"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="base-param" class="Renjardet">
+      <parameter property="Kdrek" column="KDREK"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Kdtahun" column="KDTAHUN"/>
+      <parameter property="Kdkegn" column="KDKEGN"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Renjardet">
+      <parameter property="Kdrek" column="KDREK"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Kdtahun" column="KDTAHUN"/>
+      <parameter property="Kdkegn" column="KDKEGN"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>
+

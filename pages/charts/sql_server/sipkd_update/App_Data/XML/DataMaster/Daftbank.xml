@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Daftbank" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Daftbank" type="Usadi.Valid49.BO.DaftbankControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Daftbank">
+      <result property="Akbank" column="AKBANK"/>
+      <result property="Alamat" column="ALAMAT"/>
+      <result property="Cabang" column="CABANG"/>
+      <result property="Nmbank" column="NMBANK"/>
+      <result property="Telepon" column="TELEPON"/>
+      <result property="Kdbank" column="KDBANK"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertDaftbank" parameterMap="insert-param">
+      <generate table="DAFTBANK"/>
+    </insert>
+    <update id="UpdateByDaftbank" parameterMap="update-param">
+      <generate table="DAFTBANK" by="KDBANK"/>
+    </update>
+    <delete id="DeleteByDaftbank" parameterMap="delete-param">
+      <generate table="DAFTBANK" by="KDBANK"/>
+    </delete>
+    <select id="BaseQueryDaftbank" parameterClass="Daftbank" resultMap="return-result">
+      select D.AKBANK,D.ALAMAT,D.CABANG,D.KDBANK,D.NMBANK,D.TELEPON
+      from DAFTBANK D
+    </select>
+    <select id="QueryByAllDaftbank" extends="BaseQueryDaftbank" parameterClass="Daftbank" resultMap="return-result">
+			where
+			case #Parameter.Field#
+			when '1' then D.KDBANK
+			when '2' then D.NMBANK
+			when '3' then D.AKBANK
+			when '4' then D.CABANG
+			when '5' then D.TELEPON
+			end like '%'+ #Parameter.Value# + '%'
+			order by D.KDBANK
+		</select>
+    <select id="LoadByPKDaftbank" extends="BaseQueryDaftbank" parameterClass="Daftbank" resultMap="return-result">
+      where D.KDBANK=#Kdbank#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Daftbank">
+      <parameter property="Akbank" column="AKBANK"/>
+      <parameter property="Alamat" column="ALAMAT"/>
+      <parameter property="Cabang" column="CABANG"/>
+      <parameter property="Nmbank" column="NMBANK"/>
+      <parameter property="Telepon" column="TELEPON"/>
+      <parameter property="Kdbank" column="KDBANK"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Daftbank">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Daftbank">
+      <parameter property="Kdbank" column="KDBANK"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

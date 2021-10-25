@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Sbdanartl" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Sbdanartl" type="Usadi.Valid49.BO.SbdanartlControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Sbdanartl">
+      <result property="Nmdana" column="NMDANA"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Kdtahap" column="KDTAHAP"/>
+      <result property="Kddana" column="KDDANA"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="KDDANA"/>
+      <result property="Field" column="KDDANA"/>
+      <result property="Value" column="NMDANA"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSbdanartl" parameterMap="insert-param">
+      <generate table="SBDANARTL"/>
+    </insert>
+    <update id="UpdateBySbdanartl" parameterMap="update-param">
+      <generate table="SBDANARTL" by="UNITKEY,MTGKEY,KDTAHAP,KDDANA"/>
+    </update>
+    <delete id="DeleteBySbdanartl" parameterMap="delete-param">
+      <generate table="SBDANARTL" by="UNITKEY,MTGKEY,KDTAHAP,KDDANA"/>
+    </delete>
+    <select id="BaseQuerySbdanartl" parameterClass="Sbdanartl" resultMap="return-result">
+      select A.KDDANA,A.KDTAHAP,A.MTGKEY,A.NILAI,A.UNITKEY
+      , B.NMDANA
+      from SBDANARTL A
+      LEFT OUTER JOIN JDANA B ON A.KDDANA = B.KDDANA
+    </select>
+    <select id="QueryByAllSbdanartl" extends="BaseQuerySbdanartl" parameterClass="Sbdanartl" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.MTGKEY=#Mtgkey# and A.KDTAHAP=#Kdtahap#
+      and case #Parameter.Field#
+      when '1' then A.KDDANA
+      when '2' then B.NMDANA
+      <!--when '3' then A.MTGKEY
+      when '4' then convert(char(10), A.NILAI)
+      when '5' then A.UNITKEY-->
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.KDDANA
+    </select>
+    <select id="QueryByBpkdetrtldanaSbdanartl" extends="BaseQuerySbdanartl" parameterclass="Usadi.Valid49.BO.BpkdetrtldanaControl" resultMap="return-lookup">
+      where A.UNITKEY=#Unitkey# and A.MTGKEY=#Mtgkey# and A.KDTAHAP=#Kdtahap# and 
+      A.KDDANA not in (select KDDANA from Bpkdetrtldana where MTGKEY=#Mtgkey# and NOBPK=#Nobpk#) and
+      case #Parameter.Field#
+      when '1' then A.KDDANA
+      when '2' then B.NMDANA
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.KDDANA
+    </select>
+    <select id="QueryBySppdetrtldanaSbdanartl" extends="BaseQuerySbdanartl" parameterclass="Usadi.Valid49.BO.SppdetrtldanaControl" resultMap="return-lookup">
+      where A.UNITKEY=#Unitkey# and A.MTGKEY=#Mtgkey# and A.KDTAHAP=#Kdtahap# and
+      A.KDDANA not in (select KDDANA from Sppdetrtldana where MTGKEY=#Mtgkey# and NOSPP=#Nospp#) and
+      case #Parameter.Field#
+      when '1' then A.KDDANA
+      when '2' then B.NMDANA
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.KDDANA
+    </select>
+    <select id="LoadByPKSbdanartl" extends="BaseQuerySbdanartl" parameterClass="Sbdanartl" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.MTGKEY=#Mtgkey# and A.KDTAHAP=#Kdtahap# and A.KDDANA=#Kddana# 
+    </select>
+    <procedure id="ExecValidateSbdanaRekTL" parameterMap="Sbdanatl-param0">
+      WSP_VALIDATION_SBDANARTL_REK
+    </procedure>
+    <procedure id="ExecVal_dpartldana" parameterMap="Sbdanartl-param1">
+      WSP_VAL_DPARTLDANA
+    </procedure>
+    
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Sbdanartl">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Parameter.Key" column="KDDANA"/>
+    </parameterMap>
+    <parameterMap id="update-param" class="Sbdanartl">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Kddana" column="KDDANA"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Sbdanartl">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Kddana" column="KDDANA"/>
+    </parameterMap>
+    <parameterMap id="Sbdanatl-param0" class="Sbdanartl">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Kdtahap" column="kdtahap"/>
+      <parameter property="Mtgkey" column="mtgkey"/>
+    </parameterMap>
+    <parameterMap id="Sbdanartl-param1" class="Sbdanartl">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Kdtahap" column="kdtahap"/>
+      <parameter property="Mtgkey" column="mtgkey"/>
+      <parameter property="Kddana" column="kddana"/>
+      <parameter property="Dok" column="dok"/>
+    </parameterMap>
+
+  </parameterMaps>
+</sqlMap>

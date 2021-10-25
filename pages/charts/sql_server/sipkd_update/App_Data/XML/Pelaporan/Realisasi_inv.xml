@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Realisasi_inv" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <alias>
+      <typeAlias alias="Realisasi_inv" type="Usadi.Valid49.BO.Realisasi_invControl" />
+    </alias>
+    <resultMaps>
+      <resultMap id="return-result" class="Realisasi_inv">
+        <result property="Uraian" column="URAIAN"/>
+        <result property="Integst" column="INTEGST"/>
+        <result property="Kdper" column="KDPER"/>
+        <result property="Kdskpd" column="KDSKPD"/>
+        <result property="Ket" column="KET"/>
+        <result property="Nilai" column="NILAI"/>
+        <result property="Nmper" column="NMPER"/>
+        <result property="Nmperbrg" column="NMPERBRG"/>
+        <result property="Nmskpd" column="NMSKPD"/>
+        <result property="Nobukti" column="NOBUKTI"/>
+        <result property="Tglbukti" column="TGLBUKTI"/>
+        <result property="Tglcreate" column="TGLCREATE"/>
+        <result property="Tglkirim" column="TGLKIRIM"/>
+        <result property="Tglterima" column="TGLTERIMA"/>
+        <result property="Tglvalid" column="TGLVALID"/>
+        <result property="Kodeinv" column="KODEINV"/>
+        <result property="Nobkuskpd" column="NOBKUSKPD"/>
+        <result property="Unitkey" column="UNITKEY"/>
+        <result property="Kdperbrg" column="KDPERBRG"/>
+        <result property="Mtgkey" column="MTGKEY"/>
+      </resultMap>
+    </resultMaps>
+    <statements>
+      <insert id="InsertRealisasi_inv" parameterMap="insert-param">
+        <generate table="Realisasi_inv"/>
+      </insert>
+      <update id="UpdateBySahRealisasi_inv" parameterClass="Realisasi_inv">
+
+        update Realisasi_inv set Tglvalid=#Tglvalid#, Integst=#Integst#
+        where UNITKEY=#Unitkey# and Nobkuskpd=#Nobkuskpd# and Mtgkey=#Mtgkey#
+
+      </update>
+
+      <update id="UpdateByDraftRealisasi_inv" parameterClass="Realisasi_inv">
+        update Realisasi_inv set Tglvalid=NULL, Integst=#Integst#
+        where UNITKEY=#Unitkey# and Nobkuskpd=#Nobkuskpd# and Mtgkey=#Mtgkey#
+      </update>
+
+      <delete id="DeleteByRealisasi_inv" parameterClass="Realisasi_inv">
+        delete from Realisasi_inv where UNITKEY=#Unitkey# and Nobkuskpd=#Nobkuskpd# and Mtgkey=#Mtgkey#
+
+
+      </delete>
+      <select id="BaseQueryRealisasi_inv" parameterClass="Realisasi_inv" resultMap="return-result">
+        select R.UNITKEY, R.NOBKUSKPD, R.NOBUKTI,R.TGLBUKTI,R.TGLVALID,R.KDSKPD,R.NMSKPD,R.MTGKEY,R.KDPER,R.NMPER,R.NILAI,
+        R.KET,LTRIM(RTRIM(KET))+' dari rekening '+LTRIM(RTRIM(KDPER))+'-'+LTRIM(RTRIM(NMPER))+'-'+LTRIM(RTRIM(KDPERBRG))+'-'+LTRIM(RTRIM(NMPERBRG)) URAIAN,
+        R.KDPERBRG,R.NMPERBRG,R.TGLCREATE,R.TGLKIRIM,R.TGLTERIMA,R.KODEINV,
+        R.INTEGST
+        from REALISASI_INV R
+      </select>
+      <select id="QueryByAllRealisasi_inv" extends="BaseQueryRealisasi_inv" parameterClass="Realisasi_inv" resultMap="return-result">
+        where R.UNITKEY=#Unitkey#
+        and case #Parameter.Field#
+        when '1' then R.NOBKUSKPD
+        when '2' then R.KDPER
+        when '3' then R.NMPER
+        when '4' then R.KET
+        end like '%'+ #Parameter.Value# + '%'
+        order by  R.NOBKUSKPD,NOBUKTI, R.KDPER
+      </select>
+      <select id="LoadByPKRealisasi_inv" extends="BaseQueryRealisasi_inv" parameterClass="Realisasi_inv" resultMap="return-result">
+        where R.KODEINV = #Kodeinv# and R.NOBKUSKPD = #Nobkuskpd# and R.UNITKEY = #Unitkey# and R.KDPERBRG = #Kdperbrg# and R.MTGKEY = #Mtgkey#
+      </select>
+    </statements>
+    <parameterMaps>
+      <parameterMap id="insert-param" class="Realisasi_inv">
+        <parameter property="Integst" column="INTEGST"/>
+        <parameter property="Kdper" column="KDPER"/>
+        <parameter property="Kdskpd" column="KDSKPD"/>
+        <parameter property="Ket" column="KET"/>
+        <parameter property="Nilai" column="NILAI"/>
+        <parameter property="Nmper" column="NMPER"/>
+        <parameter property="Nmperbrg" column="NMPERBRG"/>
+        <parameter property="Nmskpd" column="NMSKPD"/>
+        <parameter property="Nobukti" column="NOBUKTI"/>
+        <parameter property="Tglbukti" column="TGLBUKTI"/>
+        <parameter property="Tglcreate" column="TGLCREATE"/>
+        <parameter property="Tglkirim" column="TGLKIRIM"/>
+        <parameter property="Tglterima" column="TGLTERIMA"/>
+        <parameter property="Tglvalid" column="TGLVALID"/>
+        <parameter property="Kodeinv" column="KODEINV"/>
+        <parameter property="Nobkuskpd" column="NOBKUSKPD"/>
+        <parameter property="Unitkey" column="UNITKEY"/>
+        <parameter property="Kdperbrg" column="KDPERBRG"/>
+        <parameter property="Mtgkey" column="MTGKEY"/>
+      </parameterMap>
+      <parameterMap id="update-param" class="Realisasi_inv">
+        <parameter property="Integst" column="INTEGST"/>
+        <parameter property="Nobkuskpd" column="NOBKUSKPD"/>
+        
+      </parameterMap>
+      <parameterMap id="delete-param" class="Realisasi_inv">
+        <parameter property="Kodeinv" column="KODEINV"/>
+        <parameter property="Nobkuskpd" column="NOBKUSKPD"/>
+        <parameter property="Unitkey" column="UNITKEY"/>
+         
+        <parameter property="Mtgkey" column="MTGKEY"/>
+      </parameterMap>
+    </parameterMaps>
+</sqlMap>
+

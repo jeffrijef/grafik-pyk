@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Bendkeg" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Bendkeg" type="Usadi.Valid49.BO.BendkegControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Bendkeg">
+      <result property="Type" column="TYPE"/>
+      <result property="Nmkegunit" column="NMKEGUNIT"/>
+      <result property="Nukeg" column="NUKEG"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+			<result property="Nama" column="NAMA"/>
+			<result property="Nip" column="NIP"/>
+			<result property="Keybend" column="KEYBEND"/>
+			<result property="Unitkey" column="UNITKEY"/>
+		</resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertBendkeg" parameterMap="insert-param">
+      <generate table="Bendkeg"/>
+    </insert>
+    <update id="UpdateByBendkeg" parameterMap="update-param">
+      <generate table="Bendkeg" by="KDKEGUNIT,UNITKEY,KEYBEND"/>
+    </update>
+    <delete id="DeleteByBendkeg" parameterMap="delete-param">
+      <generate table="Bendkeg" by="KDKEGUNIT,UNITKEY,KEYBEND"/>
+    </delete>
+    <select id="BaseQueryBendkeg" parameterClass="Bendkeg" resultMap="return-result">
+      select A.KEYBEND,A.KDKEGUNIT,b.NIP,W.NAMA,W.UNITKEY,
+      E.NMKEGUNIT, rtrim(P.NUPRGRM)+rtrim(E.NUKEG) as NUKEG,'D' as TYPE
+      from Bendkeg A
+      left outer join MKEGIATAN E on A.KDKEGUNIT = E.KDKEGUNIT
+      left outer join MPGRM P on P.IDPRGRM = E.IDPRGRM
+      INNER JOIN BEND b ON b.KEYBEND=a.KEYBEND
+      INNER JOIN PEGAWAI W on W.NIP=b.NIP
+    </select>
+    <select id="QueryByAllBendkeg" extends="BaseQueryBendkeg" parameterClass="Bendkeg" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.KEYBEND=#Keybend#
+      and case #Parameter.Field#
+      when '1' then rtrim(P.NUPRGRM)+rtrim(E.NUKEG)
+      when '2' then E.NMKEGUNIT
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.KEYBEND
+    </select>
+    <select id="LoadByPKBendkeg" extends="BaseQueryBendkeg" parameterClass="Bendkeg" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.KEYBEND=#Keybend# and A.KDKEGUNIT=#Kdkegunit#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Bendkeg">
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+			<parameter property="Unitkey" column="UNITKEY"/>
+			<parameter property="Keybend" column="KEYBEND"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Bendkeg">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Bendkeg">
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Keybend" column="KEYBEND"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

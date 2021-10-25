@@ -1,0 +1,5 @@
+TITLE=Laporan Penerimaan Berdasarkan Objek Pendapatan
+Uraian=string;Uraian;100;
+Awal=datetime;Tanggal;30;
+Akhir=datetime;Tanggal;30;
+KdperdObjek=string;Kode;50;

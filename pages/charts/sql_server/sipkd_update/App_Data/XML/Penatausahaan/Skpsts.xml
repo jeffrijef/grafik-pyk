@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Skpsts" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Skpsts" type="Usadi.Valid49.BO.SkpstsControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Skpsts">
+      <result property="Tglsts" column="TGLSTS"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Idxkode" column="IDXKODE"/>
+      <result property="Tglskp" column="TGLSKP"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Uraiskp" column="URAISKP"/>
+      <result property="Noskp" column="NOSKP"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nosts" column="NOSTS"/>
+    </resultMap>
+    <resultMap id="return-result-del" class="Skpsts">
+      <result property="Nosts" column="NOSTS"/>
+      <result property="Noskp" column="NOSKP"/>
+      <result property="Unitkey" column="UNITKEY"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertSkpsts" parameterMap="insert-param">
+      <generate table="SKPSTS"/>
+    </insert>
+    <update id="UpdateBySkpsts" parameterMap="update-param">
+      <generate table="SKPSTS" by="NOSKP,UNITKEY,NOSTS"/>
+    </update>
+    <delete id="DeleteBySkpsts" parameterMap="delete-param">
+      <generate table="SKPSTS" by="NOSKP,UNITKEY,NOSTS"/>
+    </delete>
+    <select id="BaseQuerySkpsts" parameterClass="Skpsts" resultMap="return-result">
+      <!--select A.NOSTS,A.Noskp,A.UNITKEY
+      , T.IDXKODE, T.TGLSKP, T.TGLVALID, T.URAISKP,
+      NILAI =
+      isnull((select sum(isnull(NILAI,0)) from SKPDET C where C.UNITKEY=A.UNITKEY and C.Noskp=A.Noskp),0),
+      S.TGLSTS
+      from SKPSTS A
+      left outer join SKP T on A.UNITKEY=T.UNITKEY and A.Noskp=T.Noskp
+      inner join STS S on S.UNITKEY=T.UNITKEY and A.NOSTS=S.NOSTS-->
+
+      <!--
+      select A.NOSTS,A.Noskp,A.UNITKEY
+      , T.IDXKODE, T.TGLSKP, T.TGLVALID, T.URAISKP,
+      NILAI =
+      isnull((select sum(isnull(NILAI,0)) from RKMDETD C where C.UNITKEY=A.UNITKEY and C.NOSTS=A.NOSTS),0),
+      S.TGLSTS
+      from SKPSTS A
+      left outer join SKP T on A.UNITKEY=T.UNITKEY and A.Noskp=T.Noskp
+      inner join STS S on S.UNITKEY=T.UNITKEY and A.NOSTS=S.NOSTS
+      -->
+      <!--REHATTA-->
+      SELECT A.NOSTS,A.Noskp,A.UNITKEY        , T.IDXKODE, T.TGLSKP, T.TGLVALID, T.URAISKP,NILAI,TGLSTS
+      FROM
+      (
+      SELECT X.NOSKP,X.UNITKEY,X.NOSTS,X.NILAI,B.TGLSTS
+      FROM
+      (
+      SELECT A.NOSKP, A.UNITKEY, A.NOSTS,SUM(NILAI) NILAI
+      FROM SKPSTS A INNER JOIN SKPDET B ON B.NOSKP = A.NOSKP AND B.UNITKEY = A.UNITKEY
+      GROUP BY  A.NOSKP, A.UNITKEY, A.NOSTS
+      ) X INNER JOIN STS B ON B.UNITKEY = X.UNITKEY AND B.NOSTS = X.NOSTS
+
+
+      ) A INNER JOIN SKP T ON T.NOSKP = A.NOSKP AND T.UNITKEY = A.UNITKEY
+<!--REHATTA-->
+
+
+
+    </select>
+    <select id="QueryByAllSkpsts" extends="BaseQuerySkpsts" parameterClass="Skpsts" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.NOSTS=#Nosts#
+      and case #Parameter.Field#
+      when '1' then A.NOSTS
+      when '2' then A.Noskp
+      when '3' then A.UNITKEY
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.Noskp
+    </select>
+    <select id="QueryByNoskpSkpsts" parameterClass="Skpsts" resultMap="return-result-del">
+      select A.NOSTS,A.Noskp,A.UNITKEY
+      , T.IDXKODE, T.TGLSKP, T.TGLVALID, T.URAISKP,S.TGLSTS
+      from SKPSTS A
+      left outer join SKP T on A.UNITKEY=T.UNITKEY and A.Noskp=T.Noskp
+      inner join STS S on S.UNITKEY=T.UNITKEY and A.NOSTS=S.NOSTS
+      where A.UNITKEY=#Unitkey# and A.Noskp=#Noskp#
+    </select>    
+    <select id="LoadByPKSkpsts" extends="BaseQuerySkpsts" parameterClass="Skpsts" resultMap="return-result">
+      where A.Noskp=#Noskp# and A.UNITKEY=#Unitkey# and A.NOSTS=#Nosts#
+    </select>
+    <procedure id="ExecTransferSKPkeSTS" parameterMap="transfer-param">
+      WSP_TRANSFER_SKPSTS
+    </procedure>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Skpsts">
+      <parameter property="Noskp" column="NOSKP"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nosts" column="NOSTS"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Skpsts">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Skpsts">
+      <parameter property="Noskp" column="NOSKP"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nosts" column="NOSTS"/>
+    </parameterMap>
+    <parameterMap id="transfer-param" class="Skpsts">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Noskp" column="noskp"/>
+      <parameter property="Nosts" column="nosts"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

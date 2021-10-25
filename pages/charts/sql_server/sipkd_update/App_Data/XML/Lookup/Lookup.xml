@@ -1,0 +1,2246 @@
+<sqlMap namespace="Lookup" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
+
+  <alias>
+    <typeAlias alias="UILookupParameter" type="CoreNET.Common.UI.UILookupParameter, CoreNET.Common.Lib" />
+  </alias>
+
+  <resultMaps>
+
+    <resultMap id="query-result" class="UILookupParameter">
+      <result  property="Statement" column="STATEMENT_NAME"/>
+      <result  property="ParameterName" column="PARAMETER_NAME"/>
+      <result  property="ControlName" column="ConTROL_NAME"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <select id="QueryLookupParameters" resultMap="query-result" parameterClass="System.String">
+      select  *
+      from    LOOKUP_PARAMETERS
+      where   STATEMENT_NAME = #value#
+    </select>
+    <select id="LookupUser" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(USERID)           "01,User ID,10,C,C,X"
+      ,rtrim(NAMA)            "03,Nama,65,L,C,X"
+      ,rtrim(NIP)             "02,NIP,15,C,C,X"
+      ,rtrim(KDUNIT)          "04,Unit,10,C,C,X"
+      from   dbo.WEBUSER AS U LEFT OUTER JOIN
+      dbo.DAFTUNIT AS UN ON U.UNITKEY = UN.UNITKEY
+      where ISNULL(USERID,'') like '%' + #USERID# + '%'
+      and USERID not in ('dev')
+      and   ISNULL(NIP,'') like '%' + #NIP# + '%'
+      and   ISNULL(NAMA,'') like '%' + #NAMA# + '%'
+      and   ISNULL(KDUNIT,'') like '%' + #KDUNIT# + '%'
+      order by rtrim(USERID)
+    </select>
+    <select id="LookupUserkeg" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(U.USERID)           "01,User ID,10,C,C,X"
+      ,rtrim(U.NAMA)            "02,Nama,65,L,C,X"
+      ,rtrim(UN.KDUNIT)         "PK_1"
+      from   dbo.WEBUSER AS U
+      LEFT OUTER JOIN dbo.DAFTUNIT AS UN ON U.UNITKEY = UN.UNITKEY
+      where USERID not in ('dev')
+      and   ISNULL(U.USERID,'') like '%' + #USERID# + '%'
+      and   ISNULL(U.NAMA,'') like '%' + #NAMA# + '%'
+      and   ISNULL(UN.KDUNIT,'') like '%' + #KDUNIT# + '%'
+      order by rtrim(U.USERID)
+    </select>
+    <select id="LookupUserskpkd" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(U.USERID)           "01,User ID,25,C,C,X"
+      ,rtrim(U.NAMA)            "02,Nama,65,L,C,X"
+      ,rtrim(UN.KDUNIT)         "PK_1"
+      from   dbo.WEBUSER AS U
+      LEFT OUTER JOIN dbo.DAFTUNIT AS UN ON U.UNITKEY = UN.UNITKEY
+      where (USERID not in ('dev')
+      Or (U.UNITKEY is null or U.UNITKEY=''))
+      and   ISNULL(U.USERID,'') like '%' + #USERID# + '%'
+      and   ISNULL(U.NAMA,'') like '%' + #NAMA# + '%'
+      and   ISNULL(UN.KDUNIT,'') like '%' + #KDUNIT# + '%'
+      order by rtrim(U.USERID)
+    </select>
+    <select id="LookupGroup" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(NMGROUP)            "01,Uraian,25,L,C,X"
+      ,rtrim(KET)             "02,Keterangan,65,C,C,X"
+      ,rtrim(GROUPID)         "PK_1"
+      from  WEBGROUP
+      where GROUPID not in ('91')
+      and rtrim(NMGROUP) like '%' + #NMGROUP# + '%'
+      and rtrim(KET) like '%' + #KET# + '%'
+      order by rtrim(GROUPID)
+    </select>
+    <select id="LookupRole" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(ROLEID)           "01,Kode,10,L,C,X"
+      ,rtrim(ROLE)            "02,Uraian,65,L,C,X"
+      ,rtrim(TYPE)             "03,Tipe,15,C,C,X"
+      ,rtrim(MENUID)             "04,Menu ID,15,C,C,X"
+      from  WEBROLE
+      order by rtrim(ROLEID)
+    </select>
+    <select id="LookupBkusp2d" resultClass="HashTable" parameterClass="HashTable">
+      select     rtrim(NOBKUSKPD) AS [01,No.BKU,25,C,C,X],
+      convert(char(10), TGLBKUSKPD, 103) AS [02,Tgl.BKU,5,C,C,X],
+      rtrim(B.NOSP2D)AS [04,No.SP2D,25,L,C,X],
+      rtrim(URAIAN)AS [05,Uraian,40,L,C,X]
+      from  BKUSP2D B
+      left outer join SP2D S on B.UNITKEY=S.UNITKEY and B.NOSP2D=S.NOSP2D
+      where (B.UNITKEY = #Unitkey# OR rtrim(#Unitkey#) = '')
+      and S.KDSTATUS='24'
+      and NOBKUSKPD not in (select NOBKUSKPD from BKRKK where UNITKEY=#Unitkey#)
+      and NOBKUSKPD like '%' + #NOBKUSKPD# + '%'
+      and    convert(char(10), TGLBKUSKPD, 103) like '%' + #TGLBKUSKPD# + '%'
+      and    B.NOSP2D like '%' + #NOSP2D# + '%'
+      and    isnull(URAIAN,'') like '%' + #URAIAN# + '%'
+      order by rtrim(NOBKUSKPD)
+    </select>
+
+    <!--Dipake di bukti korolari-->
+    <select id="LookupBkusts" resultClass="HashTable" parameterClass="HashTable">
+      select     rtrim(NOBKUSKPD) AS [01,No.BKU,25,C,C,X],
+      convert(char(10), TGLBKUSKPD, 103) AS [02,Tgl.BKU,5,C,C,X],
+      <!--convert(char(10), TGLVALID, 103) AS [03,Tgl.Valid,5,C,C,X],-->
+      rtrim(NOSTS)AS [04,No.STS,25,L,C,X],
+      rtrim(URAIAN)AS [05,Uraian,40,L,C,X]
+      from  BKUSTS
+      where (UNITKEY = #Unitkey# OR rtrim(#Unitkey#) = '')
+      and NOBKUSKPD like '%' + #NOBKUSKPD# + '%'
+      and    convert(char(10), TGLBKUSKPD, 103) like '%' + #TGLBKUSKPD# + '%'
+      and    NOSTS like '%' + #NOSTS# + '%'
+      and    isnull(URAIAN,'') like '%' + #URAIAN# + '%'
+      order by rtrim(NOBKUSKPD)
+    </select>
+
+    <select id="LookupNip" resultClass="HashTable" parameterClass="HashTable">
+      declare @ppkd varchar(10),@uppkd varchar(10)
+      set @ppkd = (select CONFIGVAL from PEMDA where CONFIGID='cur_skpkd')
+      set @uppkd = (select CONFIGVAL from PEMDA where CONFIGID='cur_uskpkd')
+
+      declare @kdunit varchar(30)
+      set @kdunit = (select rtrim(kdunit) from daftunit where UNITKEY=#Unitkey#)
+
+      select
+      rtrim(P.NIP)            "01,NIP,15,C,C,X"
+      ,rtrim(P.NAMA)          "02,Name,75,L,C,X"
+      ,rtrim(P.NIP)         "PK_1"
+      ,rtrim(U.KDUNIT)        "03,Unit,10,L,C,X"
+      from   PEGAWAI P
+      left outer join DAFTUNIT U on P.UNITKEY=U.UNITKEY
+      where (P.UNITKEY=#Unitkey# or isnull(#Unitkey#,'')=''
+      or (#Unitkey# = @ppkd and P.UNITKEY in (@ppkd,@uppkd))
+      or (rtrim(KDUNIT)=left(@kdunit,(select len(rtrim(numdigit)) from struunit where kdlevel='3')) ))
+      and P.NIP    like '%' + #NIP# + '%'
+      and   P.NAMA   like '%' + #NAMA# + '%'
+      and   ISNULL(KDUNIT,'') like '%' +  #KDUNIT# + '%'
+      order by rtrim(P.NIP)
+    </select>
+    <select id="LookupNipByKdunit" resultClass="HashTable" parameterClass="HashTable">
+      declare @kdunit varchar(30)
+      set @kdunit = (select kdunit from daftunit where UNITKEY=#Unitkeyskpd#)
+      select
+      rtrim(P.NIP)            "01,NIP,15,C,C,X"
+      ,rtrim(P.NAMA)          "02,Nama,75,L,C,X"
+      ,rtrim(P.NIP)         "PK_1"
+      ,rtrim(U.KDUNIT)        "03,Unit,10,L,C,X"
+      from   PEGAWAI P
+      left outer join DAFTUNIT U on P.UNITKEY=U.UNITKEY
+      where (left(KDUNIT,len(@kdunit))=@kdunit or isnull(#Unitkeyskpd#,'')='')
+      and P.NIP    like '%' + #NIP# + '%'
+      and   P.NAMA   like '%' + #NAMA# + '%'
+      <!--and   ISNULL(KDUNIT,'') like '%' +  #KDUNIT# + '%'-->
+      order by rtrim(P.NIP)
+    </select>
+    <select id="LookupJposting" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(KDPOSTING)           "01,Kode,15,C,C,X"
+      ,rtrim(NMPOSTING)          "02,Uraian,85,L,C,X"
+      ,rtrim(KDPOSTING)         "PK_1"
+      from   JPOSTING
+      where
+      rtrim(KDPOSTING)    like '%' + #KODE# + '%'
+      and   rtrim(NMPOSTING)   like '%' + #URAIAN# + '%'
+      order by rtrim(KDPOSTING)
+    </select>
+    <select id="LookupDaftunit" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(KDUNIT)           "01,Kode,15,C,C,X"
+      ,rtrim(NMUNIT)          "02,Uraian,85,L,C,X"
+      ,rtrim(UNITKEY)         "PK_1"
+      from   DAFTUNIT
+      where (KDUNIT like '%' + #KDUNIT# + '%'
+      and   NMUNIT  like '%' + #NMUNIT# + '%')
+      and   TYPE = 'D' and KDLEVEL in('3')
+      order by rtrim(KDUNIT)
+    </select>
+    <select id="LookupDaftunitjkn" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(KDUNIT)           "01,Kode,15,C,C,X"
+      ,rtrim(NMUNIT)          "02,Uraian,85,L,C,X"
+      ,rtrim(UNITKEY)         "PK_1"
+      from   DAFTUNIT
+      where (KDUNIT like '%' + #KDUNIT# + '%'
+      and   NMUNIT  like '%' + #NMUNIT# + '%')
+      and   TYPE = 'D' and KDLEVEL in('4')
+      order by rtrim(KDUNIT)
+    </select>
+    <select id="LookupUnitkerja" resultClass="HashTable" parameterClass="HashTable">
+      select
+      right(rtrim(KDUNIT),3)           "01,Kode,15,C,C,X"
+      ,rtrim(NMUNIT)          "02,Uraian,85,L,C,X"
+      ,rtrim(UNITKEY)         "PK_1"
+      from   DAFTUNIT
+      where 1=1 and left(KDUNIT,len(#Kdunit#))=#Kdunit#
+      and (KDUNIT like '%' + #KDUNIT# + '%'
+      and   NMUNIT  like '%' + #NMUNIT# + '%')
+      and   KDLEVEL in('4')
+      order by rtrim(KDUNIT)
+    </select>
+    <select id="LookupUnitkerjauk" resultClass="HashTable" parameterClass="HashTable">
+      select
+      <!--right(rtrim(KDUNIT),3)           "01,Kode,15,C,C,X"-->
+      rtrim(KDUNIT)          "01,Kode,15,C,C,X"
+      ,rtrim(NMUNIT)          "02,Uraian,85,L,C,X"
+      ,rtrim(UNITKEY)         "PK_1"
+      from   DAFTUNIT
+      where 1=1 and left(KDUNIT,len(#Kdunitskpd#))=#Kdunitskpd#
+      and (KDUNIT like '%' + #KDUNIT# + '%'
+      and   NMUNIT  like '%' + #NMUNIT# + '%')
+      and   KDLEVEL in('4')
+      order by rtrim(KDUNIT)
+    </select>
+    <select id="LookupKdstatus" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(LBLSTATUS)           "01,Status,15,C,C,X"
+      ,rtrim(URAIAN)          "02,Uraian,75,L,C,X"
+      ,rtrim(KDSTATUS)         "PK_1"
+      from   STATTRS
+      where (LBLSTATUS like '%' + #LBLSTATUS# + '%'
+      and   isnull(URAIAN,'')  like '%' + #URAIAN# + '%')
+      order by rtrim(KDSTATUS)
+    </select>
+    <select id="LookupNojetra" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(KDPERS)           "01,Kode,15,C,C,X"
+      ,rtrim(NMJETRA)          "02,Nama,75,L,C,X"
+      ,rtrim(NOJETRA)         "PK_1"
+      from   JTRNLKAS
+      where (KDPERS like '%' + #KDPERS# + '%'
+      and   NMJETRA  like '%' + #NMJETRA# + '%')
+      order by rtrim(NOJETRA)
+    </select>
+    <select id="LookupFungsi" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(KDFUNG)           "01,Kode,15,C,C,X"
+      ,rtrim(NMFUNG)          "02,Uraian,75,L,C,X"
+      ,rtrim(IDFUNG)          "PK_1"
+      from  FUNGSI
+      where (KDFUNG like '%' + #KDFUNG# + '%'
+      and   NMFUNG  like '%' + #NMFUNG# + '%')
+      order by rtrim(KDFUNG)
+    </select>
+    <select id="LookupUrusan" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(KDUNIT)           "01,Kode,15,C,C,X"
+      ,rtrim(NMUNIT)          "02,Urusan,75,L,C,X"
+      ,rtrim(UNITKEY)         "PK_1"
+      from  DAFTUNIT
+      where (KDUNIT like '%' + #KDUNIT# + '%'
+      and   NMUNIT  like '%' + #NMUNIT# + '%')
+      and   KDLEVEL = '2'
+      order by rtrim(KDUNIT)
+    </select>
+    <select id="LookupAtasanbendunit" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(KDUNIT)           "01,Kode,15,C,C,X"
+      ,rtrim(NMUNIT)          "02,Uraian,75,L,C,X"
+      ,rtrim(UNITKEY)         "PK_1"
+      from  VLKPATASBENDUNIT
+      where (KDUNIT like '%' + #KDUNIT# + '%'
+      and   NMUNIT  like '%' + #NMUNIT# + '%')
+      order by rtrim(KDUNIT)
+    </select>
+    <select id="LookupKpa" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(K.NIP)           "01,Kode,15,C,C,X"
+      ,rtrim(P.NAMA)          "02,Uraian,75,L,C,X"
+      ,rtrim(K.NIP)         "PK_1"
+      from  KPA K
+      inner join PEGAWAI P on K.NIP=P.NIP
+      inner join DAFTUNIT U on K.UNITKEY=U.UNITKEY
+      where 1=1
+      and (K.UNITKEY=#Unitkeyuk# or left(U.KDUNIT,8) = (select KDUNIT from DAFTUNIT where UNITKEY=#Unitkeyuk#) )
+      <!--and K.NIP not in (select nip from bendkpa)-->
+      order by rtrim(K.NIP)
+    </select>
+    <select id="LookupJbend" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(JNS_BEND)         "01,Jenis,15,C,C,X"
+      ,rtrim(URAI_BEND)       "02,Uraian,75,L,C,X"
+      from  JBEND
+      where JNS_BEND like '%' + #JNS# + '%'
+      and   URAI_BEND like '%' + #URAI# + '%'
+      order by rtrim(JNS_BEND)
+    </select>
+    <select id="LookupKdakas" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(KDAKAS)         "01,Kode,15,C,C,X"
+      ,rtrim(NMAKAS)       "02,Uraian,75,L,C,X"
+      ,rtrim(KDAKAS)         "PK_1"
+      from  JAKAS
+      where KDAKAS like '%' + #KDAKAS# + '%'
+      and   NMAKAS like '%' + #NMAKAS# + '%'
+      order by rtrim(KDAKAS)
+    </select>
+    <select id="LookupKhususrek" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(KDKHUSUS)         "01,Kode,15,C,C,X"
+      ,rtrim(NMKHUSUS)       "02,Nama,75,L,C,X"
+      from  KHUSUSREK
+    </select>
+    <select id="LookupJstandar" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(NMJNSSTD)       "01,Uraian,30,L,C,X"
+      ,rtrim(KDJNSSTD)         "02,Jenis,65,C,C,X"
+      ,rtrim(KDJNSSTD)         "PK_1"
+      from  JSTANDAR
+      <!--where KDJNSSTD like '%' + #KDJNSSTD# + '%'
+      and   NMJNSSTD like '%' + #NMJNSSTD# + '%'-->
+      order by rtrim(KDJNSSTD)
+    </select>
+    <select id="LookupKdbukti" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(KDBUKTI)         "01,Kode,15,C,C,X"
+      ,rtrim(NMBUKTI)       "02,Nama,75,L,C,X"
+      from  JBKAS
+      where KDBUKTI like '%' + #KDBUKTI# + '%'
+      and   NMBUKTI like '%' + #NMBUKTI# + '%'
+      order by rtrim(KDBUKTI)
+    </select>
+    <select id="LookupJset" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(NMJNSSET)           "01,Uraian,75,L,C,X"
+      ,rtrim(KDJNSSET)         "02,Kode,20,C,C,X"
+      ,rtrim(KDJNSSET)         "PK_1"
+      from  JSET
+      order by rtrim(KDJNSSET)
+    </select>
+    <select id="LookupIdxkode" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(URAIAN)           "01,Uraian,75,L,C,X"
+      ,rtrim(IDXKODE)         "02,Kode,20,C,C,X"
+      ,rtrim(IDXKODE)         "PK_1"
+      from  ZKODE
+      where (IDXKODE) >'0'
+      order by rtrim(IDXKODE)
+    </select>
+    <select id="LookupIdxkode2" resultClass="HashTable" parameterClass="HashTable">
+      select
+      case IDXKODE when '3' then 'Belanja Tidak Langsung'
+      else rtrim(URAIAN) end           "01,Uraian,75,L,C,X"
+      ,rtrim(IDXKODE)         "02,Kode,20,C,C,X"
+      ,rtrim(IDXKODE)         "PK_1"
+      from  ZKODE
+      where (IDXKODE) in (1,2,3,5)
+      order by rtrim(IDXKODE)
+    </select>
+    <select id="LookupKdtahap" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(URAIAN)           "01,Uraian,100,L,C,X"
+      ,rtrim(KDTAHAP)         "PK_1"
+      from  TAHAP
+      <!--where KDTAHAP in ('1','3')--><!-- WR-> Tahapan di keluarhan semua 121109-->
+      order by rtrim(KDTAHAP)
+    </select>
+    <select id="LookupKdkhusus" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(NMKHUSUS)           "01,Uraian,100,L,C,X"
+      ,rtrim(KDKHUSUS)         "PK_1"
+      from  KHUSUSREK
+      order by rtrim(KDKHUSUS)
+    </select>
+    <select id="LookupKdlevel" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(NMLEVEL)           "01,Uraian,100,L,C,X"
+      ,rtrim(MTGLEVEL)         "PK_1"
+      from  STRUREK
+      order by rtrim(MTGLEVEL)
+    </select>
+    <select id="LookupBend" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(B.NIP)            "01,Nip,15,L,C,X",
+      rtrim(P.NAMA)+' -'+ rtrim(B.JNS_BEND)+'.'+J.URAI_BEND          "02,Nama,80,L,C,X",
+      <!--rtrim(B.JAB_BEND)       "03,Jabatan,55,L,C,X",
+      rtrim(B.JNS_BEND)       "04,Jenis Bend,55,L,C,X",-->
+      rtrim(B.KEYBEND)        "PK_1"
+      from  BEND B
+      inner join JBEND J on B.JNS_BEND = J.JNS_BEND
+      inner join PEGAWAI P on B.NIP = P.NIP
+      where B.UNITKEY=#Unitkey# and (B.JNS_BEND = #Bend# or right(B.JNS_BEND,1)=#Bend#)
+      and   B.NIP like '%' + #NIP# + '%'
+      and   P.NAMA like '%' + #NAMA# + '%'
+      and   B.JAB_BEND like '%' + #JAB# + '%'
+      order by rtrim(B.KEYBEND)
+    </select>
+    <select id="LookupBend_4KPA" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(B.NIP)            "01,Nip,15,L,C,X",
+      rtrim(P.NAMA)+' -'+ rtrim(B.JNS_BEND)+'.'+J.URAI_BEND          "02,Nama,80,L,C,X",
+      <!--rtrim(B.JAB_BEND)       "03,Jabatan,55,L,C,X",
+      rtrim(B.JNS_BEND)       "04,Jenis Bend,55,L,C,X",-->
+      rtrim(B.KEYBEND)        "PK_1"
+      from  BEND B
+      inner join JBEND J on B.JNS_BEND = J.JNS_BEND
+      inner join PEGAWAI P on B.NIP = P.NIP
+      where B.UNITKEY=#Unitkey# and (B.JNS_BEND = #Bend# or right(B.JNS_BEND,1)=#Bend#)
+      and B.KEYBEND not in (select keybend from bendkpa)
+      and   B.NIP like '%' + #NIP# + '%'
+      and   P.NAMA like '%' + #NAMA# + '%'
+      order by rtrim(B.KEYBEND)
+    </select>
+    <select id="LookupDaftdok" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(KDDOK)            "01,Kode,15,C,C,X"
+      ,rtrim(NMDOK)           "02,Nama,25,L,C,X"
+      ,rtrim(KET)			        "03,Keterangan,55,L,C,X"
+      from  DAFTDOK
+      where KDDOK like '%' + #KDDOK# + '%'
+      and   NMDOK like '%' + #NMDOK# + '%'
+      and   KET like '%' + #KET# + '%'
+      and KDDOK like '%'+ (case #Kode# when '1' then '5' else '' end)
+      order by rtrim(KDDOK)
+    </select>
+    <select id="LookupBelanja" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(KDPER) "01,Kode,25,L,C,X",
+      rtrim(NMPER)  "02,Uraian,75,L,C,X",
+      rtrim(MTGKEY)  "PK_1"
+      from MATANGR
+      WHERE TYPE='D' AND MTGKEY IN (SELECT MTGKEY FROM DASKR WHERE UNITKEY=#Unitkey# AND KDKEGUNIT=#Kdkegunit#)
+      AND LEFT(KDPER,3)='5.2'
+      AND KDPER like '%' + #KDPER#+ '%'
+      AND NMPER like '%' + #NMPER# + '%'
+      order by KDPER
+    </select>
+    <select id="LookupKddoksah" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(NMDOKSAH)            "01,Nama,30,C,C,X"
+      ,rtrim(KET)       "02,Keterangan,60,L,C,X"
+      ,rtrim(KDDOKSAH)       "PK_1"
+      from  DOKSAH
+      where KDDOKSAH not in (select KDDOKSAH from TAHAPSAH where KDTAHAP=#Kdtahap#)
+      and   NMDOKSAH like '%' + #NMDOKSAH# + '%'
+      and   KET like '%' + #KET# + '%'
+      order by KDDOKSAH
+    </select>
+    <select id="LookupPejabat" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(KDJBT)            "01,Kode,10,C,C,X"
+      ,rtrim(JAB)             "02,Jabatan,40,L,C,X"
+      ,rtrim(NAMA)            "03,Nama,40,L,C,X"
+      from  VLKPPEJABAT
+      where KDJBT like '%' + #KDJBT# + '%'
+      and   JAB like '%' + #JAB# + '%'
+      and   NAMA like '%' + #NAMA# + '%'
+      order by rtrim(KDJBT)
+    </select>
+    <!--<select id="LookupKdjnsstd" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(NMJNSSTD)           "01,Nama,30,L,C,X"
+      ,rtrim(KETSTANDAR )         "02,Keterangan,60,L,C,X"
+      ,rtrim(KDJNSSTD)          "PK_1"
+      from  JSTANDAR
+      where (KDJNSSTD like '%' + #KDJNSSTD# + '%'
+      and   NMJNSSTD  like '%' + #NMJNSSTD# + '%')
+      order by rtrim(KDJNSSTD)
+    </select>-->
+    <select id="LookupIdstdhargad" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(H.NMSTD)           "01,Nama,30,L,C,X"
+      ,REPLACE(CONVERT(CHAR(15), H.HRGSTD),'.',',')+'/'+rtrim(H.SATUAN)"02,Satuan,60,L,C,X"
+      ,rtrim(H.IDSTDHARGA)          "PK_1"
+      from  STDHARGA H
+      left OUTER JOIN STDHARGAD D ON H.IDSTDHARGA=D.IDSTDHARGA
+      where
+      <!--(D.MTGKEY=#Mtgkey# or #Flag#='1') and H.IDSTDHARGA not in ('','-1')--> <!--WR-051010-->
+      D.MTGKEY=#Mtgkey# and H.IDSTDHARGA not in ('','-1')
+      and H.NMSTD like '%' + #NMSTD# + '%'
+      and   H.SATUAN  like '%' + #SATUAN# + '%'
+      order by rtrim(H.NMSTD)
+    </select>
+    <select id="LookupIdstdhargar" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(H.NMSTD)           "01,Nama,30,L,C,X"
+      ,REPLACE(CONVERT(CHAR(15), H.HRGSTD),'.',',')+'/'+rtrim(H.SATUAN)"02,Satuan,20,L,C,X"
+      ,rtrim(H.SPEKSTD)        "02,spesifikasi,40,L,C,X"
+      ,rtrim(H.IDSTDHARGA)          "PK_1"
+      from  STDHARGA H
+      left OUTER JOIN STDHARGAR D ON H.IDSTDHARGA=D.IDSTDHARGA
+      where
+      <!--(D.MTGKEY=#Mtgkey# or #Flag#='1') and H.IDSTDHARGA not in ('','-1')-->  <!--WR-051010-->
+      D.MTGKEY=#Mtgkey# and H.IDSTDHARGA not in ('','-1')
+      and H.NMSTD like '%' + #NMSTD# + '%'
+      and   H.SATUAN  like '%' + #SATUAN# + '%'
+      order by rtrim(H.NMSTD)
+    </select>
+    <select id="LookupIdstdhargab" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(H.NMSTD)           "01,Nama,20,L,C,X"
+      ,REPLACE(CONVERT(CHAR(15), H.HRGSTD),'.',',')+'/'+rtrim(H.SATUAN)"02,Satuan,60,L,C,X"
+      ,rtrim(H.IDSTDHARGA)          "PK_1"
+      from  STDHARGA H
+      left OUTER JOIN STDHARGAB D ON H.IDSTDHARGA=D.IDSTDHARGA
+      where
+      <!--(D.MTGKEY=#Mtgkey# or #Flag#='1') and H.IDSTDHARGA not in ('','-1')--> <!--WR-051010-->
+      D.MTGKEY=#Mtgkey# and H.IDSTDHARGA not in ('','-1')
+      and H.NMSTD like '%' + #NMSTD# + '%'
+      and   H.SATUAN  like '%' + #SATUAN# + '%'
+      order by rtrim(H.NMSTD)
+    </select>
+    <select id="LookupMpgrm" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(NUPRGRM)          "01,No,15,C,C,X"
+      ,rtrim(NMPRGRM)         "02,Uraian,75,L,C,X"
+      ,rtrim(IDPRGRM)         "PK_1"
+      from  MPGRM
+      where NUPRGRM like '%' + #NUPRGRM# + '%'
+      and   NMPRGRM like '%' + #NMPRGRM# + '%'
+      and   ISNULL(UNITKEY,'')=#Unitkey#
+      order by rtrim(NUPRGRM)
+    </select>
+    <select id="LookupKdpajak" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(KDPAJAK)          "01,No,45,C,C,X"
+      ,rtrim(NMPAJAK)         "02,Uraian,45,L,C,X"
+      ,rtrim(PJKKEY)         "PK_1"
+      from  JPAJAK
+      where KDPAJAK like '%' + #KDPAJAK# + '%'
+      and   NMPAJAK like '%' + #NMPAJAK# + '%'
+      order by rtrim(KDPAJAK)
+    </select>
+    <select id="LookupPgrmunit" resultClass="HashTable" parameterClass="HashTable">
+      select
+      NUPRGRM                 "01,No,10,C,C,X"
+      ,rtrim(NMPRGRM)         "02,Uraian,75,L,C,X"
+      ,rtrim(KDURUS)          "03,Urusan,15,L,C,X"
+      ,rtrim(IDPRGRM)         "PK_1"
+      from  (select P.IDPRGRM, P.UNITKEY, U.KDUNIT, U.NMUNIT, rtrim(MP.NUPRGRM) AS NUPRGRM,
+      MP.NMPRGRM,P.KDTAHAP, ISNULL(MP.UNITKEY, '') AS URUSKEY
+      ,rtrim(ISNULL(U2.KDUNIT, '')) AS KDURUS
+      from  PGRMUNIT P
+      left outer join MPGRM MP on P.IDPRGRM = MP.IDPRGRM
+      left outer join DAFTUNIT U on P.UNITKEY = U.UNITKEY
+      left outer join DAFTUNIT U2 on MP.UNITKEY = U2.UNITKEY
+      )P
+      where
+      P.UNITKEY=#Unitkey#
+      and P.KDTAHAP=#Kdtahap#
+      and NUPRGRM like '%' + #NUPRGRM# + '%'
+      and   NMPRGRM like '%' + #NMPRGRM# + '%'
+      and   ISNULL(UNITKEY,'')=#Unitkey#
+      order by rtrim(NUPRGRM)
+    </select>
+    <select id="LookupDaftbank" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(KDBANK)           "01,Kode,10,C,C,X"
+      ,rtrim(NMBANK)          "02,Nama,25,L,C,X"
+      ,rtrim(CABANG)					"03,Cabang,55,L,C,X"
+      from  DAFTBANK
+      where KDBANK like '%' + #KDBANK# + '%'
+      and		NMBANK like '%' + #NMBANK# + '%'
+      and   CABANG like '%' + #CABANG# + '%'
+      order by rtrim(KDBANK)
+    </select>
+    <select id="LookupJkelola" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(KDKELOLA)           "01,Kode,10,C,C,X"
+      ,rtrim(NMKELOLA)           "02,Nama,25,L,C,X"
+      ,rtrim(KETKELOLA)			    "03,Keterangan,55,L,C,X"
+      from  JKELOLA
+      where KDKELOLA like '%' + #KDKELOLA# + '%'
+      and   NMKELOLA like '%' + #NMKELOLA# + '%'
+      and   KETKELOLA like '%' + #KETKELOLA# + '%'
+      order by rtrim(KDKELOLA)
+    </select>
+    <select id="LookupKdperspektif" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(KDPERSPEKTIF)           "01,Kode,10,C,C,X"
+      ,rtrim(NMPERSPEKTIF)          "02,Nama,30,L,C,X"
+      ,rtrim(KET)          "03,Keterangan,50,L,C,X"
+      ,rtrim(KDPERSPEKTIF) "PK_1"
+      from  JPERSPEKTIF
+      where (KDPERSPEKTIF like '%' + #KDPERSPEKTIF# + '%'
+      and   NMPERSPEKTIF like '%' + #NMPERSPEKTIF# + '%')
+      and   KET like '%' + #KET# + '%'
+      order by rtrim(KDPERSPEKTIF)
+    </select>
+    <select id="LookupMkegiatan" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(NUKEG)            "01,No,10,C,C,X"
+      ,rtrim(NMKEGUNIT)       "02,Uraian,80,L,C,X"
+      ,rtrim(KDKEGUNIT)       "PK_1"
+      from  MKEGIATAN
+      where 1=1
+      and LEVELKEG='1'
+      and NUKEG like '%' + #NUKEG# + '%'
+      and   NMKEGUNIT like '%' + #NMKEGUNIT# + '%'
+      and   ISNULL(IDPRGRM,'') = #Idprgrm#
+      and KDKEGUNIT not in (select KDKEGUNIT from KEGUNIT where UNITKEY=#Unitkey# and KDTAHAP=#Kdtahap#)
+      order by rtrim(NUKEG)
+    </select>
+    <select id="LookupMsubkegiatan" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(NUKEG)            "01,No,10,C,C,X"
+      ,rtrim(NMKEGUNIT)       "02,Uraian,80,L,C,X"
+      ,rtrim(KDKEGUNIT)       "PK_1"
+      from  MKEGIATAN
+      where 1=1
+      and LEVELKEG='2' and left(NUKEG,len(#ParentNukeg#))=#ParentNukeg#
+      and NUKEG like '%' + #NUKEG# + '%'
+      and   NMKEGUNIT like '%' + #NMKEGUNIT# + '%'
+      and   ISNULL(IDPRGRM,'') = #Idprgrm#
+      and KDKEGUNIT not in (select KDKEGUNIT from KEGUNIT where UNITKEY=#Unitkey# and KDTAHAP=#Kdtahap#)
+      order by rtrim(NUKEG)
+    </select>
+    <select id="LookupMsubkegunit" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(NUKEG)            "01,No,10,C,C,X"
+      ,rtrim(NMKEGUNIT)       "02,Uraian,80,L,C,X"
+      ,rtrim(KDKEGUNIT)       "PK_1"
+      from  MKEGIATAN
+      where 1=1
+      and LEVELKEG in ('1','2')
+      and NUKEG like '%' + #NUKEG# + '%'
+      and   NMKEGUNIT like '%' + #NMKEGUNIT# + '%'
+      and   ISNULL(IDPRGRM,'') = #Idprgrm#
+      and KDKEGUNIT not in (select KDKEGUNIT from KEGUNIT where UNITKEY=#Unitkey# and KDTAHAP=#Kdtahap#)
+    </select>
+    <select id="LookupMkegRekkeg" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(NUKEG)            "01,No,10,C,C,X"
+      ,rtrim(NMKEGUNIT)       "02,Uraian,80,L,C,X"
+      ,rtrim(KDKEGUNIT)       "PK_1"
+      from  MKEGIATAN
+      where NUKEG like '%' + #NUKEG# + '%'
+      and   NMKEGUNIT like '%' + #NMKEGUNIT# + '%'
+      and   ISNULL(IDPRGRM,'') = #Idprgrm#
+      order by rtrim(NUKEG)
+    </select>
+    <select id="LookupKegunit" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(MK.NUKEG)         "01,No,10,C,C,X"
+      ,rtrim(MK.NMKEGUNIT)    "02,Uraian,80,L,C,X"
+      ,rtrim(K.KDKEGUNIT)     "PK_1"
+      from  KEGUNIT K
+      left OUTER JOIN MKEGIATAN MK ON K.KDKEGUNIT=MK.KDKEGUNIT
+      where
+      K.UNITKEY=#Unitkey#
+      and K.IDPRGRM=#Idprgrm#
+      and K.KDTAHAP=#Kdtahap#
+      and MK.NUKEG like '%' + #NUKEG# + '%'
+      and   MK.NMKEGUNIT like '%' + #NMKEGUNIT# + '%'
+      and   ISNULL(K.UNITKEY,'') = #Unitkey#
+      and   ISNULL(K.IDPRGRM,'') = #Idprgrm#
+      order by rtrim(NUKEG)
+    </select>
+    <select id="LookupDPArpt" resultClass="HashTable" parameterClass="HashTable">
+      if(#Idxkode# in  ('1','2','3'))
+      begin
+
+      declare @nodask varchar(50),@num int,@nuprgrm varchar(10), @nukeg varchar(10)
+      declare @kdurus varchar(30),@kdunit varchar(30)
+      select @num = (select count(*) from SKDASK where unitkey=#Unitkey# and kdtahap=#Kdtahap#)
+      if(@num = 1)
+      begin
+      select @kdunit = (select kdunit from DAFTUNIT where unitkey=#Unitkey#)
+
+      declare @idprgrm varchar(10),@uruskey varchar(10)
+      select @idprgrm = (select idprgrm from mkegiatan where kdkegunit=#Kdkegunit#)
+      select @uruskey = (select unitkey from mpgrm where idprgrm=@idprgrm)
+
+      if(#Idxkode# = '2')
+      begin
+
+      if(@uruskey is null)
+      select @kdurus = left(@kdunit,(select len(rtrim(numdigit)) from struunit where kdlevel='2'))
+      else
+      select @kdurus = (select rtrim(kdunit) from DAFTUNIT where unitkey=@uruskey)
+
+      select @nuprgrm = (select rtrim(nuprgrm) from mpgrm where idprgrm=@idprgrm)
+      select @nukeg = (select rtrim(nukeg) from mkegiatan where kdkegunit=#Kdkegunit#)
+      select @nodask = @kdurus+rtrim(@kdunit)+@nuprgrm+@nukeg+'5.2'
+
+      end else if(#Idxkode# = '1')
+      begin
+      select @nodask = rtrim(left(@kdunit,(select len(rtrim(numdigit)) from struunit where kdlevel='2')))+rtrim(@kdunit)+'00.00.4'
+      end else if(#Idxkode# = '3')
+      begin
+      select @nodask = left(@kdunit,(select len(rtrim(numdigit)) from struunit where kdlevel='2'))+rtrim(@kdunit)+'00.00.5.1'
+      end
+      end
+      else
+      begin
+      select @nodask = ''
+      end
+
+      select distinct
+      case @nodask when ''
+      then rtrim(S.NODASK) else @nodask end "01,No.DPA,46,C,C,X"
+      ,convert(char(10), S.TGLDASK, 103) "02,Tanggal DPA,12,C,C,X"
+      ,convert(char(10), S.TGLVALID, 103) "03,Tanggal Valid,12,C,C,X"
+      ,rtrim(T.URAIAN)        "04,Tahap,25,L,C,X"
+      ,rtrim(S.IDXDASK)         "PK_1"
+      from  SKDASK S
+      left outer join DASKR D on S.UNITKEY=D.UNITKEY and S.IDXDASK=D.IDXDASK
+      left outer join TAHAP T on S.KDTAHAP=T.KDTAHAP
+      where
+      S.UNITKEY = #Unitkey# and S.KDTAHAP=#Kdtahap#
+      and ( (#Idxkode# not in ('51','52') and S.IDXKODE=#Idxkode#)
+      or (#Idxkode# = '51' and right(S.NODASK,3) = '6.1')
+      or (#Idxkode# = '52' and right(S.NODASK,3) = '6.2')
+      or S.IDXKODE='6'
+      )
+      <!--and S.TGLVALID is null-->
+      and (D.KDKEGUNIT = #Kdkegunit# OR isnull(#Kdkegunit#,'') = '')
+      and S.NODASK like '%' + #NODASK# + '%'
+      and convert(char(10), S.TGLDASK, 103) like '%' + #TGLDASK# + '%'
+      <!--order by rtrim(S.NODASK)-->
+
+      end else
+      begin
+
+      select distinct
+      rtrim(S.NODASK) "01,No.DPA,46,C,C,X"
+      ,convert(char(10), S.TGLDASK, 103) "02,Tanggal DPA,12,C,C,X"
+      ,convert(char(10), S.TGLVALID, 103) "03,Tanggal Valid,12,C,C,X"
+      ,rtrim(T.URAIAN)        "04,Tahap,25,L,C,X"
+      ,rtrim(S.IDXDASK)         "PK_1"
+      from  SKDASK S
+      left outer join DASKR D on S.UNITKEY=D.UNITKEY and S.IDXDASK=D.IDXDASK
+      left outer join TAHAP T on S.KDTAHAP=T.KDTAHAP
+      where
+      S.UNITKEY = #Unitkey# and S.KDTAHAP=#Kdtahap#
+      and ( (#Idxkode# not in ('51','52') and S.IDXKODE=#Idxkode#)
+      or (#Idxkode# = '51' and right(S.NODASK,3) = '6.1')
+      or (#Idxkode# = '52' and right(S.NODASK,3) = '6.2')
+      or S.IDXKODE='6'
+      )
+      <!--and S.TGLVALID is null-->
+      and (D.KDKEGUNIT = #Kdkegunit# OR isnull(#Kdkegunit#,'') = '')
+      and S.NODASK like '%' + #NODASK# + '%'
+      and convert(char(10), S.TGLDASK, 103) like '%' + #TGLDASK# + '%'
+      <!--order by rtrim(S.NODASK)-->
+      end
+    </select>
+    <select id="LookupDPALrpt" resultClass="HashTable" parameterClass="HashTable">
+      select distinct
+      rtrim(S.NODASK)           "01,No.DPA,46,C,C,X"
+      ,convert(char(10), S.TGLSKDPA, 103) "02,Tanggal SKDPA,12,C,C,X"
+      ,rtrim(S.URAIAN)        "03,URAIAN,25,L,C,X"
+      ,rtrim(S.IDXDASK)         "PK_1"
+      from  DASKL S
+      left outer join DASKR D on S.UNITKEY=D.UNITKEY and S.IDXDASK=D.IDXDASK
+      left outer join TAHUN T on S.KDTAHUN=T.KDTAHUN
+      where
+      S.UNITKEY = #Unitkey# and
+      (D.KDKEGUNIT = #Kdkegunit# OR isnull(#Kdkegunit#,'') = '') and
+      S.NODASK like '%' + #NODASK# + '%'  and
+      convert(char(10), S.TGLSKDPA, 103) like '%' + #TGLSKDPA# + '%' AND
+      S.URAIAN like '%' + #URAIAN# + '%'
+      order by rtrim(S.NODASK)
+    </select>
+    <select id="LookupDPA" resultClass="HashTable" parameterClass="HashTable">
+      select distinct
+      rtrim(S.NODASK)           "01,No.DPA,46,C,C,X"
+      ,convert(char(10), S.TGLDASK, 103) "02,Tanggal DPA,12,C,C,X"
+      ,convert(char(10), S.TGLVALID, 103) "03,Tanggal Valid,12,C,C,X"
+      ,rtrim(T.URAIAN)        "04,Tahap,25,L,C,X"
+      ,rtrim(S.IDXDASK)         "PK_1"
+      from  SKDASK S
+      left outer join DASKR D on S.UNITKEY=D.UNITKEY and S.IDXDASK=D.IDXDASK
+      left outer join TAHAP T on S.KDTAHAP=T.KDTAHAP
+      where
+      S.UNITKEY = #Unitkey# and S.KDTAHAP=#Kdtahap# and S.IDXKODE=#Idxkode#
+      <!--and S.TGLVALID is not null-->
+      and (D.KDKEGUNIT = #Kdkegunit# OR isnull(#Kdkegunit#,'') = '')
+      and S.NODASK like '%' + #NODASK# + '%'
+      and convert(char(10), S.TGLDASK, 103) like '%' + #TGLDASK# + '%'
+      order by rtrim(S.NODASK)
+    </select>
+    <select id="LookupSpd" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(S.NOSKO) "01,No.SPD,50,L,C,X"
+      ,convert(char(10), S.TGLSKO, 103) "02,Tanggal SPD,40,C,C,X"
+      ,rtrim(S.IDXSKO)        "PK_1"
+      from SKO S
+      left join SKORDET D on S.IDXSKO=D.IDXSKO and S.UNITKEY=D.UNITKEY
+      WHERE
+      S.UNITKEY = #Unitkey#
+      and (S.IDXKODE= #Idxkode#
+      or (S.IDXKODE = '3' and #Idxkode#='4') )
+      and S.TGLVALID is not null
+      and (D.KDKEGUNIT = #Kdkegunit# OR isnull(#Kdkegunit#,'') = '')
+      AND S.NOSKO like '%' + #NOSKO# + '%'
+      AND convert(char(10), S.TGLSKO, 103) like '%' + #TGLSKO# + '%'
+      order by S.TGLSKO
+    </select>
+    <select id="LookupSpdrpt" resultClass="HashTable" parameterClass="HashTable">
+      <!--select DISTINCT
+      rtrim(S.NOSKO) "01,No.SPD,50,L,C,X"
+      ,convert(char(10), S.TGLSKO, 103) "02,Tanggal SPD,40,C,C,X"
+      ,rtrim(S.IDXSKO)        "PK_1"
+      from SKO S
+      left join SKORDET D on S.IDXSKO=D.IDXSKO and S.UNITKEY=D.UNITKEY
+      WHERE
+      S.UNITKEY = #Unitkey# AND
+      (S.IDXKODE= #Idxkode# or (S.IDXKODE = '3' and #Idxkode#='6') or (S.IDXKODE = '3' and #Idxkode#='4')or(S.IDXKODE = '3' and #Idxkode#='2') or (#Idxkode#='0' and S.IDXKODE not in ('6')))
+      --><!--and S.TGLVALID is null--><!--
+      and (D.KDKEGUNIT = #Kdkegunit# OR isnull(#Kdkegunit#,'') = '')
+      AND S.NOSKO like '%' + #NOSKO# + '%'
+      AND convert(char(10), S.TGLSKO, 103) like '%' + #TGLSKO# + '%'
+      order by S.TGLSKO-->
+      IF #Idxkode#=2
+      select
+      rtrim(S.NOSKO) "01,No.SPD,50,L,C,X"
+      ,convert(char(10), S.TGLSKO, 103) "02,Tanggal SPD,40,C,C,X"
+      ,rtrim(S.IDXSKO)        "PK_1"
+      from SKO S
+      left join SKORDET D on S.IDXSKO=D.IDXSKO and S.UNITKEY=D.UNITKEY
+      WHERE
+      S.UNITKEY = #Unitkey#
+      AND S.NOSKO like '%' + #NOSKO# + '%'
+      AND convert(char(10), S.TGLSKO, 103) like '%' + #TGLSKO# + '%'
+      order by S.TGLSKO
+
+      ELSE IF (#Idxkode#=3 OR #Idxkode#=4)
+      select
+      rtrim(S.NOSKO) "01,No.SPD,50,L,C,X"
+      ,convert(char(10), S.TGLSKO, 103) "02,Tanggal SPD,40,C,C,X"
+      ,rtrim(S.IDXSKO)        "PK_1"
+      from SKO S
+      left join SKORTLDET D on S.IDXSKO=D.IDXSKO and S.UNITKEY=D.UNITKEY
+      WHERE
+      S.UNITKEY = #Unitkey#
+      AND S.NOSKO like '%' + #NOSKO# + '%'
+      AND convert(char(10), S.TGLSKO, 103) like '%' + #TGLSKO# + '%'
+      order by S.TGLSKO
+
+      ELSE IF #Idxkode#=5
+      select
+      rtrim(S.NOSKO) "01,No.SPD,50,L,C,X"
+      ,convert(char(10), S.TGLSKO, 103) "02,Tanggal SPD,40,C,C,X"
+      ,rtrim(S.IDXSKO)        "PK_1"
+      from SKO S
+      left join SKOBDET D on S.IDXSKO=D.IDXSKO and S.UNITKEY=D.UNITKEY
+      WHERE
+      S.UNITKEY = #Unitkey#
+      AND S.NOSKO like '%' + #NOSKO# + '%'
+      AND convert(char(10), S.TGLSKO, 103) like '%' + #TGLSKO# + '%'
+      order by S.TGLSKO
+    </select>
+    <select id="LookupSpdGlobal" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(S.NOSKO) "01,No.SPD,50,L,C,X"
+      ,convert(char(10), S.TGLSKO, 103) "02,Tanggal SPD,40,C,C,X"
+      ,rtrim(S.IDXSKO)        "PK_1"
+      from SKO S
+      left outer join DAFTUNIT U on S.UNITKEY=U.UNITKEY
+      WHERE
+      (S.UNITKEY = #Unitkey# or (left(rtrim(U.KDUNIT),8)=left(#Kdunit#,8) )) AND (S.IDXKODE= '6')
+      and S.TGLVALID is not null
+      AND S.NOSKO like '%' + #NOSKO# + '%'
+      AND convert(char(10), S.TGLSKO, 103) like '%' + #TGLSKO# + '%'
+      order by S.TGLSKO
+    </select>
+    <select id="LookupSpdGlobalrpt" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(S.NOSKO) "01,No.SPD,50,L,C,X"
+      ,convert(char(10), S.TGLSKO, 103) "02,Tanggal SPD,40,C,C,X"
+      ,rtrim(S.IDXSKO)        "PK_1"
+      from SKO S
+      <!--left join SKORDET D on S.IDXSKO=D.IDXSKO and S.UNITKEY=D.UNITKEY--><!--WR Kalo di join no SPD double2-->
+      WHERE
+      S.UNITKEY = #Unitkey#
+      AND (S.IDXKODE= '6')
+      AND S.NOSKO like '%' + #NOSKO# + '%'
+      AND convert(char(10), S.TGLSKO, 103) like '%' + #TGLSKO# + '%'
+      order by S.TGLSKO
+    </select>
+    <select id="LookupSpdskpd" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(S.NOSKO) "01,No.SPD,50,L,C,X"
+      ,convert(char(10), S.TGLSKO, 103) "02,Tanggal SPD,40,C,C,X"
+      ,rtrim(S.IDXSKO)        "PK_1"
+      from SKO S
+      left outer join SKORDET D on S.UNITKEY=D.UNITKEY and S.IDXSKO=D.IDXSKO
+      left outer join SKORTLDET E on S.UNITKEY=E.UNITKEY and S.IDXSKO=E.IDXSKO
+      left outer join SKDASK SK on S.UNITKEY=SK.UNITKEY and S.IDXDASK=SK.IDXDASK
+      left outer join TAHAP T on SK.KDTAHAP=T.KDTAHAP
+      WHERE
+      S.UNITKEY=#Unitkey# and  S.IDXKODE in ('2','3')
+      and S.TGLVALID is not null
+      AND S.NOSKO like '%' + #NOSKO# + '%'
+      AND convert(char(10), S.TGLSKO, 103) like '%' + #TGLSKO# + '%'
+      order by S.TGLSKO
+    </select>
+    <select id="LookupSpdskpdRpt" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(S.NOSKO) "01,No.SPD,50,L,C,X"
+      ,convert(char(10), S.TGLSKO, 103) "02,Tanggal SPD,40,C,C,X"
+      ,rtrim(S.IDXSKO)        "PK_1"
+      from SKO S
+      left outer join SKORDET D on S.UNITKEY=D.UNITKEY and S.IDXSKO=D.IDXSKO
+      left outer join SKORTLDET E on S.UNITKEY=E.UNITKEY and S.IDXSKO=E.IDXSKO
+      left outer join SKDASK SK on S.UNITKEY=SK.UNITKEY and S.IDXDASK=SK.IDXDASK
+      left outer join TAHAP T on SK.KDTAHAP=T.KDTAHAP
+      WHERE
+      S.UNITKEY=#Unitkey# and  S.IDXKODE in ('2','3')
+      and S.TGLVALID is null
+      AND S.NOSKO like '%' + #NOSKO# + '%'
+      AND convert(char(10), S.TGLSKO, 103) like '%' + #TGLSKO# + '%'
+      order by S.TGLSKO
+    </select>
+    <!--<select id="LookupKdp3" resultClass="HashTable" parameterClass="HashTable">
+      if #Unitkey# = (SELECT Configval FROM pemda WHERE CONFIGID='cur_skpkd')
+      BEGIN
+      select DISTinCT
+      rtrim(NMP3)           "01,Nama Pimpinan,30,L,C,X"
+      ,rtrim(NMINST)        "02,Nama instansi,60,L,C,X"
+      ,rtrim(KDP3)           "PK_1"
+      from  DAFTPHK3
+      where -->
+    <!--UNITKEY=#Unitkey# and-->
+    <!--
+      NMP3 like '%' + #NMP3# + '%'AND    NMINST like '%' + #NMINST# + '%'
+      order by rtrim(KDP3)
+      END
+      ELSE
+      BEGIN
+      select DISTinCT
+      rtrim(NMP3)           "01,Nama Pimpinan,30,L,C,X"
+      ,rtrim(NMINST)        "02,Nama instansi,60,L,C,X"
+      ,rtrim(KDP3)           "PK_1"
+      from  DAFTPHK3
+      where (UNITKEY IS NULL or UNITKEY='') and	NMP3 like '%' + #NMP3# + '%'AND    NMINST like '%' + #NMINST# + '%'
+      order by rtrim(KDP3)
+      END
+    </select>-->
+    <select id="LookupKdp3" resultClass="HashTable" parameterClass="HashTable">
+      if #Unitkey# = (SELECT Configval FROM pemda WHERE CONFIGID='cur_skpkd')
+      BEGIN
+      select DISTinCT
+      rtrim(NMP3)           "01,Nama Pimpinan,30,L,C,X"
+      ,rtrim(NMINST)        "02,Nama instansi,60,L,C,X"
+      ,rtrim(NORCP3)        "03,No Rekening,60,L,C,X"
+      ,rtrim(KDP3)           "PK_1"
+      from  DAFTPHK3
+      where <!--UNITKEY=#Unitkey# and-->
+      NMP3 like '%' + #NMP3# + '%'AND    NMINST like '%' + #NMINST# + '%'
+      order by rtrim(KDP3)
+      END
+      ELSE
+      <!--BEGIN
+      select DISTinCT
+      rtrim(NMP3)           "01,Nama Pimpinan,30,L,C,X"
+      ,rtrim(NMINST)        "02,Nama instansi,60,L,C,X"
+      ,rtrim(KDP3)           "PK_1"
+      from  DAFTPHK3
+      where (UNITKEY = (#Unitkey#)or (UNITKEY='' or UNITKEY is null)) and	NMP3 like '%' + #NMP3# + '%'AND    NMINST like '%' + #NMINST# + '%'
+      order by rtrim(KDP3)-->
+      BEGIN
+      IF (SELECT valset FROM webset WHERE kdset='phk3unit') = 'T'
+      BEGIN
+      select DISTinCT
+      rtrim(NMP3)           "01,Nama Pimpinan,30,L,C,X"
+      ,rtrim(NMINST)        "02,Nama instansi,60,L,C,X"
+      ,rtrim(NORCP3)        "03,No Rekening,60,L,C,X"
+      ,rtrim(KDP3)           "PK_1"
+      from  DAFTPHK3
+      where (UNITKEY IS NULL or UNITKEY='') and	NMP3 like '%' + #NMP3# + '%'AND    NMINST like '%' + #NMINST# + '%'
+      order by rtrim(KDP3)
+      END ELSE
+      IF (SELECT valset FROM webset WHERE kdset='phk3unit') = 'Y'
+      BEGIN
+      select DISTinCT
+      rtrim(NMP3)           "01,Nama Pimpinan,30,L,C,X"
+      ,rtrim(NMINST)        "02,Nama instansi,60,L,C,X"
+      ,rtrim(NORCP3)        "03,No Rekening,60,L,C,X"
+      ,rtrim(KDP3)           "PK_1"
+      from  DAFTPHK3
+      where UNITKEY = (#Unitkey#) and	NMP3 like '%' + #NMP3# + '%'AND    NMINST like '%' + #NMINST# + '%'
+      order by rtrim(KDP3)
+      END
+      END
+    </select>
+    <select id="LookupSkp" resultClass="HashTable" parameterClass="HashTable">
+		<!--select
+      rtrim(NOSKP)           "01,Nomor SKP,30,L,C,X"
+      ,convert(char(10), TGLSKP, 103)      "02,Tgl. SKP,10,C,C,X"
+      ,rtrim(NPWPD)        "03,NPWPD,50,L,C,X"
+      ,rtrim(NOSKP)           "PK_1"
+      from  SKP
+      where UNITKEY = #Unitkey# and TGLVALID is not null and
+      NOSKP like '%' + #NOSKP# + '%' AND
+      convert(char(10), TGLSKP, 103) like '%' + #TGLSKP# + '%' AND
+      NPWPD like '%' + #NPWPD# + '%'
+      order by rtrim(NOSKP)-->
+
+      <!--select
+      rtrim(A.NOSKP)           "01,Nomor SKP,30,L,C,X"
+      ,convert(char(10), A.TGLSKP, 103)      "02,Tgl. SKP,10,C,C,X"
+      ,rtrim(A.NPWPD)        "03,NPWPD,50,L,C,X"
+      ,rtrim(A.NOSKP)           "PK_1"
+      from  SKP A
+      left join SKPDET B on A.NOSKP=B.NOSKP
+      where A.UNITKEY = #Unitkey# and TGLVALID is not null
+      and a.NOSKP NOT in (select C.NOSKP from SKPDET C left join SKPTBP D on c.NOSKP=d.NOSKP inner join TBPDETD E on d.NOTBP=e.NOTBP where (c.NILAI-e.NILAI) != 0)
+      and A.NOSKP like '%' + #NOSKP# + '%' AND
+      convert(char(10), A.TGLSKP, 103) like '%' + #TGLSKP# + '%' AND
+      A.NPWPD like '%' + #NPWPD# + '%'
+      order by rtrim(A.NOSKP)-->
+	  
+	  exec WSP_LOOKUPSKPTBP #Unitkey#
+	  
+	  <!--select
+      rtrim(A.NOSKP)           "01,Nomor SKP,30,L,C,X"
+      ,convert(char(10), A.TGLSKP, 103)      "02,Tgl. SKP,10,C,C,X"
+      ,rtrim(A.NPWPD)        "03,NPWPD,50,L,C,X"
+      ,rtrim(A.NOSKP)           "PK_1"
+      from  SKP A
+      left join SKPDET B on A.NOSKP=B.NOSKP
+      where A.UNITKEY = #Unitkey# and TGLVALID is not null
+      and a.NOSKP in (select C.NOSKP from SKPDET C left join SKPTBP D on c.NOSKP=d.NOSKP inner join TBPDETD E on d.NOTBP=e.NOTBP where (c.NILAI-e.NILAI) != 0)
+      and A.NOSKP like '%' + #NOSKP# + '%' AND
+      convert(char(10), A.TGLSKP, 103) like '%' + #TGLSKP# + '%' AND
+      A.NPWPD like '%' + #NPWPD# + '%'
+      order by rtrim(A.NOSKP)-->
+	  
+    </select>
+    <select id="LookupSpp" resultClass="HashTable" parameterClass="HashTable">
+      IF (#Idxkode#='2' and #Kdstatus#='24')
+      select distinct rtrim(A.NOSPP)  "01,No. SPP,30,C,C,X"
+      ,convert(char(10), A.TGSPP, 103)      "02,Tgl. SPP,10,C,C,X"
+      ,rtrim(A.KEPERLUAN)      "03,Uraian,50,L,C,X"
+      ,rtrim(A.NOSPP)  "PK_1"
+      from  SPP A
+      INNER JOIN SPPDETR s ON s.UNITKEY = A.UNITKEY AND s.NOSPP = A.NOSPP
+      INNER JOIN MKEGIATAN m ON m.KDKEGUNIT = s.KDKEGUNIT
+      where
+      A.NOSPP like '%' + #NOSPP# + '%'
+      and    convert(char(10), A.TGSPP, 103) like '%' + #TGSPP# + '%'
+      and    isnull(A.KEPERLUAN,'') like '%' + #UNTUKSPP# + '%'
+      and A.UNITKEY =#Unitkey# and isnull(A.PENOLAKAN,1)=1
+      <!--and (A.KEYBEND=#Kode# or #Kode#='')-->
+      and A.IDXKODE = #Idxkode# AND A.KDSTATUS = #Kdstatus#
+      AND s.KDKEGUNIT=#Kdkegunit#
+      and A.NOSPP NOT in (select isnull(NOSPP,'') from ANTARBYR where UNITKEY = #Unitkey#)
+      and A.TGLVALID is not null
+      order by rtrim(A.NOSPP)
+
+      ELSE
+      select rtrim(A.NOSPP)  "01,No. SPP,30,C,C,X"
+      ,convert(char(10), A.TGSPP, 103)      "02,Tgl. SPP,10,C,C,X"
+      ,rtrim(A.KEPERLUAN)      "03,Uraian,50,L,C,X"
+      ,rtrim(A.NOSPP)  "PK_1"
+      from  SPP A
+      where
+      A.NOSPP like '%' + #NOSPP# + '%'
+      and    convert(char(10), A.TGSPP, 103) like '%' + #TGSPP# + '%'
+      and    isnull(A.KEPERLUAN,'') like '%' + #UNTUKSPP# + '%'
+      and A.UNITKEY =#Unitkey# and isnull(A.PENOLAKAN,1)=1
+      <!--and (A.KEYBEND=#Kode# or #Kode#='')-->
+      and A.IDXKODE = #Idxkode# AND A.KDSTATUS = #Kdstatus#
+      and A.NOSPP NOT in (select isnull(NOSPP,'') from ANTARBYR where UNITKEY = #Unitkey#)
+      and A.TGLVALID is not null
+      order by rtrim(A.NOSPP)
+    </select>
+    <select id="LookupSppnoval" resultClass="HashTable" parameterClass="HashTable">
+      IF (#Idxkode#='2' and #Kdstatus#='24')
+      select rtrim(A.NOSPP)  "01,No. SPP,30,C,C,X"
+      ,convert(char(10), A.TGSPP, 103)      "02,Tgl. SPP,10,C,C,X"
+      ,rtrim(A.KEPERLUAN)      "03,Uraian,50,L,C,X"
+      ,rtrim(A.NOSPP)  "PK_1"
+      from  SPP A
+      INNER JOIN SPPDETR s ON s.UNITKEY = A.UNITKEY AND s.NOSPP = A.NOSPP
+      INNER JOIN MKEGIATAN m ON m.KDKEGUNIT = s.KDKEGUNIT
+      where
+      A.NOSPP like '%' + #NOSPP# + '%'
+      and    convert(char(10), A.TGSPP, 103) like '%' + #TGSPP# + '%'
+      and    isnull(A.KEPERLUAN,'') like '%' + #UNTUKSPP# + '%'
+      and A.UNITKEY =#Unitkey# and isnull(A.PENOLAKAN,1)=1
+      <!--and (A.KEYBEND=#Kode# or #Kode#='')-->
+      and A.IDXKODE = #Idxkode# AND A.KDSTATUS = #Kdstatus#
+      AND s.KDKEGUNIT=#Kdkegunit#
+      and A.NOSPP NOT in (select isnull(NOSPP,'') from ANTARBYR where UNITKEY = #Unitkey#)
+      and A.TGLVALID is not null
+      order by rtrim(A.NOSPP)
+
+      ELSE
+      select rtrim(A.NOSPP)  "01,No. SPP,30,C,C,X"
+      ,convert(char(10), A.TGSPP, 103)      "02,Tgl. SPP,10,C,C,X"
+      ,rtrim(A.KEPERLUAN)      "03,Uraian,50,L,C,X"
+      ,rtrim(A.NOSPP)  "PK_1"
+      from  SPP A
+      where
+      A.NOSPP like '%' + #NOSPP# + '%'
+      and    convert(char(10), A.TGSPP, 103) like '%' + #TGSPP# + '%'
+      and    isnull(A.KEPERLUAN,'') like '%' + #UNTUKSPP# + '%'
+      and A.UNITKEY =#Unitkey# and isnull(A.PENOLAKAN,1)=1 and (A.KEYBEND=#Kode# or #Kode#='')
+      and A.IDXKODE = #Idxkode# AND A.KDSTATUS = #Kdstatus#
+      and A.NOSPP NOT in (select isnull(NOSPP,'') from ANTARBYR where UNITKEY = #Unitkey#)
+      order by rtrim(A.NOSPP)
+    </select>
+    <!--<select id="LookupSppr" resultClass="HashTable" parameterClass="HashTable">
+			select rtrim(A.NOSPP)  "01,No. SPP,30,C,C,X"
+			,convert(char(10), A.TGSPP, 103)      "02,Tgl. SPP,10,C,C,X"
+			,rtrim(A.KEPERLUAN)      "03,Uraian,50,L,C,X"
+			,rtrim(A.NOSPP)  "PK_1"
+			from  SPP A
+			INNER JOIN SPPDETR s ON s.UNITKEY = A.UNITKEY AND s.NOSPP = A.NOSPP
+			INNER JOIN MKEGIATAN m ON m.KDKEGUNIT = s.KDKEGUNIT
+			where
+			A.NOSPP like '%' + #NOSPP# + '%'
+			and    convert(char(10), A.TGSPP, 103) like '%' + #TGSPP# + '%'
+			and    isnull(A.KEPERLUAN,'') like '%' + #UNTUKSPP# + '%'
+			and A.UNITKEY =#Unitkey# and isnull(A.PENOLAKAN,1)=1 and (A.KEYBEND=#Kode# or #Kode#='')
+			and A.IDXKODE = #Idxkode# AND A.KDSTATUS = #Kdstatus#
+			AND s.KDKEGUNIT=#Kdkegunit#
+			and A.NOSPP NOT in (select isnull(NOSPP,'') from ANTARBYR where UNITKEY = #Unitkey#)
+			and A.TGLVALID is not null
+			order by rtrim(A.NOSPP)
+		</select>
+		<select id="LookupSpprnoval" resultClass="HashTable" parameterClass="HashTable">
+			select rtrim(A.NOSPP)  "01,No. SPP,30,C,C,X"
+			,convert(char(10), A.TGSPP, 103)      "02,Tgl. SPP,10,C,C,X"
+			,rtrim(A.KEPERLUAN)      "03,Uraian,50,L,C,X"
+			,rtrim(A.NOSPP)  "PK_1"
+			from  SPP A
+			INNER JOIN SPPDETR s ON s.UNITKEY = A.UNITKEY AND s.NOSPP = A.NOSPP
+			INNER JOIN MKEGIATAN m ON m.KDKEGUNIT = s.KDKEGUNIT
+			where
+			A.NOSPP like '%' + #NOSPP# + '%'
+			and    convert(char(10), A.TGSPP, 103) like '%' + #TGSPP# + '%'
+			and    isnull(A.KEPERLUAN,'') like '%' + #UNTUKSPP# + '%'
+			and A.UNITKEY =#Unitkey# and isnull(A.PENOLAKAN,1)=1 and (A.KEYBEND=#Kode# or #Kode#='')
+			and A.IDXKODE = #Idxkode# AND A.KDSTATUS = #Kdstatus#
+			AND s.KDKEGUNIT=#Kdkegunit#
+			and A.NOSPP NOT in (select isnull(NOSPP,'') from ANTARBYR where UNITKEY = #Unitkey#)
+			order by rtrim(A.NOSPP)
+		</select>-->
+    <select id="LookupSpprpt" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(NOSPP)  "01,No. SPP,30,C,C,X"
+      ,convert(char(10), TGSPP, 103)      "02,Tgl. SPP,10,C,C,X"
+      ,rtrim(KEPERLUAN)      "03,Uraian,50,L,C,X"
+      ,rtrim(NOSPP)  "PK_1"
+      from  SPP
+      where  NOSPP like '%' + #NOSPP# + '%'
+      and    convert(char(10), TGSPP, 103) like '%' + #TGSPP# + '%'
+      and    isnull(KEPERLUAN,'') like '%' + #UNTUKSPP# + '%'
+      and UNITKEY = #Unitkey#
+      and IDXKODE = #Idxkode#
+	  and KDSTATUS = #Kdstatus#<!-- disini -->
+      <!--and TGLVALID is null-->
+      order by rtrim(NOSPP)
+    </select>
+	<select id="LookupSpprptLS" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(NOSPP)  "01,No. SPP,30,C,C,X"
+      ,convert(char(10), TGSPP, 103)      "02,Tgl. SPP,10,C,C,X"
+      ,rtrim(KEPERLUAN)      "03,Uraian,50,L,C,X"
+      ,rtrim(NOSPP)  "PK_1"
+      from  SPP
+      where  NOSPP like '%' + #NOSPP# + '%'
+      and    convert(char(10), TGSPP, 103) like '%' + #TGSPP# + '%'
+      and    isnull(KEPERLUAN,'') like '%' + #UNTUKSPP# + '%'
+      and UNITKEY = #Unitkey#
+      and IDXKODE = #Idxkode#
+	  and NOSPP like '%LS%'<!-- disini untuk menampilkan ls saja -->
+      <!--and TGLVALID is null-->
+      order by rtrim(NOSPP)
+    </select>
+    <select id="LookupSpprpt2" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(NOSPP)  "01,No. SPP,30,C,C,X"
+      ,convert(char(10), TGSPP, 103)      "02,Tgl. SPP,10,C,C,X"
+      ,rtrim(KEPERLUAN)      "03,Uraian,50,L,C,X"
+      ,rtrim(NOSPP)  "PK_1"
+      from  SPP
+      where  NOSPP like '%' + #NOSPP# + '%'
+      and    convert(char(10), TGSPP, 103) like '%' + #TGSPP# + '%'
+      and    isnull(KEPERLUAN,'') like '%' + #UNTUKSPP# + '%'
+      and UNITKEY = #Unitkey#
+      and (IDXKODE = #Idxkode# and KDSTATUS in ('21','22','23'))
+      <!--and TGLVALID is null-->
+      order by rtrim(NOSPP)
+    </select>
+    <select id="LookupSpmrpt" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(NOSPM)  "01,No. SPM,30,C,C,X"
+      ,convert(char(10), TGLSPM, 103)      "02,Tgl. SPM,10,C,C,X"
+      ,rtrim(KEPERLUAN)      "03,Uraian,50,L,C,X"
+      ,rtrim(NOSPM)  "PK_1"
+      from  ANTARBYR
+      where UNITKEY = #Unitkey# AND IDXKODE = #Idxkode#
+      <!--and KDSTATUS=#Kdstatus#--><!--AVI-->
+      AND NOSPM like '%' + #NOSPM# + '%'
+      AND convert(char(10), TGLSPM, 103) like '%' + #TGLSPM# + '%'
+      AND isnull(KEPERLUAN,'') like '%' + #KEPERLUAN# + '%'
+      order by rtrim(NOSPM)
+    </select>
+    <select id="LookupSp2drpt" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(NOSP2D) "01,No. SP2D,30,C,C,X"
+      ,convert(char(10), TGLSP2D, 103) "02,Tgl. SP2D,10,C,C,X"
+      ,rtrim(KEPERLUAN) "03,Uraian,50,L,C,X"
+      ,rtrim(NOSP2D) "PK_1"
+      from SP2D
+      where
+      UNITKEY = #Unitkey# and IDXKODE=#Idxkode#
+      and TGLVALID is not null<!--AVI-->
+      and KDSTATUS=#Kdstatus#
+      AND NOSP2D like '%' + #NOSP2D# + '%'
+      AND convert(char(10), TGLSP2D, 103) like '%' + #TGLSP2D# + '%'
+      AND isnull(KEPERLUAN,'') like '%' + #KEPERLUAN# + '%'
+      order by rtrim(NOSP2D)
+    </select>
+
+    <select id="LookupSpm" resultClass="HashTable" parameterClass="HashTable">
+      IF #Kdstatus#='22'
+      select rtrim(A.NOSPM)  "01,No. SPM,30,C,C,X"
+      ,convert(char(10), A.TGLSPM, 103)      "02,Tgl. SPM,10,C,C,X"
+      ,rtrim(A.KEPERLUAN)      "03,Uraian,50,L,C,X"
+      ,rtrim(A.NOSPM)  "PK_1"
+      from  ANTARBYR A
+      where  A.NOSPM like '%' + #NOSPM# + '%'
+      AND    convert(char(10), A.TGLSPM, 103) like '%' + #TGLSPM# + '%'
+      AND    isnull(A.KEPERLUAN,'') like '%' + #KEPERLUAN# + '%'
+      AND A.UNITKEY = #Unitkey#
+      AND isnull(A.PENOLAKAN,1)=1 and (A.KEYBEND=#Keybend# or #Keybend#='')
+      AND A.IDXKODE = #Idxkode#
+      AND A.KDSTATUS = #Kdstatus#
+      AND A.NOSPM NOT IN (select NOSPM from SP2D WHERE UNITKEY = #Unitkey# )
+      <!--AND A.NOSPM NOT IN (SELECT s1.NOSPM FROM SPMIDBILLING s1 WHERE (s1.IDBILLING IS NULL OR s1.IDBILLING = '') AND s1.UNITKEY = #Unitkey#)-->
+      AND TGLVALID is not null
+      order by rtrim(A.NOSPM)
+
+      ELSE IF (#Idxkode#='2' and #Kdstatus#='24')
+      select distinct rtrim(A.NOSPM)  "01,No. SPM,30,C,C,X"
+      ,convert(char(10), A.TGLSPM, 103)      "02,Tgl. SPM,10,C,C,X"
+      ,rtrim(A.KEPERLUAN)      "03,Uraian,50,L,C,X"
+      ,rtrim(A.NOSPM)  "PK_1"
+      from  ANTARBYR A
+      INNER JOIN SPMDETR s ON s.UNITKEY = A.UNITKEY AND s.NOSPM = A.NOSPM
+      INNER JOIN MKEGIATAN m ON m.KDKEGUNIT = s.KDKEGUNIT
+      where  A.NOSPM like '%' + #NOSPM# + '%'
+      AND    convert(char(10), A.TGLSPM, 103) like '%' + #TGLSPM# + '%'
+      AND    isnull(A.KEPERLUAN,'') like '%' + #KEPERLUAN# + '%'
+      AND A.UNITKEY = #Unitkey#
+      AND isnull(A.PENOLAKAN,1)=1
+      AND A.IDXKODE = #Idxkode#
+      AND A.KDSTATUS = #Kdstatus#
+      AND A.NOSPM NOT IN (select NOSPM from SP2D WHERE UNITKEY = #Unitkey#)
+      <!--AND A.NOSPM NOT IN (SELECT s1.NOSPM FROM SPMIDBILLING s1 WHERE (s1.IDBILLING IS NULL OR s1.IDBILLING = '') AND s1.UNITKEY = #Unitkey#)-->
+      AND s.KDKEGUNIT=#Kdkegunit#
+      AND TGLVALID is not null
+      order by rtrim(A.NOSPM)
+
+      ELSE
+      select rtrim(A.NOSPM)  "01,No. SPM,30,C,C,X"
+      ,convert(char(10), A.TGLSPM, 103)      "02,Tgl. SPM,10,C,C,X"
+      ,rtrim(A.KEPERLUAN)      "03,Uraian,50,L,C,X"
+      ,rtrim(A.NOSPM)  "PK_1"
+      from  ANTARBYR A
+      where  A.NOSPM like '%' + #NOSPM# + '%'
+      AND    convert(char(10), A.TGLSPM, 103) like '%' + #TGLSPM# + '%'
+      AND    isnull(A.KEPERLUAN,'') like '%' + #KEPERLUAN# + '%'
+      AND A.UNITKEY = #Unitkey#
+      AND isnull(A.PENOLAKAN,1)=1
+      AND A.IDXKODE = #Idxkode#
+      AND A.KDSTATUS = #Kdstatus#
+      AND A.NOSPM NOT IN (select NOSPM from SP2D WHERE UNITKEY = #Unitkey#)
+      <!--AND A.NOSPM NOT IN (SELECT s1.NOSPM FROM SPMIDBILLING s1 WHERE (s1.IDBILLING IS NULL OR s1.IDBILLING = '') AND s1.UNITKEY = #Unitkey#)-->
+      AND TGLVALID is not null
+      order by rtrim(A.NOSPM)
+    </select>
+    <select id="LookupSpmnoval" resultClass="HashTable" parameterClass="HashTable">
+      IF #Kdstatus#='22'
+      select rtrim(A.NOSPM)  "01,No. SPM,30,C,C,X"
+      ,convert(char(10), A.TGLSPM, 103)      "02,Tgl. SPM,10,C,C,X"
+      ,rtrim(A.KEPERLUAN)      "03,Uraian,50,L,C,X"
+      ,rtrim(A.NOSPM)  "PK_1"
+      from  ANTARBYR A
+      where  A.NOSPM like '%' + #NOSPM# + '%'
+      AND    convert(char(10), A.TGLSPM, 103) like '%' + #TGLSPM# + '%'
+      AND    isnull(A.KEPERLUAN,'') like '%' + #KEPERLUAN# + '%'
+      AND A.UNITKEY = #Unitkey#
+      AND isnull(A.PENOLAKAN,1)=1 and (A.KEYBEND=#Keybend# or #Keybend#='')
+      AND A.IDXKODE = #Idxkode#
+      AND A.KDSTATUS = #Kdstatus#
+      AND A.NOSPM NOT IN (select NOSPM from SP2D WHERE UNITKEY = #Unitkey# )
+      order by rtrim(A.NOSPM)
+      ELSE IF (#Idxkode#='2' and #Kdstatus#='24')
+      select rtrim(A.NOSPM)  "01,No. SPM,30,C,C,X"
+      ,convert(char(10), A.TGLSPM, 103)      "02,Tgl. SPM,10,C,C,X"
+      ,rtrim(A.KEPERLUAN)      "03,Uraian,50,L,C,X"
+      ,rtrim(A.NOSPM)  "PK_1"
+      from  ANTARBYR A
+      INNER JOIN SPMDETR s ON s.UNITKEY = A.UNITKEY AND s.NOSPM = A.NOSPM
+      INNER JOIN MKEGIATAN m ON m.KDKEGUNIT = s.KDKEGUNIT
+      where  A.NOSPM like '%' + #NOSPM# + '%'
+      AND    convert(char(10), A.TGLSPM, 103) like '%' + #TGLSPM# + '%'
+      AND    isnull(A.KEPERLUAN,'') like '%' + #KEPERLUAN# + '%'
+      AND A.UNITKEY = #Unitkey#
+      AND isnull(A.PENOLAKAN,1)=1
+      AND A.IDXKODE = #Idxkode#
+      AND A.KDSTATUS = #Kdstatus#
+      AND A.NOSPM NOT IN (select NOSPM from SP2D WHERE UNITKEY = #Unitkey#)
+      AND s.KDKEGUNIT=#Kdkegunit#
+      order by rtrim(A.NOSPM)
+      ELSE
+      select rtrim(A.NOSPM)  "01,No. SPM,30,C,C,X"
+      ,convert(char(10), A.TGLSPM, 103)      "02,Tgl. SPM,10,C,C,X"
+      ,rtrim(A.KEPERLUAN)      "03,Uraian,50,L,C,X"
+      ,rtrim(A.NOSPM)  "PK_1"
+      from  ANTARBYR A
+      where  A.NOSPM like '%' + #NOSPM# + '%'
+      AND    convert(char(10), A.TGLSPM, 103) like '%' + #TGLSPM# + '%'
+      AND    isnull(A.KEPERLUAN,'') like '%' + #KEPERLUAN# + '%'
+      AND A.UNITKEY = #Unitkey#
+      AND isnull(A.PENOLAKAN,1)=1
+      AND A.IDXKODE = #Idxkode#
+      AND A.KDSTATUS = #Kdstatus#
+      AND A.NOSPM NOT IN (select NOSPM from SP2D WHERE UNITKEY = #Unitkey#)
+      order by rtrim(A.NOSPM)
+    </select>
+
+    <select id="LookupDp" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(NODP)  "01,No. DP,30,C,C,X"
+      ,convert(char(10), TGLDP, 103)      "02,Tgl. DP,10,C,C,X"
+      ,rtrim(BERITA)      "03,Berita,50,L,C,X"
+      ,rtrim(NODP)  "PK_1"
+      from  DP
+      where IDXKODE =#Idxkode#
+      and NODP like '%' + #NODP# + '%'
+      and convert(char(10), TGLDP, 103) like '%' + #TGLDP# + '%'
+      order by rtrim(NODP)
+    </select>
+    <select id="LookupSalur" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(NOSALUR)  "01,No. Penyaluran,30,C,C,X"
+      ,convert(char(10), TANGGAL, 103)      "02,Tgl. Penyaluran,10,C,C,X"
+      ,rtrim(NOCEK)      "03,No Cek,50,L,C,X"
+      ,rtrim(NOSALUR)  "PK_1"
+      from  SP2DSALUR
+      where <!--TANGGAL =#Tanggal# and-->
+      NOSALUR like '%' + #NOSALUR# + '%'
+      and convert(char(10), TANGGAL, 103) like '%' + #TANGGAL# + '%'
+      order by rtrim(NOSALUR)
+    </select>
+    <select id="LookupDpRpt" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(NODP)  "01,No. DP,30,C,C,X"
+      ,convert(char(10), TGLDP, 103)      "02,Tgl. DP,10,C,C,X"
+      ,rtrim(BERITA)      "03,Berita,50,L,C,X"
+      from  DP
+      where IDXKODE =#Idxkode# <!--AND TGLVALID is null-->
+      order by rtrim(NODP)
+    </select>
+    <select id="LookupNobbantu" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(NOBBANTU)  "01,No. Bantu,10,C,C,X"
+      ,rtrim(NMBKAS)      "02,Nama Bukukas,50,L,C,X"
+      ,rtrim(NOREKB)      "03,Nomor Rekening,30,C,C,X"
+      ,rtrim(NOBBANTU)  "PK_1"
+      from  BKBKAS
+      where  NOBBANTU like '%' + #NOBBANTU# + '%'
+      and NMBKAS like '%' + #NMBKAS# + '%'
+      and NOREKB like '%' + #NOREKB# + '%'
+      order by rtrim(NOBBANTU)
+    </select>
+    <select id="LookupSts" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(NOSTS)  "01,No. STS,30,C,C,X"
+      ,convert(char(10), TGLSTS, 103)      "02,Tgl. STS,10,C,C,X"
+      ,rtrim(URAIAN)      "03,Uraian,50,L,C,X"
+      from  STS
+      where UNITKEY = #Unitkey# and IDXKODE=#Idxkode#
+      and  NOSTS like '%' + #NOSTS# + '%'
+      order by rtrim(NOSTS)
+    </select>
+    <select id="LookupStsRpt" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(NOSTS)  "01,No. STS,30,C,C,X"
+      ,convert(char(10), TGLSTS, 103)      "02,Tgl. STS,10,C,C,X"
+      ,rtrim(URAIAN)      "03,Uraian,50,L,C,X"
+      from  STS
+      where UNITKEY = #Unitkey# and IDXKODE=#Idxkode# <!--and TGLVALID is null-->
+      and NOSTS like '%' + #NOSTS# + '%'
+      and convert(char(10), TGLSTS, 103) like '%' + #TGLSTS# + '%'
+      and isnull(URAIAN,'') like '%' + #URAIAN# + '%'
+      order by rtrim(Nosts)
+    </select>
+    <select id="LookupStsbud" resultClass="HashTable" parameterClass="HashTable">
+      select convert(char(10), TGLSTS, 103)      "01,Tgl. STS,10,C,C,X"
+      ,rtrim(S.NOSTS)  "02,No. STS,30,C,C,X"
+      ,rtrim(URAIAN)      "03,Uraian,50,L,C,X"
+      ,rtrim(S.UNITKEY) "PK_1"
+      from  STS S
+      left outer join RKMDETT D on S.UNITKEY=D.UNITKEY and S.NOSTS=D.NOSTS
+      where <!--UNITKEY = #Unitkey# and-->
+      (TGLVALID is not null or Idxkode = 0 )
+      and (S.NOBBANTU=#Nobbantu# or #Nobbantu#='' or D.NOBBANTU=#Nobbantu#)
+      and (IDXKODE=#Idxkode# or (#Idxkode# not in (0) and IDXKODE not in (0)) )
+      and
+      ltrim(rtrim(S.UNITKEY))+ltrim(rtrim(S.NOSTS)) not in (select ltrim(rtrim(UNITKEY))+ltrim(rtrim(NOSTS)) from BKUD a where (NOBBANTU=#Nobbantu# or #Nobbantu#=''))<!--edit by avi-->
+      and S.NOSTS like '%' + #NOSTS# + '%'
+      and convert(char(10), TGLSTS, 103) like '%' + #TGLSTS# + '%'
+      and isnull(URAIAN,'') like '%' + #URAIAN# + '%'
+      order by TGLSTS
+    </select>
+    <select id="LookupKontrak" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(NOKON)  "01,No.Kontrak,50,C,C,X"
+      ,convert(char(10), TGLKON, 103)      "02,Tgl.Kontrak,20,C,C,X"
+      ,convert(char(10), TGLSLSKONK, 103)      "03,Tgl.Selesai,20,C,C,X"
+      ,rtrim(NOKON) "PK_1"
+      from
+      (
+      <!--SELECT  a.NOADM NOKON, a.TGLADM TGLKON,b.TGLSLSKONK
+      FROM kontrak AS b INNER JOIN ADENDUM AS a ON a.UNITKEY = b.UNITKEY AND a.KDKEGUNIT = b.KDKEGUNIT AND a.NOKON = b.NOKON
+      where a.UNITKEY = #Unitkey# and a.KDKEGUNIT = #Kdkegunit#
+      UNION ALL--><!--edit by avi AGAR ADENDUM MENAMPILKAN KONTRAK INDUK SAJA-->
+      SELECT b.NOKON, b.TGLKON, b.TGLSLSKONK
+      FROM kontrak AS b LEFT JOIN ADENDUM AS a ON a.UNITKEY = b.UNITKEY AND a.KDKEGUNIT = b.KDKEGUNIT AND a.NOKON = b.NOKON
+      <!--WHERE a.NOKON IS NULL and b.UNITKEY = #Unitkey# and b.KDKEGUNIT = #Kdkegunit#--><!--edit by avi AGAR ADENDUM MENAMPILKAN KONTRAK INDUK SAJA-->
+      WHERE b.UNITKEY = #Unitkey# and b.KDKEGUNIT = #Kdkegunit#<!--edit by avi AGAR ADENDUM MENAMPILKAN KONTRAK INDUK SAJA-->
+      )aa
+      where <!--UNITKEY = #Unitkey# and KDKEGUNIT = #Kdkegunit#-->
+      NOKON like '%' + #NOKON# + '%'
+      and convert(char(10), TGLKON, 103) like '%' + #TGLKON# + '%'
+      and convert(char(10), TGLSLSKONK, 103) like '%' + #TGLSKKON# + '%'
+      order by rtrim(NOKON)
+    </select>
+    <select id="LookupBerita" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(A.NOBA)  "01,No.BAST,50,C,C,X"
+      ,convert(char(10), TGLBA, 103)      "02,Tgl.BAST,20,C,C,X"
+      ,rtrim(A.NOKON)                  "03,Uraian,50,L,C,X"
+      ,rtrim(A.NOBA) "PK_1"
+      from  berita  a LEFT OUTER JOIN SPPBA B ON B.UNITKEY = a.UNITKEY AND B.NOBA = a.NOBA
+      left outer join BPK b1 on B1.UNITKEY = a.UNITKEY AND B1.NOBA = a.NOBA
+      where   A.UNITKEY = #Unitkey# and KDKEGUNIT = #Kdkegunit# and a.TGLVALID is not null AND b.NOBA IS null and b1.NOBA is null
+      AND  NOKON like '%' + #NOBA# + '%'
+      AND NOKON like '%' + #NOKON# + '%'
+      order by rtrim(A.NOBA)
+    </select>
+    <select id="LookupBabpk" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(A.NOBA)  "01,No.BAST,50,C,C,X"
+      ,convert(char(10), TGLBA, 103)      "02,Tgl.BAST,20,C,C,X"
+      ,rtrim(A.NOKON)                  "03,Uraian,50,L,C,X"
+      ,rtrim(A.NOBA) "PK_1"
+      from  berita  a
+      LEFT OUTER JOIN SPPBA B ON B.UNITKEY = a.UNITKEY AND B.NOBA = a.NOBA
+      where   A.UNITKEY = #Unitkey# and KDKEGUNIT = #Kdkegunit# and a.TGLVALID is not null AND b.NOBA IS null
+      AND A.NOBA NOT IN (select NOBA from BPK  where NOBA is not null)
+      AND A.NOBA NOT IN (select NOBA from SPPBA  where NOBA is not null)
+      AND  A.NOBA like '%' + #NOBA# + '%'
+      order by rtrim(A.NOBA)
+
+      <!--SELECT x.UNITKEY, x.NOBA
+      select rtrim(A.NOBA)  "01,No.BAST,50,C,C,X"
+      ,convert(char(10), A.TGLBA, 103)      "02,Tgl.BAST,20,C,C,X"
+      ,rtrim(A.NOKON)                  "03,Uraian,50,L,C,X"
+      ,rtrim(A.NOBA) "PK_1"
+      FROM(
+      SELECT b.UNITKEY, b.NOBA,b.TGLBA,B.NOKON,B.KDKEGUNIT,B.TGLVALID FROM BERITA b LEFT JOIN SPPBA s ON s.UNITKEY = b.UNITKEY AND s.NOBA = b.NOBA WHERE s.NOBA IS NULL
+      ) A
+      LEFT JOIN BPK b ON b.UNITKEY = A.UNITKEY AND b.NOBA = A.NOBA
+      WHERE A.NOBA IS NULL AND A.UNITKEY = #Unitkey# and A.KDKEGUNIT = #Kdkegunit# and A.TGLVALID is not null
+      AND  A.NOBA like '%' + #NOBA# + '%'
+      order by rtrim(A.NOBA)-->
+    </select>
+    <select id="LookupBabu" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(A.NOBA)  "01,No.BAST,50,C,C,X"
+      ,convert(char(10), TGLBA, 103)      "02,Tgl.BAST,20,C,C,X"
+      ,rtrim(A.NOKON)                  "03,Uraian,50,L,C,X"
+      ,rtrim(A.NOBA) "PK_1"
+      from  berita  a
+      LEFT JOIN BERITADETR b ON b.UNITKEY = a.UNITKEY AND b.NOBA = a.NOBA
+      WHERE b.MTGKEY IN (SELECT MTGKEY FROM MATANGR WHERE left(KDPER,6)='5.2.3.' AND TYPE='D' )
+      AND A.UNITKEY = #Unitkey# and KDKEGUNIT = #Kdkegunit# and a.TGLVALID is not null
+      AND A.NOBA NOT IN (select NOBA from BUBAM)
+      <!--AND  A.NOBA like '%' + #NOBA# + '%' AND A.NOKON like '%' + #NOKON# + '%'-->
+      order by rtrim(A.NOBA)
+    </select>
+    <select id="LookupSk" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(NOSK)  "01,No.SK,50,C,C,X"
+      ,convert(char(10), TGLSK, 103)      "02,Tgl.SK,20,C,C,X"
+      ,rtrim(KET)                  "03,Uraian,50,L,C,X"
+      ,rtrim(NOSK) "PK_1"
+      from  skppkd
+      where UNITKEY = #Unitkey# and TGLVALID is not null<!--and KDKEGUNIT = #Kdkegunit# -->
+      <!--and NOBA like '%' + #NOBA# + '%'
+      and convert(char(10), TGLBA, 103) like '%' + #TGLBA# + '%'
+      and NOKON like '%' + #NOKON# + '%'-->
+      order by rtrim(NOSK)
+    </select>
+    <select id="LookupSp2dbud" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(NOSP2D)  "01,No. SP2D,30,C,C,X"
+      ,convert(char(10), TGLSP2D, 103) "02,Tgl. SP2D,10,C,C,X"
+      ,rtrim(KEPERLUAN)      "03,Uraian,50,L,C,X"
+      from  SP2D
+      where
+      (NOBBANTU = #Nobbantu# or #Nobbantu#='')
+      and TGLVALID is not null
+      and NOSP2D not in (select NOSP2D from BKUK)
+      and NOSP2D like '%' + #NOSP2D# + '%'
+      and convert(char(10), TGLSP2D, 103) like '%' + #TGLSP2D# + '%'
+      and isnull(KEPERLUAN,'') like '%' + #KEPERLUAN# + '%'
+      order by TGLSP2D
+    </select>
+    <select id="LookupSp2dbudnoval" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(NOSP2D)  "01,No. SP2D,30,C,C,X"
+      ,convert(char(10), TGLSP2D, 103) "02,Tgl. SP2D,10,C,C,X"
+      ,rtrim(KEPERLUAN)      "03,Uraian,50,L,C,X"
+      from  SP2D
+      where
+      (NOBBANTU = #Nobbantu# or #Nobbantu#='')
+      and NOSP2D not in (select NOSP2D from BKUK)
+      and NOSP2D like '%' + #NOSP2D# + '%'
+      and convert(char(10), TGLSP2D, 103) like '%' + #TGLSP2D# + '%'
+      and isnull(KEPERLUAN,'') like '%' + #KEPERLUAN# + '%'
+      order by TGLSP2D
+    </select>
+    <select id="LookupSp2ddp" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(NOSP2D)  "01,No. SP2D,30,C,C,X"
+      ,convert(char(10), TGLSP2D, 103) "02,Tgl. SP2D,10,C,C,X"
+      ,rtrim(KEPERLUAN)      "03,Uraian,40,L,C,X"
+      ,rtrim(D.KDUNIT) "04,Unit,10,C,C,X"
+      ,D.UNITKEY "PK_1"
+
+      from  SP2D S left join DAFTUNIT D on S.UNITKEY = D.UNITKEY
+      where  S.NOSP2D like '%' + #NOSP2D# + '%'
+      and    convert(char(10), TGLSP2D, 103) like '%' + #TGLSP2D# + '%'
+      and isnull(KEPERLUAN,'') like '%' + #KEPERLUAN# + '%'
+      and    D.KDUNIT like '%' + #KDUNIT# + '%'
+      and S.NOSP2D not in (select NOSP2D from DPDET)
+      and (S.IDXKODE = #Idxkode# or #Idxkode#=0)
+      AND S.TGLVALID is not null
+      order by D.KDUNIT,rtrim(S.NOSP2D)
+    </select>
+    <select id="LookupSp2d" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(S.NOSP2D)  "01,No. SP2D,30,C,C,X"
+      ,convert(char(10), S.TGLSP2D, 103) "02,Tgl. SP2D,10,C,C,X"
+      ,rtrim(S.KEPERLUAN)      "03,Uraian,40,L,C,X"
+      ,rtrim(S.NOSP2D) "PK_1"
+      from  SP2D S
+      where   s.UNITKEY=#Unitkey# and  S.NOSP2D not in (select RTRIM(NOSP2D) from  SP2DNTPN)
+      AND s.KDSTATUS='24'
+      and S.NOSP2D like '%' + #NOSP2D# + '%'
+      and    convert(char(10), S.TGLSP2D, 103) like '%' + #TGLSP2D# + '%'
+      and isnull(S.KEPERLUAN,'') like '%' + #KEPERLUAN# + '%'
+      order by rtrim(S.NOSP2D)
+    </select>
+    <select id="LookupSp2ddpnoval" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(NOSP2D)  "01,No. SP2D,30,C,C,X"
+      ,convert(char(10), TGLSP2D, 103) "02,Tgl. SP2D,10,C,C,X"
+      ,rtrim(KEPERLUAN)      "03,Uraian,40,L,C,X"
+      ,rtrim(D.KDUNIT) "04,Unit,10,C,C,X"
+      ,D.UNITKEY "PK_1"
+      from  SP2D S left join DAFTUNIT D on S.UNITKEY = D.UNITKEY
+      where  S.NOSP2D like '%' + #NOSP2D# + '%'
+      and    convert(char(10), TGLSP2D, 103) like '%' + #TGLSP2D# + '%'
+      and isnull(KEPERLUAN,'') like '%' + #KEPERLUAN# + '%'
+      and    D.KDUNIT like '%' + #KDUNIT# + '%'
+      and S.NOSP2D not in (select NOSP2D from DPDET)
+      and (S.IDXKODE = #Idxkode# or #Idxkode#=0)
+      <!--AND TGLVALID is not null-->
+      order by D.KDUNIT,rtrim(S.NOSP2D)
+    </select>
+    <select id="LookupSp2dnoval" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(S.NOSP2D)  "01,No. SP2D,30,C,C,X"
+      ,convert(char(10), S.TGLSP2D, 103) "02,Tgl. SP2D,10,C,C,X"
+      ,rtrim(S.KEPERLUAN)      "03,Uraian,40,L,C,X"
+      ,rtrim(D.KDUNIT) "04,Unit,10,C,C,X"
+      ,rtrim(S.NOSP2D) "PK_1"
+      from  SP2D S INNER join DAFTUNIT D on S.UNITKEY = D.UNITKEY
+      where  S.NOSP2D like '%' + #NOSP2D# + '%'
+      and    convert(char(10), S.TGLSP2D, 103) like '%' + #TGLSP2D# + '%'
+      and isnull(S.KEPERLUAN,'') like '%' + #KEPERLUAN# + '%'
+      and    D.KDUNIT like '%' + #KDUNIT# + '%'
+      and s.UNITKEY=#Unitkey#
+      and S.IDXKODE = #Idxkode# AND s.KDSTATUS='23'
+      order by rtrim(S.NOSP2D)
+      <!--WR 05052011-->
+    </select>
+    <select id="LookupTbp" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(NOTBP)  "01,No. TBP,30,C,C,X"
+      ,convert(char(10), TGLTBP, 103)      "02,Tgl. TBP,10,C,C,X"
+      ,rtrim(URAITBP)      "03,Uraian,50,L,C,X"
+      from  TBP
+      where UNITKEY = #Unitkey# and Idxkode=#Idxkode#
+      order by rtrim(Notbp)
+      <!--select     rtrim(B.NOTBP) AS [01,No.TBP,25,C,C,X],
+		  convert(char(10), B.TGTBP, 103) AS [02,Tgl.TBP,5,C,C,X],
+		  rtrim(B.URAITBP)AS [03,Uraian,70,L,C,X]
+		  from         TBP B
+		  -->
+      <!--Pada Tabel TBP TGLTBP bukan TGTBP-->
+      <!--
+      where (B.UNITKEY = #Unitkey# OR #Unitkey# = '')
+      and (B.KEYBEND = #Keybend# OR #Keybend# = '')
+      and (B.IDXKODE = #Idxkode# OR #Idxkode# = '')
+      and rtrim(B.NOTBP) like '%' + #NOTBP# + '%'
+      and    convert(char(10), B.TGTBP, 103) like '%' + #TGTBP# + '%'
+      and    rtrim(B.URAITBP) like '%' + #URAITBP# + '%'
+      order by rtrim(B.NOTBP)-->
+    </select>
+    <select id="LookupBkbank" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(NOBUKU)  "01,No. Buku,30,C,C,X"
+      ,convert(char(10), TGLBUKU, 103)      "02,Tgl. Buku,10,C,C,X"
+      ,rtrim(URAIAN)      "03,Uraian,50,L,C,X"
+      from  BKBANK
+      where UNITKEY = #Unitkey#
+      order by rtrim(NOBUKU)
+    </select>
+    <select id="LookupBkbankRpt" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(NOBUKU)  "01,No. Buku,30,C,C,X"
+      ,convert(char(10), TGLBUKU, 103)      "02,Tgl. Buku,10,C,C,X"
+      ,rtrim(URAIAN)      "03,Uraian,50,L,C,X"
+      from  BKBANK
+      where UNITKEY = #Unitkey# <!--AND TGLVALID is null-->
+      order by rtrim(NOBUKU)
+    </select>
+
+    <select id="LookupPanjarRpt" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(NOPANJAR)  "01,No. Panjar,30,C,C,X"
+      ,convert(char(10), TGLPANJAR, 103)      "02,Tgl. Panjar,10,C,C,X"
+      ,rtrim(URAIAN)      "03,Uraian,50,L,C,X"
+      from  PANJAR
+      where UNITKEY = #Unitkey# <!--AND TGLVALID is null-->
+      order by rtrim(NOPANJAR)
+    </select>
+    <select id="LookupBpkrpt" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(NOBPK)  "01,No. BPK,30,C,C,X"
+      ,convert(char(10), TGLBPK, 103)      "02,Tgl. BPK,10,C,C,X"
+      ,rtrim(URAIBPK)      "03,Uraian,50,L,C,X"
+      from  BPK
+      where IDXKODE = #Idxkode#
+      and UNITKEY = #Unitkey#
+      and rtrim(NOBPK) like '%' + #NOBPK# + '%'
+      order by rtrim(NOBPK)
+    </select>
+    <select id="LookupBkpajak" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(NOBKPAJAK)  "01,No. BK Pajak,30,C,C,X"
+      ,convert(char(10), TGLBKPAJAK, 103)      "02,Tgl. BK Pajak,10,C,C,X"
+      ,rtrim(URAIAN)      "03,Uraian,50,L,C,X"
+      from  BKPAJAK
+      where UNITKEY = #Unitkey#
+      order by rtrim(NOBKPAJAK)
+    </select>
+    <select id="LookupBkpajakRpt" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(NOBKPAJAK)  "01,No. BK Pajak,30,C,C,X"
+      ,convert(char(10), TGLBKPAJAK, 103)      "02,Tgl. BK Pajak,10,C,C,X"
+      ,rtrim(URAIAN)      "03,Uraian,50,L,C,X"
+      from  BKPAJAK
+      where UNITKEY = #Unitkey# <!--AND TGLVALID is null-->
+      order by rtrim(NOBKPAJAK)
+    </select>
+    <select id="LookupBkud" resultClass="HashTable" parameterClass="HashTable">
+      select     rtrim(NOBUKAS) AS [01,No.Buku Kas,25,C,C,X],
+      convert(char(10), TGLKAS, 103) AS [02,Tgl.Kas,5,C,C,X],
+      convert(char(10), TGLVALID, 103) AS [03,Tgl.Valid,5,C,C,X],
+      rtrim(NOBUKTIKAS)AS [04,No.STS,25,L,C,X],
+      rtrim(URAIAN)AS [05,Uraian,40,L,C,X]
+      from         BKUD
+      where (UNITKEY = #Unitkey# OR rtrim(#Unitkey#) = '') and KDBUKTI = #Kdbukti#
+      and NOBUKAS like '%' + #NOBUKAS# + '%'
+      and    convert(char(10), TGLKAS, 103) like '%' + #TGLKAS# + '%'
+      and    isnull(URAIAN,'') like '%' + #URAIAN# + '%'
+      order by rtrim(NOBUKAS)
+    </select>
+
+    <select id="LookupBkuk" resultClass="HashTable" parameterClass="HashTable">
+      select     rtrim(K.NOBUKAS) AS [01,No.Buku Kas,25,C,C,X],
+      convert(char(10), K.TGLKAS, 103) AS [02,Tgl.Kas,5,C,C,X],
+      convert(char(10), K.TGLVALID, 103) AS [03,Tgl.Valid,5,C,C,X],
+      rtrim(K.NOSP2D)AS [04,No.SP2D,25,L,C,X],
+      rtrim(K.URAIAN)AS [05,Uraian,40,L,C,X],
+      rtrim(K.NOBUKAS)         "PK_1"
+      from         BKUK K left outer join SP2D S on
+      K.NOSP2D = S.NOSP2D
+      where K.NOBUKAS like '%' + #NOBUKAS# + '%'
+      and    convert(char(10), K.TGLKAS, 103) like '%' + #TGLKAS# + '%'
+      and    isnull(K.URAIAN,'') like '%' + #URAIAN# + '%'
+      and (K.UNITKEY=#Unitkey# OR #Unitkey#='')
+      order by rtrim(K.NOBUKAS)
+    </select>
+
+    <select id="LookupPspj" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(NOSPJ)  "01,No. SPJ,30,C,C,X"
+      ,convert(char(10), TGLSPJ, 103)"02,Tgl. SPJ,10,C,C,X"
+      <!--convert(char(10), TGLVALID, 103) AS [03,Tgl.Valid,5,C,C,X],-->
+      ,rtrim(KETERANGAN)    "03,Uraian,50,L,C,X"
+      from  PSPJ
+      where UNITKEY = #Unitkey#
+      and NOSPJ like '%' + #NOSPJ# + '%'
+      <!--and    convert(char(10), TGLSPJ, 103) like '%' + #TGLSPJ# + '%'
+      and    KETERANGAN like '%' + #URAIAN# + '%'-->
+      order by rtrim(NOSPJ)
+    </select>
+    <select id="LookupPspjrpt" resultClass="HashTable" parameterClass="HashTable">
+      select distinct rtrim(A.NOSPJ)  "01,No. SPJ,30,C,C,X"
+      ,convert(char(10), A.TGLSPJ, 103)"02,Tgl. SPJ,10,C,C,X"
+      ,rtrim(A.KETERANGAN)    "03,Uraian,50,L,C,X"
+      from  PSPJ A
+      inner join spjdetr B on A.Nospj=B.Nospj
+      where A.UNITKEY = #Unitkey# and B.KDKEGUNIT=#Kdkegunit#
+      and A.NOSPJ like '%' + #NOSPJ# + '%'
+      order by rtrim(A.NOSPJ)
+    </select>
+    <select id="LookupBM" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(NOBM) "01,No. STS,30,C,C,X"
+      ,convert(char(10), TGLBM, 103) "02,Tgl. BM,10,C,C,X"
+      <!--,convert(char(10), VALIDBM, 103) AS [03,Tgl.Valid,5,C,C,X]-->
+      ,rtrim(URAIAN)  "03,Uraian,50,L,C,X"
+      from         BKTMEM
+      where (UNITKEY = #Unitkey# )
+      and NOBM like '%' + #NOBM# + '%'
+      and    convert(char(10), TGLBM, 103) like '%' + #TGLBM# + '%'
+      and    URAIAN like '%' + #KETERANGAN# + '%'
+      order by rtrim(NOBM)
+    </select>
+    <select id="LookupJurtup" resultClass="HashTable" parameterClass="HashTable">
+      select     rtrim(NOTUTUP) AS [01,No.Tutup,25,C,C,X],
+      convert(char(50), NMTUTUP, 103) AS [02,Nama Tutup,75,L,C,X]
+      from         JURTUP
+      where NOTUTUP like '%' + #NOTUTUP# + '%'
+      and    NMTUTUP like '%' + #NMTUTUP# + '%'
+      order by rtrim(NOTUTUP)
+    </select>
+    <select id="LookupBpk" resultClass="HashTable" parameterClass="HashTable">
+      select     rtrim(B.NOBPK) AS [01,No.BPK,30,C,C,X],
+      convert(char(10), B.TGLBPK, 103) AS [02,Tgl.BPK,10,C,C,X],
+      rtrim(B.URAIBPK)AS [03,Uraian,50,L,C,X],
+      rtrim(B.NOBPK) AS "PK_1"
+      from         BPK B
+      left outer join BPKDETR D on B.UNITKEY=D.UNITKEY and B.NOBPK=D.NOBPK
+      where B.UNITKEY = #Unitkey# and B.KEYBEND=#Keybend# and D.KDKEGUNIT=#Kdkegunit#
+      and B.NOBPK not in (select NOBPK from BPKPAJAK where UNITKEY = #Unitkey#)
+      and rtrim(B.NOBPK) like '%' + #NOBPK# + '%'
+      and convert(char(10), B.TGLBPK, 103) like '%' + #TGBPK# + '%'
+      and rtrim(B.URAIBPK) like '%' + #URAIBPK# + '%'
+      order by rtrim(B.NOBPK)
+      <!--select     rtrim(B.NOBPK) AS [01,No.BPK,30,C,C,X],
+      convert(char(10), B.TGLBPK, 103) AS [02,Tgl.BPK,10,C,C,X],
+      rtrim(B.URAIBPK)AS [03,Uraian,50,L,C,X],
+      rtrim(B.NOBPK) AS "PK_1"
+      from         BPK B
+      where (B.UNITKEY = #Unitkey# OR #Unitkey# = '')
+      and (B.IDXKODE = #Idxkode# OR #Idxkode# = '')
+      and ((B.KDSTATUS = '21' and #Kdstatus#='22') or B.KDSTATUS = #Kdstatus#)
+      and (KEYBEND=#Keybend# or #Keybend#='')
+      and rtrim(B.NOBPK) like '%' + #NOBPK# + '%'
+      and convert(char(10), B.TGLBPK, 103) like '%' + #TGBPK# + '%'
+      and rtrim(B.URAIBPK) like '%' + #URAIBPK# + '%'
+      order by rtrim(B.NOBPK)-->
+    </select>
+    <select id="LookupKdperdObjekRpt" resultClass="HashTable" parameterClass="HashTable">
+      SELECT distinct m1.KDPER AS [01,Kode Rekening,10,C,C,X],
+      m1.NMPER AS [02,Nama Rekening,75,L,C,X],
+      m1.KDPER AS "PK_1"
+      FROM RKMDETD r
+      LEFT JOIN MATANGD m ON m.MTGKEY = r.MTGKEY
+      LEFT JOIN MATANGD m1 ON LEFT(m.KDPER,9) = m1.KDPER
+      WHERE m1.MTGLEVEL = 4
+      ORDER BY [01,Kode Rekening,10,C,C,X]
+    </select>
+    <select id="LookupMatangRpt" resultClass="HashTable" parameterClass="HashTable">
+      if #Idxkode#=1
+      BEGIN
+      select rtrim(KDPER) "01,Kode,25,L,C,X",
+      rtrim(NMPER)  "02,Uraian,75,L,C,X",
+      rtrim(MTGKEY)  "PK_1"
+      from MATANGD
+      WHERE TYPE='D' AND (MTGKEY IN (SELECT MTGKEY FROM SPPDETD WHERE isnull(#Unitkey#,'')='' OR UNITKEY=#Unitkey#)
+      OR MTGKEY IN (SELECT MTGKEY FROM SP2DDETD WHERE isnull(#Unitkey#,'')='' OR UNITKEY=#Unitkey#)
+      OR MTGKEY IN (SELECT MTGKEY FROM RKMDETD WHERE isnull(#Unitkey#,'')='' OR UNITKEY=#Unitkey#)
+      OR MTGKEY IN (SELECT MTGKEY FROM SPJDETD WHERE isnull(#Unitkey#,'')='' OR UNITKEY=#Unitkey#))
+      AND KDPER like '%' + #KDPER#+ '%'
+      AND NMPER like '%' + #NMPER# + '%'
+      order by KDPER
+      END
+      <!--else if #Idxkode#=2 AND #Kdkegunit#='1'
+      BEGIN
+      select rtrim(KDPER) "01,Kode,25,L,C,X",
+      rtrim(NMPER)  "02,Uraian,75,L,C,X",
+      rtrim(MTGKEY)  "PK_1"
+      from MATANGR
+      WHERE TYPE='D' AND (MTGKEY IN (SELECT MTGKEY FROM RBMDETR WHERE isnull(#Unitkey#,'')='' OR UNITKEY=#Unitkey#)
+      OR MTGKEY IN (SELECT MTGKEY FROM SP2DDETR WHERE isnull(#Unitkey#,'')='' OR UNITKEY=#Unitkey#)
+      OR MTGKEY IN (SELECT MTGKEY FROM RKMDETR WHERE isnull(#Unitkey#,'')='' OR UNITKEY=#Unitkey#)
+      OR MTGKEY IN (SELECT MTGKEY FROM SPJDETR WHERE isnull(#Unitkey#,'')='' OR UNITKEY=#Unitkey#))
+      AND LEFT(KDPER,3)='5.2'
+      AND KDPER like '%' + #KDPER#+ '%'
+      AND NMPER like '%' + #NMPER# + '%'
+      order by KDPER
+      END disable by avi, biar gabung aja lookupnya-->
+      else if #Idxkode#=2
+      BEGIN
+      select rtrim(KDPER) "01,Kode,25,L,C,X",
+      rtrim(NMPER)  "02,Uraian,75,L,C,X",
+      rtrim(MTGKEY)  "PK_1"
+      from MATANGR
+      WHERE TYPE='D' AND 
+      (MTGKEY IN (SELECT MTGKEY FROM RBMDETR WHERE isnull(#Unitkey#,'')='' OR UNITKEY=#Unitkey# AND KDKEGUNIT=#Kdkegunit#)
+      OR MTGKEY IN (SELECT MTGKEY FROM SKORDET WHERE isnull(#Unitkey#,'')='' OR UNITKEY=#Unitkey# AND KDKEGUNIT=#Kdkegunit#)
+      OR MTGKEY IN (SELECT MTGKEY FROM SPPDETR WHERE isnull(#Unitkey#,'')='' OR UNITKEY=#Unitkey# AND KDKEGUNIT=#Kdkegunit#)
+      OR MTGKEY IN (SELECT MTGKEY FROM SP2DDETR WHERE isnull(#Unitkey#,'')='' OR UNITKEY=#Unitkey# AND KDKEGUNIT=#Kdkegunit#)
+      OR MTGKEY IN (SELECT MTGKEY FROM BPKDETR WHERE isnull(#Unitkey#,'')='' OR UNITKEY=#Unitkey#AND KDKEGUNIT=#Kdkegunit#))
+      <!--AND LEFT(KDPER,3)='5.2'-->
+      AND KDPER like '%' + #KDPER#+ '%'
+      AND NMPER like '%' + #NMPER# + '%'
+      order by KDPER
+      END
+      else if #Idxkode#=3
+      BEGIN
+      select rtrim(KDPER) "01,Kode,25,L,C,X",
+      rtrim(NMPER)  "02,Uraian,75,L,C,X",
+      rtrim(MTGKEY)  "PK_1"
+      from MATANGR
+      WHERE TYPE='D' AND (MTGKEY IN (SELECT MTGKEY FROM SPPDETRTL WHERE isnull(#Unitkey#,'')='' OR UNITKEY=#Unitkey#)
+      OR MTGKEY IN (SELECT MTGKEY FROM SP2DDETRTL WHERE isnull(#Unitkey#,'')='' OR UNITKEY=#Unitkey#)
+      OR MTGKEY IN (SELECT MTGKEY FROM BPKDETRTL WHERE isnull(#Unitkey#,'')='' OR UNITKEY=#Unitkey#)
+      OR MTGKEY IN (SELECT MTGKEY FROM RKMDETRTL WHERE isnull(#Unitkey#,'')='' OR UNITKEY=#Unitkey#)
+      OR MTGKEY IN (SELECT MTGKEY FROM SPJDETRTL WHERE isnull(#Unitkey#,'')='' OR UNITKEY=#Unitkey#)
+      OR MTGKEY IN (SELECT MTGKEY FROM RBMDETRTL WHERE isnull(#Unitkey#,'')='' OR UNITKEY=#Unitkey#))
+      AND  LEFT(KDPER,6) IN('5.1.2.','5.1.3.','5.1.4.','5.1.5.','5.1.6.','5.1.7.','5.1.8.')
+      AND KDPER like '%' + #KDPER#+ '%'
+      AND NMPER like '%' + #NMPER# + '%'
+      order by KDPER
+      END
+      else if #Idxkode#=4
+      BEGIN
+      select rtrim(KDPER) "01,Kode,25,L,C,X",
+      rtrim(NMPER)  "02,Uraian,75,L,C,X",
+      rtrim(MTGKEY)  "PK_1"
+      from MATANGR
+      WHERE TYPE='D' AND (MTGKEY IN (SELECT MTGKEY FROM SPPDETRTL WHERE isnull(#Unitkey#,'')='' OR UNITKEY=#Unitkey#)
+      OR MTGKEY IN (SELECT MTGKEY FROM SP2DDETRTL WHERE isnull(#Unitkey#,'')='' OR UNITKEY=#Unitkey#)
+      OR MTGKEY IN (SELECT MTGKEY FROM BPKDETRTL WHERE isnull(#Unitkey#,'')='' OR UNITKEY=#Unitkey#)
+      OR MTGKEY IN (SELECT MTGKEY FROM RKMDETRTL WHERE isnull(#Unitkey#,'')='' OR UNITKEY=#Unitkey#)
+      OR MTGKEY IN (SELECT MTGKEY FROM SPJDETRTL WHERE isnull(#Unitkey#,'')='' OR UNITKEY=#Unitkey#)
+      OR MTGKEY IN (SELECT MTGKEY FROM RBMDETRTL WHERE isnull(#Unitkey#,'')='' OR UNITKEY=#Unitkey#))
+      AND LEFT(KDPER,6)='5.1.1.'
+      AND KDPER like '%' + #KDPER#+ '%'
+      AND NMPER like '%' + #NMPER# + '%'
+      order by KDPER
+      END
+      else if #Idxkode#=5
+      BEGIN
+      select rtrim(KDPER) "01,Kode,25,L,C,X",
+      rtrim(NMPER)  "02,Uraian,75,L,C,X",
+      rtrim(MTGKEY)  "PK_1"
+      from MATANGB
+      WHERE TYPE='D' AND (MTGKEY IN (SELECT MTGKEY FROM SPPDETB WHERE isnull(#Unitkey#,'')='' OR UNITKEY=#Unitkey#)
+      OR MTGKEY IN (SELECT MTGKEY FROM SP2DDETB WHERE isnull(#Unitkey#,'')='' OR UNITKEY=#Unitkey#)
+      OR MTGKEY IN (SELECT MTGKEY FROM BPKDETB WHERE isnull(#Unitkey#,'')='' OR UNITKEY=#Unitkey#)
+      OR MTGKEY IN (SELECT MTGKEY FROM RKMDETB WHERE isnull(#Unitkey#,'')='' OR UNITKEY=#Unitkey#)
+      OR MTGKEY IN (SELECT MTGKEY FROM SPJDETB WHERE isnull(#Unitkey#,'')='' OR UNITKEY=#Unitkey#)
+      OR MTGKEY IN (SELECT MTGKEY FROM RBMDETB WHERE isnull(#Unitkey#,'')='' OR UNITKEY=#Unitkey#))
+      AND LEFT(KDPER,2)='6.'
+      AND KDPER like '%' + #KDPER#+ '%'
+      AND NMPER like '%' + #NMPER# + '%'
+      order by KDPER
+      END
+      else if #Idxkode#=6
+      BEGIN
+      if #Unitkey#=(select configval from pemda where configid='cur_skpkd')
+      begin
+      select rtrim(KDPER) "01,Kode,25,L,C,X",
+      rtrim(NMPER) "02,Uraian,75,L,C,X",
+      rtrim(MTGKEY) "PK_1"
+      from MATANGNRC
+      WHERE TYPE='D' AND (MTGKEY IN (SELECT MTGKEY FROM POSTNRC WHERE isnull(#Unitkey#,'')='' OR UNITKEY=#Unitkey#)
+      OR MTGKEY IN (SELECT MTGKEY FROM POSTNRCSKPD WHERE isnull(#Unitkey#,'')='' OR UNITKEY=#Unitkey#))
+      OR MTGKEY IN (SELECT MTGKEY FROM BKBKAS)
+      OR MTGKEY IN (SELECT MTGKEY FROM NRCBEND)
+      AND KDPER like '%' + #KDPER#+ '%'
+      AND NMPER like '%' + #NMPER# + '%'
+      order by KDPER
+      end
+      else
+      begin
+      select rtrim(KDPER) "01,Kode,25,L,C,X",
+      rtrim(NMPER) "02,Uraian,75,L,C,X",
+      rtrim(MTGKEY) "PK_1"
+      from MATANGNRC
+      WHERE TYPE='D'
+      <!--AND MTGKEY NOT IN(SELECT MTGKEY FROM MATANGNRC WHERE NMPER LIKE '%RK - SKPD%')-->
+      AND MTGKEY NOT IN(SELECT MTGKEY FROM MATANGNRC WHERE
+      NMPER LIKE '%RK%'+'%SKPD%')
+      AND MTGKEY NOT IN (SELECT MTGKEY FROM BKBKAS)
+      AND (MTGKEY IN (SELECT MTGKEY FROM MATANGNRC WHERE
+      NMPER LIKE '%PPKD%') OR
+      (MTGKEY IN (SELECT MTGKEY FROM POSTNRC WHERE
+      isnull(#Unitkey#,'')='' OR UNITKEY=#Unitkey#)
+      OR MTGKEY IN (SELECT MTGKEY FROM POSTNRCSKPD WHERE
+      isnull(#Unitkey#,'')='' OR UNITKEY=#Unitkey#)
+      OR MTGKEY IN (SELECT MTGKEY FROM MATANGNRC WHERE NMPER
+      LIKE '%Penerimaan%')
+      OR MTGKEY IN (SELECT MTGKEY FROM MATANGNRC WHERE NMPER
+      LIKE '%Pengeluaran%')
+      )
+      OR MTGKEY IN (SELECT MTGKEY FROM BKBKAS)
+      OR MTGKEY IN (SELECT MTGKEY FROM NRCBEND)
+      )
+      AND KDPER like '%' + #KDPER#+ '%'
+      AND NMPER like '%' + #NMPER# + '%'
+      order by KDPER
+      end
+
+      END
+      else if #Idxkode#=7
+      BEGIN
+      select rtrim(KDPER) "01,Kode,25,L,C,X",
+      rtrim(NMPER)  "02,Uraian,75,L,C,X",
+      rtrim(MTGKEY)  "PK_1"
+      from MATANGR
+      WHERE TYPE='D'
+      AND KDPER like '%' + #KDPER#+ '%'
+      AND NMPER like '%' + #NMPER# + '%'
+      order by KDPER
+      END
+      else if #Idxkode#=8
+      begin
+      select rtrim(xx.KDPER) "01,Kode,25,L,C,X",
+      rtrim(xx.NMPER)  "02,Uraian,75,L,C,X",
+      LEFT(XX.KDPER,2)+rtrim(xx.MTGKEY)  "PK_1"  <!--re 06 oktober 2014')-->
+      <!--rtrim(xx.MTGKEY)  "PK_1"-->
+      from
+      (
+      SELECT distinct m.MTGKEY, m.KDPER, m.NMPER
+      FROM MATANGD m INNER JOIN jurnal j ON (j.jmatangd+j.mtgkeyd=left(m.kdper,1)+m.MTGKEY OR j.jmatangk+j.mtgkeyk=left(m.kdper,1)+m.MTGKEY)
+      WHERE isnull(#Unitkey#,'')='' OR j.UNITKEY=#Unitkey#
+      UNION
+      SELECT distinct m.MTGKEY, m.KDPER, m.NMPER
+      FROM MATANGR m INNER JOIN jurnal j ON (j.jmatangd+j.mtgkeyd=left(m.kdper,1)+m.MTGKEY OR j.jmatangk+j.mtgkeyk=left(m.kdper,1)+m.MTGKEY)
+      WHERE isnull(#Unitkey#,'')='' OR j.UNITKEY=#Unitkey#
+      UNION
+      SELECT distinct m.MTGKEY, m.KDPER, m.NMPER
+      FROM MATANGB m INNER JOIN jurnal j ON (j.jmatangd+j.mtgkeyd=left(m.kdper,1)+m.MTGKEY OR j.jmatangk+j.mtgkeyk=left(m.kdper,1)+m.MTGKEY)
+      WHERE isnull(#Unitkey#,'')='' OR j.UNITKEY=#Unitkey#
+      UNION
+      SELECT distinct m.MTGKEY, m.KDPER, m.NMPER
+      FROM MATANGNRC m   INNER JOIN jurnal j ON (j.jmatangd+j.mtgkeyd=left(m.kdper,1)+m.MTGKEY OR j.jmatangk+j.mtgkeyk=left(m.kdper,1)+m.MTGKEY)
+      WHERE isnull(#Unitkey#,'')='' OR j.UNITKEY=#Unitkey#
+      UNION
+      SELECT distinct m.MTGKEY, m.KDPER, m.NMPER
+      FROM MATANGNRC m   INNER JOIN SALDOAWAL  j ON (j.mtgkey=m.mtgkey OR j.mtgkey=m.mtgkey)
+      WHERE isnull(#Unitkey#,'')='' OR j.UNITKEY=#Unitkey#
+      )xx where KDPER like '%' + #KDPER# + '%' and NMPER like '%' + #NMPER# + '%'
+      ORDER BY xx.KDPER
+      end
+      else
+      begin
+      select rtrim(xx.KDPER) "01,Kode,25,L,C,X",
+      rtrim(xx.NMPER)  "02,Uraian,75,L,C,X",
+      LEFT(XX.KDPER,2)+rtrim(xx.MTGKEY)  "PK_1"  <!--re 06 oktober 2014')-->
+      <!--rtrim(xx.MTGKEY)  "PK_1"-->
+      from
+      (
+      SELECT distinct m.MTGKEY, m.KDPER, m.NMPER
+      FROM MATANGDLRA64 m INNER JOIN jurnal j ON (j.jmatangd+j.mtgkeyd=left(m.kdper,1)+m.MTGKEY OR j.jmatangk+j.mtgkeyk=left(m.kdper,1)+m.MTGKEY)
+      WHERE isnull(#Unitkey#,'')='' OR j.UNITKEY=#Unitkey#
+      UNION
+      SELECT distinct m.MTGKEY, m.KDPER, m.NMPER
+      FROM MATANGRLRA64 m INNER JOIN jurnal j ON (j.jmatangd+j.mtgkeyd=left(m.kdper,1)+m.MTGKEY OR j.jmatangk+j.mtgkeyk=left(m.kdper,1)+m.MTGKEY)
+      WHERE isnull(#Unitkey#,'')='' OR j.UNITKEY=#Unitkey#
+      UNION
+      SELECT distinct m.MTGKEY, m.KDPER, m.NMPER
+      FROM MATANGBLRA64 m INNER JOIN jurnal j ON (j.jmatangd+j.mtgkeyd=left(m.kdper,1)+m.MTGKEY OR j.jmatangk+j.mtgkeyk=left(m.kdper,1)+m.MTGKEY)
+      WHERE isnull(#Unitkey#,'')='' OR j.UNITKEY=#Unitkey#
+      )xx 
+      ORDER BY xx.KDPER
+      <!--(
+		SELECT distinct m.MTGKEY, m.KDPER, m.NMPER
+		FROM MATANGD m INNER JOIN jurnal j ON (m.MTGKEY=j.mtgkeyd OR m.MTGKEY=j.mtgkeyk)
+		WHERE isnull(#Unitkey#,'')='' OR j.UNITKEY=#Unitkey#
+		UNION
+		SELECT distinct m.MTGKEY, m.KDPER, m.NMPER
+		FROM MATANGR m INNER JOIN jurnal j ON (m.MTGKEY=j.mtgkeyd OR m.MTGKEY=j.mtgkeyk)
+		WHERE isnull(#Unitkey#,'')='' OR j.UNITKEY=#Unitkey#
+		UNION
+		SELECT distinct m.MTGKEY, m.KDPER, m.NMPER
+		FROM MATANGB m INNER JOIN jurnal j ON (m.MTGKEY=j.mtgkeyd OR m.MTGKEY=j.mtgkeyk)
+		WHERE isnull(#Unitkey#,'')='' OR j.UNITKEY=#Unitkey#
+		UNION
+		SELECT distinct m.MTGKEY, m.KDPER, m.NMPER
+		FROM MATANGNRC m   INNER JOIN jurnal j ON (m.MTGKEY=j.mtgkeyd OR m.MTGKEY=j.mtgkeyk)
+		WHERE isnull(#Unitkey#,'')='' OR j.UNITKEY=#Unitkey#
+		)xx ORDER BY xx.KDPER-->
+      end
+    </select>
+    <select id="LookupMatangnrc" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(KDPER) AS [01,Kode,25,L,C,X],
+      rtrim(NMPER)  AS [02,Uraian,75,L,C,X],
+      rtrim(MTGKEY) AS "PK_1"
+      from MATANGNRC
+      <!--where TYPE='D'
+      AND KDPER like '%' + #KDPER#+ '%'
+      AND NMPER like '%' + #NMPER# + '%'
+      order by KDPER-->
+    </select>
+    <select id="LookupMatangd" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(KDPER) "01,Kode,25,L,C,X",
+      rtrim(NMPER)  "02,Uraian,75,L,C,X",
+      rtrim(MTGKEY)  "PK_1"
+      from MATANGD
+      WHERE TYPE='D'
+      AND KDPER like '%' + #KDPER#+ '%'
+      AND NMPER like '%' + #NMPER# + '%'
+      order by KDPER
+    </select>
+    <select id="LookupMatangr" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(KDPER) "01,Kode,25,L,C,X",
+      rtrim(NMPER)  "02,Uraian,75,L,C,X",
+      rtrim(MTGKEY)  "PK_1"
+      from MATANGR
+      WHERE TYPE='D'
+      AND KDPER like '%' + #KDPER#+ '%'
+      AND NMPER like '%' + #NMPER# + '%'
+      order by KDPER
+    </select>
+    <select id="LookupMatangb" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(KDPER) "01,Kode,25,L,C,X",
+      rtrim(NMPER)  "02,Uraian,75,L,C,X",
+      rtrim(MTGKEY)  "PK_1"
+      from MATANGB
+      WHERE TYPE='D'
+      AND KDPER like '%' + #KDPER#+ '%'
+      AND NMPER like '%' + #NMPER# + '%'
+      order by KDPER
+    </select>
+    <select id="LookupMatangdlra" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(KDPER) "01,Kode,25,L,C,X",
+      rtrim(NMPER)  "02,Uraian,75,L,C,X",
+      rtrim(MTGKEY)  "PK_1"
+      from MATANGDLRA
+      WHERE TYPE='D'
+      AND KDPER like '%' + #KDPER#+ '%'
+      AND NMPER like '%' + #NMPER# + '%'
+      order by KDPER
+    </select>
+    <select id="LookupMatangrlra" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(KDPER) "01,Kode,25,L,C,X",
+      rtrim(NMPER)  "02,Uraian,75,L,C,X",
+      rtrim(MTGKEY)  "PK_1"
+      from MATANGRLRA
+      WHERE TYPE='D'
+      AND KDPER like '%' + #KDPER#+ '%'
+      AND NMPER like '%' + #NMPER# + '%'
+      order by KDPER
+    </select>
+    <select id="LookupMatangblra" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(KDPER) "01,Kode,25,L,C,X",
+      rtrim(NMPER)  "02,Uraian,75,L,C,X",
+      rtrim(MTGKEY)  "PK_1"
+      from MATANGBLRA
+      WHERE TYPE='D'
+      AND KDPER like '%' + #KDPER#+ '%'
+      AND NMPER like '%' + #NMPER# + '%'
+      order by KDPER
+    </select>
+    <select id="LookupMatangdlak" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(KDPER) "01,Kode,25,L,C,X",
+      rtrim(NMPER)  "02,Uraian,75,L,C,X",
+      rtrim(MTGKEY)  "PK_1"
+      from MATANGDLAK
+      WHERE TYPE='D'
+      AND KDPER like '%' + #KDPER#+ '%'
+      AND NMPER like '%' + #NMPER# + '%'
+      order by KDPER
+    </select>
+    <select id="LookupMatangrlak" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(KDPER) "01,Kode,25,L,C,X",
+      rtrim(NMPER)  "02,Uraian,75,L,C,X",
+      rtrim(MTGKEY)  "PK_1"
+      from MATANGRLAK
+      WHERE TYPE='D'
+      AND KDPER like '%' + #KDPER#+ '%'
+      AND NMPER like '%' + #NMPER# + '%'
+      order by KDPER
+    </select>
+    <select id="LookupMatangblak" resultClass="HashTable" parameterClass="HashTable">
+      select rtrim(KDPER) "01,Kode,25,L,C,X",
+      rtrim(NMPER)  "02,Uraian,75,L,C,X",
+      rtrim(MTGKEY)  "PK_1"
+      from MATANGBLAK
+      WHERE TYPE='D'
+      AND KDPER like '%' + #KDPER#+ '%'
+      AND NMPER like '%' + #NMPER# + '%'
+      order by KDPER
+    </select>
+    <select id="LookupDaskSpj" resultClass="HashTable" parameterClass="HashTable">
+      if #Idxkode#=1
+      BEGIN
+      select rtrim(KDPER) "01,Kode,25,L,C,X",
+      rtrim(NMPER)  "02,Uraian,75,L,C,X",
+      rtrim(MTGKEY)  "PK_1"
+      from MATANGD
+      WHERE TYPE='D'
+      AND MTGKEY IN(SELECT MTGKEY FROM DASKD WHERE UNITKEY=#Unitkey#)
+      AND MTGKEY NOT IN(SELECT MTGKEY FROM SPJDETD WHERE UNITKEY=#Unitkey#  AND NOSPJ=#Nospj#)
+      AND KDPER like '%' + #KDPER#+ '%'
+      AND NMPER like '%' + #NMPER# + '%'
+      order by KDPER
+      END
+      else if #Idxkode#=2
+      BEGIN
+      select rtrim(KDPER) "01,Kode,25,L,C,X",
+      rtrim(NMPER)  "02,Uraian,75,L,C,X",
+      rtrim(MTGKEY)  "PK_1"
+      from MATANGR
+      WHERE TYPE='D' AND LEFT(KDPER,3)='5.2'
+      AND MTGKEY IN(SELECT MTGKEY FROM DASKR WHERE UNITKEY=#Unitkey# AND KDKEGUNIT=#Kdkegunit#)
+      AND MTGKEY NOT IN(SELECT MTGKEY FROM SPJDETR WHERE UNITKEY=#Unitkey# AND KDKEGUNIT=#Kdkegunit# AND NOSPJ=#Nospj#)
+      AND KDPER like '%' + #KDPER#+ '%'
+      AND NMPER like '%' + #NMPER# + '%'
+      order by KDPER
+      END
+      else if #Idxkode#=3 or #Idxkode#=4
+      BEGIN
+      select rtrim(KDPER) "01,Kode,25,L,C,X",
+      rtrim(NMPER)  "02,Uraian,75,L,C,X",
+      rtrim(MTGKEY)  "PK_1"
+      from MATANGR
+      WHERE TYPE='D' AND LEFT(KDPER,3)='5.1'
+      AND MTGKEY IN(SELECT MTGKEY FROM DASKRTL WHERE UNITKEY=#Unitkey#)
+      AND MTGKEY NOT IN(SELECT MTGKEY FROM SPJDETRTL WHERE UNITKEY=#Unitkey# AND NOSPJ=#Nospj#)
+      AND KDPER like '%' + #KDPER#+ '%'
+      AND NMPER like '%' + #NMPER# + '%'
+      order by KDPER
+      END
+      else if #Idxkode#=5
+      BEGIN
+      select rtrim(KDPER) "01,Kode,25,L,C,X",
+      rtrim(NMPER)  "02,Uraian,75,L,C,X",
+      rtrim(MTGKEY)  "PK_1"
+      from MATANGB
+      WHERE TYPE='D'
+      AND MTGKEY IN(SELECT MTGKEY FROM DASKB WHERE UNITKEY=#Unitkey#)
+      AND MTGKEY NOT IN(SELECT MTGKEY FROM SPJDETB WHERE UNITKEY=#Unitkey# AND NOSPJ=#Nospj#)
+      AND KDPER like '%' + #KDPER#+ '%'
+      AND NMPER like '%' + #NMPER# + '%'
+      order by KDPER
+      END
+    </select>
+    <select id="LookupNodoklkp" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(KDLIST)         "01,Kode,15,C,C,X"
+      ,rtrim(URAIAN)       "02,Uraian,75,L,C,X"
+      from  MLKPSP2D
+      where KDLIST like '%' + #KDLIST# + '%'
+      and   URAIAN like '%' + #URAIAN# + '%'
+      order by rtrim(KDLIST)
+    </select>
+    <select id="LookupNosp2ddoklkp" resultClass="HashTable" parameterClass="HashTable">
+      select
+      rtrim(NOSP2D)         "01,Kode,40,C,C,X"
+      ,convert(char(10), TGLSP2D, 103) "02,Tgl. SP2D,40,C,C,X"
+      <!--,rtrim(NOSP2D) "PK_1"-->
+      from  SP2D
+      where NOSP2D like '%' + #NOSP2D# + '%'
+      AND convert(char(10), TGLSP2D, 103) like '%' + #TGLSP2D# + '%'
+      AND NOSP2D NOT IN(SELECT NODOKLKP FROM DOKLKP)
+      order by rtrim(NOSP2D),TGLSP2D
+    </select>
+    <select id="LookupNipUjilkp" resultClass="HashTable" parameterClass="HashTable">
+      declare @unitkey char(10)
+      set @unitkey = (select configval from pemda where configid='cur_uskpkd')
+      select
+      rtrim(P.NIP)            "01,NIP,25,C,C,X"
+      ,rtrim(P.NAMA)          "02,Nama,60,L,C,X"
+      ,rtrim(P.NIP)         "PK_1"
+      from   PEGAWAI P
+      where P.UNITKEY=@unitkey and P.NIP NOT IN(SELECT NIP FROM UJILKP WHERE NODOKLKP=#Nodoklkp#)
+      and P.NIP    like '%' + #NIP# + '%'
+      and   P.NAMA   like '%' + #NAMA# + '%'
+      order by rtrim(P.NIP)
+    </select>
+    <procedure id="LookupBuktiBkubend" resultClass="HashTable" parameterMap="lookupbuktibkubend-param" timeout="0">
+      WSP_LOOKUP_BKU_BEND
+    </procedure>
+    <procedure id="LookupBuktiBkubendKeg" resultClass="HashTable" parameterMap="lookupbuktibkubendkeg-param" timeout="0">
+      WSP_LOOKUP_BKU_BEND_KEG
+    </procedure>
+    <procedure id="LookupBuktiBkubendSpj" resultClass="HashTable" parameterMap="lookupbuktibkubend-param" timeout="0">
+      WSP_LOOKUP_BKU_BEND_SPJ
+    </procedure>
+    <procedure id="LookupBuktiBkubendnoval" resultClass="HashTable" parameterMap="lookupbuktibkubend-param" timeout="0">
+      WSP_LOOKUP_BKU_BEND_NOVAL
+    </procedure>
+    <procedure id="LookupBuktiBkubendnovalSpj" resultClass="HashTable" parameterMap="lookupbuktibkubend-param" timeout="0">
+      WSP_LOOKUP_BKU_BEND_NOVAL_SPJ
+    </procedure>
+    <procedure id="LookupRek" resultClass="HashTable" parameterMap="lookuprek-param" timeout="0">
+      WSP_LOOKUP_REK
+    </procedure>
+    <procedure id="LookupRekProg" resultClass="HashTable" parameterMap="lookuprekprog-param" timeout="0">
+      WSP_LOOKUP_REKPROG
+    </procedure>
+    <procedure id="LookupRekUkey" resultClass="HashTable" parameterMap="lookuprekukey-param" timeout="0">
+      WSP_LOOKUP_REK_UKEY
+    </procedure>
+    <procedure id="LookupBK" resultClass="HashTable" parameterMap="LookupBk-param" timeout="0">
+      WSP_LOOKUP_BK
+    </procedure>
+    <procedure id="LookupBkt" resultClass="HashTable" parameterMap="LookupBkt-param" timeout="0">
+      WSP_LOOKUP_BUKTI
+    </procedure>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="lookupbuktibkubend-param" class="HashTable">
+      <parameter property="Jenis" column="Jenis"/>
+      <parameter property="Unitkey" column="Unitkey"/>
+      <parameter property="Bend" column="Bend"/>
+      <parameter property="Keybend" column="Keybend"/>
+      <parameter property="NOMOR" column="NOMOR"/>
+      <parameter property="TGL" column="TGL"/>
+      <parameter property="TGL2" column="TGL2"/>
+    </parameterMap>
+    <parameterMap id="lookupbuktibkubendkeg-param" class="HashTable">
+      <parameter property="Jenis" column="Jenis"/>
+      <parameter property="Unitkey" column="Unitkey"/>
+      <parameter property="Bend" column="Bend"/>
+      <parameter property="Keybend" column="Keybend"/>
+      <parameter property="Kdkegunit" column="Kdkegunit"/>
+      <parameter property="NOMOR" column="NOMOR"/>
+      <parameter property="TGL" column="TGL"/>
+      <parameter property="TGL2" column="TGL2"/>
+    </parameterMap>
+    <parameterMap id="lookuprek-param" class="HashTable">
+      <parameter property="Jenis" column="Jenis"/>
+      <parameter property="KDPER" column="KDPER"/>
+      <parameter property="NMPER" column="NMPER"/>
+    </parameterMap>
+    <parameterMap id="lookuprekprog-param" class="HashTable">
+      <parameter property="Jenisrek" column="Jenisrek"/>
+      <parameter property="Unitkey" column="Unitkey"/>
+      <parameter property="KDPER" column="KDPER"/>
+      <parameter property="NMPER" column="NMPER"/>
+    </parameterMap>
+    <parameterMap id="lookuprekukey-param" class="HashTable">
+      <parameter property="Jenis" column="Jenis"/>
+      <parameter property="Unitkey" column="Unitkey"/>
+      <parameter property="KDPER" column="KDPER"/>
+      <parameter property="NMPER" column="NMPER"/>
+    </parameterMap>
+    <parameterMap id="LookupBk-param" class="HashTable">
+      <parameter property="Jenis" column="Jenis"/>
+      <parameter property="Unitkey" column="Unitkey"/>
+      <parameter property="NOBK" column="NOBK"/>
+      <parameter property="TGLBK" column="TGLBK"/>
+      <parameter property="URAIAN" column="URAIAN"/>
+    </parameterMap>
+    <parameterMap id="LookupBkt-param" class="HashTable">
+      <parameter property="Jenis" column="Jenis"/>
+      <parameter property="Unitkey" column="Unitkey"/>
+      <parameter property="NOBKT" column="NOBKT"/>
+      <parameter property="TGLBKT" column="TGLBKT"/>
+      <parameter property="URAIAN" column="URAIAN"/>
+    </parameterMap>
+  </parameterMaps>
+
+
+</sqlMap>
+

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Zkode" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Zkode" type="Usadi.Valid49.BO.ZkodeControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Zkode">
+      <result property="Uraian" column="URAIAN"/>
+      <result property="Idxkode" column="IDXKODE"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertZkode" parameterMap="insert-param">
+      <generate table="ZKODE"/>
+    </insert>
+    <update id="UpdateByZkode" parameterMap="update-param">
+      <generate table="ZKODE" by="IDXKODE"/>
+    </update>
+    <delete id="DeleteByZkode" parameterMap="delete-param">
+      <generate table="ZKODE" by="IDXKODE"/>
+    </delete>
+    <select id="BaseQueryZkode" parameterClass="Zkode" resultMap="return-result">
+      select Z.IDXKODE, Z.URAIAN 
+	    from ZKODE Z
+    </select>
+    <select id="QueryByAllZkode" extends="BaseQueryZkode" parameterClass="Zkode" resultMap="return-result">
+      where Z.IDXKODE not in (0)
+    </select>
+    <select id="QueryByRtlZkode" extends="BaseQueryZkode" parameterClass="Zkode" resultMap="return-result">
+      where Z.IDXKODE in (3,4)
+    </select>
+    <select id="QueryByBljZkode" extends="BaseQueryZkode" parameterClass="Zkode" resultMap="return-result">
+      where Z.IDXKODE in (2,3,4)
+    </select>
+    <select id="QueryByDpZkode" parameterClass="Zkode" resultMap="return-result">
+      select Z.IDXKODE, case Z.IDXKODE when 0 then 'Gabungan' else Z.URAIAN end as URAIAN
+      from ZKODE Z
+      where Z.IDXKODE in (0,1,2,3,4,5,6)
+    </select>
+    <select id="LoadByPKZkode" extends="BaseQueryZkode" parameterClass="Zkode" resultMap="return-result">
+      where Z.IDXKODE=#Idxkode# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Zkode">
+      <parameter property="Uraian" column="URAIAN"/>
+      <parameter property="Idxkode" column="IDXKODE"/>
+    </parameterMap>
+			<parameterMap id="update-param" extends="insert-param" class="Zkode">
+    </parameterMap>
+		<parameterMap id="delete-param" class="Zkode">
+      <parameter property="Idxkode" column="IDXKODE"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

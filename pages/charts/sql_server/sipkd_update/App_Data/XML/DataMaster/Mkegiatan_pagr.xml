@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Mkegiatan" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Mkegiatan" type="Usadi.Valid49.BO.MkegiatanControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Mkegiatan">
+      <result property="Levelkeg" column="LEVELKEG"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Kdperspektif" column="KDPERSPEKTIF"/>
+			<result property="Nmperspektif" column="NMPERSPEKTIF"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nuprgrm" column="NUPRGRM"/>
+      <result property="Nmprgrm" column="NMPRGRM"/>
+      <result property="Idprgrm" column="IDPRGRM"/>
+      <result property="Nmkegunit" column="NMKEGUNIT"/>
+      <result property="Nukeg" column="NUKEG"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+    </resultMap>
+    
+    <resultMap id="result-count" class="Mkegiatan">
+      <result property="TotalRowCount" column="TOTROW"/>
+    </resultMap>
+    
+		<resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+			<result property="Key" column="KDKEGUNIT"/>
+			<result property="Field" column="NUKEG"/>
+			<result property="Value" column="NMKEGUNIT"/>
+		</resultMap>
+    <resultMap id="return-result-tree" class="Mkegiatan">
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Nukeg" column="NUKEG"/>
+      <result property="Nmkegunit" column="NMKEGUNIT"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Levelkeg" column="LEVELKEG"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertMkegiatan" parameterMap="insert-param">
+      <generate table="MKEGIATAN"/>
+    </insert>
+    <update id="UpdateByMkegiatan" parameterMap="update-param">
+      <generate table="MKEGIATAN" by="KDKEGUNIT"/>
+    </update>
+    <delete id="DeleteByMkegiatan" parameterMap="delete-param">
+      <generate table="MKEGIATAN" by="KDKEGUNIT"/>
+    </delete>
+    <delete id="DeleteByNukegMkegiatan" parameterClass="Mkegiatan">
+      delete from MKEGIATAN
+      where NUKEG=#Nukeg# and IDPRGRM=#Idprgrm#
+    </delete>
+
+    <sql id="qMkegiatan_selc">
+      SELECT Q.*,	ROW_NUMBER() OVER (ORDER BY Q.NUKEG) AS ROWNUMBER
+    </sql>
+
+    <sql id="qMkegiatan_count">
+      SELECT COUNT(Q.KDKEGUNIT) AS TOTROW
+    </sql>
+
+    <sql id="qMkegiatan_from">
+      FROM (
+        SELECT MK.KDKEGUNIT, MK.NUKEG, MK.NMKEGUNIT, MK.IDPRGRM, MK.KDPERSPEKTIF, MK.LEVELKEG,
+          MK.TYPE, MP.NMPRGRM, MP.NUPRGRM, U.KDUNIT, U.NMUNIT, MP.UNITKEY, J.NMPERSPEKTIF
+        FROM MKEGIATAN MK
+          LEFT OUTER JOIN MPGRM MP ON MK.IDPRGRM = MP.IDPRGRM
+          LEFT OUTER JOIN DAFTUNIT U ON MP.UNITKEY = U.UNITKEY
+          LEFT OUTER JOIN JPERSPEKTIF J ON MK.KDPERSPEKTIF = J.KDPERSPEKTIF
+      ) Q
+    </sql>
+    
+    <select id="BaseQueryMkegiatan" parameterClass="Mkegiatan" resultMap="return-result">
+      <include refid="qMkegiatan_selc"/>
+      <include refid="qMkegiatan_from"/>
+    </select>
+    
+    <select id="QueryByCountAllMkegiatan" parameterClass="Mkegiatan" resultMap="result-count">
+      <include refid="qMkegiatan_count"/>
+      <include refid="qMkegiatan_from"/>
+      where Q.IDPRGRM = #Idprgrm# and Q.LEVELKEG='1'
+        and case #Parameter.Field#
+          when '1' then Q.NUKEG
+          when '2' then Q.NMKEGUNIT
+          when '3' then Q.NMPERSPEKTIF
+        end like '%'+ #Parameter.Value# + '%'
+    </select>
+
+    <select id="QueryByAllMkegiatan" extends="BaseQueryMkegiatan" parameterClass="Mkegiatan" resultMap="return-result">
+      where Q.IDPRGRM = #Idprgrm# and Q.LEVELKEG='1' 
+      and case #Parameter.Field#
+      when '1' then Q.NUKEG
+      when '2' then Q.NMKEGUNIT
+      when '3' then Q.NMPERSPEKTIF
+      end like '%'+ #Parameter.Value# + '%'
+    </select>
+
+<!--        
+    <select id="QueryByAllMkegiatan" parameterClass="Mkegiatan" resultMap="return-result">
+      WITH QY AS (
+      <include refid="qMkegiatan_selc"/>
+      <include refid="qMkegiatan_from"/>
+      where Q.IDPRGRM = #Idprgrm# and Q.LEVELKEG='1'
+      and case #Parameter.Field#
+      when '1' then Q.NUKEG
+      when '2' then Q.NMKEGUNIT
+      when '3' then Q.NMPERSPEKTIF
+      end like '%'+ #Parameter.Value# + '%'
+      )
+      SELECT * FROM QY
+      WHERE ROWNUMBER > 10 * (#Hal# - 1) AND ROWNUMBER &lt;= 10 * #Hal#
+    </select>
+-->
+    <select id="QueryByPageAllMkegiatan" parameterClass="Mkegiatan" resultMap="return-result">
+      WITH QY AS (
+        <include refid="qMkegiatan_selc"/>
+        <include refid="qMkegiatan_from"/>
+        where Q.IDPRGRM = #Idprgrm# and Q.LEVELKEG='1' 
+          and case #Parameter.Field#
+            when '1' then Q.NUKEG
+            when '2' then Q.NMKEGUNIT
+            when '3' then Q.NMPERSPEKTIF
+          end like '%'+ #Parameter.Value# + '%'
+      )
+      SELECT * FROM QY
+        WHERE ROWNUMBER > 10 * (#Hal# - 1) AND ROWNUMBER &lt;= 10 * #Hal#
+    </select>
+
+    <select id="QueryBySubMkegiatan" extends="BaseQueryMkegiatan" parameterClass="Mkegiatan" resultMap="return-result">
+      where Q.IDPRGRM = #Idprgrm# and Q.LEVELKEG='2' and left(Q.NUKEG,len(#ParentNukeg#))=#ParentNukeg#
+      and case #Parameter.Field#
+      when '1' then Q.NUKEG
+      when '2' then Q.NMKEGUNIT
+      when '3' then Q.NMPERSPEKTIF
+      end like '%'+ #Parameter.Value# + '%'
+      order by Q.NUKEG
+    </select>
+    <select id="QueryByNukegMkegiatan" extends="BaseQueryMkegiatan" parameterClass="Mkegiatan" resultMap="return-result">
+      where Q.NUKEG=#Nukeg# and Q.IDPRGRM = #Idprgrm# and isnull(MP.UNITKEY,'')=isnull(#Unitkey#,'')
+    </select>
+    <select id="LoadByNukegMkegiatan" extends="QueryByNukegMkegiatan" parameterClass="Mkegiatan" resultMap="return-result">
+    </select>
+    <select id="LoadByPKMkegiatan" extends="BaseQueryMkegiatan" parameterClass="Mkegiatan" resultMap="return-result">
+      where Q.KDKEGUNIT=#Kdkegunit# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Mkegiatan">
+			<parameter property="Kdperspektif" column="KDPERSPEKTIF"/>
+      <parameter property="Levelkeg" column="LEVELKEG"/>
+      <parameter property="Type" column="TYPE"/>
+      <parameter property="Idprgrm" column="IDPRGRM"/>
+      <parameter property="Nmkegunit" column="NMKEGUNIT"/>
+      <parameter property="Nukeg" column="NUKEG"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Mkegiatan">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Mkegiatan">
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

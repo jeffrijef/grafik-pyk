@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="StruUnit" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="StruUnit" type="Usadi.Valid49.BO.StruUnitControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="StruUnit">
+      <result property="Kdlevel" column="KDLEVEL"/>
+      <result property="Nmlevel" column="NMLEVEL"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <insert id="InsertStruUnit" parameterMap="insert-param" >
+      <generate table="STRU_UNIT"/>
+    </insert>
+    <update id="UpdateByStruUnit" parameterMap="update-param" >
+      <generate table="STRU_UNIT" by="KDLEVEL"/>
+    </update>
+    <delete id="DeleteByStruUnit" parameterMap="delete-param" >
+      <generate table="STRU_UNIT" by="KDLEVEL"/>
+    </delete>
+    <select id="QueryByAllStruUnit" parameterClass="StruUnit" resultMap="return-result">
+      select rtrim(KDLEVEL) as KDLEVEL,rtrim(NMLEVEL) as NMLEVEL
+      from STRU_UNIT
+      order by rtrim(KDLEVEL)
+    </select>
+    <select id="LoadByPKStruUnit" parameterClass="StruUnit"  resultMap="return-result" >
+      SELECT * FROM STRU_UNIT
+      WHERE KDLEVEL=#Kdlevel#
+    </select>
+  </statements>
+
+  <parameterMaps>
+    <parameterMap id="insert-param" class="StruUnit">
+      <parameter property="Nmlevel" column="NMLEVEL"/>
+      <parameter property="Kdlevel" column="KDLEVEL"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="StruUnit">
+    </parameterMap>
+    <parameterMap id="delete-param" class="StruUnit">
+      <parameter property="Kdlevel" column="KDLEVEL"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>
+

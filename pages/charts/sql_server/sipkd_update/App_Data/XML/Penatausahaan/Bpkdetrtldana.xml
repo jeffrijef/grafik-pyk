@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Bpkdetrtldana" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <alias>
+      <typeAlias alias="Bpkdetrtldana" type="Usadi.Valid49.BO.BpkdetrtldanaControl" />
+    </alias>
+    <resultMaps>
+      <resultMap id="return-result" class="Bpkdetrtldana">
+        <result property="Nmdana" column="NMDANA"/>
+        <result property="Nilai" column="NILAI"/>
+        <result property="Kddana" column="KDDANA"/>
+        <result property="Nobpk" column="NOBPK"/>
+        <result property="Unitkey" column="UNITKEY"/>
+        <result property="Mtgkey" column="MTGKEY"/>
+      </resultMap>
+    </resultMaps>
+    <statements>
+      <insert id="InsertBpkdetrtldana" parameterMap="insert-param">
+        <generate table="Bpkdetrtldana"/>
+      </insert>
+      <update id="UpdateByBpkdetrtldana" parameterMap="update-param">
+        <generate table="Bpkdetrtldana" by="KDDANA,NOBPK,UNITKEY,MTGKEY"/>
+      </update>
+      <delete id="DeleteByBpkdetrtldana" parameterMap="delete-param">
+        <generate table="Bpkdetrtldana" by="KDDANA,NOBPK,UNITKEY,MTGKEY"/>
+      </delete>
+      <update id="UpdateByUPsbdanaBpkdetrtldana" parameterClass="Bpkdetrtldana">
+        Update BPKDETRTL SET NILAI=isnull((select sum(nilai) from Bpkdetrtldana
+        where UNITKEY=#Unitkey# and NOBPK=#Nobpk# and MTGKEY=#Mtgkey#),0)
+        where UNITKEY=#Unitkey# and NOBPK=#Nobpk# and MTGKEY=#Mtgkey#
+      </update>
+
+      <select id="BaseQueryBpkdetrtldana" parameterClass="Bpkdetrtldana" resultMap="return-result">
+        select B.NOBPK,B.KDDANA,B.MTGKEY,B.UNITKEY,C.NMDANA,B.NILAI
+        from Bpkdetrtldana B
+        INNER JOIN JDANA C ON B.KDDANA=C.KDDANA
+      </select>
+      <select id="QueryByAllBpkdetrtldana" extends="BaseQueryBpkdetrtldana" parameterClass="Bpkdetrtldana" resultMap="return-result">
+        where B.UNITKEY=#Unitkey# and B.NOBPK=#Nobpk# and B.MTGKEY=#Mtgkey# and
+        case #Parameter.Field#
+        when '1' then B.NOBPK
+        when '2' then B.KDDANA
+        end like '%'+ #Parameter.Value# + '%'
+        order by B.KDDANA
+      </select>
+      <select id="LoadByPKBpkdetrtldana" extends="BaseQueryBpkdetrtldana" parameterClass="Bpkdetrtldana" resultMap="return-result">
+        where B.KDDANA = #Kddana# and B.MTGKEY = #Mtgkey# and B.UNITKEY = #Unitkey# and B.NOBPK = #Nobpk#
+      </select>
+    </statements>
+    <parameterMaps>
+      <parameterMap id="insert-param" class="Bpkdetrtldana">
+        <parameter property="Nilai" column="NILAI"/>
+        <parameter property="Kddana" column="KDDANA"/>
+        <parameter property="Nobpk" column="NOBPK"/>
+        <parameter property="Unitkey" column="UNITKEY"/>
+        <parameter property="Mtgkey" column="MTGKEY"/>
+      </parameterMap>
+      <parameterMap id="update-param" extends="insert-param" class="Bpkdetrtldana">
+      </parameterMap>
+      <parameterMap id="delete-param" class="Bpkdetrtldana">
+        <parameter property="Kddana" column="KDDANA"/>
+        <parameter property="Nobpk" column="NOBPK"/>
+        <parameter property="Unitkey" column="UNITKEY"/>
+        <parameter property="Mtgkey" column="MTGKEY"/>
+      </parameterMap>
+    </parameterMaps>
+</sqlMap>
+

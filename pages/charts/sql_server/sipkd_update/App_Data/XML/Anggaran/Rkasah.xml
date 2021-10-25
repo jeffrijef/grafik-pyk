@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Rkasah" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Rkasah" type="Usadi.Valid49.BO.RkasahControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Rkasah">
+			<result property="Uraian" column="URAIAN"/>
+			<result property="Kdunit" column="KDUNIT"/>
+			<result property="Nmunit" column="NMUNIT"/>
+      <result property="Tglsah" column="TGLSAH"/>
+      <result property="Kdtahap" column="KDTAHAP"/>
+			<result property="Unitkey" column="UNITKEY"/>
+		</resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertRkasah" parameterMap="insert-param">
+      <generate table="RKASAH"/>
+    </insert>
+    <update id="UpdateByRkasah" parameterMap="update-param">
+      <generate table="RKASAH" by="KDTAHAP,UNITKEY"/>
+    </update>
+    <delete id="DeleteByRkasah" parameterMap="delete-param">
+      <generate table="RKASAH" by="KDTAHAP,UNITKEY"/>
+    </delete>
+    <select id="BaseQueryRkasah" parameterClass="Rkasah" resultMap="return-result">
+			select A.UNITKEY,A.KDTAHAP,A.TGLSAH
+			,B.KDUNIT, B.NMUNIT,C.URAIAN
+			from RKASAH A
+			left outer join DAFTUNIT B on A.UNITKEY = B.UNITKEY
+			left outer join TAHAP C on A.KDTAHAP = C.KDTAHAP
+		</select>
+    <select id="QueryByAllRkasah" extends="BaseQueryRkasah" parameterClass="Rkasah" resultMap="return-result">
+      where (A.KDTAHAP='1' or A.KDTAHAP='3')
+      and case #Parameter.Field#
+      when '1' then A.KDTAHAP
+      when '2' then B.NMUNIT
+      when '3' then convert(char(10), A.TGLSAH, 103)
+      end like '%'+ #Parameter.Value# + '%'
+      order by B.KDUNIT
+    </select>
+    <select id="LoadByPKRkasah" extends="BaseQueryRkasah" parameterClass="Rkasah" resultMap="return-result">
+			where A.KDTAHAP=#Kdtahap# and A.UNITKEY=#Unitkey#
+		</select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Rkasah">
+			<parameter property="Tglsah" column="TGLSAH"/>
+			<parameter property="Kdtahap" column="KDTAHAP"/>
+			<parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Rkasah">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Rkasah">
+			<parameter property="Kdtahap" column="KDTAHAP"/>
+			<parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

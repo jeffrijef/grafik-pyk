@@ -1,0 +1,5 @@
+TITLE=Perda Penjabaran - Lampiran I
+Unitkey=string;Key Unit;4;
+Tgl=datetime;Tanggal;10;
+Level=string;Level Rekening;4;
+Tahap=string;Kode Tahap;4;

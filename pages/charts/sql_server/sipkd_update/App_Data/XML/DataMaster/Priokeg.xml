@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Priokeg" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Priokeg" type="Usadi.Valid49.BO.PriokegControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Priokeg">
+      <result property="Priokey" column="PRIOKEY"/>
+      <result property="Kdprio" column="KDPRIO"/>
+      <result property="Nmprio" column="NMPRIO"/>
+      <result property="Type" column="TYPE"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Nukeg" column="NUKEG"/>
+      <result property="Nmkegunit" column="NMKEGUNIT"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertPriokeg" parameterMap="insert-param">
+      <generate table="Priokeg"/>
+    </insert>
+    <update id="UpdateByPriokeg" parameterMap="update-param">
+      <generate table="Priokeg" by="KDKEGUNIT"/>
+    </update>
+    <delete id="DeleteByPriokeg" parameterMap="delete-param">
+      <generate table="Priokeg" by="KDKEGUNIT"/>
+    </delete>
+    <select id="BaseQueryPriokeg" parameterClass="Priokeg" resultMap="return-result">
+      SELECT p.PRIOKEY,KDPRIO,NMPRIO,j.TYPE,p.KDKEGUNIT,NUKEG,NMKEGUNIT
+      FROM PRIOKEG p
+      LEFT OUTER JOIN JPRIORITAS j ON p.PRIOKEY=j.PRIOKEY
+      LEFT OUTER JOIN MKEGIATAN m ON p.KDKEGUNIT=m.KDKEGUNIT
+    </select>
+    <select id="QueryByAllPriokeg" extends="BaseQueryPriokeg" parameterClass="Priokeg" resultMap="return-result">
+      where p.PRIOKEY=#Priokey# and
+      case #Parameter.Field#
+      when '1' then m.NUKEG
+      when '2' then m.NMKEGUNIT
+      end like '%'+ #Parameter.Value# + '%'
+      ORDER BY m.NUKEG
+    </select>
+    <select id="LoadByPKPriokeg" extends="BaseQueryPriokeg" parameterClass="Priokeg" resultMap="return-result">
+      where p.PRIOKEY=#Priokey#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Priokeg">
+      <parameter property="Priokey" column="PRIOKEY"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Priokeg">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Priokeg">
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

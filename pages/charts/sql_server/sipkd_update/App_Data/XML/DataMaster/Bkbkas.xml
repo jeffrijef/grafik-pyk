@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Bkbkas" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Bkbkas" type="Usadi.Valid49.BO.BkbkasControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Bkbkas">
+      <result property="Nmbank" column="NMBANK"/>
+      <result property="Akbank" column="AKBANK"/>
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+      <result property="Kdunit" column="KDUNIT"/>
+	    <result property="Nmunit" column="NMUNIT"/>
+      <result property="Kdbank" column="KDBANK"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Nmbkas" column="NMBKAS"/>
+      <result property="Norekb" column="NOREKB"/>
+      <result property="Sladorekb" column="SLADOREKB"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nobbantu" column="NOBBANTU"/>
+      <result property="Norekbkas" column="NOREKBKAS"/>
+    </resultMap>
+    <resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="NOBBANTU"/>
+      <result property="Field" column="NMBKAS"/>
+      <result property="Value" column="NOREKB"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertBkbkas" parameterMap="insert-param">
+      <generate table="BKBKAS"/>
+    </insert>
+    <update id="UpdateByBkbkas" parameterMap="update-param">
+      <generate table="BKBKAS" by="NOBBANTU"/>
+    </update>
+    <delete id="DeleteByBkbkas" parameterMap="delete-param">
+      <generate table="BKBKAS" by="NOBBANTU"/>
+    </delete>
+    <select id="BaseQueryBkbkas" parameterClass="Bkbkas" resultMap="return-result">
+      select B.KDBANK,B.MTGKEY,B.NMBKAS,B.NOBBANTU,B.NOREKB,B.SLADOREKB,B.UNITKEY
+      ,rtrim(D.KDUNIT) as KDUNIT, rtrim(D.NMUNIT) as NMUNIT, 
+      K.AKBANK,K.NMBANK,R.KDPER,R.NMPER,(B.NMBKAS+' - '+B.NOREKB) AS NOREKBKAS
+      from BKBKAS B
+      left outer join DAFTUNIT D on B.UNITKEY = D.UNITKEY
+      left outer join DAFTBANK K ON B.KDBANK = K.KDBANK
+      left outer join MATANGNRC R ON B.MTGKEY = R.MTGKEY
+    </select>
+    <select id="QueryByAllBkbkas" extends="BaseQueryBkbkas" parameterClass="Bkbkas" resultMap="return-result">
+			where
+			case #Parameter.Field#
+			when '1' then B.NOBBANTU
+			when '2' then B.NMBKAS
+			when '3' then K.AKBANK
+			when '4' then B.NOREKB
+			<!--when '5' then B.SLADOREKB
+			when '6' then R.NMPER-->
+			end like '%'+ #Parameter.Value# + '%'
+			order by B.NOBBANTU
+		</select>
+    <select id="QueryByNobbantuBkbkas" extends="BaseQueryBkbkas" parameterClass="Bkbkas" resultMap="return-result">
+      where B.NOBBANTU=#Nobbantu#
+    </select>
+    <select id="QueryByRkmdettBkbkas" parameterclass="Usadi.Valid49.BO.RkmdettControl" resultMap="return-lookup">
+      select NOBBANTU,NOREKB,NMBKAS
+      from BKBKAS B
+      where B.NOBBANTU not in (select NOBBANTU from STS Where NOSTS = #Nosts#)
+      and case #Parameter.Field#
+      when '1' then B.NOBBANTU
+      when '2' then B.NMBKAS
+      when '3' then B.NOREKB
+      end like #Parameter.Value# + '%'
+      order by B.NOBBANTU
+    </select>
+		<select id="QueryByBkudBkbkas" parameterclass="Usadi.Valid49.BO.BkudControl" resultMap="return-lookup">
+			select NOBBANTU,NOREKB,NMBKAS
+			from BKBKAS B
+			where B.NOBBANTU not in (select NOBBANTU from BKUD)
+			and case #Parameter.Field#
+			when '1' then B.NOBBANTU
+			when '2' then B.NMBKAS
+			when '3' then B.NOREKB
+			end like #Parameter.Value# + '%'
+			order by B.NOBBANTU
+		</select>
+    <select id="LoadByPKBkbkas" extends="BaseQueryBkbkas" parameterClass="Bkbkas" resultMap="return-result">
+      where B.NOBBANTU=#Nobbantu#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Bkbkas">
+        <parameter property="Kdbank" column="KDBANK"/>
+        <parameter property="Mtgkey" column="MTGKEY"/>
+        <parameter property="Nmbkas" column="NMBKAS"/>
+        <parameter property="Norekb" column="NOREKB"/>
+        <parameter property="Sladorekb" column="SLADOREKB"/>
+        <parameter property="Unitkey" column="UNITKEY"/>
+        <parameter property="Nobbantu" column="NOBBANTU"/>
+      </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Bkbkas">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Bkbkas">
+      <parameter property="Nobbantu" column="NOBBANTU"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

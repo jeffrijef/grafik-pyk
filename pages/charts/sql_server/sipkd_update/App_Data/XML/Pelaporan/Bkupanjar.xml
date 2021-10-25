@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Bkupanjar" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Bkupanjar" type="Usadi.Valid49.BO.BkupanjarControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Bkupanjar">
+      <result property="AllowSuperUser" column="ALLOWSUPERUSER"/>
+      <result property="Keybend" column="KEYBEND"/>
+      <result property="Nobukti" column="NOPANJAR"/>
+      <result property="Tglbukti" column="TGLPANJAR"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Uraian" column="URAIAN"/>
+      <result property="Idxttd" column="IDXTTD"/>
+      <result property="Tglbkuskpd" column="TGLBKUSKPD"/>
+      <result property="Nobkuskpd" column="NOBKUSKPD"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertBkupanjar" parameterMap="insert-param">
+      <generate table="BKUPANJAR"/>
+    </insert>
+    <update id="UpdateByBkupanjar" parameterMap="update-param">
+      <generate table="BKUPANJAR" by="NOBKUSKPD,UNITKEY"/>
+    </update>
+		<update id="UpdateByTglvalidBkupanjar" parameterClass="Bkupanjar">
+      update BKUPANJAR set TGLVALID=#Tglvalid#
+      where UNITKEY=#Unitkey# and NOBKUSKPD=#Nobkuskpd#
+    </update>
+    <update id="UpdateByDraftBkupanjar" parameterClass="Bkupanjar" >
+      update BKUPANJAR set TGLVALID=null
+      where UNITKEY=#Unitkey# and NOBKUSKPD=#Nobkuskpd#
+    </update>
+    <delete id="DeleteByBkupanjar" parameterMap="delete-param">
+      <generate table="BKUPANJAR" by="NOBKUSKPD,UNITKEY"/>
+    </delete>
+    <select id="BaseQueryBkupanjar" parameterClass="Bkupanjar" resultMap="return-result">
+      select #AllowSuperUser# as ALLOWSUPERUSER,rtrim(A.IDXTTD) as IDXTTD,rtrim(A.KEYBEND) as KEYBEND,A.NOBKUSKPD,A.NOPANJAR,A.TGLBKUSKPD,A.TGLVALID,A.UNITKEY,A.URAIAN
+      ,B.TGLPANJAR
+      from BKUPANJAR A
+      Left outer Join PANJAR B on A.NOPANJAR = B.NOPANJAR and A.UNITKEY=B.UNITKEY
+    </select>
+    <select id="QueryByAllBkupanjar" extends="BaseQueryBkupanjar" parameterClass="Bkupanjar" resultMap="return-result">
+      where A.UNITKEY=#Unitkey#
+      and (S.KEYBEND = #Keybend# or #Keybend#='')
+      and case #Parameter.Field#
+      when '1' then A.NOBKUSKPD
+      when '2' then A.NOPANJAR
+      when '3' then convert(char(10), A.TGLBKUSKPD, 103)
+      when '4' then convert(char(10), A.TGLVALID, 103)
+      when '5' then A.URAIAN
+      end like '%'+ #Parameter.Value# + '%'
+      order by A.NOBKUSKPD
+    </select>
+    <select id="LoadByPKBkupanjar" extends="BaseQueryBkupanjar" parameterClass="Bkupanjar" resultMap="return-result">
+			where A.NOBKUSKPD=#Nobkuskpd# and A.UNITKEY=#Unitkey#
+		</select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Bkupanjar">
+      <!--<parameter property="Idxttd" column="IDXTTD"/>-->
+      <parameter property="Keybend" column="KEYBEND"/>
+      <parameter property="Nobukti" column="NOPANJAR"/>
+      <parameter property="Tglbkuskpd" column="TGLBKUSKPD"/>
+      <parameter property="Uraian" column="URAIAN"/>
+      <parameter property="Nobkuskpd" column="NOBKUSKPD"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Bkupanjar">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Bkupanjar">
+      <parameter property="Nobkuskpd" column="NOBKUSKPD"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

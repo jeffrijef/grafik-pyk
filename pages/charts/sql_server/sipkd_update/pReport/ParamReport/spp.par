@@ -1,0 +1,7 @@
+TITLE=SURAT PERMINTAAN PEMBAYARAN
+Unitkey=string;Key Unit;10;;;;-1
+Idxkode=int;Index Kode;4;
+Jnsbend=String;Pak/Buk Jenis Bukti Jan Lupo Dipiliah;4;;1;Yang Dibawah maksudnyo pak/buk;1;
+Kdstatus=string;Jenis Pembebanan;50;;;;-1;
+Nospp=string;Nomor Unit;50;
+Nip=string;Pimpinan Kegiatan;30;

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Setum" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <alias>
+      <typeAlias alias="Setum" type="Usadi.Valid49.BO.SetumControl" />
+    </alias>
+    <resultMaps>
+      <resultMap id="return-result" class="Setum">
+        <result property="Kdper" column="KDPER"/>
+        <result property="Nmper" column="NMPER"/>
+        <result property="Mtgkeyum" column="MTGKEYUM"/>
+        <result property="Mtgkeybl" column="MTGKEYBL"/>
+      </resultMap>
+    </resultMaps>
+    <statements>
+      <insert id="InsertSetum" parameterMap="insert-param">
+        <generate table="Setum"/>
+      </insert>
+      <update id="UpdateBySetum" parameterMap="update-param">
+        <generate table="Setum" by="MTGKEYUM,MTGKEYBL"/>
+      </update>
+      <delete id="DeleteBySetum" parameterMap="delete-param">
+        <generate table="Setum" by="MTGKEYUM,MTGKEYBL"/>
+      </delete>
+      <select id="BaseQuerySetum" parameterClass="Setum" resultMap="return-result">
+        select S.MTGKEYUM,S.MTGKEYBL
+        , rtrim(M.KDPER) as KDPER, rtrim(M.NMPER) as NMPER
+        from Setum S
+        inner join MATANGR M on M.MTGKEY=S.MTGKEYBL
+      </select>
+      <select id="QueryByAllSetum" extends="BaseQuerySetum" parameterClass="Setum" resultMap="return-result">
+        where  S.MTGKEYUM = #Mtgkeyum# and
+        case #Parameter.Field#
+        when '1' then M.KDPER
+        when '2' then M.NMPER
+        end like '%'+ #Parameter.Value# + '%'
+        order by M.KDPER
+      </select>
+      <select id="LoadByPKSetum" extends="BaseQuerySetum" parameterClass="Setum" resultMap="return-result">
+        where S.MTGKEYUM = #Mtgkeyum# and S.MTGKEYBL = #Mtgkeybl#
+      </select>
+    </statements>
+    <parameterMaps>
+      <parameterMap id="insert-param" class="Setum">
+        <parameter property="Mtgkeyum" column="MTGKEYUM"/>
+        <parameter property="Mtgkeybl" column="MTGKEYBL"/>
+      </parameterMap>
+      <parameterMap id="update-param" extends="insert-param" class="Setum">
+      </parameterMap>
+      <parameterMap id="delete-param" class="Setum">
+        <parameter property="Mtgkeyum" column="MTGKEYUM"/>
+        <parameter property="Mtgkeybl" column="MTGKEYBL"/>
+      </parameterMap>
+    </parameterMaps>
+</sqlMap>
+

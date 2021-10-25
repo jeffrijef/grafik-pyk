@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Urusunit" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Urusunit" type="Usadi.Valid49.BO.UrusunitControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Urusunit">
+      <result property="Uruskey" column="URUSKEY"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <insert id="InsertUrusunit" parameterMap="insert-param" >
+      <generate table="URUSUNIT"/>
+    </insert>
+    <update id="UpdateByUrusunit" parameterMap="update-param" >
+      <generate table="URUSUNIT" by="URUSKEY,UNITKEY"/>
+    </update>
+    <delete id="DeleteByUrusunit" parameterMap="delete-param" >
+      <generate table="URUSUNIT" by="URUSKEY,UNITKEY"/>
+    </delete>
+    <select id="QueryByAllUrusunit" parameterClass="Urusunit" resultMap="return-result">
+      select UU.UNITKEY,UU.URUSKEY,U.KDUNIT,U.NMUNIT
+      from URUSUNIT UU left outer join
+      DAFTUNIT U on U.UNITKEY=UU.URUSKEY
+      where UU.UNITKEY=#Unitkey#
+      and case #Parameter.Field #
+      when '1' then U.KDUNIT
+      when '2' then U.NMUNIT
+      end like '%'+#Parameter.Value#+'%'
+      order by U.KDUNIT
+    </select>
+    <select id="LoadByPKUrusunit" parameterClass="Urusunit"  resultMap="return-result" >
+      SELECT * FROM URUSUNIT
+      WHERE URUSKEY=#Uruskey# AND UNITKEY=#Unitkey#
+    </select>
+  </statements>
+
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Urusunit">
+      <parameter property="Parameter.Key" column="URUSKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Urusunit">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Urusunit">
+      <parameter property="Uruskey" column="URUSKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>
+

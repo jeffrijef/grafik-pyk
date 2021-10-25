@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Bpkpajak" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Bpkpajak" type="Usadi.Valid49.BO.BpkpajakControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Bpkpajak">
+			<!--<result property="Nobkpajak" column="NOBKPAJAK"/>-->
+			<result property="Nilai" column="NILAI"/>
+			<result property="Uraian" column="URAIAN"/>
+			<!--<result property="Tglvalid" column="TGLVALID"/>-->
+			<!--<result property="Tglbkpajak" column="TGLBKPAJAK"/>-->
+			<result property="Kdkegunit" column="KDKEGUNIT"/>
+			<result property="Nobkpajak" column="NOBKPAJAK"/>
+			<result property="Kdstatus" column="KDSTATUS"/>
+			<result property="Nobpk" column="NOBPK"/>
+			<result property="Unitkey" column="UNITKEY"/>
+		</resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertBpkpajak" parameterMap="insert-param">
+      <generate table="BPKPAJAK"/>
+    </insert>
+    <update id="UpdateByBpkpajak" parameterMap="update-param">
+      <generate table="BPKPAJAK" by="UNITKEY,NOBPK,KDSTATUS,NOBKPAJAK,KDKEGUNIT"/>
+    </update>
+		<!--<statement id="InsertBpkBpkpajak" parameterClass="Bpkpajak">
+			--><!--insert into BKPAJAKDET
+			(UNITKEY,NOBKPAJAK,KDSTATUS,NOBKPAJAJK,KDKEGUNIT)
+			values (#Unitkey#,#Nobkpajak#,#Kdstatus#,#Nobkpajak#,#Kdkegunit#)--><!--
+			
+		</statement>-->
+    <delete id="DeleteByBpkpajak" parameterMap="delete-param">
+      <generate table="BPKPAJAK" by="UNITKEY,NOBPK,KDSTATUS,NOBKPAJAK,KDKEGUNIT"/>
+    </delete>
+    <select id="BaseQueryBpkpajak" parameterClass="Bpkpajak" resultMap="return-result">
+			select A.UNITKEY,A.NOBPK,A.NOBKPAJAK,A.KDKEGUNIT,A.KDSTATUS,BK.URAIAN,SUM(BP.NILAI) as Nilai
+			from BPKPAJAK A
+			left join BKPAJAK BK on A.NOBKPAJAK = BK.NOBKPAJAK and BK.UNITKEY = A.UNITKEY
+			INNER join BKPAJAKDET BP ON BP.UNITKEY = BK.UNITKEY AND BP.NOBKPAJAK=BK.NOBKPAJAK
+		</select>
+    <select id="QueryByAllBpkpajak" extends="BaseQueryBpkpajak" parameterClass="Bpkpajak" resultMap="return-result">
+			where A.UNITKEY=#Unitkey# and A.NOBPK=#Nobpk# and A.KDKEGUNIT=#Kdkegunit#
+			and case #Parameter.Field#
+			when '1' then A.NOBKPAJAK
+			when '2' then BK.URAIAN
+			end like '%'+ #Parameter.Value# + '%'
+			GROUP BY A.UNITKEY,A.NOBPK,A.NOBKPAJAK,A.KDKEGUNIT,A.KDSTATUS,BK.URAIAN
+		</select>
+		<select id="QueryByAllintBpkpajak" parameterClass="Bpkpajak" resultMap="return-result">
+			SELECT NOBKPAJAK
+			FROM BKPAJAK B
+			WHERE B.UNITKEY=#Unitkey#
+			order by cast(B.NOBKPAJAK as int)
+		</select>
+    <procedure id="ExecCreateNobkpajak" parameterMap="transfer-param">
+      WSP_CREATE_NOBKPAJAK <!--ini sepertinya tidak di gunakan-->
+    </procedure>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Bpkpajak">
+			<parameter property="Unitkey" column="UNITKEY"/>
+			<parameter property="Nobpk" column="NOBPK"/>
+			<parameter property="Kdstatus" column="KDSTATUS"/>
+			<parameter property="Nobkpajak" column="NOBKPAJAK"/>
+			<parameter property="Kdkegunit" column="KDKEGUNIT"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Bpkpajak">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Bpkpajak">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Nobpk" column="NOBPK"/>
+			<parameter property="Kdstatus" column="KDSTATUS"/>
+			<parameter property="Nobkpajak" column="NOBKPAJAK"/>
+			<parameter property="Kdkegunit" column="KDKEGUNIT"/>
+    </parameterMap>
+    <parameterMap id="transfer-param" class="Bpkpajak">
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Nobpk" column="nobpk"/>
+			<parameter property="Kdstatus" column="KDSTATUS"/>
+			<parameter property="Nobkpajak" column="NOBKPAJAK"/>
+			<parameter property="Kdkegunit" column="KDKEGUNIT"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

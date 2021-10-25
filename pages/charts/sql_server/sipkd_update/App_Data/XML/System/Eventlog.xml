@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Eventlog" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Eventlog" type="CoreNET.Common.BO.EventlogControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Eventlog">
+      <result property="Computer" column="COMPUTER"/>
+      <result property="Dbname" column="DBNAME"/>
+      <result property="Dtevent" column="DTEVENT"/>
+      <result property="Kdevent" column="KDEVENT"/>
+      <result property="Msgevent" column="MSGEVENT"/>
+      <result property="Usernm" column="USERNM"/>
+      <result property="Ket" column="KET"/>
+      <result property="Nmevent" column="NMEVENT"/>
+      <result property="Idevent" column="IDEVENT"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertEventlog" parameterMap="insert-param">
+      <generate table="EVENTLOG"/>
+    </insert>
+    <update id="UpdateByEventlog" parameterMap="update-param">
+      <generate table="EVENTLOG" by="IDEVENT"/>
+    </update>
+    <delete id="DeleteByEventlog" parameterMap="delete-param">
+      <generate table="EVENTLOG" by="IDEVENT"/>
+    </delete>
+    <select id="BaseQueryEventlog" parameterClass="Eventlog" resultMap="return-result">
+      select A.COMPUTER,A.DBNAME,A.DTEVENT,A.IDEVENT,A.KDEVENT,A.MSGEVENT,A.USERNM
+      , 'N/A' as KET, 'N/A' as NMEVENT
+      from EVENTLOG A
+    </select>
+    <select id="QueryByAllEventlog" extends="BaseQueryEventlog" parameterClass="Eventlog" resultMap="return-result">
+      where
+      case #Parameter.Field#
+        when '1' then A.COMPUTER
+        when '2' then convert(char(10), A.DTEVENT, 103)
+        when '3' then A.IDEVENT
+        when '4' then A.KDEVENT
+        when '5' then A.MSGEVENT
+        when '6' then A.USERNM
+      end like '%'+ #Parameter.Value# + '%' 
+    </select>
+    <select id="LoadByPKEventlog" extends="BaseQueryEventlog" parameterClass="Eventlog" resultMap="return-result">
+      where A.IDEVENT=#Idevent# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Eventlog">
+      <parameter property="Computer" column="COMPUTER"/>
+      <parameter property="Dbname" column="DBNAME"/>
+      <parameter property="Dtevent" column="DTEVENT"/>
+      <parameter property="Kdevent" column="KDEVENT"/>
+      <parameter property="Msgevent" column="MSGEVENT"/>
+      <parameter property="Usernm" column="USERNM"/>
+      <parameter property="Idevent" column="IDEVENT"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Eventlog">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Eventlog">
+      <parameter property="Idevent" column="IDEVENT"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

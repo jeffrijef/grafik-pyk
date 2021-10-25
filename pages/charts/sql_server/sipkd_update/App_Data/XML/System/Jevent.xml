@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Jevent" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Jevent" type="CoreNET.Common.BO.JeventControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Jevent">
+      <result property="Ket" column="KET"/>
+      <result property="Nmevent" column="NMEVENT"/>
+      <result property="Kdevent" column="KDEVENT"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertJevent" parameterMap="insert-param">
+      <generate table="JEVENT"/>
+    </insert>
+    <update id="UpdateByJevent" parameterMap="update-param">
+      <generate table="JEVENT" by="KDEVENT"/>
+    </update>
+    <delete id="DeleteByJevent" parameterMap="delete-param">
+      <generate table="JEVENT" by="KDEVENT"/>
+    </delete>
+    <select id="BaseQueryJevent" parameterClass="Jevent" resultMap="return-result">
+      select A.KDEVENT,A.KET,A.NMEVENT
+      from JEVENT A
+    </select>
+    <select id="QueryByAllJevent" extends="BaseQueryJevent" parameterClass="Jevent" resultMap="return-result">
+      where
+      case #Parameter.Field#
+        when '1' then A.KDEVENT
+        when '2' then A.KET
+        when '3' then A.NMEVENT
+      end like '%'+ #Parameter.Value# + '%' 
+    </select>
+    <select id="LoadByPKJevent" extends="BaseQueryJevent" parameterClass="Jevent" resultMap="return-result">
+      where A.KDEVENT=#Kdevent# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Jevent">
+      <parameter property="Ket" column="KET"/>
+      <parameter property="Nmevent" column="NMEVENT"/>
+      <parameter property="Kdevent" column="KDEVENT"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Jevent">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Jevent">
+      <parameter property="Kdevent" column="KDEVENT"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

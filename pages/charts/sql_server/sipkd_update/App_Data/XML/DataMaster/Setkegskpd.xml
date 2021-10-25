@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Setkegskpd" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Setkegskpd" type="Usadi.Valid49.BO.SetkegskpdControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Setkegskpd">
+      <result property="Type" column="TYPE"/>
+      <result property="Nukeg" column="NUKEG"/>
+      <result property="Nmkegunit" column="NMKEGUNIT"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Idprgrm" column="IDPRGRM"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+    </resultMap>
+    <!--<resultMap id="return-lookup" class="CoreNET.Common.Base.BaseParameter">
+      <result property="Key" column="KDKEGUNIT"/>
+      <result property="Field" column="NUKEG"/>
+      <result property="Value" column="NMKEGUNIT"/>
+    </resultMap>-->
+  </resultMaps>
+  <statements>
+    <insert id="InsertSetkegskpd" parameterMap="insert-param">
+      <generate table="Setkegskpd"/>
+    </insert>
+    <update id="UpdateBySetkegskpd" parameterMap="update-param">
+      <generate table="Setkegskpd" by="UNITKEY,IDPRGRM,KDKEGUNIT"/>
+    </update>
+    <delete id="DeleteBySetkegskpd" parameterMap="delete-param">
+      <generate table="Setkegskpd" by="UNITKEY,IDPRGRM,KDKEGUNIT"/>
+    </delete>
+    <select id="BaseQuerySetkegskpd" parameterClass="Setkegskpd" resultMap="return-result">
+      SELECT A.UNITKEY,A.IDPRGRM, A.KDKEGUNIT,B.NUKEG,B.NMKEGUNIT,B.TYPE
+      FROM Setkegskpd A
+      LEFT JOIN MKEGIATAN B ON A.KDKEGUNIT=B.KDKEGUNIT
+    </select>
+    <select id="QueryByAllSetkegskpd" extends="BaseQuerySetkegskpd" parameterClass="Setkegskpd" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.IDPRGRM=#Idprgrm# and
+      case #Parameter.Field#
+      when '1' then A.UNITKEY
+      end like '%'+ #Parameter.Value# + '%'
+      ORDER BY A.UNITKEY
+    </select>
+    <select id="QueryByKegSetkegskpd" extends="BaseQuerySetkegskpd" parameterClass="Setkegskpd" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.KDKEGUNIT=#Kdkegunit#
+    </select>
+    <select id="LoadByPKSetkegskpd" extends="BaseQuerySetkegskpd" parameterClass="Setkegskpd" resultMap="return-result">
+      where A.UNITKEY=#Unitkey# and A.IDPRGRM=#Idprgrm# and A.KDKEGUNIT=#Kdkegunit#
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Setkegskpd">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Idprgrm" column="IDPRGRM"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Setkegskpd">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Setkegskpd">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Idprgrm" column="IDPRGRM"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

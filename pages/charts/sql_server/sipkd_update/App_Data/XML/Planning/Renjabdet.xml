@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Renjabdet" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Renjabdet" type="Usadi.Valid49.BO.RenjabdetControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Renjabdet">
+      <result property="Kdrek" column="KDREK"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Kdtahun" column="KDTAHUN"/>
+      <result property="Nmtahun" column="NMTAHUN"/>
+      <result property="Nilaimin1" column="NILAIMIN1"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Nilaipls1" column="NILAIPLS1"/>
+      <result property="Nmrek" column="NMREK"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <insert id="InsertRenjabdet" parameterMap="insert-param" >
+      <generate table="RENJABDET"/>
+    </insert>
+    <update id="UpdateByRenjabdet" parameterMap="update-param" >
+      <generate table="RENJABDET" by="KDREK,UNITKEY,KDTAHUN"/>
+    </update>
+    <delete id="DeleteByRenjabdet" parameterMap="delete-param" >
+      <generate table="RENJABDET" by="KDREK,UNITKEY,KDTAHUN"/>
+    </delete>
+    <select id="BaseQueryRenjabdet" parameterClass="Renjabdet" resultMap="return-result">
+      select RB.KDREK, RB.UNITKEY, RB.KDTAHUN, RB.NILAIMIN1, RB.NILAI, RB.NILAIPLS1, UN.KDUNIT, UN.NMUNIT, TN.NMTAHUN, JB.NMREK
+      from RENJABDET RB
+      left outer join DAFTUNIT UN on RB.UNITKEY = UN.UNITKEY
+      left outer join JTAHUN TN on RB.KDTAHUN = TN.KDTAHUN
+      left outer join JPEMBIAYAAN JB on RB.KDREK = JB.KDREK
+    </select>
+    <select id="QueryByAllRenjabdet" extends="BaseQueryRenjabdet" parameterClass="Renjabdet" resultMap="return-result">
+      where RB.UNITKEY=#Unitkey# and RB.KDTAHUN=#Kdtahun#
+      order by JB.KDREK
+    </select>
+    <select id="LoadByPKRenjabdet" extends="BaseQueryRenjabdet" parameterClass="Renjabdet"  resultMap="return-result" >
+      where RB.UNITKEY=#Unitkey# and RB.KDTAHUN=#Kdtahun# and RB.KDREK=#Kdrek# 
+    </select>
+  </statements>
+
+  <parameterMaps>
+    <parameterMap id="base-param" class="Renjabdet">
+      <parameter property="Nilaimin1" column="NILAIMIN1"/>
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Nilaipls1" column="NILAIPLS1"/>
+    </parameterMap>
+    <parameterMap id="insert-param" extends="base-param" class="Renjabdet">
+      <parameter property="Parameter.Key" column="KDREK"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Kdtahun" column="KDTAHUN"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="base-param" class="Renjabdet">
+      <parameter property="Kdrek" column="KDREK"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Kdtahun" column="KDTAHUN"/>
+    </parameterMap>
+    <parameterMap id="delete-param" class="Renjabdet">
+      <parameter property="Kdrek" column="KDREK"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Kdtahun" column="KDTAHUN"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>
+

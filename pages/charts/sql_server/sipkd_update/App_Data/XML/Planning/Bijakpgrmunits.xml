@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Bijakpgrmunits" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Bijakpgrmunits" type="Usadi.Valid49.BO.BijakpgrmunitsControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Bijakpgrmunits">
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Idprgrms" column="IDPRGRMS"/>
+      <result property="Idbijakan" column="IDBIJAKAN"/>
+      <result property="Kdunit" column="KDUNIT"/>
+      <result property="Nmunit" column="NMUNIT"/>
+      <result property="Nobijakan" column="NOBIJAKAN"/>
+      <result property="Nmbijakan" column="NMBIJAKAN"/>
+      <result property="Noprgrms" column="NOPRGRMS"/>
+      <result property="Nmprgrms" column="NMPRGRMS"/>
+    </resultMap>
+  </resultMaps>
+
+  <statements>
+    <insert id="InsertBijakpgrmunits" parameterMap="insert-param" >
+      <generate table="BIJAKPGRMUNITS"/>
+    </insert>
+    <update id="UpdateByBijakpgrmunits" parameterMap="update-param" >
+      <generate table="BIJAKPGRMUNITS" by="UNITKEY,IDPRGRMS,IDBIJAKAN"/>
+    </update>
+    <delete id="DeleteByBijakpgrmunits" parameterMap="delete-param" >
+      <generate table="BIJAKPGRMUNITS" by="UNITKEY,IDPRGRMS,IDBIJAKAN"/>
+    </delete>
+    <select id="BaseQueryBijakpgrmunits" parameterClass="Bijakpgrmunits" resultMap="return-result">
+      SELECT     BPS.UNITKEY, BPS.IDPRGRMS, BPS.IDBIJAKAN, UN.KDUNIT, UN.NMUNIT, B.NOBIJAKAN, B.NMBIJAKAN, PS.NOPRGRMS, PS.NMPRGRMS
+      FROM         BIJAKPGRMUNITS BPS INNER JOIN
+      DAFTUNIT UN ON BPS.UNITKEY = UN.UNITKEY INNER JOIN
+      KEBIJAKAN B ON BPS.IDBIJAKAN = B.IDBIJAKAN INNER JOIN
+      PGRMS PS ON BPS.UNITKEY = PS.UNITKEY AND BPS.IDPRGRMS = PS.IDPRGRMS
+    </select>
+    <select id="QueryByAllBijakpgrmunits" extends="BaseQueryBijakpgrmunits" parameterClass="Bijakpgrmunits" resultMap="return-result">
+      where
+      BPS.UNITKEY=#Unitkey# AND BPS.IDBIJAKAN=#Idbijakan#
+      and case #Parameter.Field #
+      when '1' then PS.NOPRGRMS
+      when '2' then PS.NMPRGRMS
+      end like '%'+#Parameter.Value#+'%'
+      order by PS.NOPRGRMS
+    </select>
+    <select id="LoadByPKBijakpgrmunits" parameterClass="Bijakpgrmunits"  resultMap="return-result" >
+      select * from BIJAKPGRMUNITS
+      where UNITKEY=#Unitkey# AND IDPRGRMS=#Idprgrms# AND IDBIJAKAN=#Idbijakan#
+    </select>
+  </statements>
+
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Bijakpgrmunits">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Parameter.Key" column="IDPRGRMS"/>
+      <parameter property="Idbijakan" column="IDBIJAKAN"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Bijakpgrmunits">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Bijakpgrmunits">
+      <parameter property="Unitkey" column="UNITKEY"/>
+      <parameter property="Idprgrms" column="IDPRGRMS"/>
+      <parameter property="Idbijakan" column="IDBIJAKAN"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>
+

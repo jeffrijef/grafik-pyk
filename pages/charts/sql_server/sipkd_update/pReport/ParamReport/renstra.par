@@ -1,0 +1,4 @@
+TITLE=Renstra SKPD
+Unitkey=string;;;
+Tgl=datetime;Tanggal;30;sr_lokntgl.rpt
+Unitkey=string;;;sr_kaskpd.rpt

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Raskblnr" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Raskblnr" type="Usadi.Valid49.BO.RaskblnrControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Raskblnr">
+      <result property="Ket_bulan" column="KET_BULAN"/>
+      <result property="Nilai" column="NILAI"/>
+      <result property="Kd_bulan" column="KD_BULAN"/>
+      <result property="Kdkegunit" column="KDKEGUNIT"/>
+      <result property="Kdtahap" column="KDTAHAP"/>
+      <result property="Mtgkey" column="MTGKEY"/>
+      <result property="Unitkey" column="UNITKEY"/>
+    </resultMap>
+    <resultMap id="return-result-kas" extends="return-result" class="Raskblnr">
+      <result property="Kdper" column="KDPER"/>
+      <result property="Nmper" column="NMPER"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertRaskblnr" parameterMap="insert-param">
+      <generate table="RASKBLNR"/>
+    </insert>
+    <update id="UpdateByRaskblnr" parameterMap="update-param">
+      <generate table="RASKBLNR" by="KD_BULAN,KDKEGUNIT,KDTAHAP,MTGKEY,UNITKEY"/>
+    </update>
+    <delete id="DeleteByRaskblnr" parameterMap="delete-param">
+      <generate table="RASKBLNR" by="KD_BULAN,KDKEGUNIT,KDTAHAP,MTGKEY,UNITKEY"/>
+    </delete>
+    <delete id="DeleteByAllRaskblnr" parameterClass="Raskblnr" >
+      delete from RASKBLNR
+      where MTGKEY=#Mtgkey# and UNITKEY=#Unitkey# and KDKEGUNIT=#Kdkegunit# and KDTAHAP=#Kdtahap#
+    </delete>
+    <select id="BaseQueryRaskblnr" parameterClass="Raskblnr" resultMap="return-result">
+      select A.KD_BULAN,A.KDKEGUNIT,A.KDTAHAP,A.MTGKEY,A.NILAI,A.UNITKEY
+      ,B.KET_BULAN
+      from RASKBLNR A
+      left outer join BULAN B on A.KD_BULAN = B.KD_BULAN
+    </select>
+    <select id="QueryByAllRaskblnr" extends="BaseQueryRaskblnr" parameterClass="Raskblnr" resultMap="return-result">
+      where A.KDKEGUNIT=#Kdkegunit# and A.MTGKEY=#Mtgkey# and A.UNITKEY=#Unitkey# and A.KDTAHAP=#Kdtahap#
+      order by A.KD_BULAN
+    </select>
+    <select id="QueryByKasRaskblnr" parameterClass="Raskblnr" resultMap="return-result-kas">
+      select A.KD_BULAN,A.KDKEGUNIT,A.KDTAHAP,A.MTGKEY,A.NILAI,A.UNITKEY,D.KDPER,D.NMPER
+      ,B.KET_BULAN
+      from RASKBLNR A
+      left outer join BULAN B on A.KD_BULAN = B.KD_BULAN
+      left outer join MATANGR D on A.MTGKEY = D.MTGKEY
+      where A.KDKEGUNIT=#Kdkegunit# and A.KD_BULAN=#Kd_bulan# and A.UNITKEY=#Unitkey# and A.KDTAHAP=#Kdtahap#
+      order by A.KD_BULAN
+    </select>
+    <select id="QueryByTrwRaskblnr" parameterClass="Raskblnr" resultMap="return-result">
+      SELECT UNITKEY, MTGKEY, KDTAHAP, KD_TRW AS KD_BULAN, KDKEGUNIT,'Triwulan '+cast(KD_TRW as varchar(2)) as KET_BULAN, SUM(NILAI) AS NILAI
+      FROM (
+      SELECT UNITKEY, MTGKEY, KDTAHAP, KD_BULAN, KDKEGUNIT,(KD_BULAN - 1) / 3 + 1 AS KD_TRW, NILAI
+      FROM RASKBLNR AS RB
+      WHERE (UNITKEY = #Unitkey#) AND (MTGKEY = #Mtgkey#) AND (KDTAHAP = #Kdtahap#) and (KDKEGUNIT=#Kdkegunit#)
+      )T
+      GROUP BY UNITKEY, MTGKEY, KDTAHAP, KD_TRW, KDKEGUNIT
+      ORDER BY KD_TRW
+    </select>
+    <select id="QueryByKasTrwRaskblnr" parameterClass="Raskblnr" resultMap="return-result-kas">
+      SELECT UNITKEY, MTGKEY, KDTAHAP, KD_TRW AS KD_BULAN, KDKEGUNIT,'Triwulan '+cast(KD_TRW as varchar(2)) as KET_BULAN, SUM(NILAI) AS NILAI,KDPER,NMPER
+      FROM (
+      SELECT UNITKEY, RB.MTGKEY, KDTAHAP, KD_BULAN, KDKEGUNIT,(KD_BULAN - 1) / 3 + 1 AS KD_TRW, NILAI,D.KDPER,D.NMPER
+      FROM RASKBLNR AS RB
+      left outer join MATANGR D on RB.MTGKEY = D.MTGKEY
+      WHERE (UNITKEY = #Unitkey#) AND (KDTAHAP = #Kdtahap#) and (KDKEGUNIT=#Kdkegunit#)
+      )T
+      where KD_TRW = #Kd_bulan#
+      GROUP BY UNITKEY, MTGKEY, KDTAHAP, KD_TRW, KDKEGUNIT, KDPER, NMPER
+      ORDER BY KD_TRW
+    </select>
+    <procedure id="ExecUpRaskblnr" parameterMap="select-param-Up">
+      USD_UpRaskblnr
+    </procedure>
+    <select id="LoadByPKRaskblnr" extends="BaseQueryRaskblnr" parameterClass="Raskblnr" resultMap="return-result">
+      where A.KD_BULAN=#Kd_bulan# and A.KDKEGUNIT=#Kdkegunit# and A.KDTAHAP=#Kdtahap# and A.MTGKEY=#Mtgkey# and A.UNITKEY=#Unitkey# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Raskblnr">
+      <parameter property="Nilai" column="NILAI"/>
+      <parameter property="Kd_bulan" column="KD_BULAN"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Raskblnr">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Raskblnr">
+      <parameter property="Kd_bulan" column="KD_BULAN"/>
+      <parameter property="Kdkegunit" column="KDKEGUNIT"/>
+      <parameter property="Kdtahap" column="KDTAHAP"/>
+      <parameter property="Mtgkey" column="MTGKEY"/>
+      <parameter property="Unitkey" column="UNITKEY"/>
+    </parameterMap>
+    <parameterMap id="select-param-Up" class="Raskblnr">
+      <parameter property="Kdtahap" column="kdtahap"/>
+      <parameter property="Unitkey" column="unitkey"/>
+      <parameter property="Kdkegunit" column="kdkegunit"/>
+      <parameter property="Mtgkey" column="mtgkey"/>
+      <parameter property="Kd_bulan" column="kd_bulan"/>
+      <parameter property="Nilai" column="nilai"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

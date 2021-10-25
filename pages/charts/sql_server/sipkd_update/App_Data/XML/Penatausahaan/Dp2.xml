@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Dp" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Dp" type="Usadi.Valid49.BO.DpControl" />
+  </alias>
+  <resultMaps>
+    <resultMap id="return-result" class="Dp">
+      <result property="Idxttd" column="IDXTTD"/>
+      <result property="Nip" column="NIP"/>
+      <result property="Unitkey" column="UNITKEY"/>
+      <result property="Nosp2d" column="NOSP2D"/>
+      <result property="Uraidp" column="URAIDP"/>
+      <result property="Idxkode" column="IDXKODE"/>
+      <result property="Uraian" column="URAIAN"/>
+      <result property="Idxsko" column="IDXSKO"/>
+      <result property="Kdp3" column="KDP3"/>
+      <result property="Kdstatus" column="KDSTATUS"/>
+      <result property="Keperluan" column="KEPERLUAN"/>
+      <result property="Ketotor" column="KETOTOR"/>
+      <result property="Keybend" column="KEYBEND"/>
+      <result property="Nokontrak" column="NOKONTRAK"/>
+      <result property="Noreg" column="NOREG"/>
+      <result property="Nospm" column="NOSPM"/>
+      <result property="Penolakan" column="PENOLAKAN"/>
+      <result property="Tglsp2d" column="TGLSP2D"/>
+      <result property="Tglspm" column="TGLSPM"/>
+      <result property="Tglvalid" column="TGLVALID"/>
+      <result property="Berita" column="BERITA"/>
+      <result property="Tgldp" column="TGLDP"/>
+      <result property="Nodp" column="NODP"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <insert id="InsertDp" parameterMap="insert-param">
+      <generate table="DP"/>
+    </insert>
+    <update id="UpdateByDp" parameterMap="update-param">
+      <generate table="DP" by="NODP"/>
+    </update>
+    <delete id="DeleteByDp" parameterMap="delete-param">
+      <generate table="DP" by="NODP"/>
+    </delete>
+    <select id="BaseQueryDp" parameterClass="Dp" resultMap="return-result">
+      select A.BERITA,A.IDXKODE,rtrim(A.IDXTTD) as IDXTTD,A.NODP,A.TGLDP,A.TGLVALID
+      ,B.NIP
+      ,C.NOSP2D,C.URAIDP
+      ,D.URAIAN
+      ,E.IDXSKO,E.KDP3,E.UNITKEY,rtrim(E.KDSTATUS) as KDSTATUS,E.KEPERLUAN,E.KETOTOR,rtrim(E.KEYBEND) as KEYBEND,E.NOKONTRAK,E.NOREG,E.NOSPM,E. PENOLAKAN,E.TGLSP2D,E.TGLSPM
+      from DP A
+      left outer join JABTTD B on A.IDXTTD = B.IDXTTD
+      left outer join DPDET C on A.NODP = C.NODP
+      left outer join ZKODE D on A.IDXKODE = D.IDXKODE
+      left outer join SP2D E on C.NOSP2D = E.NOSP2D
+    </select>
+    <select id="QueryByAllDp" extends="BaseQueryDp" parameterClass="Dp" resultMap="return-result">
+      where A.IDXKODE=#Idxkode#
+      and case #Parameter.Field#
+      when '1' then A.IDXTTD
+      when '2' then A.NODP
+      when '3' then convert(char(10), A.IDXKODE)
+      when '4' then convert(char(10), A.TGLVALID, 103)
+      when '5' then A.BERITA
+      when '6' then convert(char(10), A.TGLDP, 103)
+      end like '%'+ #Parameter.Value# + '%'
+    </select>
+    <select id="LoadByPKDp" extends="BaseQueryDp" parameterClass="Dp" resultMap="return-result">
+      where A.NODP=#Nodp# 
+    </select>
+  </statements>
+  <parameterMaps>
+    <parameterMap id="insert-param" class="Dp">
+      <parameter property="Berita" column="BERITA"/>
+      <parameter property="Idxkode" column="IDXKODE"/>
+      <parameter property="Idxttd" column="IDXTTD"/>
+      <parameter property="Tgldp" column="TGLDP"/>
+      <parameter property="Tglvalid" column="TGLVALID"/>
+      <parameter property="Nodp" column="NODP"/>
+    </parameterMap>
+    <parameterMap id="update-param" extends="insert-param" class="Dp">
+    </parameterMap>
+    <parameterMap id="delete-param" class="Dp">
+      <parameter property="Nodp" column="NODP"/>
+    </parameterMap>
+  </parameterMaps>
+</sqlMap>

@@ -1,0 +1,8 @@
+TITLE=Laporan Pertanggungjawaban TU PPKA
+Unitkey=string;Key Unit;4;;;;-1;
+Idxkode=string;label;50;;;;-1;
+Kdstatus=string;Jenis Pembebanan;50;;;;-1;
+Nosp2d=string;Key Unit;30;
+Nospj=String;Nomor SPJ;50;
+Mtgkeyban=string;Kegiatan;4;
+Tanggal=datetime;Tanggal Cetak;20;;;

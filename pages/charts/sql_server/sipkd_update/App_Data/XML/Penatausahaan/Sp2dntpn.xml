@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Sp2dntpn" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <alias>
+      <typeAlias alias="Sp2dntpn" type="Usadi.Valid49.BO.Sp2dntpnControl" />
+    </alias>
+    <resultMaps>
+      <resultMap id="return-result" class="Sp2dntpn">
+        <result property="Unitkey" column="UNITKEY"/>
+        <result property="Idxkode" column="IDXKODE"/>
+        <result property="Kdstatus" column="KDSTATUS"/>
+        <result property="Nosp2d" column="NOSP2D"/>
+        <result property="Tglntpn" column="TGLNTPN"/>
+        <result property="Ntpn" column="NTPN"/>
+      </resultMap>
+    </resultMaps>
+    <statements>
+      <insert id="InsertSp2dntpn" parameterMap="insert-param">
+        <generate table="Sp2dntpn"/>
+      </insert>
+      <update id="UpdateBySp2dntpn" parameterMap="update-param">
+        <generate table="Sp2dntpn" by="NTPN"/>
+      </update>
+      <delete id="DeleteBySp2dntpn" parameterMap="delete-param">
+        <generate table="Sp2dntpn" by="NTPN"/>
+      </delete>
+      <select id="BaseQuerySp2dntpn" parameterClass="Sp2dntpn" resultMap="return-result">
+        select S.IDXKODE,S.KDSTATUS,S.NOSP2D,S.TGLNTPN,S.NTPN,S.UNITKEY
+        from SP2DNTPN S
+      </select>
+      <select id="QueryByAllSp2dntpn" extends="BaseQuerySp2dntpn" parameterClass="Sp2dntpn" resultMap="return-result">
+        where S.UNITKEY=#Unitkey# and
+        case #Parameter.Field#
+          when '1' then S.IDXKODE
+          when '2' then S.KDSTATUS
+          when '3' then S.NOSP2D
+          when '4' then S.TGLNTPN
+          when '5' then S.NTPN
+        end like '%'+ #Parameter.Value# + '%' 
+        order by S.NTPN
+      </select>
+      <select id="LoadByPKSp2dntpn" extends="BaseQuerySp2dntpn" parameterClass="Sp2dntpn" resultMap="return-result">
+        where S.NTPN = #Ntpn#
+      </select>
+    </statements>
+    <parameterMaps>
+      <parameterMap id="insert-param" class="Sp2dntpn">
+        <parameter property="Unitkey" column="UNITKEY"/>
+        <parameter property="Idxkode" column="IDXKODE"/>
+        <parameter property="Kdstatus" column="KDSTATUS"/>
+        <parameter property="Nosp2d" column="NOSP2D"/>
+        <parameter property="Tglntpn" column="TGLNTPN"/>
+        <parameter property="Ntpn" column="NTPN"/>
+      </parameterMap>
+      <parameterMap id="update-param" extends="insert-param" class="Sp2dntpn">
+      </parameterMap>
+      <parameterMap id="delete-param" class="Sp2dntpn">
+        <parameter property="Ntpn" column="NTPN"/>
+      </parameterMap>
+    </parameterMaps>
+</sqlMap>
+
